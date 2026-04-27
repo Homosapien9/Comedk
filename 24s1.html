@@ -731,6 +731,19 @@
             document.getElementById('submitBtn').style.background = '#0d904f';
             document.getElementById('submitBtn').onclick = resetExam;
 
+            function finishExam(finalScore){
+              const test = localStorage.getItem("currentTest") || "Mock";
+              const name = prompt("Enter your name");
+              if(!name) return;
+
+              localStorage.setItem("pendingScore", JSON.stringify({
+                    name: name,
+                    test: test,
+                    score: finalScore }));
+
+              // redirect back to homepage
+              window.location.href = "https://Comedk.github.io/";}
+            
             let correctCount = 0;
             let unansweredCount = 0;
             let incorrectCount = 0;
