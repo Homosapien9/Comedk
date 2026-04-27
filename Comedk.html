@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>COMEDK Ranks — Free Mock Tests 2026</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <title>COMEDK Rank Booster</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -289,6 +288,74 @@
             transform: rotate(45deg);
             animation: bob 1.5s infinite;
         }
+        
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:Inter;background:linear-gradient(180deg,#070510,#020109);color:var(--text)}
+        
+        nav{position:sticky;top:0;background:#070510e6;backdrop-filter:blur(12px);padding:18px 30px;display:flex;justify-content:space-between;border-bottom:1px solid var(--border);z-index:99}
+        nav h1{font-size:22px;font-weight:800;color:var(--accent)}
+        
+        .container{max-width:1200px;margin:auto;padding:40px 20px}
+        .hero{text-align:center;margin:40px 0}
+        .hero h2{font-size:42px;font-weight:800;background:linear-gradient(90deg,#c4b5fd,#8b5cf6);-webkit-background-clip:text;color:transparent}
+        .hero p{color:var(--muted);margin-top:10px}
+        
+        .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:22px;margin-top:30px}
+        .card{background:var(--card);padding:25px;border-radius:18px;border:1px solid var(--border);transition:.3s;position:relative;overflow:hidden}
+        .card::after{content:"";position:absolute;width:100%;height:100%;background:radial-gradient(circle at top right,#8b5cf633,transparent 60%);top:0;left:0}
+        .card:hover{transform:translateY(-7px);background:var(--card2);box-shadow:0 0 25px rgba(139,92,246,.35)}
+        .card h3{margin-bottom:10px}
+        .card button{margin-top:15px;width:100%;padding:12px;border:none;border-radius:10px;background:linear-gradient(90deg,#8b5cf6,#a78bfa);color:white;font-weight:600;cursor:pointer}
+        .card button:hover{opacity:.9}
+        
+        .leaderboard{margin-top:70px;background:var(--card);padding:25px;border-radius:18px;border:1px solid var(--border)}
+        table{width:100%;border-collapse:collapse}
+        th,td{padding:10px;border-bottom:1px solid var(--border);text-align:left}
+        th{color:var(--accent2)}
+        
+        .feedback{margin-top:60px;text-align:center}
+        .feedback a{display:inline-block;padding:14px 26px;border-radius:12px;background:linear-gradient(90deg,#8b5cf6,#a78bfa);color:white;text-decoration:none;font-weight:600}
+        footer{margin-top:60px;padding:20px;text-align:center;color:var(--muted)}
+        </style>
+        </head>
+        
+        <body>
+        <nav>
+        <h1>COMEDK Rank Booster</h1>
+        </nav>
+        
+        <div class="container">
+        <div class="hero">
+        <h2>Practice • Compete • Improve 🚀</h2>
+        <p>All COMEDK PYQs + Shifts + Mock Tests</p>
+        </div>
+        
+        <div class="grid" id="cards"></div>
+        
+        <div class="leaderboard">
+        <h2>🏆 Live Leaderboard</h2>
+        <table id="board">
+        <tr><th>Rank</th><th>Name</th><th>Test</th><th>Score</th></tr>
+        </table>
+        </div>
+        
+        <div class="feedback">
+        <h2>Send Feedback / Bugs</h2><br>
+        <a href="https://t.me/Harvey_Spec7er" target="_blank">Message on Telegram</a>
+        </div>
+        
+        <footer>Made for COMEDK Aspirants 💜</footer>
+        </div>
+        
+        /* ---------------- RECEIVE SCORE FROM MOCK ---------------- */
+        window.addEventListener("focus", async ()=>{
+          const pending = localStorage.getItem("pendingScore");
+          if(!pending) return;
+          const data = JSON.parse(pending);
+          localStorage.removeItem("pendingScore");
+          await sendScoreToCloud(data);
+          loadLeaderboard();
+        });
         @keyframes bob {
             0%,
             100% {
