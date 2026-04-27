@@ -1,0 +1,1472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>COMEDK 2020 – CBT (Physics, Chemistry, Mathematics)</title>
+    <style>
+        :root {
+            --bg: #f0f2f5;
+            --panel-bg: #fff;
+            --sidebar-bg: #1a1d23;
+            --text: #1f2937;
+            --text-light: #6b7280;
+            --primary: #2563eb;
+            --primary-light: #dbeafe;
+            --success: #16a34a;
+            --success-light: #dcfce7;
+            --danger: #dc2626;
+            --danger-light: #fef2f2;
+            --warning: #f59e0b;
+            --warning-light: #fffbeb;
+            --border: #e5e7eb;
+            --shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            --radius: 14px;
+            --transition: 0.2s ease;
+            --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .header {
+            background: #fff;
+            border-bottom: 1px solid var(--border);
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .logo {
+            font-weight: 700;
+            font-size: 1.25rem;
+            letter-spacing: -0.5px;
+        }
+        .logo span {
+            color: var(--primary);
+        }
+        .exam-info {
+            display: flex;
+            gap: 24px;
+            align-items: center;
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+        .timer {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #fff;
+            background: #1a1d23;
+            padding: 6px 16px;
+            border-radius: 24px;
+            letter-spacing: 1px;
+            min-width: 90px;
+            text-align: center;
+        }
+        .timer.warning {
+            background: #dc2626;
+            animation: pulse 1s infinite;
+        }
+        @keyframes pulse {
+            0%,
+            100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: .7;
+            }
+        }
+        .main-container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+        .sidebar {
+            width: 280px;
+            min-width: 280px;
+            background: var(--sidebar-bg);
+            color: #fff;
+            padding: 16px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-height: calc(100vh - 64px);
+            position: sticky;
+            top: 64px;
+        }
+        .sidebar h3 {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #9ca3af;
+            text-align: center;
+        }
+        .subject-label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            padding: 4px 8px;
+            background: #2d3039;
+            border-radius: 4px;
+            margin: 8px 0 4px;
+        }
+        .question-grid {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 4px;
+        }
+        .q-btn {
+            aspect-ratio: 1;
+            border: none;
+            border-radius: 4px;
+            font-size: 0.65rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            background: #3b3f4a;
+            color: #d1d5db;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2px;
+        }
+        .q-btn:hover {
+            background: #4b5563;
+            transform: scale(1.05);
+        }
+        .q-btn.active {
+            background: var(--primary);
+            color: #fff;
+            box-shadow: 0 0 8px rgba(37, 99, 235, 0.5);
+            transform: scale(1.1);
+        }
+        .q-btn.answered {
+            background: var(--success);
+            color: #fff;
+        }
+        .q-btn.reviewed {
+            background: var(--warning);
+            color: #000;
+        }
+        .q-btn.answered-review {
+            background: #8b5cf6;
+            color: #fff;
+        }
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            font-size: 0.65rem;
+            padding-top: 8px;
+            border-top: 1px solid #3b3f4a;
+        }
+        .legend span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .legend .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 3px;
+            display: inline-block;
+        }
+        .stats {
+            font-size: 0.7rem;
+            text-align: center;
+            color: #9ca3af;
+            background: #2d3039;
+            border-radius: 6px;
+            padding: 6px;
+        }
+        .content {
+            flex: 1;
+            padding: 24px;
+            overflow-y: auto;
+            max-height: calc(100vh - 64px);
+        }
+        .question-panel {
+            background: var(--panel-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 24px 28px;
+            max-width: 900px;
+            margin: 0 auto;
+            border: 1px solid var(--border);
+        }
+        .q-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .q-num {
+            font-weight: 700;
+            font-size: 1rem;
+            color: var(--primary);
+            background: var(--primary-light);
+            padding: 6px 14px;
+            border-radius: 20px;
+        }
+        .q-subject {
+            font-size: 0.8rem;
+            color: var(--text-light);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .q-text {
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            color: #1a1d23;
+        }
+        .q-text svg {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 12px auto;
+        }
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .option {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 12px 16px;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.95rem;
+            background: #fafbfc;
+            line-height: 1.5;
+        }
+        .option:hover {
+            border-color: #93c5fd;
+            background: #f8faff;
+        }
+        .option.selected {
+            border-color: var(--primary);
+            background: var(--primary-light);
+            font-weight: 500;
+        }
+        .option.correct-review {
+            border-color: var(--success) !important;
+            background: var(--success-light) !important;
+        }
+        .option.incorrect-review {
+            border-color: var(--danger) !important;
+            background: var(--danger-light) !important;
+        }
+        .option .opt-label {
+            font-weight: 700;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+        }
+        .option.selected .opt-label {
+            background: var(--primary);
+            color: #fff;
+        }
+        .option.correct-review .opt-label {
+            background: var(--success);
+            color: #fff;
+        }
+        .option.incorrect-review .opt-label {
+            background: var(--danger);
+            color: #fff;
+        }
+        .nav-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 24px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .nav-buttons button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: var(--transition);
+            letter-spacing: 0.3px;
+        }
+        .btn-prev {
+            background: #e5e7eb;
+            color: #333;
+        }
+        .btn-next {
+            background: var(--primary);
+            color: #fff;
+        }
+        .btn-review {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        .btn-submit {
+            background: #dc2626;
+            color: #fff;
+            font-weight: 700;
+        }
+        .btn-clear {
+            background: #f3f4f6;
+            color: #6b7280;
+        }
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 999;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-overlay.show {
+            display: flex;
+        }
+        .modal {
+            background: #fff;
+            border-radius: 16px;
+            padding: 28px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+        .results-panel {
+            display: none;
+            background: #fff;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 28px;
+            max-width: 900px;
+            margin: 0 auto 24px;
+            text-align: center;
+            border: 1px solid var(--border);
+        }
+        .score {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin: 16px 0;
+        }
+        .subject-scores {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+        .subject-score {
+            background: #f9fafb;
+            padding: 16px 24px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            min-width: 120px;
+        }
+        .subject-score h4 {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #666;
+        }
+        .subject-score .val {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #1a1d23;
+        }
+        @media (max-width: 768px) {
+            .main-container {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+                min-width: auto;
+                max-height: 200px;
+                flex-direction: row;
+                flex-wrap: wrap;
+                gap: 6px;
+                padding: 8px;
+                position: static;
+                overflow-y: auto;
+            }
+            .question-grid {
+                grid-template-columns: repeat(12, 1fr);
+                gap: 2px;
+            }
+            .content {
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">COMEDK<span>2020</span> · CBT</div>
+        <div class="exam-info">
+            <span>Physics · Chemistry · Mathematics</span>
+            <span>180 Questions</span>
+            <span class="timer" id="timer">180:00</span>
+        </div>
+    </div>
+    <div class="main-container">
+        <div class="sidebar" id="sidebar">
+            <h3>📋 Question Palette</h3>
+            <div class="stats" id="stats">Answered: 0 | Review: 0 | Remaining: 180</div>
+            <div class="subject-label">Physics (1–60)</div>
+            <div class="question-grid" id="grid-physics"></div>
+            <div class="subject-label">Chemistry (61–120)</div>
+            <div class="question-grid" id="grid-chemistry"></div>
+            <div class="subject-label">Mathematics (121–180)</div>
+            <div class="question-grid" id="grid-mathematics"></div>
+            <div class="legend">
+                <span><span class="dot" style="background:#3b3f4a;"></span> Not Visited</span>
+                <span><span class="dot" style="background:#16a34a;"></span> Answered</span>
+                <span><span class="dot" style="background:#f59e0b;"></span> Review</span>
+                <span><span class="dot" style="background:#8b5cf6;"></span> Ans+Review</span>
+            </div>
+        </div>
+        <div class="content" id="content-area">
+            <div class="results-panel" id="results-panel">
+                <h2>📊 Test Results</h2>
+                <div class="score" id="final-score">0/180</div>
+                <div class="score-detail" id="score-detail"></div>
+                <div class="subject-scores">
+                    <div class="subject-score"><h4>Physics</h4><div class="val" id="score-physics">0/60</div></div>
+                    <div class="subject-score"><h4>Chemistry</h4><div class="val" id="score-chemistry">0/60</div></div>
+                    <div class="subject-score"><h4>Mathematics</h4><div class="val" id="score-mathematics">0/60</div></div>
+                </div>
+                <button class="btn-submit" onclick="restartTest()">🔄 Retake Test</button>
+                <p style="margin-top:12px;color:#666;font-size:0.85rem;">Scroll through questions to review answers with correct options highlighted.</p>
+            </div>
+            <div class="question-panel" id="question-panel">
+                <div class="q-header">
+                    <span class="q-num" id="q-num">Q1</span>
+                    <span class="q-subject" id="q-subject">Physics</span>
+                </div>
+                <div class="q-text" id="q-text"></div>
+                <div class="options" id="q-options"></div>
+                <div class="nav-buttons">
+                    <button class="btn-prev" onclick="prevQuestion()">← Previous</button>
+                    <button class="btn-clear" onclick="clearAnswer()">Clear</button>
+                    <button class="btn-review" id="btn-review" onclick="toggleReview()">🔖 Mark for Review</button>
+                    <button class="btn-next" onclick="nextQuestion()">Next →</button>
+                    <button class="btn-submit" onclick="showSubmitModal()">📝 Submit Test</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-overlay" id="submit-modal">
+        <div class="modal">
+            <h2>⚠️ Submit Test?</h2>
+            <p id="modal-stats"></p>
+            <div class="nav-buttons">
+                <button class="btn-prev" onclick="hideSubmitModal()">Cancel</button>
+                <button class="btn-submit" onclick="submitTest()">Yes, Submit</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        (function() {
+            // ==================== QUESTION DATA ====================
+            const questions = [];
+            function addQ(id, subject, text, opts, correct, svg = '') {
+                questions.push({ id, subject, text, options: opts, correct, svg });
+            }
+
+            // ===== PHYSICS (1-60) with images =====
+            addQ(1, 'Physics', 'Light of frequency 10<sup>15</sup> Hz falls on a metal surface of work function 2.5 eV. The stopping potential of photoelectrons (in V) is',
+                [{ label: 'a', text: '1.6' }, { label: 'b', text: '2.5' }, { label: 'c', text: '4.1' }, { label: 'd',
+                    text: '6.6' }
+                ], 'a');
+            addQ(2, 'Physics',
+                'A proton accelerated through a potential V has de-Broglie wavelength λ. Then, the de-Broglie wavelength of an α-particle, when accelerated through the same potential V is',
+                [{ label: 'a', text: 'λ/2' }, { label: 'b', text: 'λ/√2' }, { label: 'c', text: 'λ/(2√2)' }, { label: 'd',
+                    text: 'λ/8' }
+                ], 'c');
+            addQ(3, 'Physics',
+                'Consider a thin spherical shell of radius R consisting of uniform surface charge density σ. The electric field at a point of distance x from its centre and outside the shell is',
+                [{ label: 'a', text: 'inversely proportional to σ' }, { label: 'b', text: 'directly proportional to x²' },
+                { label: 'c', text: 'directly proportional to R' }, { label: 'd', text: 'inversely proportional to x²' }
+                ], 'd');
+            addQ(4, 'Physics',
+                'An electron of an atom transits from n₁ to n₂. In which of the following maximum frequency of photon will be emitted?',
+                [{ label: 'a', text: 'n₁=1 to n₂=2' }, { label: 'b', text: 'n₁=2 to n₂=1' }, { label: 'c',
+                    text: 'n₁=2 to n₂=6' }, { label: 'd', text: 'n₁=6 to n₂=2' }
+                ], 'b');
+            addQ(5, 'Physics',
+                'Two protons are kept at a separation of 40 Å. F<sub>n</sub> is the nuclear force and F<sub>e</sub> is the electrostatic force between them. Then,',
+                [{ label: 'a', text: 'Fₙ < Fₑ' }, { label: 'b', text: 'Fₙ = Fₑ' }, { label: 'c', text: 'Fₙ > Fₑ' },
+                { label: 'd', text: 'Fₙ = Fₑ' }
+                ], 'c');
+            addQ(6, 'Physics',
+                'Two radioactive materials X₁ and X₂ have decay constant 5λ and λ respectively. If initially they have the same number of nuclei, then the ratio of the number of nuclei of X₁ to that of X₂ will be 1/e after a time',
+                [{ label: 'a', text: '1/(4λ)' }, { label: 'b', text: 'e/λ' }, { label: 'c', text: 'λ' }, { label: 'd',
+                    text: 'λ/2' }
+                ], 'a');
+            addQ(7, 'Physics',
+                "The Poisson's ratio of a material is 0.1. If the longitudinal strain of a rod of this material is 10⁻³, then the percentage change in the volume of the rod will be",
+                [{ label: 'a', text: '0.008%' }, { label: 'b', text: '0.08%' }, { label: 'c', text: '0.8%' }, { label: 'd',
+                    text: '8%' }
+                ], 'b');
+            addQ(8, 'Physics',
+                'A satellite can be in a geostationary orbit around a planet if it is at a distance R from the centre of the planet. If the planet starts rotating about its axis with double the angular velocity, then to make the satellite geostationary, its orbital radius should be',
+                [{ label: 'a', text: '2R' }, { label: 'b', text: 'R/2' }, { label: 'c', text: 'R/2<sup>1/3</sup>' },
+                { label: 'd', text: 'R/4<sup>1/3</sup>' }
+                ], 'd');
+            addQ(9, 'Physics', 'When a p-n junction diode is connected in forward bias, its barrier potential',
+                [{ label: 'a', text: 'decreases and less current flows' }, { label: 'b',
+                    text: 'decreases and more current flows' }, { label: 'c', text: 'increases and more current flows' },
+                { label: 'd', text: 'decreases and no current flows' }
+                ], 'b');
+            addQ(10, 'Physics', 'Ground waves have wavelength',
+                [{ label: 'a', text: 'less than that of sky waves' }, { label: 'b',
+                    text: 'greater than that of sky waves' }, { label: 'c', text: 'less than that of space waves' },
+                { label: 'd', text: 'equal to that of space waves' }
+                ], 'b');
+            addQ(11, 'Physics',
+                'A ball floats on the surface of water in a container exposed to the atmosphere. When the container is covered and the air is partially removed, then the ball',
+                [{ label: 'a', text: 'rises' }, { label: 'b', text: 'gets immersed more in water' }, { label: 'c',
+                    text: 'remains immersed at its former depth' }, { label: 'd', text: 'may rise or sink' }
+                ], 'b');
+            addQ(12, 'Physics',
+                'A frame made of metallic wire enclosing a surface area A is covered with a soap film. If the area of the frame is reduced by 50%, then the energy of the soap film will be changed by',
+                [{ label: 'a', text: '100%' }, { label: 'b', text: '75%' }, { label: 'c', text: '50%' }, { label: 'd',
+                    text: '25%' }
+                ], 'c');
+            addQ(13, 'Physics',
+                'A compound slab is made of two parallel plates of copper and brass of the same thickness and having thermal conductivities in the ratio 4:1. The free face of copper is at 0°C. The temperature of the interface is 20°C. What is the temperature of the free face of brass?',
+                [{ label: 'a', text: '0°C' }, { label: 'b', text: '20°C' }, { label: 'c', text: '40°C' }, { label: 'd',
+                    text: '100°C' }
+                ], 'd',
+                `<svg viewBox="0 0 320 90" width="280" height="80"><rect x="10" y="30" width="120" height="30" fill="#fbbf24" stroke="#333" stroke-width="2"/><text x="70" y="50" text-anchor="middle" font-size="14">Copper</text><rect x="130" y="30" width="120" height="30" fill="#b45309" stroke="#333" stroke-width="2"/><text x="190" y="50" text-anchor="middle" font-size="14" fill="#fff">Brass</text><line x1="10" y1="15" x2="10" y2="25" stroke="#333" stroke-width="2"/><text x="5" y="12" font-size="11">0°C</text><line x1="130" y1="65" x2="130" y2="75" stroke="#333" stroke-width="2"/><text x="105" y="82" font-size="11">20°C (interface)</text><line x1="250" y1="15" x2="250" y2="25" stroke="#333" stroke-width="2"/><text x="240" y="12" font-size="11">θ = ?</text></svg>`
+            );
+            addQ(14, 'Physics',
+                '1 mm³ of a gas is compressed at 1 atmospheric pressure and temperature 27°C to 627°C. What is the final pressure under adiabatic condition? (γ for the gas = 1.5)',
+                [{ label: 'a', text: '27×10⁵ N/m²' }, { label: 'b', text: '80×10⁵ N/m²' }, { label: 'c',
+                    text: '36×10⁵ N/m²' }, { label: 'd', text: '56×10⁵ N/m²' }
+                ], 'a');
+            addQ(15, 'Physics', 'If sink is at a temperature of −39°C and source at 0°C then efficiency will be',
+                [{ label: 'a', text: '39.4%' }, { label: 'b', text: '14.2%' }, { label: 'c', text: '35.2%' }, { label: 'd',
+                    text: '45.5%' }
+                ], 'b');
+            addQ(16, 'Physics', 'Which of the following laws of Physics is valid across all domains of nature?',
+                [{ label: 'a', text: "Newton's law of motion" }, { label: 'b', text: 'Conservation of momentum' },
+                { label: 'c', text: 'Conservation of energy' }, { label: 'd', text: 'All of the above' }
+                ], 'c');
+            addQ(17, 'Physics',
+                'A particle of mass m is moving in a horizontal circle of radius R under a centripetal force equal to −A/R² (A = constant). The total energy of the particle is',
+                [{ label: 'a', text: 'A/R' }, { label: 'b', text: '−A/R' }, { label: 'c', text: 'A/(2R)' }, { label: 'd',
+                    text: '−A/(2R)' }
+                ], 'd');
+            addQ(18, 'Physics',
+                'A force of 20 N is applied on a body of mass 5 kg resting on a horizontal plane. The body gains a kinetic energy of 10 J after it moves a distance 2 m. The frictional force is',
+                [{ label: 'a', text: '10 N' }, { label: 'b', text: '15 N' }, { label: 'c', text: '20 N' }, { label: 'd',
+                    text: '30 N' }
+                ], 'b',
+                `<svg viewBox="0 0 300 70" width="260" height="60"><rect x="10" y="35" width="200" height="20" fill="#e5e7eb" stroke="#333" stroke-width="1.5"/><rect x="10" y="35" width="200" height="20" fill="none" stroke="#333" stroke-width="1.5"/><polygon points="30,35 50,35 40,20" fill="#666"/><text x="35" y="18" font-size="11">F=20N</text><circle cx="160" cy="45" r="12" fill="#fbbf24" stroke="#333" stroke-width="1"/><text x="156" y="50" font-size="12">5kg</text><line x1="200" y1="45" x2="260" y2="45" stroke="#333" stroke-width="2" marker-end="url(#arrow)"/><defs><marker id="arrow" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0,0 8,3 0,6" fill="#333"/></marker></defs></svg>`
+            );
+            addQ(19, 'Physics',
+                'A body under the action of a force F = 6i − 8j + 10k, acquires an acceleration of 1 m/s². The mass of this body must be',
+                [{ label: 'a', text: '10 kg' }, { label: 'b', text: '20 kg' }, { label: 'c', text: '10√2 kg' },
+                { label: 'd', text: '2√10 kg' }
+                ], 'c');
+            addQ(20, 'Physics',
+                'A body of mass 1000 kg is moving horizontally with a velocity 50 m/s. A mass of 250 kg is added. Find the final velocity.',
+                [{ label: 'a', text: '40 m/s' }, { label: 'b', text: '20 m/s' }, { label: 'c', text: '30√2 m/s' },
+                { label: 'd', text: '50 m/s' }
+                ], 'a');
+            addQ(21, 'Physics',
+                'Equal volumes of two gases, having their densities in the ratio of 1:16 exert equal pressures on the walls of two containers. The ratio of their rms velocities (c₁/c₂) is',
+                [{ label: 'a', text: '1:8' }, { label: 'b', text: '8:1' }, { label: 'c', text: '1:4' }, { label: 'd',
+                    text: '4:1' }
+                ], 'd');
+            addQ(22, 'Physics',
+                'A gaseous mixture consists of 16 g of helium and 16 g of oxygen. The ratio C<sub>p</sub>/C<sub>v</sub> of the mixture is',
+                [{ label: 'a', text: '1.4' }, { label: 'b', text: '1.54' }, { label: 'c', text: '1.59' }, { label: 'd',
+                    text: '1.62' }
+                ], 'd');
+            addQ(23, 'Physics',
+                'A particle executes a linear SHM with an amplitude of 4 cm. At the mean position the velocity of the particle is 10 cm/s. What is the displacement of the particle when its speed becomes 5 cm/s?',
+                [{ label: 'a', text: '2√3 cm' }, { label: 'b', text: '2√5 cm' }, { label: 'c', text: '√5 cm' },
+                { label: 'd', text: '√3 cm' }
+                ], 'a');
+            addQ(24, 'Physics', 'The equation of a progressive wave is y = 15 sin(660πt − 0.02πx) cm. The frequency is',
+                [{ label: 'a', text: '330 Hz' }, { label: 'b', text: '342 Hz' }, { label: 'c', text: '365 Hz' },
+                { label: 'd', text: '660 Hz' }
+                ], 'a');
+            addQ(25, 'Physics',
+                'A source gives 5 beats/s with a 100 s⁻¹ source. Its second harmonic gives 5 beats/s with a 205 s⁻¹ source. The frequency of the source is',
+                [{ label: 'a', text: '95 s⁻¹' }, { label: 'b', text: '105 s⁻¹' }, { label: 'c', text: '100 s⁻¹' },
+                { label: 'd', text: '205 s⁻¹' }
+                ], 'b');
+            addQ(26, 'Physics',
+                'A charge of 0.8 C is divided into Q₁ and Q₂ kept 30 cm apart. The force on Q₁ is maximum when',
+                [{ label: 'a', text: 'Q₁=Q₂=0.4 C' }, { label: 'b', text: 'Q₁=0.8 C, Q₂≈0' }, { label: 'c',
+                    text: 'Q₁≈0, Q₂=0.8 C' }, { label: 'd', text: 'Q₁=0.2 C, Q₂=0.6 C' }
+                ], 'a');
+            addQ(27, 'Physics',
+                'An electric dipole has charges ±q separated by 2a. The axis of the dipole is defined as',
+                [{ label: 'a', text: 'direction from +q to −q' }, { label: 'b', text: 'direction from −q to +q' },
+                { label: 'c', text: 'perpendicular upward' }, { label: 'd', text: 'perpendicular downward' }
+                ], 'b');
+            addQ(28, 'Physics',
+                'An electric dipole in a uniform electric field. Orientation for stable equilibrium is',
+                [{ label: 'a', text: 'π/6' }, { label: 'b', text: 'π/3' }, { label: 'c', text: '0' }, { label: 'd',
+                    text: 'π/2' }
+                ], 'c');
+            addQ(29, 'Physics',
+                'Two point charges A=+3 nC and B=+1 nC are 5 cm apart. Work done to move B towards A by 1 cm is',
+                [{ label: 'a', text: '20×10⁻⁷ J' }, { label: 'b', text: '1.35×10⁻⁷ J' }, { label: 'c', text: '27×10⁻⁷ J' },
+                { label: 'd', text: '121×10⁻⁷ J' }
+                ], 'b');
+            addQ(30, 'Physics',
+                'Potential energies of dipole orientations: (i) −5U₀ (ii) −7U₀ (iii) 3U₀ (iv) 5U₀. Rank by angle between p and E, greatest first.',
+                [{ label: 'a', text: '(i),(ii),(iii),(iv)' }, { label: 'b', text: '(ii),(iii),(i),(iv)' }, { label: 'c',
+                    text: '(iv),(iii),(i),(ii)' }, { label: 'd', text: '(iv),(i),(iii),(ii)' }
+                ], 'c');
+            addQ(31, 'Physics',
+                'Refractive index μ = A + B/λ². Dimensions of B are same as that of',
+                [{ label: 'a', text: 'wavelength' }, { label: 'b', text: 'volume' }, { label: 'c', text: 'pressure' },
+                { label: 'd', text: 'area' }
+                ], 'd');
+            addQ(32, 'Physics', 'Voltage V=(200±8)V, current I=(20±0.5)A. Percentage error in R is',
+                [{ label: 'a', text: '5.2%' }, { label: 'b', text: '25%' }, { label: 'c', text: '3%' }, { label: 'd',
+                    text: '6.5%' }
+                ], 'd');
+            addQ(33, 'Physics',
+                'Body projected vertically. Times at height h while ascending and descending are t₁ and t₂. Velocity of projection is',
+                [{ label: 'a', text: 'g√(t₁t₂)/2' }, { label: 'b', text: 'g(t₁+t₂)/2' }, { label: 'c', text: 'g√(t₁t₂)' },
+                { label: 'd', text: 'g(t₁t₂)/(t₁+t₂)' }
+                ], 'b');
+            addQ(34, 'Physics', 'Distance-time curve. Maximum instantaneous velocity is around point',
+                [{ label: 'a', text: 'D' }, { label: 'b', text: 'A' }, { label: 'c', text: 'B' }, { label: 'd', text: 'C' }],
+                'd',
+                `<svg viewBox="0 0 350 200" width="300" height="170"><defs><marker id="ar" markerWidth="6" markerHeight="4" refX="6" refY="2" orient="auto"><polygon points="0,0 6,2 0,4" fill="#333"/></marker></defs><line x1="40" y1="160" x2="330" y2="160" stroke="#333" stroke-width="1.5" marker-end="url(#ar)"/><line x1="40" y1="160" x2="40" y2="20" stroke="#333" stroke-width="1.5" marker-end="url(#ar)"/><text x="335" y="165" font-size="11">t</text><text x="25" y="25" font-size="11">s</text><path d="M40,150 Q80,140 120,130 Q160,120 180,60 Q200,20 220,50 Q260,100 300,110" fill="none" stroke="#2563eb" stroke-width="2.5"/><circle cx="80" cy="140" r="3" fill="red"/><text x="75" y="132" font-size="10" fill="red">A</text><circle cx="140" cy="120" r="3" fill="red"/><text x="135" y="112" font-size="10" fill="red">B</text><circle cx="200" cy="40" r="3" fill="red"/><text x="205" y="35" font-size="10" fill="red">C</text><circle cx="270" cy="100" r="3" fill="red"/><text x="275" y="95" font-size="10" fill="red">D</text></svg>`
+            );
+            addQ(35, 'Physics', 'Fluid in streamline flow across a horizontal pipe of variable cross-section. Correct statement:',
+                [{ label: 'a', text: 'Velocity max at narrowest part.' }, { label: 'b',
+                    text: 'Pressure max at widest part.' }, { label: 'c', text: 'Both (a) and (b)' }, { label: 'd',
+                    text: 'Neither (a) nor (b)' }
+                ], 'c');
+            addQ(36, 'Physics', 'Capacitors C₁ (120V) and C₂ (200V) connected parallel give zero potential. Then',
+                [{ label: 'a', text: '5C₁=3C₂' }, { label: 'b', text: '3C₁=5C₂' }, { label: 'c', text: '3C₁+5C₂=0' },
+                { label: 'd', text: '9C₁=4C₂' }
+                ], 'b');
+            addQ(37, 'Physics', "Kirchhoff's junction rule is based on",
+                [{ label: 'a', text: 'conservation of charge' }, { label: 'b', text: 'incoming = outgoing currents' },
+                { label: 'c', text: 'valid regardless of wire bending' }, { label: 'd', text: 'All of the above' }
+                ], 'd');
+            addQ(38, 'Physics',
+                'Four particles of mass m at corners of a square of side l. Radius of gyration about axis through centre perpendicular to square is',
+                [{ label: 'a', text: 'l/√2' }, { label: 'b', text: 'l/2' }, { label: 'c', text: 'l' }, { label: 'd',
+                    text: '√2 l' }
+                ], 'a',
+                `<svg viewBox="0 0 150 150" width="130" height="130"><rect x="25" y="25" width="100" height="100" fill="none" stroke="#333" stroke-width="2"/><circle cx="25" cy="25" r="8" fill="#fbbf24" stroke="#333"/><text x="21" y="20" font-size="10">m</text><circle cx="125" cy="25" r="8" fill="#fbbf24" stroke="#333"/><text x="121" y="20" font-size="10">m</text><circle cx="25" cy="125" r="8" fill="#fbbf24" stroke="#333"/><text x="21" y="120" font-size="10">m</text><circle cx="125" cy="125" r="8" fill="#fbbf24" stroke="#333"/><text x="121" y="120" font-size="10">m</text><line x1="75" y1="30" x2="75" y2="120" stroke="#999" stroke-dasharray="4"/><line x1="30" y1="75" x2="120" y2="75" stroke="#999" stroke-dasharray="4"/><circle cx="75" cy="75" r="3" fill="red"/></svg>`
+            );
+            addQ(39, 'Physics',
+                'Steel wire (L=4.7m, A=3×10⁻⁵ m²) and copper wire (L=3.5m, A=4×10⁻⁵ m²) stretch equally under same load. Ratio Y<sub>steel</sub>/Y<sub>copper</sub> =',
+                [{ label: 'a', text: '1.8:1' }, { label: 'b', text: '2.8:1' }, { label: 'c', text: '3.8:1' }, { label: 'd',
+                    text: '4.8:1' }
+                ], 'a');
+            addQ(40, 'Physics', 'Masses 200g at 20cm, 300g at 70cm on light rod. Moment of inertia about 50cm mark is',
+                [{ label: 'a', text: '0.15 kg·m²' }, { label: 'b', text: '0.036 kg·m²' }, { label: 'c', text: '0.3 kg·m²' },
+                { label: 'd', text: 'zero' }
+                ], 'b');
+            addQ(41, 'Physics',
+                'Two spherical bodies M and 5M, radii R and 2R, initial separation 12R. Distance moved by smaller body before collision is',
+                [{ label: 'a', text: '2.5R' }, { label: 'b', text: '4.5R' }, { label: 'c', text: '7.5R' }, { label: 'd',
+                    text: '1.5R' }
+                ], 'c',
+                `<svg viewBox="0 0 300 60" width="280" height="55"><circle cx="50" cy="30" r="20" fill="#fbbf24" stroke="#333" stroke-width="2"/><text x="50" y="35" text-anchor="middle" font-size="12">M</text><circle cx="250" cy="30" r="28" fill="#b45309" stroke="#333" stroke-width="2"/><text x="250" y="35" text-anchor="middle" font-size="12">5M</text><line x1="70" y1="30" x2="222" y2="30" stroke="#333" stroke-width="2" stroke-dasharray="6,3"/><text x="140" y="20" text-anchor="middle" font-size="11">12R</text></svg>`
+            );
+            addQ(42, 'Physics', "Wheatstone bridge: P=Q=R=10Ω, S=20Ω. To balance, connect with S",
+                [{ label: 'a', text: '10Ω in series' }, { label: 'b', text: '10Ω in parallel' }, { label: 'c',
+                    text: '20Ω in parallel' }, { label: 'd', text: '20Ω in series' }
+                ], 'c',
+                `<svg viewBox="0 0 200 120" width="180" height="100"><rect x="20" y="20" width="160" height="80" fill="none" stroke="#333" stroke-width="2"/><circle cx="40" cy="40" r="3"/><circle cx="160" cy="40" r="3"/><circle cx="40" cy="80" r="3"/><circle cx="160" cy="80" r="3"/><text x="15" y="25" font-size="11">P</text><text x="170" y="25" font-size="11">Q</text><text x="15" y="95" font-size="11">R</text><text x="170" y="95" font-size="11">S</text></svg>`
+            );
+            addQ(43, 'Physics',
+                'Potentiometer wire L=10Ω, battery 2.5V, series R. 1V balanced across L/2. Value of R in Ω',
+                [{ label: 'a', text: '1' }, { label: 'b', text: '1.5' }, { label: 'c', text: '2' }, { label: 'd',
+                    text: '2.5' }
+                ], 'd',
+                `<svg viewBox="0 0 220 90" width="200" height="80"><line x1="20" y1="40" x2="180" y2="40" stroke="#333" stroke-width="3"/><circle cx="100" cy="40" r="4" fill="#2563eb"/><text x="20" y="65" font-size="11">A</text><text x="175" y="65" font-size="11">B</text><text x="90" y="25" font-size="11">L/2</text></svg>`
+            );
+            addQ(44, 'Physics', 'Electron speed 2×10⁵ m/s along x, B=(i−4j−3k)T. Magnitude of force (N) is',
+                [{ label: 'a', text: '1.18×10⁻¹³' }, { label: 'b', text: '1.28×10⁻¹³' }, { label: 'c', text: '1.6×10⁻¹³' },
+                { label: 'd', text: '1.72×10⁻¹³' }
+                ], 'c');
+            addQ(45, 'Physics', 'Power line current 90A East-West. Magnetic field 1.5m below is',
+                [{ label: 'a', text: '1.2×10⁻⁵ T, South' }, { label: 'b', text: '1.2×10⁻⁵ T, North' }, { label: 'c',
+                    text: '1.2×10⁻⁵ T, East' }, { label: 'd', text: '1.2×10⁻⁵ T, West' }
+                ], 'a',
+                `<svg viewBox="0 0 200 80" width="180" height="70"><line x1="20" y1="30" x2="180" y2="30" stroke="#333" stroke-width="3"/><text x="90" y="25" text-anchor="middle" font-size="11">I (West→East)</text><circle cx="100" cy="55" r="4" fill="red"/><text x="110" y="58" font-size="10">P (1.5m below)</text></svg>`
+            );
+            addQ(46, 'Physics', 'Galvanometer 28 turns, area 4×10⁻² m², B=0.2T. To increase sensitivity by 25%, new turns',
+                [{ label: 'a', text: '24' }, { label: 'b', text: '35' }, { label: 'c', text: '60' }, { label: 'd',
+                    text: '54' }
+                ], 'b');
+            addQ(47, 'Physics', 'Magnetic field intensity due to isolated pole of strength mₚ at distance r is',
+                [{ label: 'a', text: 'mₚ/r²' }, { label: 'b', text: 'mₚ r²' }, { label: 'c', text: 'r²/mₚ' }, { label: 'd',
+                    text: 'mₚ/r' }
+                ], '*');
+            addQ(48, 'Physics', 'Particle that cannot be accelerated by a cyclotron',
+                [{ label: 'a', text: 'proton' }, { label: 'b', text: 'α-particle' }, { label: 'c', text: 'electron' },
+                { label: 'd', text: 'deuteron' }
+                ], 'c');
+            addQ(49, 'Physics', 'Angle between total magnetic field and earth surface is',
+                [{ label: 'a', text: 'declination' }, { label: 'b', text: 'magnetic meridian' }, { label: 'c',
+                    text: 'geographic meridian' }, { label: 'd', text: 'inclination' }
+                ], 'd');
+            addQ(50, 'Physics', 'Angle of dip when horizontal and vertical components are equal',
+                [{ label: 'a', text: '45°' }, { label: 'b', text: '30°' }, { label: 'c', text: '0°' }, { label: 'd',
+                    text: '60°' }
+                ], 'a');
+            addQ(51, 'Physics', 'Coil 100 turns, self inductance 15mH. Similar coil with 500 turns will have inductance',
+                [{ label: 'a', text: '75 mH' }, { label: 'b', text: '375 mH' }, { label: 'c', text: '15 mH' }, { label: 'd',
+                    text: 'None' }
+                ], 'b');
+            addQ(52, 'Physics', 'Coil 100 turns, current 5mA, flux 10⁻⁵ Wb. Inductance is',
+                [{ label: 'a', text: '0.2 mH' }, { label: 'b', text: '2.0 mH' }, { label: 'c', text: '0.02 mH' },
+                { label: 'd', text: 'None' }
+                ], 'd');
+            addQ(53, 'Physics', 'Step-up transformer relation between turns',
+                [{ label: 'a', text: 'N<sub>S</sub> > N<sub>P</sub>' }, { label: 'b', text: 'N<sub>P</sub> > N<sub>S</sub>' },
+                { label: 'c', text: 'N<sub>S</sub> = N<sub>P</sub>' }, { label: 'd', text: 'N<sub>P</sub> = 2N<sub>S</sub>' }
+                ], 'a');
+            addQ(54, 'Physics', 'Series LCR at resonance. Which is NOT true?',
+                [{ label: 'a', text: 'Wattless current zero' }, { label: 'b', text: 'Power factor zero' }, { label: 'c',
+                    text: 'Peak capacitor energy = peak inductor energy' }, { label: 'd', text: 'Average power = apparent power' }
+                ], 'b');
+            addQ(55, 'Physics', 'Zero average value in plane EM wave',
+                [{ label: 'a', text: 'Electric field' }, { label: 'b', text: 'Magnetic field' }, { label: 'c',
+                    text: 'Both (a) and (b)' }, { label: 'd', text: 'Magnetic energy' }
+                ], 'c');
+            addQ(56, 'Physics', 'Convex lens with 3 layers. Number of images of point object on axis',
+                [{ label: 'a', text: '3' }, { label: 'b', text: '4' }, { label: 'c', text: '1' }, { label: 'd', text: '2' }],
+                'c',
+                `<svg viewBox="0 0 280 120" width="240" height="100"><ellipse cx="140" cy="60" rx="40" ry="55" fill="none" stroke="#333" stroke-width="2"/><ellipse cx="140" cy="60" rx="28" ry="45" fill="none" stroke="#666" stroke-width="1.5" stroke-dasharray="4,3"/><ellipse cx="140" cy="60" rx="15" ry="30" fill="none" stroke="#999" stroke-width="1.5" stroke-dasharray="4,3"/><text x="130" y="35" font-size="9">L₁</text><text x="130" y="55" font-size="9">L₂</text><text x="130" y="78" font-size="9">L₃</text><circle cx="15" cy="60" r="3" fill="red"/></svg>`
+            );
+            addQ(57, 'Physics', 'Prism P at minimum deviation, prisms Q,R identical added. Ray suffers',
+                [{ label: 'a', text: 'greater deviation' }, { label: 'b', text: 'no deviation' }, { label: 'c',
+                    text: 'same deviation' }, { label: 'd', text: 'total internal reflection' }
+                ], 'c',
+                `<svg viewBox="0 0 300 80" width="260" height="70"><polygon points="60,10 100,70 20,70" fill="none" stroke="#333" stroke-width="2"/><text x="55" y="50" font-size="14" font-weight="bold">P</text><polygon points="110,10 150,70 70,70" fill="none" stroke="#333" stroke-width="2"/><text x="105" y="50" font-size="14" font-weight="bold">Q</text><polygon points="160,10 200,70 120,70" fill="none" stroke="#333" stroke-width="2"/><text x="155" y="50" font-size="14" font-weight="bold">R</text></svg>`
+            );
+            addQ(58, 'Physics', 'Two identical waves with phase difference δ superpose. Resultant intensity ∝',
+                [{ label: 'a', text: 'cos δ' }, { label: 'b', text: 'cos(δ/2)' }, { label: 'c', text: 'cos²(δ/2)' },
+                { label: 'd', text: 'cos²δ' }
+                ], 'c');
+            addQ(59, 'Physics', 'Plastic sheet (μ=1.6) covers one slit, λ=5867Å, centre dark. Minimum thickness',
+                [{ label: 'a', text: '3300 Å' }, { label: 'b', text: '6600 Å' }, { label: 'c', text: '2062 Å' },
+                { label: 'd', text: '5500 Å' }
+                ], 'd');
+            addQ(60, 'Physics', 'Particle starts at (2,10,1), displacement 8i−2j+k. Final coordinates',
+                [{ label: 'a', text: '(10,8,2)' }, { label: 'b', text: '(8,10,2)' }, { label: 'c', text: '(2,10,8)' },
+                { label: 'd', text: '(8,2,10)' }
+                ], 'a');
+
+            // ===== CHEMISTRY (61-120) =====
+            addQ(61, 'Chemistry', 'During extraction of gold, reaction(s) taking place:',
+                [{ label: 'a', text: '4Au+8CN⁻+2H₂O+O₂→4[Au(CN)₂]⁻+4OH⁻' }, { label: 'b',
+                    text: '2[Au(CN)₂]⁻+Zn→[Zn(CN)₄]²⁻+2Au' }, { label: 'c', text: 'Both (a) and (b)' }, { label: 'd',
+                    text: 'None' }
+                ], 'a');
+            addQ(62, 'Chemistry', 'Number of gram molecules of chlorine in 6.02×10²⁵ molecules of HCl',
+                [{ label: 'a', text: '100' }, { label: 'b', text: '50' }, { label: 'c', text: '25' }, { label: 'd',
+                    text: '75' }
+                ], 'b');
+            addQ(63, 'Chemistry', 'Graphite is a soft lubricant because',
+                [{ label: 'a', text: 'it has ionic bonds' }, { label: 'b',
+                    text: 'carbon atoms arranged in large plates with weak interplate bonds' }, { label: 'c',
+                    text: 'it is metallic' }, { label: 'd', text: 'covalent network throughout' }
+                ], 'b');
+            addQ(64, 'Chemistry', 'Paracetamol is',
+                [{ label: 'a', text: 'antibiotic' }, { label: 'b', text: 'antiseptic' }, { label: 'c', text: 'antimalarial' },
+                { label: 'd', text: 'analgesic and antipyretic' }
+                ], 'd');
+            addQ(65, 'Chemistry', '2 g of which substance contains maximum number of oxygen atoms?',
+                [{ label: 'a', text: 'H₂O' }, { label: 'b', text: 'SO₂' }, { label: 'c', text: 'CO₂' }, { label: 'd',
+                    text: 'CO' }
+                ], 'a');
+            addQ(66, 'Chemistry', 'Which shows functional group isomerism?',
+                [{ label: 'a', text: 'C₂H₄' }, { label: 'b', text: 'C₂H₅OH' }, { label: 'c', text: 'C₃H₈' }, { label: 'd',
+                    text: 'C₄H₁₀' }
+                ], 'b');
+            addQ(67, 'Chemistry', 'BiO₃⁻ + 6H⁺ + xe⁻ → Bi³⁺ + 3H₂O. Value of x is',
+                [{ label: 'a', text: '1' }, { label: 'b', text: '3' }, { label: 'c', text: '2' }, { label: 'd', text: '4' }],
+                'c');
+            addQ(68, 'Chemistry', 'Normality of 3M orthophosphoric acid (H₃PO₄)',
+                [{ label: 'a', text: '1N' }, { label: 'b', text: '3N' }, { label: 'c', text: '6N' }, { label: 'd',
+                    text: '9N' }
+                ], 'd');
+            addQ(69, 'Chemistry', 'Sodium fusion extract + FeCl₃ gives blood red colour. Confirms presence of',
+                [{ label: 'a', text: 'N only' }, { label: 'b', text: 'S only' }, { label: 'c', text: 'N and S' },
+                { label: 'd', text: 'halogens' }
+                ], 'c');
+            addQ(70, 'Chemistry', 'de-Broglie wavelength of 10 mg particle moving at 100 m/s',
+                [{ label: 'a', text: '6.63×10⁻³⁴ m' }, { label: 'b', text: '6.63×10⁻³¹ m' }, { label: 'c',
+                    text: '6.63×10⁻³⁴ m' }, { label: 'd', text: '6.63×10⁻³⁶ m' }
+                ], 'c');
+            addQ(71, 'Chemistry', 'Mg²⁺ is isoelectronic with',
+                [{ label: 'a', text: 'Na' }, { label: 'b', text: 'Na⁺' }, { label: 'c', text: 'K⁺' }, { label: 'd',
+                    text: 'Al³⁺' }
+                ], 'b');
+            addQ(72, 'Chemistry', 'Gram molecular volume of oxygen at STP',
+                [{ label: 'a', text: '11200 cm³' }, { label: 'b', text: '22400 cm³' }, { label: 'c', text: '44800 cm³' },
+                { label: 'd', text: '5600 cm³' }
+                ], 'b');
+            addQ(73, 'Chemistry', 'Test for presence of halogen in organic compounds',
+                [{ label: 'a', text: "Beilstein's test" }, { label: 'b', text: "Lassaigne's test" }, { label: 'c',
+                    text: "Tollen's test" }, { label: 'd', text: "Fehling's test" }
+                ], 'a');
+            addQ(74, 'Chemistry', 'Electronic configuration of Cr³⁺',
+                [{ label: 'a', text: '[Ar]3d⁴4s¹' }, { label: 'b', text: '[Ar]3d⁵4s⁰' }, { label: 'c', text: '[Ar]3d³4s⁰' },
+                { label: 'd', text: '[Ar]3d²4s¹' }
+                ], 'c');
+            addQ(75, 'Chemistry', 'Equivalent mass of metal 31.75. Mass combining with 8g oxygen',
+                [{ label: 'a', text: '31.75 g' }, { label: 'b', text: '15.875 g' }, { label: 'c', text: '63.5 g' },
+                { label: 'd', text: '8 g' }
+                ], 'a');
+            addQ(76, 'Chemistry', 'Benzene + Cl₂ (sunlight) →',
+                [{ label: 'a', text: 'chlorobenzene' }, { label: 'b', text: 'benzyl chloride' }, { label: 'c',
+                    text: 'gammaxene (BHC)' }, { label: 'd', text: 'DDT' }
+                ], 'c');
+            addQ(77, 'Chemistry', 'Strong electrolyte',
+                [{ label: 'a', text: 'CH₃COOH' }, { label: 'b', text: 'NH₄OH' }, { label: 'c', text: 'NaCl' },
+                { label: 'd', text: 'H₂CO₃' }
+                ], 'c');
+            addQ(78, 'Chemistry', "Dalton's law of partial pressures applicable to",
+                [{ label: 'a', text: 'CO + H₂' }, { label: 'b', text: 'H₂ + Cl₂' }, { label: 'c', text: 'NO + O₂' },
+                { label: 'd', text: 'NH₃ + HCl' }
+                ], 'a');
+            addQ(79, 'Chemistry', 'General formula of cycloalkene',
+                [{ label: 'a', text: 'CₙH₂ₙ₊₂' }, { label: 'b', text: 'CₙH₂ₙ₋₂' }, { label: 'c', text: 'CₙH₂ₙ' },
+                { label: 'd', text: 'CₙHₙ' }
+                ], 'b');
+            addQ(80, 'Chemistry', 'Acetylene molecule has between carbons',
+                [{ label: 'a', text: 'three σ bonds' }, { label: 'b', text: 'two σ + one π' }, { label: 'c',
+                    text: 'one σ + two π' }, { label: 'd', text: 'three π' }
+                ], 'c');
+            addQ(81, 'Chemistry', 'Denatured alcohol is',
+                [{ label: 'a', text: 'rectified spirit' }, { label: 'b', text: 'undistilled ethanol' }, { label: 'c',
+                    text: 'rectified spirit + methanol + naphtha' }, { label: 'd', text: 'ethanol + methanol' }
+                ], 'd');
+            addQ(82, 'Chemistry', 'During chemical bond formation',
+                [{ label: 'a', text: 'energy decreases' }, { label: 'b', text: 'energy increases' }, { label: 'c',
+                    text: 'energy unchanged' }, { label: 'd', text: 'electron repulsion > attraction' }
+                ], 'a');
+            addQ(83, 'Chemistry', '1 mol O₂ (273K) vs 1 mol SO₂ (546K). Kinetic energy',
+                [{ label: 'a', text: 'KE(O₂) > KE(SO₂)' }, { label: 'b', text: 'KE(O₂) < KE(SO₂)' }, { label: 'c',
+                    text: 'both equal' }, { label: 'd', text: 'None' }
+                ], 'b');
+            addQ(84, 'Chemistry', '+I effect shown by',
+                [{ label: 'a', text: '−NO₂' }, { label: 'b', text: '−Cl' }, { label: 'c', text: '−Br' }, { label: 'd',
+                    text: '−CH₃' }
+                ], 'd');
+            addQ(85, 'Chemistry', 'Coloured solution when metal ion has',
+                [{ label: 'a', text: 'paired electrons' }, { label: 'b', text: 'unpaired electrons' }, { label: 'c',
+                    text: 'lone pair' }, { label: 'd', text: 'None' }
+                ], 'b');
+            addQ(86, 'Chemistry', 'Intensive property',
+                [{ label: 'a', text: 'Temperature' }, { label: 'b', text: 'Surface tension' }, { label: 'c', text: 'Viscosity' },
+                { label: 'd', text: 'All of the above' }
+                ], 'd');
+            addQ(87, 'Chemistry', "Hofmann's bromamide reaction converts",
+                [{ label: 'a', text: 'amine to amide' }, { label: 'b', text: 'amide to amine' }, { label: 'c',
+                    text: 'alcohol to acid' }, { label: 'd', text: 'acid to alcohol' }
+                ], 'b');
+            addQ(88, 'Chemistry', 'IUPAC name of Na₃[Co(NO₂)₆]',
+                [{ label: 'a', text: 'sodium cobaltinitrite' }, { label: 'b', text: 'sodium hexanitrito cobaltate(III)' },
+                { label: 'c', text: 'sodium hexanitrito cobaltate(III)' }, { label: 'd',
+                    text: 'sodium hexanitro cobaltate(III)' }
+                ], 'c');
+            addQ(89, 'Chemistry', 'Thermodynamic standard conditions',
+                [{ label: 'a', text: '0°C and 1 atm' }, { label: 'b', text: '273K and 101.3 kPa' }, { label: 'c',
+                    text: '298K and 1 atm' }, { label: 'd', text: '0°C and 101.3 kPa' }
+                ], 'a');
+            addQ(90, 'Chemistry', 'Chiral carbon atoms in 2,3,4-trichloropentane',
+                [{ label: 'a', text: '3' }, { label: 'b', text: '2' }, { label: 'c', text: '1' }, { label: 'd', text: '4' }],
+                'b');
+            addQ(91, 'Chemistry', 'Number of unidentate ligands in complex ion is called',
+                [{ label: 'a', text: 'EAN' }, { label: 'b', text: 'coordination number' }, { label: 'c', text: 'primary valency' },
+                { label: 'd', text: 'oxidation number' }
+                ], 'b');
+            addQ(92, 'Chemistry', '2SO₂+O₂ ⇌ 2SO₃ with V₂O₅ is',
+                [{ label: 'a', text: 'irreversible' }, { label: 'b', text: 'heterogeneous catalysis' }, { label: 'c',
+                    text: 'homogeneous catalysis' }, { label: 'd', text: 'neutralisation' }
+                ], 'b');
+            addQ(93, 'Chemistry', 'Amino acid not optically active',
+                [{ label: 'a', text: 'glycine' }, { label: 'b', text: 'alanine' }, { label: 'c', text: 'serine' },
+                { label: 'd', text: 'lactic acid' }
+                ], 'a');
+            addQ(94, 'Chemistry', 'For stable molecule bond order must be',
+                [{ label: 'a', text: 'negative' }, { label: 'b', text: 'positive' }, { label: 'c', text: 'zero' },
+                { label: 'd', text: 'no relation' }
+                ], 'b');
+            addQ(95, 'Chemistry', 'Second order reaction',
+                [{ label: 'a', text: 'CH₃COOCH₃ + NaOH → CH₃COONa + H₂O' }, { label: 'b',
+                    text: 'H₂+Cl₂ (sunlight)→ 2HCl' }, { label: 'c', text: 'NH₄NO₃ → N₂+3H₂O' }, { label: 'd',
+                    text: 'H₂+Br₂ → 2HBr' }
+                ], 'a');
+            addQ(96, 'Chemistry', "Baeyer's strain theory: most stable",
+                [{ label: 'a', text: 'cyclohexane' }, { label: 'b', text: 'cycloheptane' }, { label: 'c', text: 'cyclopentane' },
+                { label: 'd', text: 'cyclobutane' }
+                ], 'c');
+            addQ(97, 'Chemistry', 'Antibonding electron pairs in O₂²⁻ (MO theory)',
+                [{ label: 'a', text: '2' }, { label: 'b', text: '3' }, { label: 'c', text: '4' }, { label: 'd', text: '5' }],
+                'c');
+            addQ(98, 'Chemistry', 'Hydroxyl ion concentration of 1M HCl',
+                [{ label: 'a', text: '1×10⁻¹⁴ M' }, { label: 'b', text: '1×10⁻¹ M' }, { label: 'c', text: '1×10⁻¹³ M' },
+                { label: 'd', text: '1×10¹ M' }
+                ], 'a');
+            addQ(99, 'Chemistry', 'Geometrical isomerism shown by',
+                [{ label: 'a', text: 'alkanes' }, { label: 'b', text: 'alkynes' }, { label: 'c',
+                    text: 'compounds with C=C having different groups' }, { label: 'd', text: 'None' }
+                ], 'c');
+            addQ(100, 'Chemistry', 'Oxidation state of Fe in K₄[Fe(CN)₆]',
+                [{ label: 'a', text: '2' }, { label: 'b', text: '3' }, { label: 'c', text: '4' }, { label: 'd', text: '1' }],
+                'a');
+            addQ(101, 'Chemistry', 'Maximum entropy increase',
+                [{ label: 'a', text: 'dissolution of salt' }, { label: 'b', text: 'condensation of water' }, { label: 'c',
+                    text: 'sublimation of naphthalene' }, { label: 'd', text: 'melting of ice' }
+                ], 'c');
+            addQ(102, 'Chemistry', 'Benzene diazonium chloride + Cu₂Cl₂/HCl → chlorobenzene is',
+                [{ label: 'a', text: 'Cannizzaro' }, { label: 'b', text: 'Kolbe' }, { label: 'c', text: 'Sandmeyer' },
+                { label: 'd', text: 'Raschig' }
+                ], 'c');
+            addQ(103, 'Chemistry', 'Complex that cannot ionise in solution',
+                [{ label: 'a', text: '[Pt(NH₃)₆]Cl₄' }, { label: 'b', text: 'K₄[PtF₆]' }, { label: 'c', text: 'K₄[Fe(CN)₆]' },
+                { label: 'd', text: '[CoCl₃(NH₃)₃]' }
+                ], 'd');
+            addQ(104, 'Chemistry', 'C(s)+O₂(g)→CO₂(g)+393.5kJ. Signs of ΔH, ΔS, ΔG',
+                [{ label: 'a', text: '−, +, −' }, { label: 'b', text: '−, −, −' }, { label: 'c', text: '+, +, −' },
+                { label: 'd', text: '+, −, +' }
+                ], 'a');
+            addQ(105, 'Chemistry', 'Hydroxylamine + carbonyl compound →',
+                [{ label: 'a', text: 'hydrazone' }, { label: 'b', text: 'hydrazine' }, { label: 'c', text: 'oxime' },
+                { label: 'd', text: 'hydrazide' }
+                ], 'c');
+            addQ(106, 'Chemistry', 'Colourless in aqueous medium',
+                [{ label: 'a', text: 'Ti³⁺' }, { label: 'b', text: 'Sc³⁺' }, { label: 'c', text: 'V³⁺' }, { label: 'd',
+                    text: 'Cr³⁺' }
+                ], 'b');
+            addQ(107, 'Chemistry', 'Sulphur sol evaporated → solid, not reformed with water. Sol is',
+                [{ label: 'a', text: 'hydrophilic' }, { label: 'b', text: 'hydrophobic' }, { label: 'c', text: 'reversible' },
+                { label: 'd', text: 'lyophilic' }
+                ], 'b');
+            addQ(108, 'Chemistry', 'Alkyl halide + alcoholic NH₃ (sealed tube) →',
+                [{ label: 'a', text: 'primary amine' }, { label: 'b', text: 'secondary amine' }, { label: 'c',
+                    text: 'tertiary amine' }, { label: 'd', text: 'mixture of all three' }
+                ], 'd');
+            addQ(109, 'Chemistry', 'Conc. H₂SO₄ heated with P₂O₅ gives',
+                [{ label: 'a', text: 'sulphur' }, { label: 'b', text: 'SO₂' }, { label: 'c', text: 'SO₃' }, { label: 'd',
+                    text: 'mixture of SO₂ and SO₃' }
+                ], 'c');
+            addQ(110, 'Chemistry', 'Entropy of the universe',
+                [{ label: 'a', text: 'continuously increasing' }, { label: 'b', text: 'continuously decreasing' },
+                { label: 'c', text: 'zero' }, { label: 'd', text: 'constant' }
+                ], 'a');
+            addQ(111, 'Chemistry', 'Salt giving pH > 7 at 25°C',
+                [{ label: 'a', text: 'NH₄CN' }, { label: 'b', text: 'NH₄Cl' }, { label: 'c', text: 'KNO₃' },
+                { label: 'd', text: 'KCN' }
+                ], 'd');
+            addQ(112, 'Chemistry', "Clemmensen's reduction reagent",
+                [{ label: 'a', text: 'alc. KOH' }, { label: 'b', text: 'aq. KOH' }, { label: 'c', text: 'Zn-Hg/conc. HCl' },
+                { label: 'd', text: 'conc. H₂SO₄' }
+                ], 'c');
+            addQ(113, 'Chemistry', 'KBr in water: K⁺ ions are',
+                [{ label: 'a', text: 'oxidised' }, { label: 'b', text: 'reduced' }, { label: 'c', text: 'hydrolysed' },
+                { label: 'd', text: 'hydrated' }
+                ], 'd');
+            addQ(114, 'Chemistry', 'Noble gas mixture at 173K, not adsorbed',
+                [{ label: 'a', text: 'He and Ne' }, { label: 'b', text: 'Ar and Kr' }, { label: 'c', text: 'He and Xe' },
+                { label: 'd', text: 'Ne and Xe' }
+                ], 'a');
+            addQ(115, 'Chemistry', 'Volumes of 10N and 4N HCl to make 1L of 7N HCl',
+                [{ label: 'a', text: '0.75L 10N + 0.25L 4N' }, { label: 'b', text: '0.80L 10N + 0.20L 4N' }, { label: 'c',
+                    text: '0.60L 10N + 0.40L 4N' }, { label: 'd', text: '0.50L 10N + 0.50L 4N' }
+                ], 'd');
+            addQ(116, 'Chemistry', 'Metal present in insulin',
+                [{ label: 'a', text: 'copper' }, { label: 'b', text: 'iron' }, { label: 'c', text: 'zinc' }, { label: 'd',
+                    text: 'aluminium' }
+                ], 'c');
+            addQ(117, 'Chemistry', 'Carbon forms two oxides. Equivalent mass constant for',
+                [{ label: 'a', text: 'Carbon' }, { label: 'b', text: 'Oxygen' }, { label: 'c', text: 'Neither' },
+                { label: 'd', text: 'Both' }
+                ], 'b');
+            addQ(118, 'Chemistry', 'Max CH₃I molecules reacting with one CH₃NH₂',
+                [{ label: 'a', text: '1' }, { label: 'b', text: '2' }, { label: 'c', text: '4' }, { label: 'd', text: '3' }],
+                'd');
+            addQ(119, 'Chemistry', 'Ellingham diagram: graph of',
+                [{ label: 'a', text: 'ΔG vs T' }, { label: 'b', text: 'ΔG° vs T' }, { label: 'c', text: 'ΔS vs p' },
+                { label: 'd', text: 'ΔH vs T' }
+                ], 'b');
+            addQ(120, 'Chemistry', 'Ore not containing iron',
+                [{ label: 'a', text: 'chalcopyrites' }, { label: 'b', text: 'carnallite' }, { label: 'c', text: 'siderite' },
+                { label: 'd', text: 'limonite' }
+                ], 'b');
+
+            // ===== MATHEMATICS (121-180) =====
+            addQ(121, 'Mathematics', '7<sup>2log₇5</sup> =',
+                [{ label: 'a', text: '5' }, { label: 'b', text: 'log 35' }, { label: 'c', text: 'log 25' }, { label: 'd',
+                    text: '25' }
+                ], 'd');
+            addQ(122, 'Mathematics', 'Group G={3,6,9,12} under multiplication mod 15, identity',
+                [{ label: 'a', text: '6' }, { label: 'b', text: '3' }, { label: 'c', text: '9' }, { label: 'd', text: '12' }],
+                'a');
+            addQ(123, 'Mathematics', 'Group of 10 elements, minimum self-inverse elements',
+                [{ label: 'a', text: '1' }, { label: 'b', text: '2' }, { label: 'c', text: '0' }, { label: 'd', text: '9' }],
+                'a');
+            addQ(124, 'Mathematics', '|a+b| = |a−b| ⇒ angle between a and b',
+                [{ label: 'a', text: '60°' }, { label: 'b', text: '120°' }, { label: 'c', text: '30°' }, { label: 'd',
+                    text: '90°' }
+                ], 'd');
+            addQ(125, 'Mathematics', '(3x²+1)/(x²−6x+8) =',
+                [{ label: 'a', text: '49/[2(x−4)] −13/[2(x−2)]' }, { label: 'b',
+                    text: '3 + 49/[2(x−4)] −13/[2(x−2)]' }, { label: 'c', text: '49/[2(x−4)] +13/[2(x−2)]' }, { label: 'd',
+                    text: '−49/[2(x−4)] +13/[2(x−2)]' }
+                ], 'b');
+            addQ(126, 'Mathematics', 'Vector ⟂ a and in plane of b,c (a=2i+3j−k, …)',
+                [{ label: 'a', text: '17i+21j−123k' }, { label: 'b', text: '−17i+21j−97k' }, { label: 'c',
+                    text: '−17i−21j−97k' }, { label: 'd', text: '−17i−21j+97k' }
+                ], 'c');
+            addQ(127, 'Mathematics', '|OA|=5, |OB|=6, ∠BOA=60°, OA·OB =',
+                [{ label: 'a', text: '15' }, { label: 'b', text: '0' }, { label: 'c', text: '15√3' }, { label: 'd',
+                    text: '−15' }
+                ], 'a');
+            addQ(128, 'Mathematics', 'Vector ⟂ plane through A(1,−1,2), B(2,0,−1), C(0,2,1)',
+                [{ label: 'a', text: '8i+4j+4k' }, { label: 'b', text: '4i+8j−4k' }, { label: 'c', text: 'i+j−k' },
+                { label: 'd', text: '3i+j+2k' }
+                ], 'a');
+            addQ(129, 'Mathematics', 'Sum to n terms: 1/(2·5)+1/(5·8)+…+1/[(3n−1)(3n+2)] =',
+                [{ label: 'a', text: 'n/(6n+3)' }, { label: 'b', text: 'n/(6n−4)' }, { label: 'c', text: '(n+1)/(6n+4)' },
+                { label: 'd', text: 'n/(6n+4)' }
+                ], 'd');
+            addQ(130, 'Mathematics', '9th term of (3x − 1/(2x))⁸',
+                [{ label: 'a', text: '−1/(512x⁹)' }, { label: 'b', text: '1/(512x⁹)' }, { label: 'c', text: '1/(256x⁸)' },
+                { label: 'd', text: '−1/(256x⁸)' }
+                ], 'c');
+            addQ(131, 'Mathematics', 'A=[[1,−1,1],[2,1,−3],[1,1,1]], B=A⁻¹, α in 10B',
+                [{ label: 'a', text: '0' }, { label: 'b', text: '2' }, { label: 'c', text: '4' }, { label: 'd', text: '5' }],
+                'd');
+            addQ(132, 'Mathematics', 'A=[[0,x,16],[x,5,7],[0,9,x]] singular ⇒ x values',
+                [{ label: 'a', text: '0,1,−1' }, { label: 'b', text: '0,12,−12' }, { label: 'c', text: '0,5,−5' },
+                { label: 'd', text: '0,4,−4' }
+                ], 'b');
+            addQ(133, 'Mathematics', 'A=[[1,−2,2],[0,2,−3],[3,−2,4]] ⇒ A·adj(A) =',
+                [{ label: 'a', text: 'diag(5,5,5)' }, { label: 'b', text: 'all 5s' }, { label: 'c', text: 'zero matrix' },
+                { label: 'd', text: 'diag(8,8,8)' }
+                ], 'd');
+            addQ(134, 'Mathematics', 'f(x)=|x|, f⁻¹(x)',
+                [{ label: 'a', text: '1/|x|' }, { label: 'b', text: '−x' }, { label: 'c', text: '1/x' }, { label: 'd',
+                    text: 'does not exist' }
+                ], 'd');
+            addQ(135, 'Mathematics', 'Determinant |x p q; p x q; p q x| =',
+                [{ label: 'a', text: '(x−p)(x−q)(x+p+q)' }, { label: 'b', text: 'x(x−p)(x−q)' }, { label: 'c',
+                    text: 'pq(x−p)(x−q)' }, { label: 'd', text: '(p−q)(x−q)(x−p)' }
+                ], 'a');
+            addQ(136, 'Mathematics', 'Common tangents to x²+y²=4 and x²+y²−6x−8y−24=0',
+                [{ label: 'a', text: '4' }, { label: 'b', text: '3' }, { label: 'c', text: '1' }, { label: 'd', text: '2' }],
+                'c');
+            addQ(137, 'Mathematics', '3x+y+k=0 tangent to x²+y²=10 ⇒ k =',
+                [{ label: 'a', text: '±5' }, { label: 'b', text: '±7' }, { label: 'c', text: '±9' }, { label: 'd',
+                    text: '±10' }
+                ], 'd');
+            addQ(138, 'Mathematics', 'Negation of "If 2 is prime then 3 is odd"',
+                [{ label: 'a', text: '2 is prime and 3 is not odd' }, { label: 'b',
+                    text: 'If 2 not prime then 3 not odd' }, { label: 'c', text: 'If 2 not prime then 3 is odd' },
+                { label: 'd', text: '2 not prime and 3 is odd' }
+                ], 'a');
+            addQ(139, 'Mathematics', 'Circles touching Y-axis at (0,3) and X-axis intercept 8',
+                [{ label: 'a', text: 'x²+y²±6x−10y+9=0' }, { label: 'b', text: 'x²+y²±10x−6y+9=0' }, { label: 'c',
+                    text: 'x²+y²+10x±6y+9=0' }, { label: 'd', text: 'x²+y²−8x±10y+9=0' }
+                ], 'b',
+                `<svg viewBox="0 0 200 150" width="180" height="130"><line x1="60" y1="10" x2="60" y2="140" stroke="#333" stroke-width="2"/><text x="45" y="15" font-size="11">Y</text><circle cx="100" cy="60" r="40" fill="none" stroke="#2563eb" stroke-width="2"/><circle cx="60" cy="60" r="3" fill="red"/><text x="40" y="55" font-size="10">(0,3)</text></svg>`
+            );
+            addQ(140, 'Mathematics', 'Orthocentre of triangle A(0,0), B(0,3/2), C(−5,0)',
+                [{ label: 'a', text: '(−5/2, 3/4)' }, { label: 'b', text: '(5/2, 3/4)' }, { label: 'c', text: '(0,0)' },
+                { label: 'd', text: '(−5, 3/2)' }
+                ], 'a');
+            addQ(141, 'Mathematics', 'Radical centre of three circles exists. Which k cannot be?',
+                [{ label: 'a', text: '1' }, { label: 'b', text: '2' }, { label: 'c', text: '4' }, { label: 'd', text: '5' }],
+                'd');
+            addQ(142, 'Mathematics', 'Circles cut orthogonally, common chord length',
+                [{ label: 'a', text: '2' }, { label: 'b', text: '12/√13' }, { label: 'c', text: '8' }, { label: 'd',
+                    text: '5' }
+                ], 'b');
+            addQ(143, 'Mathematics', 'Foot of perpendicular from (3,4) to 2x+y−7=0',
+                [{ label: 'a', text: '(1,5)' }, { label: 'b', text: '(9/5, 17/5)' }, { label: 'c', text: '(1,−5)' },
+                { label: 'd', text: '(−5,1)' }
+                ], 'b');
+            addQ(144, 'Mathematics', 'Area enclosed by xy=0, x−4=0, y+5=0',
+                [{ label: 'a', text: '10 sq u' }, { label: 'b', text: '20 sq u' }, { label: 'c', text: '0' },
+                { label: 'd', text: '5/4 sq u' }
+                ], 'b');
+            addQ(145, 'Mathematics', 'Auxiliary circle area = 2 × ellipse area ⇒ eccentricity',
+                [{ label: 'a', text: '√3/2' }, { label: 'b', text: '1/√2' }, { label: 'c', text: '1/2' }, { label: 'd',
+                    text: '1/√3' }
+                ], 'a');
+            addQ(146, 'Mathematics', 'Graph with m odd vertices, n even vertices. Necessarily true',
+                [{ label: 'a', text: 'm+n even' }, { label: 'b', text: 'm+n odd' }, { label: 'c', text: 'm+1 odd' },
+                { label: 'd', text: 'n+1 even' }
+                ], 'a');
+            addQ(147, 'Mathematics', 'Ellipse x²/36+y²/16=1, PS+PS′ =',
+                [{ label: 'a', text: '8' }, { label: 'b', text: '4' }, { label: 'c', text: '12' }, { label: 'd', text: '10' }],
+                'c');
+            addQ(148, 'Mathematics', 'sin[2cos⁻¹(√5/3)] =',
+                [{ label: 'a', text: '2√5/3' }, { label: 'b', text: '√5/3' }, { label: 'c', text: '2√5/9' }, { label: 'd',
+                    text: '4√5/9' }
+                ], 'd');
+            addQ(149, 'Mathematics', 'Hyperbola x²/36 − y²/k²=1. Possible point on it',
+                [{ label: 'a', text: '(3,1)' }, { label: 'b', text: '(−3,1)' }, { label: 'c', text: '(5,2)' }, { label: 'd',
+                    text: '(10,4)' }
+                ], 'd');
+            addQ(150, 'Mathematics', 'Focus of parabola (insufficient data)',
+                [{ label: 'a', text: '(1/3, −3/2)' }, { label: 'b', text: '(1/3, −1/2)' }, { label: 'c', text: '(1/3, −1/2)' },
+                { label: 'd', text: '(1/3, −1/2)' }
+                ], '*');
+            addQ(151, 'Mathematics', 'tan⁻¹x + 2cot⁻¹x = 2π/3 ⇒ x =',
+                [{ label: 'a', text: '1/√3' }, { label: 'b', text: '−1/√3' }, { label: 'c', text: '√3' }, { label: 'd',
+                    text: '−√3' }
+                ], 'c');
+            addQ(152, 'Mathematics', 'sin²175° + sin²725° =',
+                [{ label: 'a', text: 'tan²45°' }, { label: 'b', text: 'cos²90°' }, { label: 'c', text: 'sin²45°' },
+                { label: 'd', text: 'cos²30°' }
+                ], 'a');
+            addQ(153, 'Mathematics', 'Conjugate of (1+i)²/(1−i)',
+                [{ label: 'a', text: '1+i' }, { label: 'b', text: '1−i' }, { label: 'c', text: '−1−i' }, { label: 'd',
+                    text: '−1+i' }
+                ], 'c');
+            addQ(154, 'Mathematics', 'ΔABC, ∠A=30°, BC=10cm. Area of circumcircle',
+                [{ label: 'a', text: '5π cm²' }, { label: 'b', text: '100π cm²' }, { label: 'c', text: '100π/3 cm²' },
+                { label: 'd', text: '25π cm²' }
+                ], 'b',
+                `<svg viewBox="0 0 260 200" width="220" height="170"><circle cx="130" cy="100" r="60" fill="none" stroke="#333" stroke-width="2"/><polygon points="130,40 80,140 180,140" fill="none" stroke="#2563eb" stroke-width="2"/><text x="125" y="35" font-size="12">A</text><text x="60" y="155" font-size="12">B</text><text x="185" y="155" font-size="12">C</text></svg>`
+            );
+            addQ(155, 'Mathematics', 'sin3θ = sinθ, −2π<θ<2π. Number of solutions',
+                [{ label: 'a', text: '9' }, { label: 'b', text: '8' }, { label: 'c', text: '7' }, { label: 'd', text: '5' }],
+                'a');
+            addQ(156, 'Mathematics', 'Imaginary part of iⁱ',
+                [{ label: 'a', text: '1' }, { label: 'b', text: '0' }, { label: 'c', text: '−1' }, { label: 'd', text: '2' }],
+                'b');
+            addQ(157, 'Mathematics', 'Amplitude of (1+i)⁵',
+                [{ label: 'a', text: '−3π/4' }, { label: 'b', text: '3π/4' }, { label: 'c', text: '5π/4' }, { label: 'd',
+                    text: '−5π/4' }
+                ], 'a');
+            addQ(158, 'Mathematics', 'Triangle centroid G(7,5), A(2,3), D midpoint of BC. D =',
+                [{ label: 'a', text: '(19/2,6)' }, { label: 'b', text: '(9/2,4)' }, { label: 'c', text: '(8,13)' },
+                { label: 'd', text: '(11/2,11/2)' }
+                ], 'a');
+            addQ(159, 'Mathematics', 'limₓ→₁ tan(x²−1)/(x−1) =',
+                [{ label: 'a', text: '1/2' }, { label: 'b', text: '2' }, { label: 'c', text: '−1/2' }, { label: 'd',
+                    text: '−2' }
+                ], 'b');
+            addQ(160, 'Mathematics', 'y=2^(log x) ⇒ dy/dx =',
+                [{ label: 'a', text: '2^(log x)·log 2' }, { label: 'b', text: '2^(log x)·log 2 / x' }, { label: 'c',
+                    text: '2^(log x)·log 2 / x' }, { label: 'd', text: '2^(log x)/x' }
+                ], 'c');
+            addQ(161, 'Mathematics', 'sec⁻¹((1+x)/(1−y)) = a ⇒ dy/dx =',
+                [{ label: 'a', text: '(y+1)/(x−1)' }, { label: 'b', text: '(y−1)/(x+1)' }, { label: 'c', text: '(x−1)/(y+1)' },
+                { label: 'd', text: '(x−1)/(y−1)' }
+                ], 'b');
+            addQ(162, 'Mathematics', 'y=cos²(3x/2)−sin²(3x/2) ⇒ d²y/dx² =',
+                [{ label: 'a', text: '9y' }, { label: 'b', text: '−9y' }, { label: 'c', text: '3√(1−y²)' }, { label: 'd',
+                    text: '−9y' }
+                ], 'd');
+            addQ(163, 'Mathematics', 'f(x) = (1−cos x)/x² (x≠0), f(0)=k continuous ⇒ k =',
+                [{ label: 'a', text: '0' }, { label: 'b', text: '1' }, { label: 'c', text: '−1' }, { label: 'd', text: '1/2' }],
+                'd');
+            addQ(164, 'Mathematics', 'Cube roots of unity: (1+ω)(1+ω²)(1+ω⁴)(1+ω⁸) =',
+                [{ label: 'a', text: '0' }, { label: 'b', text: '1' }, { label: 'c', text: '−1' }, { label: 'd', text: '2' }],
+                'b');
+            addQ(165, 'Mathematics', 'xˣ = yʸ ⇒ dy/dx =',
+                [{ label: 'a', text: '−x/y' }, { label: 'b', text: '−y/x' }, { label: 'c', text: '(1+log x)/(1+log y)' },
+                { label: 'd', text: '1+log(x/y)' }
+                ], 'c');
+            addQ(166, 'Mathematics', 'Point on y²=x where tangent makes 45° with X-axis',
+                [{ label: 'a', text: '(1/2,1/4)' }, { label: 'b', text: '(1/4,1/2)' }, { label: 'c', text: '(1/2,1/2)' },
+                { label: 'd', text: '(1/2,−1/2)' }
+                ], 'b');
+            addQ(167, 'Mathematics', 'Subtangent to x²y²=a⁴ at (−a,a)',
+                [{ label: 'a', text: '2a' }, { label: 'b', text: 'a/2' }, { label: 'c', text: 'a/3' }, { label: 'd',
+                    text: 'a' }
+                ], 'd');
+            addQ(168, 'Mathematics', 'Number of positive divisors of 252',
+                [{ label: 'a', text: '5' }, { label: 'b', text: '9' }, { label: 'c', text: '10' }, { label: 'd', text: '18' }],
+                'd');
+            addQ(169, 'Mathematics', 'Remainder of 5¹²⁴ mod 124',
+                [{ label: 'a', text: '0' }, { label: 'b', text: '5' }, { label: 'c', text: '1' }, { label: 'd', text: '2' }],
+                'b');
+            addQ(170, 'Mathematics', 'Not a group under given operation',
+                [{ label: 'a', text: 'odd integers under addition' }, { label: 'b', text: 'even integers under addition' },
+                { label: 'c', text: '{1,−1} under multiplication' }, { label: 'd', text: '{0} under addition' }
+                ], 'a');
+            addQ(171, 'Mathematics', 'y=−x²+6x−3 increasing in',
+                [{ label: 'a', text: 'x>3' }, { label: 'b', text: 'x<3' }, { label: 'c', text: '5<x<6' }, { label: 'd',
+                    text: '7<x<8' }
+                ], 'b');
+            addQ(172, 'Mathematics', '∫₀^(π/2) (sin¹⁰⁰x−cos¹⁰⁰x) dx =',
+                [{ label: 'a', text: '100!/(100)¹⁰⁰' }, { label: 'b', text: '1/100' }, { label: 'c', text: '0' },
+                { label: 'd', text: 'π/100' }
+                ], 'c');
+            addQ(173, 'Mathematics', 'X and Y from O at 120°, speeds 4km/h and 3km/h. Rate of shortest distance after 1h',
+                [{ label: 'a', text: '37 km/h' }, { label: 'b', text: '√37 km/h' }, { label: 'c', text: '√13 km/h' },
+                { label: 'd', text: '13 km/h' }
+                ], 'b');
+            addQ(174, 'Mathematics', '∫₀¹ x·f(3x)dx = ∫₀ᵏ t·f(t)dt ⇒ k =',
+                [{ label: 'a', text: '3' }, { label: 'b', text: '9' }, { label: 'c', text: '1/3' }, { label: 'd', text: '1/9' }],
+                'b');
+            addQ(175, 'Mathematics', '∫ 1/(1+cos8x) dx =',
+                [{ label: 'a', text: 'tan8x/8 + C' }, { label: 'b', text: 'tan2x/8 + C' }, { label: 'c', text: 'tan4x/8 + C' },
+                { label: 'd', text: 'tan4x/4 + C' }
+                ], 'c');
+            addQ(176, 'Mathematics', '∫ eˣ(x⁵+5x⁴+1)dx =',
+                [{ label: 'a', text: 'eˣ·x⁵ + eˣ + C' }, { label: 'b', text: 'eˣ−x⁵+C' }, { label: 'c', text: '5x⁴−eˣ+C' },
+                { label: 'd', text: 'eˣ⁺¹−x⁵+C' }
+                ], 'a');
+            addQ(177, 'Mathematics', '∫ (x²+1)/(x²−1) dx =',
+                [{ label: 'a', text: 'log|(x+1)/(x−1)|+C' }, { label: 'b', text: 'log|(x−1)/(x+1)|+C' }, { label: 'c',
+                    text: 'log(x²−1)+C' }, { label: 'd', text: 'x + log|(x−1)/(x+1)|+C' }
+                ], 'd');
+            addQ(178, 'Mathematics', 'Area bounded by x=4−y² and Y-axis',
+                [{ label: 'a', text: '32' }, { label: 'b', text: '16' }, { label: 'c', text: '16/3' }, { label: 'd',
+                    text: '32/3' }
+                ], 'd');
+            addQ(179, 'Mathematics', 'DE of family of lines with slope = y-intercept',
+                [{ label: 'a', text: '(x+1)dy/dx + y = 0' }, { label: 'b', text: '(x+1)dy/dx − y = 0' }, { label: 'c',
+                    text: 'dy/dx = (x+1)/(y+1)' }, { label: 'd', text: 'dy/dx = (x−1)/(y−1)' }
+                ], 'b');
+            addQ(180, 'Mathematics', 'Order and degree of [1+(dy/dx)⁵]^(1/3) = d²y/dx²',
+                [{ label: 'a', text: '2,1' }, { label: 'b', text: '1,5' }, { label: 'c', text: '2,3' }, { label: 'd',
+                    text: '2,5' }
+                ], 'c');
+
+            // ==================== APP STATE ====================
+            const TOTAL = questions.length;
+            let currentIndex = 0;
+            let userAnswers = {};
+            let reviewedQuestions = {};
+            let testSubmitted = false;
+            let timerSeconds = 180 * 60;
+            let timerInterval = null;
+
+            const qNumEl = document.getElementById('q-num');
+            const qSubjectEl = document.getElementById('q-subject');
+            const qTextEl = document.getElementById('q-text');
+            const qOptionsEl = document.getElementById('q-options');
+            const btnReview = document.getElementById('btn-review');
+            const timerEl = document.getElementById('timer');
+            const statsEl = document.getElementById('stats');
+            const questionPanel = document.getElementById('question-panel');
+            const resultsPanel = document.getElementById('results-panel');
+            const submitModal = document.getElementById('submit-modal');
+            const modalStats = document.getElementById('modal-stats');
+            const gridPhysics = document.getElementById('grid-physics');
+            const gridChemistry = document.getElementById('grid-chemistry');
+            const gridMathematics = document.getElementById('grid-mathematics');
+
+            function buildGrid() {
+                [gridPhysics, gridChemistry, gridMathematics].forEach(g => g.innerHTML = '');
+                questions.forEach((q, idx) => {
+                    const btn = document.createElement('button');
+                    btn.className = 'q-btn';
+                    btn.textContent = q.id;
+                    btn.dataset.index = idx;
+                    btn.addEventListener('click', () => { currentIndex = idx;
+                        renderQuestion(); });
+                    if (q.subject === 'Physics') gridPhysics.appendChild(btn);
+                    else if (q.subject === 'Chemistry') gridChemistry.appendChild(btn);
+                    else gridMathematics.appendChild(btn);
+                });
+            }
+
+            function updateGridStyles() {
+                document.querySelectorAll('.q-btn').forEach(btn => {
+                    const idx = parseInt(btn.dataset.index);
+                    const q = questions[idx];
+                    btn.className = 'q-btn';
+                    if (idx === currentIndex) btn.classList.add('active');
+                    if (userAnswers[q.id] && reviewedQuestions[q.id]) btn.classList.add('answered-review');
+                    else if (userAnswers[q.id]) btn.classList.add('answered');
+                    else if (reviewedQuestions[q.id]) btn.classList.add('reviewed');
+                });
+                const a = Object.keys(userAnswers).length;
+                const r = Object.values(reviewedQuestions).filter(Boolean).length;
+                statsEl.textContent = `Answered: ${a} | Review: ${r} | Remaining: ${TOTAL - a}`;
+            }
+
+            function renderQuestion() {
+                if (testSubmitted) { renderReviewMode(); return; }
+                const q = questions[currentIndex];
+                qNumEl.textContent = `Q${q.id}`;
+                qSubjectEl.textContent = q.subject;
+                qTextEl.innerHTML = q.text + (q.svg || '');
+                qOptionsEl.innerHTML = q.options.map(opt => {
+                    const sel = userAnswers[q.id] === opt.label;
+                    return `<div class="option${sel ? ' selected' : ''}" data-label="${opt.label}" onclick="selectOption('${opt.label}')"><span class="opt-label">${opt.label.toUpperCase()}</span>${opt.text}</div>`;
+                }).join('');
+                btnReview.textContent = reviewedQuestions[q.id] ? '🔖 Unmark Review' : '🔖 Mark for Review';
+                updateGridStyles();
+            }
+
+            function renderReviewMode() {
+                const q = questions[currentIndex];
+                qNumEl.textContent = `Q${q.id} [REVIEW]`;
+                qSubjectEl.textContent = q.subject;
+                qTextEl.innerHTML = q.text + (q.svg || '');
+                const correct = q.correct;
+                qOptionsEl.innerHTML = q.options.map(opt => {
+                    let cls = 'option';
+                    if (opt.label === correct) cls += ' correct-review';
+                    else if (userAnswers[q.id] === opt.label) cls += ' incorrect-review';
+                    return `<div class="${cls}"><span class="opt-label">${opt.label.toUpperCase()}</span>${opt.text} ${opt.label===correct?'✅':''} ${userAnswers[q.id]===opt.label && opt.label!==correct?'❌':''}</div>`;
+                }).join('');
+                btnReview.textContent = '📋 Review Mode';
+                updateGridStyles();
+            }
+
+            window.selectOption = function(label) {
+                if (testSubmitted) return;
+                const q = questions[currentIndex];
+                if (userAnswers[q.id] === label) delete userAnswers[q.id];
+                else userAnswers[q.id] = label;
+                renderQuestion();
+            };
+            window.clearAnswer = function() {
+                if (testSubmitted) return;
+                delete userAnswers[questions[currentIndex].id];
+                renderQuestion();
+            };
+            window.toggleReview = function() {
+                if (testSubmitted) return;
+                const id = questions[currentIndex].id;
+                reviewedQuestions[id] = !reviewedQuestions[id];
+                renderQuestion();
+            };
+            window.nextQuestion = () => { if (currentIndex < TOTAL - 1) { currentIndex++;
+                    renderQuestion(); } };
+            window.prevQuestion = () => { if (currentIndex > 0) { currentIndex--;
+                    renderQuestion(); } };
+            window.showSubmitModal = () => {
+                if (testSubmitted) return;
+                const a = Object.keys(userAnswers).length;
+                modalStats.textContent = `Answered ${a}/${TOTAL}. Submit now?`;
+                submitModal.classList.add('show');
+            };
+            window.hideSubmitModal = () => submitModal.classList.remove('show');
+            window.submitTest = function() {
+                testSubmitted = true;
+                hideSubmitModal();
+                clearInterval(timerInterval);
+                timerEl.classList.remove('warning');
+                let totalCorrect = 0,
+                    physC = 0,
+                    chemC = 0,
+                    mathC = 0;
+                const counts = { Physics: 0, Chemistry: 0, Mathematics: 0 };
+                questions.forEach(q => {
+                    counts[q.subject]++;
+                    const userAns = userAnswers[q.id];
+                    const isCorrect = (userAns && (q.correct === '*' || userAns === q.correct));
+                    if (isCorrect) totalCorrect++;
+                    if (q.subject === 'Physics' && isCorrect) physC++;
+                    else if (q.subject === 'Chemistry' && isCorrect) chemC++;
+                    else if (q.subject === 'Mathematics' && isCorrect) mathC++;
+                });
+                document.getElementById('final-score').textContent = `${totalCorrect}/${TOTAL}`;
+                document.getElementById('score-detail').textContent = `You got ${totalCorrect} correct.`;
+                document.getElementById('score-physics').textContent = `${physC}/60`;
+                document.getElementById('score-chemistry').textContent = `${chemC}/60`;
+                document.getElementById('score-mathematics').textContent = `${mathC}/60`;
+                resultsPanel.style.display = 'block';
+                currentIndex = 0;
+                renderReviewMode();
+            };
+            window.restartTest = function() {
+                testSubmitted = false;
+                userAnswers = {};
+                reviewedQuestions = {};
+                currentIndex = 0;
+                timerSeconds = 180 * 60;
+                resultsPanel.style.display = 'none';
+                btnReview.style.opacity = '1';
+                timerEl.classList.remove('warning');
+                updateTimerDisplay();
+                clearInterval(timerInterval);
+                startTimer();
+                renderQuestion();
+                updateGridStyles();
+            };
+
+            function updateTimerDisplay() {
+                const m = Math.floor(timerSeconds / 60),
+                    s = timerSeconds % 60;
+                timerEl.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+                if (timerSeconds <= 300) timerEl.classList.add('warning');
+                else timerEl.classList.remove('warning');
+            }
+
+            function startTimer() {
+                updateTimerDisplay();
+                timerInterval = setInterval(() => {
+                    if (timerSeconds > 0) { timerSeconds--;
+                        updateTimerDisplay(); }
+                    if (timerSeconds <= 0) { clearInterval(timerInterval);
+                        submitTest(); }
+                }, 1000);
+            }
+
+            document.addEventListener('keydown', e => {
+                if (testSubmitted) {
+                    if (e.key === 'ArrowLeft') prevQuestion();
+                    if (e.key === 'ArrowRight') nextQuestion();
+                    return;
+                }
+                if (e.key === 'ArrowRight') nextQuestion();
+                if (e.key === 'ArrowLeft') prevQuestion();
+                if (['a', 'b', 'c', 'd'].includes(e.key.toLowerCase())) selectOption(e.key.toLowerCase());
+                if (e.key.toLowerCase() === 'r') toggleReview();
+                if (e.key === 'Escape') hideSubmitModal();
+            });
+
+            buildGrid();
+            renderQuestion();
+            startTimer();
+        })();
+    </script>
+</body>
+</html>

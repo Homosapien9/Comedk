@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>COMEDK Mock Test - CBT</title>
+    <style>
+        :root {
+            --bg: #f0f2f5;
+            --card-bg: #ffffff;
+            --text: #1a1a2e;
+            --border: #d0d5dd;
+            --accent: #2563eb;
+            --accent-light: #eff6ff;
+            --correct: #059669;
+            --correct-bg: #ecfdf5;
+            --wrong: #dc2626;
+            --wrong-bg: #fef2f2;
+            --neutral: #6b7280;
+            --shadow: 0 1px 3px rgba(0, 0, 0, .08), 0 1px 2px rgba(0, 0, 0, .06);
+            --radius: 10px;
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            padding: 0;
+            min-height: 100vh;
+        }
+        .top-bar {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: #1e293b;
+            color: #fff;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, .2);
+        }
+        .top-bar h2 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            letter-spacing: .3px;
+        }
+        .top-bar .timer {
+            font-size: 1.2rem;
+            font-weight: 700;
+            background: #334155;
+            padding: 6px 16px;
+            border-radius: 20px;
+            letter-spacing: 1px;
+        }
+        .top-bar .timer.warning {
+            background: #dc2626;
+            animation: pulse .8s infinite;
+        }
+        @keyframes pulse {
+            0%,
+            100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: .5;
+            }
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 16px 12px 80px;
+        }
+        .subject-header {
+            background: var(--accent);
+            color: #fff;
+            padding: 12px 20px;
+            border-radius: var(--radius) var(--radius) 0 0;
+            font-size: 1.15rem;
+            font-weight: 700;
+            letter-spacing: .5px;
+            margin-top: 24px;
+            cursor: pointer;
+            user-select: none;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .subject-header:first-of-type {
+            margin-top: 0;
+        }
+        .subject-header .arrow {
+            transition: transform .3s;
+            font-size: 1.2rem;
+        }
+        .subject-header.collapsed .arrow {
+            transform: rotate(-90deg);
+        }
+        .subject-body {
+            transition: max-height .4s ease, opacity .3s;
+            max-height: 99999px;
+            opacity: 1;
+            overflow: hidden;
+        }
+        .subject-body.collapsed {
+            max-height: 0;
+            opacity: 0;
+        }
+        .question-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-top: none;
+            padding: 18px 20px;
+            box-shadow: var(--shadow);
+            transition: all .2s;
+        }
+        .question-card:last-of-type {
+            border-radius: 0 0 var(--radius) var(--radius);
+        }
+        .question-card.reviewed-correct {
+            border-left: 4px solid var(--correct);
+            background: var(--correct-bg);
+        }
+        .question-card.reviewed-wrong {
+            border-left: 4px solid var(--wrong);
+            background: var(--wrong-bg);
+        }
+        .question-card.reviewed-unanswered {
+            border-left: 4px solid #f59e0b;
+            background: #fffbeb;
+        }
+        .q-num {
+            display: inline-block;
+            background: var(--accent);
+            color: #fff;
+            font-weight: 700;
+            font-size: .85rem;
+            width: 32px;
+            height: 32px;
+            line-height: 32px;
+            text-align: center;
+            border-radius: 50%;
+            margin-right: 10px;
+            flex-shrink: 0;
+        }
+        .q-header {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 10px;
+            font-weight: 600;
+            font-size: 1rem;
+            gap: 8px;
+        }
+        .q-header .q-text {
+            flex: 1;
+            padding-top: 4px;
+        }
+        .options {
+            margin-left: 42px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 14px;
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all .15s;
+            background: #fafbfc;
+            font-size: .95rem;
+        }
+        .option:hover {
+            border-color: var(--accent);
+            background: var(--accent-light);
+        }
+        .option input[type="radio"] {
+            accent-color: var(--accent);
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        .option.selected {
+            border-color: var(--accent);
+            background: #dbeafe;
+            font-weight: 500;
+        }
+        .option.correct-answer {
+            border-color: var(--correct) !important;
+            background: #d1fae5 !important;
+            font-weight: 700 !important;
+        }
+        .option.wrong-choice {
+            border-color: var(--wrong) !important;
+            background: #fee2e2 !important;
+        }
+        .svg-container {
+            text-align: center;
+            margin: 12px 0;
+            max-width: 100%;
+            overflow-x: auto;
+        }
+        .svg-container svg {
+            max-width: 100%;
+            height: auto;
+        }
+        .feedback-badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: .8rem;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+        .feedback-badge.correct {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        .feedback-badge.wrong {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        .feedback-badge.unanswered {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        .bottom-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #1e293b;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            z-index: 100;
+            box-shadow: 0 -2px 8px rgba(0, 0, 0, .2);
+            flex-wrap: wrap;
+        }
+        .btn {
+            padding: 12px 28px;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            letter-spacing: .4px;
+            transition: all .2s;
+        }
+        .btn-submit {
+            background: #059669;
+            color: #fff;
+        }
+        .btn-submit:hover {
+            background: #047857;
+            transform: translateY(-1px);
+        }
+        .btn-reset {
+            background: #475569;
+            color: #fff;
+        }
+        .btn-reset:hover {
+            background: #334155;
+        }
+        .btn-review {
+            background: #2563eb;
+            color: #fff;
+        }
+        .btn-review:hover {
+            background: #1d4ed8;
+        }
+        .score-display {
+            background: #f8fafc;
+            border: 2px solid var(--accent);
+            border-radius: var(--radius);
+            padding: 20px;
+            text-align: center;
+            margin: 16px 0;
+            display: none;
+        }
+        .score-display.show {
+            display: block;
+        }
+        .score-display h3 {
+            font-size: 1.5rem;
+            color: var(--accent);
+        }
+        .score-display .score-breakdown {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            flex-wrap: wrap;
+            margin-top: 8px;
+            font-size: .95rem;
+        }
+        .score-breakdown span {
+            font-weight: 600;
+        }
+        .nav-palette {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            padding: 8px;
+            background: #f1f5f9;
+            border-radius: var(--radius);
+            margin-bottom: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .nav-dot {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: 2px solid #cbd5e1;
+            text-align: center;
+            line-height: 24px;
+            font-size: .7rem;
+            font-weight: 600;
+            cursor: pointer;
+            background: #fff;
+            transition: all .15s;
+            flex-shrink: 0;
+        }
+        .nav-dot:hover {
+            border-color: var(--accent);
+            background: #eff6ff;
+        }
+        .nav-dot.answered {
+            background: #dbeafe;
+            border-color: var(--accent);
+        }
+        .nav-dot.marked {
+            background: #fef3c7;
+            border-color: #f59e0b;
+        }
+        @media (max-width: 600px) {
+            .options {
+                margin-left: 0;
+            }
+            .q-header {
+                flex-direction: column;
+            }
+            .q-num {
+                margin-bottom: 4px;
+            }
+            .top-bar {
+                padding: 8px 12px;
+            }
+            .top-bar h2 {
+                font-size: .9rem;
+            }
+            .btn {
+                padding: 10px 18px;
+                font-size: .85rem;
+            }
+            .question-card {
+                padding: 12px 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="top-bar">
+        <h2>📝 COMEDK Mock Test</h2>
+        <span style="font-size:.9rem;">Physics · Chemistry · Mathematics</span>
+        <span class="timer" id="timer">180:00</span>
+    </div>
+
+    <div class="container" id="mainContainer">
+        <div class="score-display" id="scoreDisplay">
+            <h3 id="scoreText"></h3>
+            <div class="score-breakdown" id="scoreBreakdown"></div>
+            <p style="margin-top:8px;color:var(--neutral);" id="reviewHint"></p>
+        </div>
+
+        <div class="nav-palette" id="navPalette"></div>
+
+        <form id="testForm">
+            <!-- PHYSICS SECTION -->
+            <div class="subject-header" onclick="toggleSection(this)" data-section="physics">
+                ⚛️ PHYSICS (Questions 1 – 60)
+                <span class="arrow">▼</span>
+            </div>
+            <div class="subject-body" id="physicsBody">
+                <!-- Q1 -->
+                <div class="question-card" id="qcard1"><div class="q-header"><span class="q-num">1</span><span class="q-text">Aerofoils are so designed that the speed of air</span></div><div class="options"><label class="option"><input type="radio" name="q1" value="a"> a. on top side is more than on lower side</label><label class="option"><input type="radio" name="q1" value="b"> b. on top side is less than on lower side</label><label class="option"><input type="radio" name="q1" value="c"> c. is same on both sides</label><label class="option"><input type="radio" name="q1" value="d"> d. is turbulent</label></div></div>
+                <!-- Q2 -->
+                <div class="question-card" id="qcard2"><div class="q-header"><span class="q-num">2</span><span class="q-text">The quantity having same dimension as that of Planck's constant is</span></div><div class="options"><label class="option"><input type="radio" name="q2" value="a"> a. work</label><label class="option"><input type="radio" name="q2" value="b"> b. linear momentum</label><label class="option"><input type="radio" name="q2" value="c"> c. angular momentum</label><label class="option"><input type="radio" name="q2" value="d"> d. impulse</label></div></div>
+                <!-- Q3 -->
+                <div class="question-card" id="qcard3"><div class="q-header"><span class="q-num">3</span><span class="q-text">On bombarding U²³⁵ by slow neutron, 200 MeV energy is released. If the power output of atomic reactor is 1.6 MW, then the rate of fission will be</span></div><div class="options"><label class="option"><input type="radio" name="q3" value="a"> a. 5×10²² s⁻¹</label><label class="option"><input type="radio" name="q3" value="b"> b. 5×10¹⁶ s⁻¹</label><label class="option"><input type="radio" name="q3" value="c"> c. 8×10¹⁶ s⁻¹</label><label class="option"><input type="radio" name="q3" value="d"> d. 20×10¹⁶ s⁻¹</label></div></div>
+                <!-- Q4 -->
+                <div class="question-card" id="qcard4"><div class="q-header"><span class="q-num">4</span><span class="q-text">The numbers 5.355 and 5.345 on rounding off to 3 significant figures will give</span></div><div class="options"><label class="option"><input type="radio" name="q4" value="a"> a. 5.35 and 5.34</label><label class="option"><input type="radio" name="q4" value="b"> b. 5.36 and 5.35</label><label class="option"><input type="radio" name="q4" value="c"> c. 5.35 and 5.35</label><label class="option"><input type="radio" name="q4" value="d"> d. 5.36 and 5.34</label></div></div>
+                <!-- Q5 -->
+                <div class="question-card" id="qcard5"><div class="q-header"><span class="q-num">5</span><span class="q-text">In a Young's experiment, two coherent sources are placed 0.90 mm apart and the fringes are observed one metre away. If it produces the second dark fringe at a distance of 1 mm from the central fringe, then wavelength of monochromatic light used would be</span></div><div class="options"><label class="option"><input type="radio" name="q5" value="a"> a. 60×10⁴ cm</label><label class="option"><input type="radio" name="q5" value="b"> b. 10×10⁻⁴ cm</label><label class="option"><input type="radio" name="q5" value="c"> c. 10×10⁻⁵ cm</label><label class="option"><input type="radio" name="q5" value="d"> d. 6×10⁻⁵ cm</label></div></div>
+                <!-- Q6 -->
+                <div class="question-card" id="qcard6"><div class="q-header"><span class="q-num">6</span><span class="q-text">A particle moves in XY-plane according to the equation x = 4t² + 5t + 16 and y = 5t. The acceleration of the particle is</span></div><div class="options"><label class="option"><input type="radio" name="q6" value="a"> a. 8</label><label class="option"><input type="radio" name="q6" value="b"> b. 13</label><label class="option"><input type="radio" name="q6" value="c"> c. 14</label><label class="option"><input type="radio" name="q6" value="d"> d. 16</label></div></div>
+                <!-- Q7 -->
+                <div class="question-card" id="qcard7"><div class="q-header"><span class="q-num">7</span><span class="q-text">A hollow double concave lens is made of very thin transparent material. It can be filled with air or either of two liquids L₁ or L₂ having refractive indices n<sub>L₁</sub> and n<sub>L₂</sub> respectively (such that n<sub>L₁</sub> > n<sub>L₂</sub> > 1). The lens will diverge a parallel beam of light, if it is filled with</span></div><div class="options"><label class="option"><input type="radio" name="q7" value="a"> a. air and placed in air</label><label class="option"><input type="radio" name="q7" value="b"> b. air and immersed in L₁</label><label class="option"><input type="radio" name="q7" value="c"> c. L₁ and immersed in L₂</label><label class="option"><input type="radio" name="q7" value="d"> d. L₂ and immersed in L₁</label></div></div>
+                <!-- Q8 -->
+                <div class="question-card" id="qcard8"><div class="q-header"><span class="q-num">8</span><span class="q-text">The Young's double slit experiment is performed with blue and with green light of wavelengths 4360 Å and 5460 Å respectively. If x is the distance of 4th maxima from the central one, then</span></div><div class="options"><label class="option"><input type="radio" name="q8" value="a"> a. x<sub>blue</sub> = x<sub>green</sub></label><label class="option"><input type="radio" name="q8" value="b"> b. x<sub>blue</sub> > x<sub>green</sub></label><label class="option"><input type="radio" name="q8" value="c"> c. x<sub>blue</sub> < x<sub>green</sub></label><label class="option"><input type="radio" name="q8" value="d"> d. x<sub>blue</sub> / x<sub>green</sub></label></div></div>
+                <!-- Q9 -->
+                <div class="question-card" id="qcard9"><div class="q-header"><span class="q-num">9</span><span class="q-text">A stone of mass 2 kg is projected upwards with KE of 98 J. The height at which the KE of the body becomes half its original value, is given by (take g = 9.8 ms⁻²)</span></div><div class="options"><label class="option"><input type="radio" name="q9" value="a"> a. 5 m</label><label class="option"><input type="radio" name="q9" value="b"> b. 2.5 m</label><label class="option"><input type="radio" name="q9" value="c"> c. 1.5 m</label><label class="option"><input type="radio" name="q9" value="d"> d. 0.5 m</label></div></div>
+                <!-- Q10 -->
+                <div class="question-card" id="qcard10"><div class="q-header"><span class="q-num">10</span><span class="q-text">Assuming the earth to be a sphere of uniform mass density, how much would a body weigh half way down to the centre of earth, if it weighed 250 N on the surface?</span></div><div class="options"><label class="option"><input type="radio" name="q10" value="a"> a. 150 N</label><label class="option"><input type="radio" name="q10" value="b"> b. 175 N</label><label class="option"><input type="radio" name="q10" value="c"> c. 125 N</label><label class="option"><input type="radio" name="q10" value="d"> d. 200 N</label></div></div>
+                <!-- Q11 -->
+                <div class="question-card" id="qcard11"><div class="q-header"><span class="q-num">11</span><span class="q-text">Two capacitors C₁ and C₂ are charged to 120 V and 200 V respectively. It is found that by connecting them together, then the potential on each one can be made zero. Then,</span></div><div class="options"><label class="option"><input type="radio" name="q11" value="a"> a. 5C₁ = 3C₂</label><label class="option"><input type="radio" name="q11" value="b"> b. 3C₁ = 5C₂</label><label class="option"><input type="radio" name="q11" value="c"> c. 3C₁ + 5C₂ = 0</label><label class="option"><input type="radio" name="q11" value="d"> d. 9C₁ = 4C₂</label></div></div>
+                <!-- Q12 -->
+                <div class="question-card" id="qcard12"><div class="q-header"><span class="q-num">12</span><span class="q-text">Two small identical electrical dipoles AB and CD, each of dipole moment p are kept at an angle of 120° as shown in the figure. If this system is subjected to electric field (E) directed along direction which makes θ° with XY-plane. Then, the magnitude and direction of the torque acting on this is</span></div><div class="svg-container"><svg width="180" height="150" viewBox="0 0 180 150"><text x="60" y="30" font-size="12" fill="#555">Dipoles at 120°</text><line x1="40" y1="80" x2="100" y2="45" stroke="#2563eb" stroke-width="2"/><circle cx="40" cy="80" r="4" fill="#2563eb"/><text x="30" y="95" font-size="10">A</text><text x="100" y="40" font-size="10">B(p₁)</text><line x1="80" y1="100" x2="140" y2="100" stroke="#dc2626" stroke-width="2"/><circle cx="80" cy="100" r="4" fill="#dc2626"/><text x="70" y="115" font-size="10">C</text><text x="142" y="105" font-size="10">D(p₂)</text><text x="55" y="70" font-size="9">120°</text></svg></div><div class="options"><label class="option"><input type="radio" name="q12" value="a"> a. pE sinθ along Z-axis</label><label class="option"><input type="radio" name="q12" value="b"> b. 2pE sinθ along Z-axis</label><label class="option"><input type="radio" name="q12" value="c"> c. (√3/2)pE sinθ along Z-axis</label><label class="option"><input type="radio" name="q12" value="d"> d. (1/2)pE sinθ along Z-axis</label></div></div>
+                <!-- Q13 -->
+                <div class="question-card" id="qcard13"><div class="q-header"><span class="q-num">13</span><span class="q-text">A rectangular film of liquid is extended from (4 cm × 2 cm) to (5 cm × 4 cm). If the workdone is 3×10⁻⁴ J. The value of the surface tension of the liquid is</span></div><div class="options"><label class="option"><input type="radio" name="q13" value="a"> a. 0.250 N/m</label><label class="option"><input type="radio" name="q13" value="b"> b. 0.125 N/m</label><label class="option"><input type="radio" name="q13" value="c"> c. 0.2 N/m</label><label class="option"><input type="radio" name="q13" value="d"> d. 8.0 N/m</label></div></div>
+                <!-- Q14 -->
+                <div class="question-card" id="qcard14"><div class="q-header"><span class="q-num">14</span><span class="q-text">Suppose the spheres A and B with charge 6.5×10⁻⁷ C have identical sizes and distance between centres is 50 cm. A third sphere of the same size but uncharged is brought in contact with the first, then brought in contact with the second and finally removed from both. What is the new force of repulsion between A and B?</span></div><div class="options"><label class="option"><input type="radio" name="q14" value="a"> a. 5.7×10⁻³ N</label><label class="option"><input type="radio" name="q14" value="b"> b. 1.5×10⁻² N</label><label class="option"><input type="radio" name="q14" value="c"> c. 0.24 N</label><label class="option"><input type="radio" name="q14" value="d"> d. 0.24×10⁻² N</label></div></div>
+                <!-- Q15 -->
+                <div class="question-card" id="qcard15"><div class="q-header"><span class="q-num">15</span><span class="q-text">Two blocks of masses 2m and m are in equilibrium as shown in the figure. Now, the string between the blocks is suddenly broken. The accelerations of the blocks A and B respectively, at that instant are</span></div><div class="svg-container"><svg width="140" height="120" viewBox="0 0 140 120"><rect x="30" y="10" width="60" height="30" rx="3" fill="#e2e8f0" stroke="#333"/><text x="50" y="30" font-size="10">A (2m)</text><line x1="60" y1="40" x2="60" y2="55" stroke="#333"/><rect x="30" y="55" width="60" height="25" rx="3" fill="#fecaca" stroke="#333"/><text x="52" y="71" font-size="10">B (m)</text><line x1="60" y1="80" x2="60" y2="100" stroke="#333"/><line x1="45" y1="100" x2="75" y2="100" stroke="#333" stroke-width="2"/></svg></div><div class="options"><label class="option"><input type="radio" name="q15" value="a"> a. g and g</label><label class="option"><input type="radio" name="q15" value="b"> b. g and g/2</label><label class="option"><input type="radio" name="q15" value="c"> c. g/2 and g</label><label class="option"><input type="radio" name="q15" value="d"> d. g/2 and g/2</label></div></div>
+                <!-- Q16 -->
+                <div class="question-card" id="qcard16"><div class="q-header"><span class="q-num">16</span><span class="q-text">The number of electrons moving per second through the filament of a lamp of 100 W operating at 200 V is</span></div><div class="options"><label class="option"><input type="radio" name="q16" value="a"> a. 3.1×10¹⁸</label><label class="option"><input type="radio" name="q16" value="b"> b. 3.1×10¹⁹</label><label class="option"><input type="radio" name="q16" value="c"> c. 4.8×10¹⁸</label><label class="option"><input type="radio" name="q16" value="d"> d. 4.8×10¹⁹</label></div></div>
+                <!-- Q17 -->
+                <div class="question-card" id="qcard17"><div class="q-header"><span class="q-num">17</span><span class="q-text">The range of a projectile when launched at angle θ is same as when launched at angle 2θ. What is the value of θ?</span></div><div class="options"><label class="option"><input type="radio" name="q17" value="a"> a. 15°</label><label class="option"><input type="radio" name="q17" value="b"> b. 30°</label><label class="option"><input type="radio" name="q17" value="c"> c. 45°</label><label class="option"><input type="radio" name="q17" value="d"> d. 60°</label></div></div>
+                <!-- Q18 -->
+                <div class="question-card" id="qcard18"><div class="q-header"><span class="q-num">18</span><span class="q-text">An electric bulb is marked 100 W, 230 V. If the supply voltage drops to 115 V, what is the heat and light energy produced by the bulb in 20 min?</span></div><div class="options"><label class="option"><input type="radio" name="q18" value="a"> a. 20000 J</label><label class="option"><input type="radio" name="q18" value="b"> b. 25000 J</label><label class="option"><input type="radio" name="q18" value="c"> c. 30000 J</label><label class="option"><input type="radio" name="q18" value="d"> d. 35000 J</label></div></div>
+                <!-- Q19 -->
+                <div class="question-card" id="qcard19"><div class="q-header"><span class="q-num">19</span><span class="q-text">The arcs BC (radius = b) and AD (radius = a) of loop are joined by the straight wires AB and CD. A steady current I is flowing in the loop. Angle made by AB and CD at the origin is 30°. Another straight thin wire with steady current I, flowing out of plane of the paper is kept at the origin. The magnitude of the magnetic field B due to loop ABCD at the origin O is</span></div><div class="svg-container"><svg width="200" height="140" viewBox="0 0 200 140"><path d="M60,110 A80,80 0 0,1 140,110" fill="none" stroke="#2563eb" stroke-width="2"/><path d="M80,90 A40,40 0 0,1 120,90" fill="none" stroke="#dc2626" stroke-width="2"/><line x1="60" y1="110" x2="80" y2="90" stroke="#333" stroke-width="1.5"/><line x1="140" y1="110" x2="120" y2="90" stroke="#333" stroke-width="1.5"/><circle cx="100" cy="100" r="2" fill="#000"/><text x="95" y="95" font-size="10">O</text><text x="45" y="115" font-size="9">A</text><text x="145" y="115" font-size="9">C</text><text x="70" y="82" font-size="9">D</text><text x="125" y="82" font-size="9">B</text><text x="100" y="130" font-size="9">I (out of plane)</text></svg></div><div class="options"><label class="option"><input type="radio" name="q19" value="a"> a. zero</label><label class="option"><input type="radio" name="q19" value="b"> b. μ₀I(a−b) / 24ab</label><label class="option"><input type="radio" name="q19" value="c"> c. (μ₀I/4π)[(a−b)/ab]</label><label class="option"><input type="radio" name="q19" value="d"> d. (μ₀I/4π)[2(a−b)+(π/3)(a+b)]/(a+b)</label></div></div>
+                <!-- Q20 -->
+                <div class="question-card" id="qcard20"><div class="q-header"><span class="q-num">20</span><span class="q-text">Two blocks are in contact on a frictionless table. One has mass m and the other 2m. A force F is applied on 2m as shown in the figure. Now the same force F is applied from the right on m. In the two cases the ratio of force of contact between the two blocks will be</span></div><div class="svg-container"><svg width="200" height="70" viewBox="0 0 200 70"><rect x="20" y="10" width="70" height="35" rx="4" fill="#e2e8f0" stroke="#333"/><text x="40" y="32" font-size="10">2m</text><rect x="95" y="15" width="50" height="25" rx="4" fill="#fecaca" stroke="#333"/><text x="108" y="32" font-size="10">m</text><line x1="160" y1="27" x2="180" y2="27" stroke="#dc2626" stroke-width="2"/><polygon points="180,27 172,22 172,32" fill="#dc2626"/><text x="162" y="22" font-size="9">F</text><text x="20" y="62" font-size="9">Case 1: F on 2m</text></svg></div><div class="options"><label class="option"><input type="radio" name="q20" value="a"> a. 1:1</label><label class="option"><input type="radio" name="q20" value="b"> b. 1:2</label><label class="option"><input type="radio" name="q20" value="c"> c. 2:1</label><label class="option"><input type="radio" name="q20" value="d"> d. 1:3</label></div></div>
+                <!-- Q21 -->
+                <div class="question-card" id="qcard21"><div class="q-header"><span class="q-num">21</span><span class="q-text">Two toroids 1 and 2 have total number of turns 200 and 100 respectively with average radii 40 cm and 20 cm respectively. If they carry same current i, the ratio of the magnetic fields along the two loops is</span></div><div class="options"><label class="option"><input type="radio" name="q21" value="a"> a. 1:1</label><label class="option"><input type="radio" name="q21" value="b"> b. 4:1</label><label class="option"><input type="radio" name="q21" value="c"> c. 2:1</label><label class="option"><input type="radio" name="q21" value="d"> d. 1:2</label></div></div>
+                <!-- Q22 -->
+                <div class="question-card" id="qcard22"><div class="q-header"><span class="q-num">22</span><span class="q-text">If a body of mass 200 g falls from a height 200 m and its total potential energy is converted into kinetic energy, at the point of contact of the body with the surface, then decrease in potential energy of the body at the contact is (Take g = 10 ms⁻²)</span></div><div class="options"><label class="option"><input type="radio" name="q22" value="a"> a. 900 J</label><label class="option"><input type="radio" name="q22" value="b"> b. 600 J</label><label class="option"><input type="radio" name="q22" value="c"> c. 400 J</label><label class="option"><input type="radio" name="q22" value="d"> d. 200 J</label></div></div>
+                <!-- Q23 -->
+                <div class="question-card" id="qcard23"><div class="q-header"><span class="q-num">23</span><span class="q-text">The height at which the weight of a body becomes 1/16th of its weight on the surface of the earth (radius R), is</span></div><div class="options"><label class="option"><input type="radio" name="q23" value="a"> a. 5R</label><label class="option"><input type="radio" name="q23" value="b"> b. 15R</label><label class="option"><input type="radio" name="q23" value="c"> c. 3R</label><label class="option"><input type="radio" name="q23" value="d"> d. 4R</label></div></div>
+                <!-- Q24 -->
+                <div class="question-card" id="qcard24"><div class="q-header"><span class="q-num">24</span><span class="q-text">A block of ice at −10°C is slowly heated and converted to steam at 100°C. Which of the following curves represent the phenomenon qualitatively?</span></div><div class="svg-container"><svg width="280" height="180" viewBox="0 0 280 180"><polyline points="30,150 60,150 90,100 150,100 180,50" fill="none" stroke="#2563eb" stroke-width="2"/><circle cx="30" cy="150" r="3" fill="#dc2626"/><circle cx="60" cy="150" r="3" fill="#dc2626"/><circle cx="90" cy="100" r="3" fill="#dc2626"/><circle cx="150" cy="100" r="3" fill="#dc2626"/><circle cx="180" cy="50" r="3" fill="#dc2626"/><text x="10" y="145" font-size="9">−10°C</text><text x="50" y="145" font-size="9">0°C</text><text x="80" y="90" font-size="9">0°C(melt)</text><text x="140" y="90" font-size="9">100°C</text><text x="170" y="40" font-size="9">100°C(steam)</text><text x="100" y="170" font-size="10">Temperature vs Time (option a)</text></svg></div><div class="options"><label class="option"><input type="radio" name="q24" value="a"> a. Curve with two plateaus</label><label class="option"><input type="radio" name="q24" value="b"> b. Linear increasing</label><label class="option"><input type="radio" name="q24" value="c"> c. Exponential</label><label class="option"><input type="radio" name="q24" value="d"> d. Single plateau</label></div></div>
+                <!-- Q25 -->
+                <div class="question-card" id="qcard25"><div class="q-header"><span class="q-num">25</span><span class="q-text">An electromagnetic wave going through vacuum is described by E = E₀ sin(kx − ωt); B = B₀ sin(kx − ωt). Which of the following equations is true?</span></div><div class="options"><label class="option"><input type="radio" name="q25" value="a"> a. E₀k = B₀ω</label><label class="option"><input type="radio" name="q25" value="b"> b. E₀ω = B₀k</label><label class="option"><input type="radio" name="q25" value="c"> c. E₀B₀ = ωk</label><label class="option"><input type="radio" name="q25" value="d"> d. None of these</label></div></div>
+                <!-- Q26 -->
+                <div class="question-card" id="qcard26"><div class="q-header"><span class="q-num">26</span><span class="q-text">For a normal eye, the cornea of eye provides a converging power of 40 D and the least converging power of the eye lens behind the cornea is 20 D. Using this information, the distance between the retina and the cornea-eye lens can be estimated to be</span></div><div class="options"><label class="option"><input type="radio" name="q26" value="a"> a. 5 cm</label><label class="option"><input type="radio" name="q26" value="b"> b. 2.5 m</label><label class="option"><input type="radio" name="q26" value="c"> c. 1.67 cm</label><label class="option"><input type="radio" name="q26" value="d"> d. 1.5 cm</label></div></div>
+                <!-- Q27 -->
+                <div class="question-card" id="qcard27"><div class="q-header"><span class="q-num">27</span><span class="q-text">Work done in converting one gram of ice at −10°C into steam at 100°C is</span></div><div class="options"><label class="option"><input type="radio" name="q27" value="a"> a. 3045 J</label><label class="option"><input type="radio" name="q27" value="b"> b. 6056 J</label><label class="option"><input type="radio" name="q27" value="c"> c. 721 J</label><label class="option"><input type="radio" name="q27" value="d"> d. 616 J</label></div></div>
+                <!-- Q28 -->
+                <div class="question-card" id="qcard28"><div class="q-header"><span class="q-num">28</span><span class="q-text">A microscope is focussed on a mark on a piece of paper and then a slab of glass of thickness 3 cm and refractive index 1.5 is placed over the mark. How should the microscope be moved to get the mark in focus again?</span></div><div class="options"><label class="option"><input type="radio" name="q28" value="a"> a. 1 cm, upward</label><label class="option"><input type="radio" name="q28" value="b"> b. 4.5 cm, downward</label><label class="option"><input type="radio" name="q28" value="c"> c. 1 cm, downward</label><label class="option"><input type="radio" name="q28" value="d"> d. 2 cm, upward</label></div></div>
+                <!-- Q29 -->
+                <div class="question-card" id="qcard29"><div class="q-header"><span class="q-num">29</span><span class="q-text">When a pressure of 100 atm is applied on a spherical ball, then its volume reduces to 0.01%. The bulk modulus of the material of the rubber (in dyne cm⁻²) is</span></div><div class="options"><label class="option"><input type="radio" name="q29" value="a"> a. 10×10¹²</label><label class="option"><input type="radio" name="q29" value="b"> b. 100×10¹²</label><label class="option"><input type="radio" name="q29" value="c"> c. 1×10¹²</label><label class="option"><input type="radio" name="q29" value="d"> d. 20×10¹²</label></div></div>
+                <!-- Q30 -->
+                <div class="question-card" id="qcard30"><div class="q-header"><span class="q-num">30</span><span class="q-text">The decreasing order of wavelength of infrared, microwave, ultraviolet and gamma rays is</span></div><div class="options"><label class="option"><input type="radio" name="q30" value="a"> a. gamma rays, ultraviolet, infrared, microwaves</label><label class="option"><input type="radio" name="q30" value="b"> b. microwaves, gamma rays, infrared, ultraviolet</label><label class="option"><input type="radio" name="q30" value="c"> c. infrared, microwave, ultraviolet, gamma rays</label><label class="option"><input type="radio" name="q30" value="d"> d. microwave, infrared, ultraviolet, gamma rays</label></div></div>
+                <!-- Q31 - Q60 Physics continued -->
+                <div class="question-card" id="qcard31"><div class="q-header"><span class="q-num">31</span><span class="q-text">A steel wire of length 80 cm and area of cross-section 10⁻⁵ m² is joined with an aluminium wire of length 60 cm and area of cross-section 3×10⁻⁵ m². The composite string is stretched by a tension 100 N. What is the minimum frequency of tuning fork, which can produce standing wave in it with node at the joint? (ρ<sub>Steel</sub> = 7800 kgm⁻³, ρ<sub>Al</sub> = 2600 kgm⁻³)</span></div><div class="options"><label class="option"><input type="radio" name="q31" value="a"> a. 87.5 Hz</label><label class="option"><input type="radio" name="q31" value="b"> b. 97.8 Hz</label><label class="option"><input type="radio" name="q31" value="c"> c. 67.9 Hz</label><label class="option"><input type="radio" name="q31" value="d"> d. 89.5 Hz</label></div></div>
+                <div class="question-card" id="qcard32"><div class="q-header"><span class="q-num">32</span><span class="q-text">Two waves represented by y₁ = 5 sin 2π(75t − 0.25x) and y₂ = 10 sin 2π(150t − 0.50x). The intensity ratio I₁/I₂ of the two waves is</span></div><div class="options"><label class="option"><input type="radio" name="q32" value="a"> a. 1:2</label><label class="option"><input type="radio" name="q32" value="b"> b. 1:4</label><label class="option"><input type="radio" name="q32" value="c"> c. 1:8</label><label class="option"><input type="radio" name="q32" value="d"> d. 1:16</label></div></div>
+                <div class="question-card" id="qcard33"><div class="q-header"><span class="q-num">33</span><span class="q-text">The time period of a simple pendulum inside a stationary lift is √5 s. What will be the time period when the lift moves upward with an acceleration g/4?</span></div><div class="options"><label class="option"><input type="radio" name="q33" value="a"> a. √5 s</label><label class="option"><input type="radio" name="q33" value="b"> b. 2√5 s</label><label class="option"><input type="radio" name="q33" value="c"> c. (2+√5) s</label><label class="option"><input type="radio" name="q33" value="d"> d. 2 s</label></div></div>
+                <div class="question-card" id="qcard34"><div class="q-header"><span class="q-num">34</span><span class="q-text">An inductor of reactance 1Ω and a resistor of 2Ω are connected in series to the terminals of a 6V (rms) AC source. The power dissipated in the circuit is</span></div><div class="options"><label class="option"><input type="radio" name="q34" value="a"> a. 8 W</label><label class="option"><input type="radio" name="q34" value="b"> b. 12 W</label><label class="option"><input type="radio" name="q34" value="c"> c. 14.4 W</label><label class="option"><input type="radio" name="q34" value="d"> d. 18 W</label></div></div>
+                <div class="question-card" id="qcard35"><div class="q-header"><span class="q-num">35</span><span class="q-text">What is the output Y in the following circuit, when all the three inputs A, B, C are first 0 and then 1?</span></div><div class="svg-container"><svg width="180" height="80" viewBox="0 0 180 80"><rect x="5" y="15" width="30" height="20" rx="2" fill="#e2e8f0" stroke="#333"/><text x="12" y="29" font-size="9">A</text><rect x="5" y="40" width="30" height="20" rx="2" fill="#e2e8f0" stroke="#333"/><text x="12" y="54" font-size="9">B</text><rect x="60" y="25" width="40" height="25" rx="3" fill="#fef3c7" stroke="#333"/><text x="68" y="41" font-size="8">NAND</text><rect x="120" y="25" width="40" height="25" rx="3" fill="#fef3c7" stroke="#333"/><text x="128" y="41" font-size="8">NOT</text><text x="162" y="41" font-size="9">Y</text><line x1="35" y1="25" x2="60" y2="30" stroke="#333"/><line x1="35" y1="50" x2="60" y2="45" stroke="#333"/><line x1="100" y1="37" x2="120" y2="37" stroke="#333"/></svg></div><div class="options"><label class="option"><input type="radio" name="q35" value="a"> a. 0, 1</label><label class="option"><input type="radio" name="q35" value="b"> b. 0, 0</label><label class="option"><input type="radio" name="q35" value="c"> c. 1, 0</label><label class="option"><input type="radio" name="q35" value="d"> d. 1, 1</label></div></div>
+                <div class="question-card" id="qcard36"><div class="q-header"><span class="q-num">36</span><span class="q-text">A square of side L metres lies in the XY-plane in a region, where the magnetic field is B = B₀(2i + 3j + 4k) T. The magnitude of flux passing through the square is</span></div><div class="options"><label class="option"><input type="radio" name="q36" value="a"> a. 2B₀L² Wb</label><label class="option"><input type="radio" name="q36" value="b"> b. 3B₀L² Wb</label><label class="option"><input type="radio" name="q36" value="c"> c. 4B₀L² Wb</label><label class="option"><input type="radio" name="q36" value="d"> d. √29 B₀L² Wb</label></div></div>
+                <div class="question-card" id="qcard37"><div class="q-header"><span class="q-num">37</span><span class="q-text">A transmitter transmits at a wavelength of 300 m. A condenser of capacitance 2.4 μF is being used. The value of the inductance for the resonant circuit is approximately</span></div><div class="options"><label class="option"><input type="radio" name="q37" value="a"> a. 10⁻⁴ H</label><label class="option"><input type="radio" name="q37" value="b"> b. 10⁻⁶ H</label><label class="option"><input type="radio" name="q37" value="c"> c. 10⁻⁵ H</label><label class="option"><input type="radio" name="q37" value="d"> d. 10⁻¹⁰ H</label></div></div>
+                <div class="question-card" id="qcard38"><div class="q-header"><span class="q-num">38</span><span class="q-text">A car starts moving along a line, first with acceleration a = 5 ms⁻² starting from rest, then uniformly and finally decelerating at the same rate a and comes to rest. The total time of motion is 25 s. The average speed during the time is 20 ms⁻¹. How long does the particle move uniformly?</span></div><div class="options"><label class="option"><input type="radio" name="q38" value="a"> a. 10 s</label><label class="option"><input type="radio" name="q38" value="b"> b. 12 s</label><label class="option"><input type="radio" name="q38" value="c"> c. 20 s</label><label class="option"><input type="radio" name="q38" value="d"> d. 15 s</label></div></div>
+                <div class="question-card" id="qcard39"><div class="q-header"><span class="q-num">39</span><span class="q-text">The magnetic flux linked with a coil varies with time as φ = (3t² + 4t + 9) Wb. What is the induced emf at t = 2 s?</span></div><div class="options"><label class="option"><input type="radio" name="q39" value="a"> a. 3 V</label><label class="option"><input type="radio" name="q39" value="b"> b. 4 V</label><label class="option"><input type="radio" name="q39" value="c"> c. 9 V</label><label class="option"><input type="radio" name="q39" value="d"> d. 16 V</label></div></div>
+                <div class="question-card" id="qcard40"><div class="q-header"><span class="q-num">40</span><span class="q-text">Ten moles of an ideal gas at constant temperature 600 K is compressed from 100 L to 10 L. The work done in the process is</span></div><div class="options"><label class="option"><input type="radio" name="q40" value="a"> a. 4.11×10⁴ J</label><label class="option"><input type="radio" name="q40" value="b"> b. −4.11×10⁴ J</label><label class="option"><input type="radio" name="q40" value="c"> c. 11.4×10⁴ J</label><label class="option"><input type="radio" name="q40" value="d"> d. −11.4×10⁴ J</label></div></div>
+                <div class="question-card" id="qcard41"><div class="q-header"><span class="q-num">41</span><span class="q-text">The magnetic susceptibility is negative for</span></div><div class="options"><label class="option"><input type="radio" name="q41" value="a"> a. paramagnetic material only</label><label class="option"><input type="radio" name="q41" value="b"> b. ferromagnetic material only</label><label class="option"><input type="radio" name="q41" value="c"> c. paramagnetic and ferromagnetic materials</label><label class="option"><input type="radio" name="q41" value="d"> d. diamagnetic material only</label></div></div>
+                <div class="question-card" id="qcard42"><div class="q-header"><span class="q-num">42</span><span class="q-text">Two wires A and B are of the same material. Their lengths are in the ratio 1:2 and the diameters are in the ratio 2:1. If they are pulled by the same force, their increase in length will be in the ratio</span></div><div class="options"><label class="option"><input type="radio" name="q42" value="a"> a. 2:1</label><label class="option"><input type="radio" name="q42" value="b"> b. 1:4</label><label class="option"><input type="radio" name="q42" value="c"> c. 1:8</label><label class="option"><input type="radio" name="q42" value="d"> d. 8:1</label></div></div>
+                <div class="question-card" id="qcard43"><div class="q-header"><span class="q-num">43</span><span class="q-text">The variation of magnetic susceptibility (χ) with absolute temperature T for a ferromagnetic is given in figure, by</span></div><div class="options"><label class="option"><input type="radio" name="q43" value="a"> a. Curve with χ constant then decreasing</label><label class="option"><input type="radio" name="q43" value="b"> b. Linear increasing</label><label class="option"><input type="radio" name="q43" value="c"> c. Exponential decay</label><label class="option"><input type="radio" name="q43" value="d"> d. Hyperbolic</label></div></div>
+                <div class="question-card" id="qcard44"><div class="q-header"><span class="q-num">44</span><span class="q-text">A linear harmonic oscillator of force constant 2×10⁶ Nm⁻¹ and amplitude 0.01 m has a total mechanical energy of 160 J. Its</span></div><div class="options"><label class="option"><input type="radio" name="q44" value="a"> a. maximum potential energy is 160 J</label><label class="option"><input type="radio" name="q44" value="b"> b. maximum potential energy is 100 J</label><label class="option"><input type="radio" name="q44" value="c"> c. minimum potential energy is zero</label><label class="option"><input type="radio" name="q44" value="d"> d. minimum potential energy is 100 J</label></div></div>
+                <div class="question-card" id="qcard45"><div class="q-header"><span class="q-num">45</span><span class="q-text">Two bodies of masses 1 kg and 3 kg have position vectors i+2j+k and −3i−2j+k respectively. The centre of mass of this system has a position vector</span></div><div class="options"><label class="option"><input type="radio" name="q45" value="a"> a. −2i+2k</label><label class="option"><input type="radio" name="q45" value="b"> b. −2i−j+k</label><label class="option"><input type="radio" name="q45" value="c"> c. 2i−j−2k</label><label class="option"><input type="radio" name="q45" value="d"> d. −i+j+k</label></div></div>
+                <div class="question-card" id="qcard46"><div class="q-header"><span class="q-num">46</span><span class="q-text">The velocity of a body depends on time according to the equation v = t²/10 + 20. The body is undergoing</span></div><div class="options"><label class="option"><input type="radio" name="q46" value="a"> a. uniform acceleration</label><label class="option"><input type="radio" name="q46" value="b"> b. uniform retardation</label><label class="option"><input type="radio" name="q46" value="c"> c. non-uniform acceleration</label><label class="option"><input type="radio" name="q46" value="d"> d. zero acceleration</label></div></div>
+                <div class="question-card" id="qcard47"><div class="q-header"><span class="q-num">47</span><span class="q-text">A T-shaped object with dimensions shown in the figure, is lying on a smooth floor. A force F is applied at the point P parallel to AB, such that the object has only translational motion without rotation. Find the location of P with respect to C.</span></div><div class="options"><label class="option"><input type="radio" name="q47" value="a"> a. (4/3)l</label><label class="option"><input type="radio" name="q47" value="b"> b. l</label><label class="option"><input type="radio" name="q47" value="c"> c. (2/3)l</label><label class="option"><input type="radio" name="q47" value="d"> d. (3/2)l</label></div></div>
+                <div class="question-card" id="qcard48"><div class="q-header"><span class="q-num">48</span><span class="q-text">The TV transmission tower in Delhi has a height of 240 m. The distance up to which the broadcast can be received (taking the radius of the earth to be 6.4×10⁶ m) is</span></div><div class="options"><label class="option"><input type="radio" name="q48" value="a"> a. 100 km</label><label class="option"><input type="radio" name="q48" value="b"> b. 60 km</label><label class="option"><input type="radio" name="q48" value="c"> c. 55 km</label><label class="option"><input type="radio" name="q48" value="d"> d. 50 km</label></div></div>
+                <div class="question-card" id="qcard49"><div class="q-header"><span class="q-num">49</span><span class="q-text">Three point charges +q, −2q and −2q are placed at the vertices of an equilateral triangle of side a. The work done by some external force to increase their separation to 2a will be</span></div><div class="options"><label class="option"><input type="radio" name="q49" value="a"> a. (1/4πε₀)(2q²/a)</label><label class="option"><input type="radio" name="q49" value="b"> b. (1/4πε₀)(q²/2a)</label><label class="option"><input type="radio" name="q49" value="c"> c. (1/4πε₀)(q/a²)</label><label class="option"><input type="radio" name="q49" value="d"> d. Zero</label></div></div>
+                <div class="question-card" id="qcard50"><div class="q-header"><span class="q-num">50</span><span class="q-text">In an experiment on photoelectric effect, the slope of the cut-off voltage versus frequency of incident light is found to be 4.12×10⁻¹⁵ V·s. Calculate the value of Planck's constant.</span></div><div class="options"><label class="option"><input type="radio" name="q50" value="a"> a. 6.0×10⁻³⁴ J s</label><label class="option"><input type="radio" name="q50" value="b"> b. 0.63×10⁻³⁴ J s</label><label class="option"><input type="radio" name="q50" value="c"> c. 6.59×10⁻³⁴ J s</label><label class="option"><input type="radio" name="q50" value="d"> d. zero</label></div></div>
+                <div class="question-card" id="qcard51"><div class="q-header"><span class="q-num">51</span><span class="q-text">What is the work done in moving a 2 μC point charge from corner A to corner B of a square ABCD, when a 10 μC charge exists at the centre of the square?</span></div><div class="options"><label class="option"><input type="radio" name="q51" value="a"> a. Zero</label><label class="option"><input type="radio" name="q51" value="b"> b. 5 J</label><label class="option"><input type="radio" name="q51" value="c"> c. 2 J</label><label class="option"><input type="radio" name="q51" value="d"> d. 20 J</label></div></div>
+                <div class="question-card" id="qcard52"><div class="q-header"><span class="q-num">52</span><span class="q-text">A typical p-n junction solar cell: The generation of emf by it, is due to</span></div><div class="options"><label class="option"><input type="radio" name="q52" value="a"> a. generation of electrons and holes due to light</label><label class="option"><input type="radio" name="q52" value="b"> b. separation of electrons and holes due to electric field of depletion region</label><label class="option"><input type="radio" name="q52" value="c"> c. collection of electrons at n-side and holes at p-side</label><label class="option"><input type="radio" name="q52" value="d"> d. All of the above</label></div></div>
+                <div class="question-card" id="qcard53"><div class="q-header"><span class="q-num">53</span><span class="q-text">40 cal of heat is needed to raise the temperature of 1 mole of an ideal monoatomic gas from 20°C to 30°C at constant pressure. The amount of heat required to raise its temperature over the same interval at constant volume (R = 2 cal mol⁻¹ K⁻¹) is</span></div><div class="options"><label class="option"><input type="radio" name="q53" value="a"> a. 20 cal</label><label class="option"><input type="radio" name="q53" value="b"> b. 40 cal</label><label class="option"><input type="radio" name="q53" value="c"> c. 60 cal</label><label class="option"><input type="radio" name="q53" value="d"> d. 80 cal</label></div></div>
+                <div class="question-card" id="qcard54"><div class="q-header"><span class="q-num">54</span><span class="q-text">The ratio of the nuclear radii of the gold isotope ¹⁹⁷Au and silver isotope ¹⁰⁷Ag is</span></div><div class="options"><label class="option"><input type="radio" name="q54" value="a"> a. 1.23</label><label class="option"><input type="radio" name="q54" value="b"> b. 0.216</label><label class="option"><input type="radio" name="q54" value="c"> c. 2.13</label><label class="option"><input type="radio" name="q54" value="d"> d. 3.46</label></div></div>
+                <div class="question-card" id="qcard55"><div class="q-header"><span class="q-num">55</span><span class="q-text">Two molecules of a gas have speeds of 9×10⁶ m/s and 1×10⁶ m/s respectively. What is the root mean square speed of these molecules?</span></div><div class="options"><label class="option"><input type="radio" name="q55" value="a"> a. √(39×10⁶) m/s</label><label class="option"><input type="radio" name="q55" value="b"> b. 6×10⁶ m/s</label><label class="option"><input type="radio" name="q55" value="c"> c. √(41×10⁶) m/s</label><label class="option"><input type="radio" name="q55" value="d"> d. 8×10⁶ m/s</label></div></div>
+                <div class="question-card" id="qcard56"><div class="q-header"><span class="q-num">56</span><span class="q-text">Consider the binding energy of ¹⁷Cl³⁵ and ¹⁵P³¹ are 287.67 MeV and 262.48 MeV respectively. Then,</span></div><div class="options"><label class="option"><input type="radio" name="q56" value="a"> a. ¹⁷Cl³⁵ is more stable than ¹⁵P³¹</label><label class="option"><input type="radio" name="q56" value="b"> b. ¹⁵P³¹ is more stable than ¹⁷Cl³⁵</label><label class="option"><input type="radio" name="q56" value="c"> c. Stability of both the elements is equivalent</label><label class="option"><input type="radio" name="q56" value="d"> d. cannot be estimated from the given data</label></div></div>
+                <div class="question-card" id="qcard57"><div class="q-header"><span class="q-num">57</span><span class="q-text">Which of the following statements is correct for any thermodynamic system?</span></div><div class="options"><label class="option"><input type="radio" name="q57" value="a"> a. The internal energy changes in all processes.</label><label class="option"><input type="radio" name="q57" value="b"> b. Internal energy and entropy are state functions.</label><label class="option"><input type="radio" name="q57" value="c"> c. The change in entropy can never be zero.</label><label class="option"><input type="radio" name="q57" value="d"> d. The work done in an adiabatic process is always zero.</label></div></div>
+                <div class="question-card" id="qcard58"><div class="q-header"><span class="q-num">58</span><span class="q-text">In a common emitter amplifier circuit using an n-p-n transistor, the phase difference between the input and the output voltages will be</span></div><div class="options"><label class="option"><input type="radio" name="q58" value="a"> a. 90°</label><label class="option"><input type="radio" name="q58" value="b"> b. 135°</label><label class="option"><input type="radio" name="q58" value="c"> c. 180°</label><label class="option"><input type="radio" name="q58" value="d"> d. 45°</label></div></div>
+                <div class="question-card" id="qcard59"><div class="q-header"><span class="q-num">59</span><span class="q-text">If h is Planck's constant, the momentum of a photon of wavelength 1 Å is</span></div><div class="options"><label class="option"><input type="radio" name="q59" value="a"> a. 10¹⁰ h</label><label class="option"><input type="radio" name="q59" value="b"> b. h</label><label class="option"><input type="radio" name="q59" value="c"> c. 10² h</label><label class="option"><input type="radio" name="q59" value="d"> d. 10¹² h</label></div></div>
+                <div class="question-card" id="qcard60"><div class="q-header"><span class="q-num">60</span><span class="q-text">If radius of first Bohr orbit is r, then the radius of second Bohr's orbit will be</span></div><div class="options"><label class="option"><input type="radio" name="q60" value="a"> a. 2r</label><label class="option"><input type="radio" name="q60" value="b"> b. 8r</label><label class="option"><input type="radio" name="q60" value="c"> c. 4r</label><label class="option"><input type="radio" name="q60" value="d"> d. 2√2 r</label></div></div>
+            </div>
+
+            <!-- CHEMISTRY SECTION -->
+            <div class="subject-header" onclick="toggleSection(this)" data-section="chemistry">
+                🧪 CHEMISTRY (Questions 61 – 120)
+                <span class="arrow">▼</span>
+            </div>
+            <div class="subject-body" id="chemistryBody">
+                <div class="question-card" id="qcard61"><div class="q-header"><span class="q-num">61</span><span class="q-text">The partial pressure of carbon monoxide from the following data will be: CaCO₃(s) ⇌ CaO(s) + CO₂↑; Kp₁ = 8×10⁻², CO₂(g) + C(s) ⇌ 2CO(g); Kp₂ = 2</span></div><div class="options"><label class="option"><input type="radio" name="q61" value="a"> a. 0.2 atm</label><label class="option"><input type="radio" name="q61" value="b"> b. 0.6 atm</label><label class="option"><input type="radio" name="q61" value="c"> c. 0.8 atm</label><label class="option"><input type="radio" name="q61" value="d"> d. 0.4 atm</label></div></div>
+                <div class="question-card" id="qcard62"><div class="q-header"><span class="q-num">62</span><span class="q-text">The internal energy change when a system goes from state A to B is 40 kJ/mol. If the system goes from A to B by a reversible path and returns to state A by an irreversible path, what would be the net change in internal energy?</span></div><div class="options"><label class="option"><input type="radio" name="q62" value="a"> a. 40 kJ</label><label class="option"><input type="radio" name="q62" value="b"> b. >40 kJ</label><label class="option"><input type="radio" name="q62" value="c"> c. < 40 kJ</label><label class="option"><input type="radio" name="q62" value="d"> d. Zero</label></div></div>
+                <div class="question-card" id="qcard63"><div class="q-header"><span class="q-num">63</span><span class="q-text">The third ionisation enthalpy is minimum for</span></div><div class="options"><label class="option"><input type="radio" name="q63" value="a"> a. Mn</label><label class="option"><input type="radio" name="q63" value="b"> b. Ni</label><label class="option"><input type="radio" name="q63" value="c"> c. Co</label><label class="option"><input type="radio" name="q63" value="d"> d. Fe</label></div></div>
+                <div class="question-card" id="qcard64"><div class="q-header"><span class="q-num">64</span><span class="q-text">Reverse osmosis is a process,</span></div><div class="options"><label class="option"><input type="radio" name="q64" value="a"> a. in which applied pressure to the solution side is larger than the osmotic pressure</label><label class="option"><input type="radio" name="q64" value="b"> b. in which solvent moves from solution of higher concentration to solution of lower concentration</label><label class="option"><input type="radio" name="q64" value="c"> c. which is used for desalination of sea water</label><label class="option"><input type="radio" name="q64" value="d"> d. All of the above</label></div></div>
+                <div class="question-card" id="qcard65"><div class="q-header"><span class="q-num">65</span><span class="q-text">Orbital having 3 angular nodes and 3 total nodes is</span></div><div class="options"><label class="option"><input type="radio" name="q65" value="a"> a. 5p</label><label class="option"><input type="radio" name="q65" value="b"> b. 3d</label><label class="option"><input type="radio" name="q65" value="c"> c. 4f</label><label class="option"><input type="radio" name="q65" value="d"> d. 6d</label></div></div>
+                <div class="question-card" id="qcard66"><div class="q-header"><span class="q-num">66</span><span class="q-text">The correct order of the basic strength of amines in aqueous medium is</span></div><div class="options"><label class="option"><input type="radio" name="q66" value="a"> a. C₂H₅NH₂ > (C₂H₅)₂NH > (C₂H₅)₃N</label><label class="option"><input type="radio" name="q66" value="b"> b. C₂H₅NH₂ > (C₂H₅)₃N > (C₂H₅)₂NH</label><label class="option"><input type="radio" name="q66" value="c"> c. (C₂H₅)₂NH > (C₂H₅)₃N > C₂H₅NH₂</label><label class="option"><input type="radio" name="q66" value="d"> d. (C₂H₅)₂NH > C₂H₅NH₂ > (C₂H₅)₃N</label></div></div>
+                <div class="question-card" id="qcard67"><div class="q-header"><span class="q-num">67</span><span class="q-text">0.03% of carbon dioxide present in the atmosphere can be removed by</span></div><div class="options"><label class="option"><input type="radio" name="q67" value="a"> a. conversion of CO₂ to glucose</label><label class="option"><input type="radio" name="q67" value="b"> b. photosynthesis</label><label class="option"><input type="radio" name="q67" value="c"> c. chemical change of CO₂ to carbohydrate</label><label class="option"><input type="radio" name="q67" value="d"> d. All of the above</label></div></div>
+                <div class="question-card" id="qcard68"><div class="q-header"><span class="q-num">68</span><span class="q-text">Calculate the bond enthalpy of Xe—F bond: XeF₄(g) → Xe⁺(g) + F⁻(g) + F₂(g) + F(g). Given: ΔrH = 292 kcal/mol, IE of Xe = 279 kcal/mol, Bond energy (F−F) = 38 kcal/mol, Electron affinity of F = 85 kcal/mol</span></div><div class="options"><label class="option"><input type="radio" name="q68" value="a"> a. 8.5 kcal/mol</label><label class="option"><input type="radio" name="q68" value="b"> b. 34 kcal/mol</label><label class="option"><input type="radio" name="q68" value="c"> c. 24 kcal/mol</label><label class="option"><input type="radio" name="q68" value="d"> d. None of these</label></div></div>
+                <div class="question-card" id="qcard69"><div class="q-header"><span class="q-num">69</span><span class="q-text">In a crystalline solid having formula XY₂O₄, oxide ions are arranged in ccp lattice, while cations X are present in tetrahedral voids and cations Y are present in octahedral voids. The percentage of tetrahedral voids occupied by X is</span></div><div class="options"><label class="option"><input type="radio" name="q69" value="a"> a. 12.5%</label><label class="option"><input type="radio" name="q69" value="b"> b. 25%</label><label class="option"><input type="radio" name="q69" value="c"> c. 50%</label><label class="option"><input type="radio" name="q69" value="d"> d. 75%</label></div></div>
+                <div class="question-card" id="qcard70"><div class="q-header"><span class="q-num">70</span><span class="q-text">The vapour pressure of pure CHCl₃ and CH₂Cl₂ are 200 and 41.5 atm respectively. The weight of CHCl₃ and CH₂Cl₂ are respectively 11.9 g and 17 g. The vapour pressure of solution will be</span></div><div class="options"><label class="option"><input type="radio" name="q70" value="a"> a. 80.5 atm</label><label class="option"><input type="radio" name="q70" value="b"> b. 79.5 atm</label><label class="option"><input type="radio" name="q70" value="c"> c. 94.3 atm</label><label class="option"><input type="radio" name="q70" value="d"> d. 105.5 atm</label></div></div>
+                <div class="question-card" id="qcard71"><div class="q-header"><span class="q-num">71</span><span class="q-text">At 25°C and 760 mm of Hg pressure, a gas occupies 600 mL volume. What will be its pressure at a height where temperature is 10°C and volume of the gas is 640 mL?</span></div><div class="options"><label class="option"><input type="radio" name="q71" value="a"> a. 677 mm Hg</label><label class="option"><input type="radio" name="q71" value="b"> b. 600 mm Hg</label><label class="option"><input type="radio" name="q71" value="c"> c. 700 mm Hg</label><label class="option"><input type="radio" name="q71" value="d"> d. 752 mm Hg</label></div></div>
+                <div class="question-card" id="qcard72"><div class="q-header"><span class="q-num">72</span><span class="q-text">Consider the reaction: Benzene + alkyl halide —(anhydrous AlCl₃)→ ? The product is</span></div><div class="options"><label class="option"><input type="radio" name="q72" value="a"> a. methylbenzene</label><label class="option"><input type="radio" name="q72" value="b"> b. toluene</label><label class="option"><input type="radio" name="q72" value="c"> c. alkylbenzene</label><label class="option"><input type="radio" name="q72" value="d"> d. ethylbenzene</label></div></div>
+                <div class="question-card" id="qcard73"><div class="q-header"><span class="q-num">73</span><span class="q-text">The structure of protein which refers to the shape in which a long polypeptide chain can exist is</span></div><div class="options"><label class="option"><input type="radio" name="q73" value="a"> a. primary structure</label><label class="option"><input type="radio" name="q73" value="b"> b. secondary structure</label><label class="option"><input type="radio" name="q73" value="c"> c. tertiary structure</label><label class="option"><input type="radio" name="q73" value="d"> d. quaternary structure</label></div></div>
+                <div class="question-card" id="qcard74"><div class="q-header"><span class="q-num">74</span><span class="q-text">Select the by-product formed in the reaction: ROH + PCl₅ → RCl + A. Here, A is</span></div><div class="options"><label class="option"><input type="radio" name="q74" value="a"> a. POCl₃ + HCl</label><label class="option"><input type="radio" name="q74" value="b"> b. H₃PO₃ + no other by-product</label><label class="option"><input type="radio" name="q74" value="c"> c. H₃PO₃ + HCl</label><label class="option"><input type="radio" name="q74" value="d"> d. POCl₃ + no other by-product</label></div></div>
+                <div class="question-card" id="qcard75"><div class="q-header"><span class="q-num">75</span><span class="q-text">The value of ΔG° for the phosphorylation of glucose in glycolysis is 13.8 kJ/mol. The value of Kc at 298 K is</span></div><div class="options"><label class="option"><input type="radio" name="q75" value="a"> a. 7.72×10⁻⁴</label><label class="option"><input type="radio" name="q75" value="b"> b. 5.62×10⁻⁴</label><label class="option"><input type="radio" name="q75" value="c"> c. 4.81×10⁻³</label><label class="option"><input type="radio" name="q75" value="d"> d. 3.81×10⁻³</label></div></div>
+                <div class="question-card" id="qcard76"><div class="q-header"><span class="q-num">76</span><span class="q-text">The value of Z for real gases below Boyle's temperature initially</span></div><div class="options"><label class="option"><input type="radio" name="q76" value="a"> a. increases</label><label class="option"><input type="radio" name="q76" value="b"> b. decreases</label><label class="option"><input type="radio" name="q76" value="c"> c. remain same</label><label class="option"><input type="radio" name="q76" value="d"> d. increases then decreases</label></div></div>
+                <div class="question-card" id="qcard77"><div class="q-header"><span class="q-num">77</span><span class="q-text">Consider the reaction: H₂(g) + X₂(g) → 2HX(g) where X = F, Cl, Br, I. The order of reactivity of X₂ towards hydrogen is</span></div><div class="options"><label class="option"><input type="radio" name="q77" value="a"> a. F₂ > Cl₂ > Br₂ > I₂</label><label class="option"><input type="radio" name="q77" value="b"> b. Cl₂ > Br₂ > F₂ > I₂</label><label class="option"><input type="radio" name="q77" value="c"> c. I₂ > Br₂ > Cl₂ > F₂</label><label class="option"><input type="radio" name="q77" value="d"> d. I₂ > Cl₂ > F₂ > Br₂</label></div></div>
+                <div class="question-card" id="qcard78"><div class="q-header"><span class="q-num">78</span><span class="q-text">Boron behaves anomalously with respect to its other group members, because boron has comparatively</span></div><div class="options"><label class="option"><input type="radio" name="q78" value="a"> a. small size</label><label class="option"><input type="radio" name="q78" value="b"> b. large charge to radius ratio</label><label class="option"><input type="radio" name="q78" value="c"> c. high electronegativity</label><label class="option"><input type="radio" name="q78" value="d"> d. All of the above</label></div></div>
+                <div class="question-card" id="qcard79"><div class="q-header"><span class="q-num">79</span><span class="q-text">Which hydrogen in CH₃−CH₂−CH=CH₂ is easily replaceable during bromination reaction in presence of light?</span></div><div class="options"><label class="option"><input type="radio" name="q79" value="a"> a. β-hydrogen</label><label class="option"><input type="radio" name="q79" value="b"> b. δ-hydrogen</label><label class="option"><input type="radio" name="q79" value="c"> c. γ-hydrogen</label><label class="option"><input type="radio" name="q79" value="d"> d. α-hydrogen</label></div></div>
+                <div class="question-card" id="qcard80"><div class="q-header"><span class="q-num">80</span><span class="q-text">3MnO₄²⁻ + 4H⁺ → 2MnO₄⁻ + MnO₂ + 2H₂O represents which type of reaction?</span></div><div class="options"><label class="option"><input type="radio" name="q80" value="a"> a. Reduction in acidic medium</label><label class="option"><input type="radio" name="q80" value="b"> b. Oxidation in acidic medium</label><label class="option"><input type="radio" name="q80" value="c"> c. Disproportionation in acidic medium</label><label class="option"><input type="radio" name="q80" value="d"> d. Reduction</label></div></div>
+                <div class="question-card" id="qcard81"><div class="q-header"><span class="q-num">81</span><span class="q-text">The type of hybridisation and number of lone pair(s) of electrons of Xe in XeOF₄ respectively are</span></div><div class="options"><label class="option"><input type="radio" name="q81" value="a"> a. sp³d² and 1</label><label class="option"><input type="radio" name="q81" value="b"> b. sp³d and 2</label><label class="option"><input type="radio" name="q81" value="c"> c. sp³d and 1</label><label class="option"><input type="radio" name="q81" value="d"> d. sp³d² and 2</label></div></div>
+                <div class="question-card" id="qcard82"><div class="q-header"><span class="q-num">82</span><span class="q-text">Which type of compound is shown by the structure of naphthalene?</span></div><div class="options"><label class="option"><input type="radio" name="q82" value="a"> a. Alicyclic compound</label><label class="option"><input type="radio" name="q82" value="b"> b. Benzenoid aromatic compound</label><label class="option"><input type="radio" name="q82" value="c"> c. Non-benzenoid aromatic compound</label><label class="option"><input type="radio" name="q82" value="d"> d. Acyclic compound</label></div></div>
+                <div class="question-card" id="qcard83"><div class="q-header"><span class="q-num">83</span><span class="q-text">In the cyanide extraction process of silver from argentite ore, the oxidising and reducing agents used are</span></div><div class="options"><label class="option"><input type="radio" name="q83" value="a"> a. O₂ and CO respectively</label><label class="option"><input type="radio" name="q83" value="b"> b. O₂ and Zn dust respectively</label><label class="option"><input type="radio" name="q83" value="c"> c. HNO₃ and Zn dust respectively</label><label class="option"><input type="radio" name="q83" value="d"> d. HNO₃ and CO respectively</label></div></div>
+                <div class="question-card" id="qcard84"><div class="q-header"><span class="q-num">84</span><span class="q-text">Which of the following would undergo Sₙ2 reaction faster?</span></div><div class="options"><label class="option"><input type="radio" name="q84" value="a"> a. CH₃Cl</label><label class="option"><input type="radio" name="q84" value="b"> b. CH₃Br</label><label class="option"><input type="radio" name="q84" value="c"> c. CH₃F</label><label class="option"><input type="radio" name="q84" value="d"> d. CH₃I (iodobutane)</label></div></div>
+                <div class="question-card" id="qcard85"><div class="q-header"><span class="q-num">85</span><span class="q-text">The correct order of electronegativity of carbon in ethane, ethene and ethyne is</span></div><div class="options"><label class="option"><input type="radio" name="q85" value="a"> a. ethane < ethene < ethyne</label><label class="option"><input type="radio" name="q85" value="b"> b. ethyne < ethene < ethane</label><label class="option"><input type="radio" name="q85" value="c"> c. ethene < ethyne < ethane</label><label class="option"><input type="radio" name="q85" value="d"> d. ethene < ethane < ethyne</label></div></div>
+                <div class="question-card" id="qcard86"><div class="q-header"><span class="q-num">86</span><span class="q-text">Which of the following is correct?</span></div><div class="options"><label class="option"><input type="radio" name="q86" value="a"> a. SO₃²⁻ → Tetrahedral</label><label class="option"><input type="radio" name="q86" value="b"> b. NO₂⁻ → Trigonal planar</label><label class="option"><input type="radio" name="q86" value="c"> c. ClO₄⁻ → Tetrahedral</label><label class="option"><input type="radio" name="q86" value="d"> d. NH₃ → Trigonal planar</label></div></div>
+                <div class="question-card" id="qcard87"><div class="q-header"><span class="q-num">87</span><span class="q-text">Carbon monoxide is a highly poisonous gas for human beings because</span></div><div class="options"><label class="option"><input type="radio" name="q87" value="a"> a. it binds to haemoglobin to form stable compound</label><label class="option"><input type="radio" name="q87" value="b"> b. it is carcinogenic in nature</label><label class="option"><input type="radio" name="q87" value="c"> c. it induces the chance of heart attack</label><label class="option"><input type="radio" name="q87" value="d"> d. it affects nervous system fatally</label></div></div>
+                <div class="question-card" id="qcard88"><div class="q-header"><span class="q-num">88</span><span class="q-text">In the reaction 2KClO₃ → 2KCl + 3O₂, the elements which have been oxidised and reduced respectively are</span></div><div class="options"><label class="option"><input type="radio" name="q88" value="a"> a. chlorine and oxygen</label><label class="option"><input type="radio" name="q88" value="b"> b. oxygen and chlorine</label><label class="option"><input type="radio" name="q88" value="c"> c. potassium and oxygen</label><label class="option"><input type="radio" name="q88" value="d"> d. oxygen and potassium</label></div></div>
+                <div class="question-card" id="qcard89"><div class="q-header"><span class="q-num">89</span><span class="q-text">The equivalent weight of an element is 4. Its chloride has a vapour density 59.25. Then the valency of the element is</span></div><div class="options"><label class="option"><input type="radio" name="q89" value="a"> a. 4</label><label class="option"><input type="radio" name="q89" value="b"> b. 3</label><label class="option"><input type="radio" name="q89" value="c"> c. 2</label><label class="option"><input type="radio" name="q89" value="d"> d. 1</label></div></div>
+                <div class="question-card" id="qcard90"><div class="q-header"><span class="q-num">90</span><span class="q-text">Given half-cell reactions: Mn²⁺ + 2e⁻ → Mn; E° = −1.18V and Mn³⁺ + e⁻ → Mn²⁺; E° = +1.51V. The E° for 3Mn²⁺ → Mn + 2Mn³⁺ will be</span></div><div class="options"><label class="option"><input type="radio" name="q90" value="a"> a. −2.69 V, the reaction will not occur</label><label class="option"><input type="radio" name="q90" value="b"> b. −2.69 V, the reaction will occur</label><label class="option"><input type="radio" name="q90" value="c"> c. −0.33 V, the reaction will not occur</label><label class="option"><input type="radio" name="q90" value="d"> d. −0.33 V, the reaction will occur</label></div></div>
+                <div class="question-card" id="qcard91"><div class="q-header"><span class="q-num">91</span><span class="q-text">Lithium halides have some covalent character. It is because of</span></div><div class="options"><label class="option"><input type="radio" name="q91" value="a"> a. the high polarisation capacity of Li⁺</label><label class="option"><input type="radio" name="q91" value="b"> b. the low polarisation capacity of Li⁺</label><label class="option"><input type="radio" name="q91" value="c"> c. the high melting point of LiX</label><label class="option"><input type="radio" name="q91" value="d"> d. None of the above</label></div></div>
+                <div class="question-card" id="qcard92"><div class="q-header"><span class="q-num">92</span><span class="q-text">Which of the following has minimum bond length?</span></div><div class="options"><label class="option"><input type="radio" name="q92" value="a"> a. O₂</label><label class="option"><input type="radio" name="q92" value="b"> b. O₂⁺</label><label class="option"><input type="radio" name="q92" value="c"> c. O₂⁻</label><label class="option"><input type="radio" name="q92" value="d"> d. O₂²⁻</label></div></div>
+                <div class="question-card" id="qcard93"><div class="q-header"><span class="q-num">93</span><span class="q-text">Which one of the following polymers is prepared by condensation polymerisation?</span></div><div class="options"><label class="option"><input type="radio" name="q93" value="a"> a. Teflon</label><label class="option"><input type="radio" name="q93" value="b"> b. Natural rubber</label><label class="option"><input type="radio" name="q93" value="c"> c. Styrene</label><label class="option"><input type="radio" name="q93" value="d"> d. Nylon-6,6</label></div></div>
+                <div class="question-card" id="qcard94"><div class="q-header"><span class="q-num">94</span><span class="q-text">Which of the following molecule has net dipole moment zero?</span></div><div class="options"><label class="option"><input type="radio" name="q94" value="a"> a. HF</label><label class="option"><input type="radio" name="q94" value="b"> b. H₂O</label><label class="option"><input type="radio" name="q94" value="c"> c. BF₃</label><label class="option"><input type="radio" name="q94" value="d"> d. CHCl₃</label></div></div>
+                <div class="question-card" id="qcard95"><div class="q-header"><span class="q-num">95</span><span class="q-text">Which of the following pairs have same radii?</span></div><div class="options"><label class="option"><input type="radio" name="q95" value="a"> a. Am and Cm</label><label class="option"><input type="radio" name="q95" value="b"> b. U and Np</label><label class="option"><input type="radio" name="q95" value="c"> c. Bk and Cm</label><label class="option"><input type="radio" name="q95" value="d"> d. Pu and Th</label></div></div>
+                <div class="question-card" id="qcard96"><div class="q-header"><span class="q-num">96</span><span class="q-text">[Co(NH₃)₅SO₄]Br and [Co(NH₃)₅Br]SO₄ are</span></div><div class="options"><label class="option"><input type="radio" name="q96" value="a"> a. linkage isomers</label><label class="option"><input type="radio" name="q96" value="b"> b. coordination isomers</label><label class="option"><input type="radio" name="q96" value="c"> c. ionisation isomers</label><label class="option"><input type="radio" name="q96" value="d"> d. solvate isomers</label></div></div>
+                <div class="question-card" id="qcard97"><div class="q-header"><span class="q-num">97</span><span class="q-text">KMnO₄ reacts with oxalic acid: 2MnO₄⁻ + 5C₂O₄²⁻ + 16H⁺ → 2Mn²⁺ + 10CO₂ + 8H₂O. 20 mL of 0.1 M KMnO₄ is equivalent to</span></div><div class="options"><label class="option"><input type="radio" name="q97" value="a"> a. 20 mL of 0.5 M H₂C₂O₄</label><label class="option"><input type="radio" name="q97" value="b"> b. 50 mL of 0.1 M H₂C₂O₄</label><label class="option"><input type="radio" name="q97" value="c"> c. 50 mL of 0.01 M H₂C₂O₄</label><label class="option"><input type="radio" name="q97" value="d"> d. 20 mL of 0.1 M H₂C₂O₄</label></div></div>
+                <div class="question-card" id="qcard98"><div class="q-header"><span class="q-num">98</span><span class="q-text">The noble gases exhibit very low chemical reactivity due to</span></div><div class="options"><label class="option"><input type="radio" name="q98" value="a"> a. unavailability of valence electrons</label><label class="option"><input type="radio" name="q98" value="b"> b. stable configuration</label><label class="option"><input type="radio" name="q98" value="c"> c. availability of large number of valence electrons</label><label class="option"><input type="radio" name="q98" value="d"> d. None of the above</label></div></div>
+                <div class="question-card" id="qcard99"><div class="q-header"><span class="q-num">99</span><span class="q-text">4Fe(s) + 3O₂(g) → 2Fe₂O₃(s); ΔS = −549.4 JK⁻¹mol⁻¹ at 298 K, ΔrH° = −1648×10³ J mol⁻¹. The above reaction is</span></div><div class="options"><label class="option"><input type="radio" name="q99" value="a"> a. spontaneous</label><label class="option"><input type="radio" name="q99" value="b"> b. non-spontaneous</label><label class="option"><input type="radio" name="q99" value="c"> c. non-spontaneous at 500 K</label><label class="option"><input type="radio" name="q99" value="d"> d. None of the above</label></div></div>
+                <div class="question-card" id="qcard100"><div class="q-header"><span class="q-num">100</span><span class="q-text">Iodination of alkanes is always carried out in the presence of some oxidising agents like HIO₃. This is because</span></div><div class="options"><label class="option"><input type="radio" name="q100" value="a"> a. it is a very fast process</label><label class="option"><input type="radio" name="q100" value="b"> b. it is a reversible reaction</label><label class="option"><input type="radio" name="q100" value="c"> c. I—I bond is very weak</label><label class="option"><input type="radio" name="q100" value="d"> d. All of the above</label></div></div>
+                <div class="question-card" id="qcard101"><div class="q-header"><span class="q-num">101</span><span class="q-text">The first ionisation potential of Na is 5.1 eV. The value of electron gain enthalpy of Na⁺ will be</span></div><div class="options"><label class="option"><input type="radio" name="q101" value="a"> a. −2.55 eV</label><label class="option"><input type="radio" name="q101" value="b"> b. −5.1 eV</label><label class="option"><input type="radio" name="q101" value="c"> c. −10.2 eV</label><label class="option"><input type="radio" name="q101" value="d"> d. +2.55 eV</label></div></div>
+                <div class="question-card" id="qcard102"><div class="q-header"><span class="q-num">102</span><span class="q-text">A unit cell contains atoms (A) at all corners and atoms (B) at alternate faces and all edge centres. Atoms (C) are present at face centres left from (B) and one at each body diagonal at distance of 1/4th of body diagonal from corner. Formula of the compound is</span></div><div class="options"><label class="option"><input type="radio" name="q102" value="a"> a. A₃B₅C₇</label><label class="option"><input type="radio" name="q102" value="b"> b. AB₄C₆</label><label class="option"><input type="radio" name="q102" value="c"> c. A₆B₄C₈</label><label class="option"><input type="radio" name="q102" value="d"> d. A₂B₅C₁₁</label></div></div>
+                <div class="question-card" id="qcard103"><div class="q-header"><span class="q-num">103</span><span class="q-text">Which of the following structures are the components of an antiseptic? (Chloroxylenol and Terpineol)</span></div><div class="options"><label class="option"><input type="radio" name="q103" value="a"> a. I and III</label><label class="option"><input type="radio" name="q103" value="b"> b. I and II</label><label class="option"><input type="radio" name="q103" value="c"> c. II and IV</label><label class="option"><input type="radio" name="q103" value="d"> d. II and III</label></div></div>
+                <div class="question-card" id="qcard104"><div class="q-header"><span class="q-num">104</span><span class="q-text">Among the properties (A) reducing, (B) oxidising, (C) complexing, the set of properties shown by CN⁻ ion towards metal species is</span></div><div class="options"><label class="option"><input type="radio" name="q104" value="a"> a. B and C</label><label class="option"><input type="radio" name="q104" value="b"> b. A and C</label><label class="option"><input type="radio" name="q104" value="c"> c. A, B and C</label><label class="option"><input type="radio" name="q104" value="d"> d. A and B</label></div></div>
+                <div class="question-card" id="qcard105"><div class="q-header"><span class="q-num">105</span><span class="q-text">Consider the structures I, II and III. They are:</span></div><div class="options"><label class="option"><input type="radio" name="q105" value="a"> a. Histamine; Cimetidine; Ranitidine</label><label class="option"><input type="radio" name="q105" value="b"> b. Histamine; Ranitidine; Cimetidine</label><label class="option"><input type="radio" name="q105" value="c"> c. Cimetidine; Ranitidine; Histamine</label><label class="option"><input type="radio" name="q105" value="d"> d. Cimetidine; Histamine; Ranitidine</label></div></div>
+                <div class="question-card" id="qcard106"><div class="q-header"><span class="q-num">106</span><span class="q-text">Conversion of oxygen into ozone is non-spontaneous at</span></div><div class="options"><label class="option"><input type="radio" name="q106" value="a"> a. low temperature</label><label class="option"><input type="radio" name="q106" value="b"> b. all temperature</label><label class="option"><input type="radio" name="q106" value="c"> c. high temperature</label><label class="option"><input type="radio" name="q106" value="d"> d. room temperature</label></div></div>
+                <div class="question-card" id="qcard107"><div class="q-header"><span class="q-num">107</span><span class="q-text">In Freundlich adsorption isotherm, the value of 1/n is</span></div><div class="options"><label class="option"><input type="radio" name="q107" value="a"> a. between 0 and 1 in all cases</label><label class="option"><input type="radio" name="q107" value="b"> b. between 2 and 4 in all cases</label><label class="option"><input type="radio" name="q107" value="c"> c. 1 in case of physical adsorption</label><label class="option"><input type="radio" name="q107" value="d"> d. 1 in case of chemisorption</label></div></div>
+                <div class="question-card" id="qcard108"><div class="q-header"><span class="q-num">108</span><span class="q-text">Which of the following resonating structures is incorrect?</span></div><div class="options"><label class="option"><input type="radio" name="q108" value="a"> a. Only I</label><label class="option"><input type="radio" name="q108" value="b"> b. Only II</label><label class="option"><input type="radio" name="q108" value="c"> c. Only III</label><label class="option"><input type="radio" name="q108" value="d"> d. None of these</label></div></div>
+                <div class="question-card" id="qcard109"><div class="q-header"><span class="q-num">109</span><span class="q-text">A first order reaction has a rate constant of 2.303×10⁻³ s⁻¹. The time required for 40 g of this reactant to reduce to 10 g will be [Given log₁₀2 = 0.3010]</span></div><div class="options"><label class="option"><input type="radio" name="q109" value="a"> a. 230.3 s</label><label class="option"><input type="radio" name="q109" value="b"> b. 301 s</label><label class="option"><input type="radio" name="q109" value="c"> c. 2000 s</label><label class="option"><input type="radio" name="q109" value="d"> d. 602 s</label></div></div>
+                <div class="question-card" id="qcard110"><div class="q-header"><span class="q-num">110</span><span class="q-text">The major product of bromination of phenol is</span></div><div class="options"><label class="option"><input type="radio" name="q110" value="a"> a. o-bromophenol</label><label class="option"><input type="radio" name="q110" value="b"> b. m-bromophenol</label><label class="option"><input type="radio" name="q110" value="c"> c. 2,4,6-tribromophenol</label><label class="option"><input type="radio" name="q110" value="d"> d. p-bromophenol</label></div></div>
+                <div class="question-card" id="qcard111"><div class="q-header"><span class="q-num">111</span><span class="q-text">Chlorine reacts with</span></div><div class="options"><label class="option"><input type="radio" name="q111" value="a"> a. metals only</label><label class="option"><input type="radio" name="q111" value="b"> b. non-metals only</label><label class="option"><input type="radio" name="q111" value="c"> c. hydrocarbons only</label><label class="option"><input type="radio" name="q111" value="d"> d. All of the above</label></div></div>
+                <div class="question-card" id="qcard112"><div class="q-header"><span class="q-num">112</span><span class="q-text">Aromatic carboxylic acids do not undergo Friedel-Craft's reaction because</span></div><div class="options"><label class="option"><input type="radio" name="q112" value="a"> a. carboxyl group is activating</label><label class="option"><input type="radio" name="q112" value="b"> b. carboxyl group is deactivating and catalyst gets bonded</label><label class="option"><input type="radio" name="q112" value="c"> c. they are too stable</label><label class="option"><input type="radio" name="q112" value="d"> d. None of these</label></div></div>
+                <div class="question-card" id="qcard113"><div class="q-header"><span class="q-num">113</span><span class="q-text">Alkenes react with water in the presence of acid as catalyst to form alcohols. In case of unsymmetrical alkenes, the addition takes place in accordance with</span></div><div class="options"><label class="option"><input type="radio" name="q113" value="a"> a. Anti-Markownikoff's rule</label><label class="option"><input type="radio" name="q113" value="b"> b. Saytzeff rule</label><label class="option"><input type="radio" name="q113" value="c"> c. Markownikoff's rule</label><label class="option"><input type="radio" name="q113" value="d"> d. Kharasch effect</label></div></div>
+                <div class="question-card" id="qcard114"><div class="q-header"><span class="q-num">114</span><span class="q-text">The potential difference between fixed layer and diffused layer of opposite charges is termed as</span></div><div class="options"><label class="option"><input type="radio" name="q114" value="a"> a. zeta potential</label><label class="option"><input type="radio" name="q114" value="b"> b. electrokinetic potential</label><label class="option"><input type="radio" name="q114" value="c"> c. Both (a) and (b)</label><label class="option"><input type="radio" name="q114" value="d"> d. None of these</label></div></div>
+                <div class="question-card" id="qcard115"><div class="q-header"><span class="q-num">115</span><span class="q-text">Nitriles are selectively reduced by DIBAL-H to</span></div><div class="options"><label class="option"><input type="radio" name="q115" value="a"> a. alcohols</label><label class="option"><input type="radio" name="q115" value="b"> b. aldehydes</label><label class="option"><input type="radio" name="q115" value="c"> c. ketones</label><label class="option"><input type="radio" name="q115" value="d"> d. amines</label></div></div>
+                <div class="question-card" id="qcard116"><div class="q-header"><span class="q-num">116</span><span class="q-text">PCl₅ is prepared by the action of Cl₂ on</span></div><div class="options"><label class="option"><input type="radio" name="q116" value="a"> a. P₄</label><label class="option"><input type="radio" name="q116" value="b"> b. PCl₃</label><label class="option"><input type="radio" name="q116" value="c"> c. PH₃</label><label class="option"><input type="radio" name="q116" value="d"> d. POCl₃</label></div></div>
+                <div class="question-card" id="qcard117"><div class="q-header"><span class="q-num">117</span><span class="q-text">2,4-DNP reagent reacts with which of the following to produce orange-red precipitate?</span></div><div class="options"><label class="option"><input type="radio" name="q117" value="a"> a. ethanol</label><label class="option"><input type="radio" name="q117" value="b"> b. ethanoic acid</label><label class="option"><input type="radio" name="q117" value="c"> c. butanone</label><label class="option"><input type="radio" name="q117" value="d"> d. ethane</label></div></div>
+                <div class="question-card" id="qcard118"><div class="q-header"><span class="q-num">118</span><span class="q-text">The order of reactivity of hydrogen halides with ether is</span></div><div class="options"><label class="option"><input type="radio" name="q118" value="a"> a. HCl > HBr > HI</label><label class="option"><input type="radio" name="q118" value="b"> b. HBr > HI > HCl</label><label class="option"><input type="radio" name="q118" value="c"> c. HI > HBr > HCl</label><label class="option"><input type="radio" name="q118" value="d"> d. HI > HCl > HBr</label></div></div>
+                <div class="question-card" id="qcard119"><div class="q-header"><span class="q-num">119</span><span class="q-text">To prepare 20 g of zinc sulphate crystals from 100 g of crystal having 22.65 g of Zn, the amount needed is</span></div><div class="options"><label class="option"><input type="radio" name="q119" value="a"> a. 40.5 g</label><label class="option"><input type="radio" name="q119" value="b"> b. data insufficient</label><label class="option"><input type="radio" name="q119" value="c"> c. 22.65 g</label><label class="option"><input type="radio" name="q119" value="d"> d. 11.3 g</label></div></div>
+                <div class="question-card" id="qcard120"><div class="q-header"><span class="q-num">120</span><span class="q-text">The reaction of alcohol/phenol with acid chloride is carried out in the presence of pyridine to</span></div><div class="options"><label class="option"><input type="radio" name="q120" value="a"> a. neutralise HCl</label><label class="option"><input type="radio" name="q120" value="b"> b. shift equilibrium to right</label><label class="option"><input type="radio" name="q120" value="c"> c. Both (a) and (b)</label><label class="option"><input type="radio" name="q120" value="d"> d. None of these</label></div></div>
+            </div>
+
+            <!-- MATHEMATICS SECTION -->
+            <div class="subject-header" onclick="toggleSection(this)" data-section="maths">
+                📐 MATHEMATICS (Questions 121 – 180)
+                <span class="arrow">▼</span>
+            </div>
+            <div class="subject-body" id="mathsBody">
+                <div class="question-card" id="qcard121"><div class="q-header"><span class="q-num">121</span><span class="q-text">If A = {1, 2, 3, …, n} and B = {a, b}, then the number of onto functions from A to B is</span></div><div class="options"><label class="option"><input type="radio" name="q121" value="a"> a. n²</label><label class="option"><input type="radio" name="q121" value="b"> b. 2ⁿ − 2</label><label class="option"><input type="radio" name="q121" value="c"> c. 2ⁿ − 1</label><label class="option"><input type="radio" name="q121" value="d"> d. 2ⁿ</label></div></div>
+                <div class="question-card" id="qcard122"><div class="q-header"><span class="q-num">122</span><span class="q-text">Let A = N × N and * be a binary operation on A defined by (a,b)*(c,d) = (a+c, b+d). Then the operation * is</span></div><div class="options"><label class="option"><input type="radio" name="q122" value="a"> a. commutative but not associative</label><label class="option"><input type="radio" name="q122" value="b"> b. both commutative and associative</label><label class="option"><input type="radio" name="q122" value="c"> c. associative but not commutative</label><label class="option"><input type="radio" name="q122" value="d"> d. neither commutative nor associative</label></div></div>
+                <div class="question-card" id="qcard123"><div class="q-header"><span class="q-num">123</span><span class="q-text">The function f: R → R defined as f(x) = tan x. Then f⁻¹(1) is</span></div><div class="options"><label class="option"><input type="radio" name="q123" value="a"> a. {π/4}</label><label class="option"><input type="radio" name="q123" value="b"> b. {nπ + π/4 : n ∈ Z}</label><label class="option"><input type="radio" name="q123" value="c"> c. {π/4, 5π/4}</label><label class="option"><input type="radio" name="q123" value="d"> d. None of these</label></div></div>
+                <div class="question-card" id="qcard124"><div class="q-header"><span class="q-num">124</span><span class="q-text">If cotθ + tanθ = 2 cosecθ, then the value of θ is</span></div><div class="options"><label class="option"><input type="radio" name="q124" value="a"> a. nπ ± π/2</label><label class="option"><input type="radio" name="q124" value="b"> b. nπ</label><label class="option"><input type="radio" name="q124" value="c"> c. 2nπ ± π/3</label><label class="option"><input type="radio" name="q124" value="d"> d. nπ ± π/6</label></div></div>
+                <div class="question-card" id="qcard125"><div class="q-header"><span class="q-num">125</span><span class="q-text">If A lies in the second quadrant and 3 tan A + 4 = 0, then the value of 2 cot A − 5 cos A + sin A is</span></div><div class="options"><label class="option"><input type="radio" name="q125" value="a"> a. −53/10</label><label class="option"><input type="radio" name="q125" value="b"> b. 23/10</label><label class="option"><input type="radio" name="q125" value="c"> c. 37/10</label><label class="option"><input type="radio" name="q125" value="d"> d. 7/10</label></div></div>
+                <div class="question-card" id="qcard126"><div class="q-header"><span class="q-num">126</span><span class="q-text">If tan θ = a/b, then b cos 2θ + a sin 2θ is equal to</span></div><div class="options"><label class="option"><input type="radio" name="q126" value="a"> a. a</label><label class="option"><input type="radio" name="q126" value="b"> b. b</label><label class="option"><input type="radio" name="q126" value="c"> c. a/b</label><label class="option"><input type="radio" name="q126" value="d"> d. None of these</label></div></div>
+                <div class="question-card" id="qcard127"><div class="q-header"><span class="q-num">127</span><span class="q-text">If π/2 ≤ x ≤ 3π/2, then sin⁻¹(sin x) is equal to</span></div><div class="options"><label class="option"><input type="radio" name="q127" value="a"> a. x</label><label class="option"><input type="radio" name="q127" value="b"> b. −x</label><label class="option"><input type="radio" name="q127" value="c"> c. π + x</label><label class="option"><input type="radio" name="q127" value="d"> d. π − x</label></div></div>
+                <div class="question-card" id="qcard128"><div class="q-header"><span class="q-num">128</span><span class="q-text">If sin(cot⁻¹(x+1)) = cos(tan⁻¹ x), then the value of x is</span></div><div class="options"><label class="option"><input type="radio" name="q128" value="a"> a. −1/2</label><label class="option"><input type="radio" name="q128" value="b"> b. 1/2</label><label class="option"><input type="radio" name="q128" value="c"> c. 0</label><label class="option"><input type="radio" name="q128" value="d"> d. 9/4</label></div></div>
+                <div class="question-card" id="qcard129"><div class="q-header"><span class="q-num">129</span><span class="q-text">The value of tan⁻¹[(√(1+x²) + √(1−x²))/(√(1+x²) − √(1−x²))] is equal to</span></div><div class="options"><label class="option"><input type="radio" name="q129" value="a"> a. π/4 + cos⁻¹x²</label><label class="option"><input type="radio" name="q129" value="b"> b. π/2 + (1/2)cos⁻¹x²</label><label class="option"><input type="radio" name="q129" value="c"> c. π/4 + (1/2)cos⁻¹x²</label><label class="option"><input type="radio" name="q129" value="d"> d. cos⁻¹x²</label></div></div>
+                <div class="question-card" id="qcard130"><div class="q-header"><span class="q-num">130</span><span class="q-text">The value of tan(π/4 + (1/2)cos⁻¹(a/b)) + tan(π/4 − (1/2)cos⁻¹(a/b)) is</span></div><div class="options"><label class="option"><input type="radio" name="q130" value="a"> a. a/b</label><label class="option"><input type="radio" name="q130" value="b"> b. b/a</label><label class="option"><input type="radio" name="q130" value="c"> c. 2a/b</label><label class="option"><input type="radio" name="q130" value="d"> d. 2b/a</label></div></div>
+                <div class="question-card" id="qcard131"><div class="q-header"><span class="q-num">131</span><span class="q-text">If P(n): 2ⁿ < n! for n ∈ N, then P(n) is true for all n ≥</span></div><div class="options"><label class="option"><input type="radio" name="q131" value="a"> a. 1</label><label class="option"><input type="radio" name="q131" value="b"> b. 2</label><label class="option"><input type="radio" name="q131" value="c"> c. 3</label><label class="option"><input type="radio" name="q131" value="d"> d. 4</label></div></div>
+                <div class="question-card" id="qcard132"><div class="q-header"><span class="q-num">132</span><span class="q-text">If z = x + iy lies in the third quadrant, then z̄/z also lies in the third quadrant, if</span></div><div class="options"><label class="option"><input type="radio" name="q132" value="a"> a. x > y > 0</label><label class="option"><input type="radio" name="q132" value="b"> b. x < y < 0</label><label class="option"><input type="radio" name="q132" value="c"> c. y < x < 0</label><label class="option"><input type="radio" name="q132" value="d"> d. y > x > 0</label></div></div>
+                <div class="question-card" id="qcard133"><div class="q-header"><span class="q-num">133</span><span class="q-text">The complex number z which satisfies |(i+z)/(i−z)| = 1 lies on</span></div><div class="options"><label class="option"><input type="radio" name="q133" value="a"> a. circle x² + y² = 1</label><label class="option"><input type="radio" name="q133" value="b"> b. the X-axis</label><label class="option"><input type="radio" name="q133" value="c"> c. the Y-axis</label><label class="option"><input type="radio" name="q133" value="d"> d. the line x + y = 1</label></div></div>
+                <div class="question-card" id="qcard134"><div class="q-header"><span class="q-num">134</span><span class="q-text">|z₁ + z₂| = |z₁| + |z₂| is possible if</span></div><div class="options"><label class="option"><input type="radio" name="q134" value="a"> a. z₂ = z₁</label><label class="option"><input type="radio" name="q134" value="b"> b. z₂ = −z₁</label><label class="option"><input type="radio" name="q134" value="c"> c. arg(z₁) = arg(z₂)</label><label class="option"><input type="radio" name="q134" value="d"> d. |z₁| = |z₂|</label></div></div>
+                <div class="question-card" id="qcard135"><div class="q-header"><span class="q-num">135</span><span class="q-text">The real value of θ for which the expression (1 + i cosθ)/(1 − 2i cosθ) is a real number is</span></div><div class="options"><label class="option"><input type="radio" name="q135" value="a"> a. nπ + π/4</label><label class="option"><input type="radio" name="q135" value="b"> b. nπ + π/2</label><label class="option"><input type="radio" name="q135" value="c"> c. 2nπ ± π/2</label><label class="option"><input type="radio" name="q135" value="d"> d. nπ</label></div></div>
+                <div class="question-card" id="qcard136"><div class="q-header"><span class="q-num">136</span><span class="q-text">The sum of the digits in unit place of all the numbers formed with the help of 3, 4, 5, 6 taken all at a time is</span></div><div class="options"><label class="option"><input type="radio" name="q136" value="a"> a. 432</label><label class="option"><input type="radio" name="q136" value="b"> b. 108</label><label class="option"><input type="radio" name="q136" value="c"> c. 36</label><label class="option"><input type="radio" name="q136" value="d"> d. 18</label></div></div>
+                <div class="question-card" id="qcard137"><div class="q-header"><span class="q-num">137</span><span class="q-text">In a football championship, 153 matches were played. Every two teams played one match with each other. The number of teams participating is</span></div><div class="options"><label class="option"><input type="radio" name="q137" value="a"> a. 17</label><label class="option"><input type="radio" name="q137" value="b"> b. 18</label><label class="option"><input type="radio" name="q137" value="c"> c. 19</label><label class="option"><input type="radio" name="q137" value="d"> d. 20</label></div></div>
+                <div class="question-card" id="qcard138"><div class="q-header"><span class="q-num">138</span><span class="q-text">The total number of ways in which six '+' and four '−' signs can be arranged in a line such that no two '−' signs occur together is</span></div><div class="options"><label class="option"><input type="radio" name="q138" value="a"> a. 35</label><label class="option"><input type="radio" name="q138" value="b"> b. 36</label><label class="option"><input type="radio" name="q138" value="c"> c. 40</label><label class="option"><input type="radio" name="q138" value="d"> d. 46</label></div></div>
+                <div class="question-card" id="qcard139"><div class="q-header"><span class="q-num">139</span><span class="q-text">If A and B are coefficients of xⁿ in the expansions of (1+x)²ⁿ and (1+x)²ⁿ⁻¹ respectively, then A/B equals</span></div><div class="options"><label class="option"><input type="radio" name="q139" value="a"> a. 1</label><label class="option"><input type="radio" name="q139" value="b"> b. 2</label><label class="option"><input type="radio" name="q139" value="c"> c. 1/2</label><label class="option"><input type="radio" name="q139" value="d"> d. 1/n</label></div></div>
+                <div class="question-card" id="qcard140"><div class="q-header"><span class="q-num">140</span><span class="q-text">The coefficient of a⁻⁶ b⁴ in the expansion of (1/a − 2b/3)¹⁰ is</span></div><div class="options"><label class="option"><input type="radio" name="q140" value="a"> a. 1120/27</label><label class="option"><input type="radio" name="q140" value="b"> b. 1240/27</label><label class="option"><input type="radio" name="q140" value="c"> c. 1520/27</label><label class="option"><input type="radio" name="q140" value="d"> d. 1720/27</label></div></div>
+                <div class="question-card" id="qcard141"><div class="q-header"><span class="q-num">141</span><span class="q-text">If the sum of n terms of an AP is given by Sₙ = 3n + 2n², then the common difference of the AP is</span></div><div class="options"><label class="option"><input type="radio" name="q141" value="a"> a. 3</label><label class="option"><input type="radio" name="q141" value="b"> b. 2</label><label class="option"><input type="radio" name="q141" value="c"> c. 6</label><label class="option"><input type="radio" name="q141" value="d"> d. 4</label></div></div>
+                <div class="question-card" id="qcard142"><div class="q-header"><span class="q-num">142</span><span class="q-text">The lengths of three unequal edges of a rectangular solid block are in GP. Volume = 216 cm³, total surface area = 252 cm². The length of the longest edge is</span></div><div class="options"><label class="option"><input type="radio" name="q142" value="a"> a. 12 cm</label><label class="option"><input type="radio" name="q142" value="b"> b. 6 cm</label><label class="option"><input type="radio" name="q142" value="c"> c. 18 cm</label><label class="option"><input type="radio" name="q142" value="d"> d. 3 cm</label></div></div>
+                <div class="question-card" id="qcard143"><div class="q-header"><span class="q-num">143</span><span class="q-text">The equation of the straight line passing through the point (3,2) and perpendicular to the line y = x is</span></div><div class="options"><label class="option"><input type="radio" name="q143" value="a"> a. x − y = 5</label><label class="option"><input type="radio" name="q143" value="b"> b. x + y = 5</label><label class="option"><input type="radio" name="q143" value="c"> c. x + y = 1</label><label class="option"><input type="radio" name="q143" value="d"> d. x − y = 1</label></div></div>
+                <div class="question-card" id="qcard144"><div class="q-header"><span class="q-num">144</span><span class="q-text">If the coordinates of the middle point of the portion of a line intercepted between the coordinate axes is (3,2), then the equation of the line is</span></div><div class="options"><label class="option"><input type="radio" name="q144" value="a"> a. 2x + 3y = 12</label><label class="option"><input type="radio" name="q144" value="b"> b. 3x + 2y = 12</label><label class="option"><input type="radio" name="q144" value="c"> c. 4x − 3y = 6</label><label class="option"><input type="radio" name="q144" value="d"> d. 5x − 2y = 10</label></div></div>
+                <div class="question-card" id="qcard145"><div class="q-header"><span class="q-num">145</span><span class="q-text">Equations of diagonals of the square formed by the lines x = 0, y = 0, x = 1, y = 1 are</span></div><div class="options"><label class="option"><input type="radio" name="q145" value="a"> a. y = x, y + x = 1</label><label class="option"><input type="radio" name="q145" value="b"> b. y = x, x + y = 2</label><label class="option"><input type="radio" name="q145" value="c"> c. 2y = x, y + x = 1/3</label><label class="option"><input type="radio" name="q145" value="d"> d. y = 2x, y + 2x = 1</label></div></div>
+                <div class="question-card" id="qcard146"><div class="q-header"><span class="q-num">146</span><span class="q-text">The point (4,1) undergoes: (i) Reflection about the line y = x, (ii) Translation 2 units along positive X-axis. Final coordinates are</span></div><div class="options"><label class="option"><input type="radio" name="q146" value="a"> a. (4,3)</label><label class="option"><input type="radio" name="q146" value="b"> b. (3,4)</label><label class="option"><input type="radio" name="q146" value="c"> c. (1,4)</label><label class="option"><input type="radio" name="q146" value="d"> d. (7/2, 7/2)</label></div></div>
+                <div class="question-card" id="qcard147"><div class="q-header"><span class="q-num">147</span><span class="q-text">The area of the circle centred at (1,2) and passing through the point (4,6) is</span></div><div class="options"><label class="option"><input type="radio" name="q147" value="a"> a. 5π</label><label class="option"><input type="radio" name="q147" value="b"> b. 10π</label><label class="option"><input type="radio" name="q147" value="c"> c. 25π</label><label class="option"><input type="radio" name="q147" value="d"> d. None of these</label></div></div>
+                <div class="question-card" id="qcard148"><div class="q-header"><span class="q-num">148</span><span class="q-text">Equation of the circle with centre on Y-axis and passing through (0,0) and (2,3) is</span></div><div class="options"><label class="option"><input type="radio" name="q148" value="a"> a. x² + y² + 13y = 0</label><label class="option"><input type="radio" name="q148" value="b"> b. 3x² + 3y² + 13x + 3 = 0</label><label class="option"><input type="radio" name="q148" value="c"> c. 6x² + 6y² − 13y = 0</label><label class="option"><input type="radio" name="q148" value="d"> d. x² + y² + 13x + 3 = 0</label></div></div>
+                <div class="question-card" id="qcard149"><div class="q-header"><span class="q-num">149</span><span class="q-text">A beam supported 12 m apart, load at centre, deflection 3 cm at centre in parabolic shape. Distance between deflection of 1 cm and the centre is</span></div><div class="options"><label class="option"><input type="radio" name="q149" value="a"> a. 2√6 m</label><label class="option"><input type="radio" name="q149" value="b"> b. 3√6 m</label><label class="option"><input type="radio" name="q149" value="c"> c. 4√6 m</label><label class="option"><input type="radio" name="q149" value="d"> d. 5√6 m</label></div></div>
+                <div class="question-card" id="qcard150"><div class="q-header"><span class="q-num">150</span><span class="q-text">The locus of a variable point whose distance from (−2,0) is 2/3 times its distance from the line x = −9/2 is</span></div><div class="options"><label class="option"><input type="radio" name="q150" value="a"> a. ellipse</label><label class="option"><input type="radio" name="q150" value="b"> b. parabola</label><label class="option"><input type="radio" name="q150" value="c"> c. hyperbola</label><label class="option"><input type="radio" name="q150" value="d"> d. None of these</label></div></div>
+                <div class="question-card" id="qcard151"><div class="q-header"><span class="q-num">151</span><span class="q-text">The equation x²/(2−r) + y²/(r−5) + 1 = 0 represents an ellipse if</span></div><div class="options"><label class="option"><input type="radio" name="q151" value="a"> a. r > 2</label><label class="option"><input type="radio" name="q151" value="b"> b. 2 < r < 5</label><label class="option"><input type="radio" name="q151" value="c"> c. r > 5</label><label class="option"><input type="radio" name="q151" value="d"> d. None of the above</label></div></div>
+                <div class="question-card" id="qcard152"><div class="q-header"><span class="q-num">152</span><span class="q-text">The equations of transverse and conjugate axes of 16x² − y² + 64x + 4y + 44 = 0 are respectively</span></div><div class="options"><label class="option"><input type="radio" name="q152" value="a"> a. x = 2, y + 2 = 0</label><label class="option"><input type="radio" name="q152" value="b"> b. x = 2, y = 2</label><label class="option"><input type="radio" name="q152" value="c"> c. y = 2, x + 2 = 0</label><label class="option"><input type="radio" name="q152" value="d"> d. None of these</label></div></div>
+                <div class="question-card" id="qcard153"><div class="q-header"><span class="q-num">153</span><span class="q-text">The distance between the directrices of the hyperbola x = 8 secθ, y = 8 tanθ is</span></div><div class="options"><label class="option"><input type="radio" name="q153" value="a"> a. 16√2</label><label class="option"><input type="radio" name="q153" value="b"> b. √2</label><label class="option"><input type="radio" name="q153" value="c"> c. 8√2</label><label class="option"><input type="radio" name="q153" value="d"> d. 4√2</label></div></div>
+                <div class="question-card" id="qcard154"><div class="q-header"><span class="q-num">154</span><span class="q-text">If a plane cuts off intercepts −6, 3, 4 from axes, the length of perpendicular from origin to the plane is</span></div><div class="options"><label class="option"><input type="radio" name="q154" value="a"> a. 1/√61</label><label class="option"><input type="radio" name="q154" value="b"> b. 13/√61</label><label class="option"><input type="radio" name="q154" value="c"> c. 12/√29</label><label class="option"><input type="radio" name="q154" value="d"> d. 5/√41</label></div></div>
+                <div class="question-card" id="qcard155"><div class="q-header"><span class="q-num">155</span><span class="q-text">If f(x) = 1 − x + x² − x³ + … − x⁹⁹ + x¹⁰⁰, then f′(1) is equal to</span></div><div class="options"><label class="option"><input type="radio" name="q155" value="a"> a. 150</label><label class="option"><input type="radio" name="q155" value="b"> b. −50</label><label class="option"><input type="radio" name="q155" value="c"> c. −150</label><label class="option"><input type="radio" name="q155" value="d"> d. 50</label></div></div>
+                <div class="question-card" id="qcard156"><div class="q-header"><span class="q-num">156</span><span class="q-text">f(x) = { x[x], if 0≤x<2; (x−1)x, if 2≤x<3 } is</span></div><div class="options"><label class="option"><input type="radio" name="q156" value="a"> a. differentiable at x = 2</label><label class="option"><input type="radio" name="q156" value="b"> b. not differentiable at x = 2</label><label class="option"><input type="radio" name="q156" value="c"> c. continuous at x = 2</label><label class="option"><input type="radio" name="q156" value="d"> d. None of the above</label></div></div>
+                <div class="question-card" id="qcard157"><div class="q-header"><span class="q-num">157</span><span class="q-text">If y = (1+x)(1+x²)(1+x⁴)…(1+x²ⁿ), then the value of dy/dx at x = 0 is</span></div><div class="options"><label class="option"><input type="radio" name="q157" value="a"> a. 0</label><label class="option"><input type="radio" name="q157" value="b"> b. −1</label><label class="option"><input type="radio" name="q157" value="c"> c. 1</label><label class="option"><input type="radio" name="q157" value="d"> d. None of these</label></div></div>
+                <div class="question-card" id="qcard158"><div class="q-header"><span class="q-num">158</span><span class="q-text">If y = logₑ(x/√(x²+1)), then dy/dx is</span></div><div class="options"><label class="option"><input type="radio" name="q158" value="a"> a. 1/(x(x²+1))</label><label class="option"><input type="radio" name="q158" value="b"> b. 1/(x²+1)</label><label class="option"><input type="radio" name="q158" value="c"> c. −1/(x²+1)</label><label class="option"><input type="radio" name="q158" value="d"> d. 1/x</label></div></div>
+                <div class="question-card" id="qcard159"><div class="q-header"><span class="q-num">159</span><span class="q-text">The minimum value of f(x) = |x−1| + |x−2| + |x−3| is</span></div><div class="options"><label class="option"><input type="radio" name="q159" value="a"> a. 1</label><label class="option"><input type="radio" name="q159" value="b"> b. 3</label><label class="option"><input type="radio" name="q159" value="c"> c. 4</label><label class="option"><input type="radio" name="q159" value="d"> d. 2</label></div></div>
+                <div class="question-card" id="qcard160"><div class="q-header"><span class="q-num">160</span><span class="q-text">∫(eˣ(1+sin x)/(1+cos x))dx equals</span></div><div class="options"><label class="option"><input type="radio" name="q160" value="a"> a. eˣ tan(x/2) + C</label><label class="option"><input type="radio" name="q160" value="b"> b. eˣ cot(x/2) + C</label><label class="option"><input type="radio" name="q160" value="c"> c. eˣ sec(x/2) + C</label><label class="option"><input type="radio" name="q160" value="d"> d. eˣ cosec(x/2) + C</label></div></div>
+                <div class="question-card" id="qcard161"><div class="q-header"><span class="q-num">161</span><span class="q-text">∫₀^(π/2) log(sin x) dx equals</span></div><div class="options"><label class="option"><input type="radio" name="q161" value="a"> a. −(π/2) log 2</label><label class="option"><input type="radio" name="q161" value="b"> b. (π/2) log 2</label><label class="option"><input type="radio" name="q161" value="c"> c. −π log 2</label><label class="option"><input type="radio" name="q161" value="d"> d. π log 2</label></div></div>
+                <div class="question-card" id="qcard162"><div class="q-header"><span class="q-num">162</span><span class="q-text">∫₀^(π/4) (tan x + cot x) dx equals</span></div><div class="options"><label class="option"><input type="radio" name="q162" value="a"> a. √2</label><label class="option"><input type="radio" name="q162" value="b"> b. √2 · (π/2)</label><label class="option"><input type="radio" name="q162" value="c"> c. π/2</label><label class="option"><input type="radio" name="q162" value="d"> d. 2√2</label></div></div>
+                <div class="question-card" id="qcard163"><div class="q-header"><span class="q-num">163</span><span class="q-text">∫(dx/(eˣ + e⁻ˣ)) is equal to</span></div><div class="options"><label class="option"><input type="radio" name="q163" value="a"> a. tan⁻¹(eˣ) + C</label><label class="option"><input type="radio" name="q163" value="b"> b. tan⁻¹(e⁻ˣ) + C</label><label class="option"><input type="radio" name="q163" value="c"> c. log(eˣ − e⁻ˣ) + C</label><label class="option"><input type="radio" name="q163" value="d"> d. log(eˣ + e⁻ˣ) + C</label></div></div>
+                <div class="question-card" id="qcard164"><div class="q-header"><span class="q-num">164</span><span class="q-text">∫₀¹ x(1−x)ⁿ dx equals</span></div><div class="options"><label class="option"><input type="radio" name="q164" value="a"> a. 1/((n+1)(n+2))</label><label class="option"><input type="radio" name="q164" value="b"> b. 1/(n+1) − 1/(n+2)</label><label class="option"><input type="radio" name="q164" value="c"> c. Both (a) and (b)</label><label class="option"><input type="radio" name="q164" value="d"> d. None of these</label></div></div>
+                <div class="question-card" id="qcard165"><div class="q-header"><span class="q-num">165</span><span class="q-text">∫₀¹ x(1−x)ⁿ dx equals</span></div><div class="options"><label class="option"><input type="radio" name="q165" value="a"> a. 1/(n+1)</label><label class="option"><input type="radio" name="q165" value="b"> b. 1/((n+1)(n+2))</label><label class="option"><input type="radio" name="q165" value="c"> c. 1/(n+2)</label><label class="option"><input type="radio" name="q165" value="d"> d. (n+1)/(n+2)</label></div></div>
+                <div class="question-card" id="qcard166"><div class="q-header"><span class="q-num">166</span><span class="q-text">∫₋₃π/₂^(π/2)[(x+π)³ + cos²x] dx equals</span></div><div class="options"><label class="option"><input type="radio" name="q166" value="a"> a. π/4</label><label class="option"><input type="radio" name="q166" value="b"> b. π/2</label><label class="option"><input type="radio" name="q166" value="c"> c. π</label><label class="option"><input type="radio" name="q166" value="d"> d. 2π</label></div></div>
+                <div class="question-card" id="qcard167"><div class="q-header"><span class="q-num">167</span><span class="q-text">∫ f′(ax+b)[f(ax+b)]ⁿ dx equals</span></div><div class="options"><label class="option"><input type="radio" name="q167" value="a"> a. [f(ax+b)]ⁿ⁺¹/(n+1) + C</label><label class="option"><input type="radio" name="q167" value="b"> b. (1/a)·[f(ax+b)]ⁿ⁺¹/(n+1) + C</label><label class="option"><input type="radio" name="q167" value="c"> c. a·[f(ax+b)]ⁿ⁺¹/(n+1) + C</label><label class="option"><input type="radio" name="q167" value="d"> d. None of these</label></div></div>
+                <div class="question-card" id="qcard168"><div class="q-header"><span class="q-num">168</span><span class="q-text">∫(cos 2x)/(sin x + cos x)² dx equals</span></div><div class="options"><label class="option"><input type="radio" name="q168" value="a"> a. log|sin x − cos x| + C</label><label class="option"><input type="radio" name="q168" value="b"> b. log|sin x + cos x| + C</label><label class="option"><input type="radio" name="q168" value="c"> c. −log|sin x + cos x| + C</label><label class="option"><input type="radio" name="q168" value="d"> d. None of these</label></div></div>
+                <div class="question-card" id="qcard169"><div class="q-header"><span class="q-num">169</span><span class="q-text">The smaller area enclosed by x² + y² = 4 and x + y = 2 is</span></div><div class="options"><label class="option"><input type="radio" name="q169" value="a"> a. π − 1</label><label class="option"><input type="radio" name="q169" value="b"> b. π − 2</label><label class="option"><input type="radio" name="q169" value="c"> c. 2π − 1</label><label class="option"><input type="radio" name="q169" value="d"> d. 2(π − 2)</label></div></div>
+                <div class="question-card" id="qcard170"><div class="q-header"><span class="q-num">170</span><span class="q-text">The differential equation of xy = log y + C is</span></div><div class="options"><label class="option"><input type="radio" name="q170" value="a"> a. y′ = y/(1−xy)</label><label class="option"><input type="radio" name="q170" value="b"> b. y′ = y²/(1−xy)</label><label class="option"><input type="radio" name="q170" value="c"> c. y′ = (1−xy)/y</label><label class="option"><input type="radio" name="q170" value="d"> d. None of these</label></div></div>
+                <div class="question-card" id="qcard171"><div class="q-header"><span class="q-num">171</span><span class="q-text">The solution of dy/dx = y + y/x is</span></div><div class="options"><label class="option"><input type="radio" name="q171" value="a"> a. y = Ceˣ/x</label><label class="option"><input type="radio" name="q171" value="b"> b. y = kx·eˣ</label><label class="option"><input type="radio" name="q171" value="c"> c. y = Ceˣ</label><label class="option"><input type="radio" name="q171" value="d"> d. y = Cxeˣ</label></div></div>
+                <div class="question-card" id="qcard172"><div class="q-header"><span class="q-num">172</span><span class="q-text">If y(t) is a solution of (1+t)dy/dt − ty = −1 and y(0) = −1, then y(1) is</span></div><div class="options"><label class="option"><input type="radio" name="q172" value="a"> a. −1/2</label><label class="option"><input type="radio" name="q172" value="b"> b. e + 1/2</label><label class="option"><input type="radio" name="q172" value="c"> c. e − 1/2</label><label class="option"><input type="radio" name="q172" value="d"> d. 1/2</label></div></div>
+                <div class="question-card" id="qcard173"><div class="q-header"><span class="q-num">173</span><span class="q-text">If ABCDEF is a regular hexagon with AB = a and BC = b, then CE is equal to</span></div><div class="options"><label class="option"><input type="radio" name="q173" value="a"> a. b − a</label><label class="option"><input type="radio" name="q173" value="b"> b. −b</label><label class="option"><input type="radio" name="q173" value="c"> c. b − 2a</label><label class="option"><input type="radio" name="q173" value="d"> d. None of these</label></div></div>
+                <div class="question-card" id="qcard174"><div class="q-header"><span class="q-num">174</span><span class="q-text">Let a, b, c be three non-zero vectors. If a+2b is collinear with c and b+3c is collinear with a, then a+2b+6c equals</span></div><div class="options"><label class="option"><input type="radio" name="q174" value="a"> a. a</label><label class="option"><input type="radio" name="q174" value="b"> b. b</label><label class="option"><input type="radio" name="q174" value="c"> c. c</label><label class="option"><input type="radio" name="q174" value="d"> d. 0</label></div></div>
+                <div class="question-card" id="qcard175"><div class="q-header"><span class="q-num">175</span><span class="q-text">If A = [[0,2],[3,−4]] and kA = [[0,3a],[2b,24]], then k, a, b are</span></div><div class="options"><label class="option"><input type="radio" name="q175" value="a"> a. −6, −12, −18</label><label class="option"><input type="radio" name="q175" value="b"> b. −6, 4, 9</label><label class="option"><input type="radio" name="q175" value="c"> c. −6, −4, −9</label><label class="option"><input type="radio" name="q175" value="d"> d. −6, 12, 18</label></div></div>
+                <div class="question-card" id="qcard176"><div class="q-header"><span class="q-num">176</span><span class="q-text">If A is a skew-symmetric matrix of odd order n, then</span></div><div class="options"><label class="option"><input type="radio" name="q176" value="a"> a. |A| = 0</label><label class="option"><input type="radio" name="q176" value="b"> b. |A| = −1</label><label class="option"><input type="radio" name="q176" value="c"> c. |A| = |A′|</label><label class="option"><input type="radio" name="q176" value="d"> d. None of these</label></div></div>
+                <div class="question-card" id="qcard177"><div class="q-header"><span class="q-num">177</span><span class="q-text">If a determinant with rows [1,1,1], [1+sinA, 1+sinB, 1+sinC], [sinA+sin²A, sinB+sin²B, sinC+sin²C] equals 0, then ΔABC is</span></div><div class="options"><label class="option"><input type="radio" name="q177" value="a"> a. equilateral triangle</label><label class="option"><input type="radio" name="q177" value="b"> b. isosceles triangle</label><label class="option"><input type="radio" name="q177" value="c"> c. right angled triangle</label><label class="option"><input type="radio" name="q177" value="d"> d. None of the above</label></div></div>
+                <div class="question-card" id="qcard178"><div class="q-header"><span class="q-num">178</span><span class="q-text">Three persons A, B, C fire at a target. P(A)=0.4, P(B)=0.3, P(C)=0.2. Probability of exactly two hits is</span></div><div class="options"><label class="option"><input type="radio" name="q178" value="a"> a. 0.024</label><label class="option"><input type="radio" name="q178" value="b"> b. 0.188</label><label class="option"><input type="radio" name="q178" value="c"> c. 0.336</label><label class="option"><input type="radio" name="q178" value="d"> d. 0.452</label></div></div>
+                <div class="question-card" id="qcard179"><div class="q-header"><span class="q-num">179</span><span class="q-text">The converse of "If x > y, then x + a > y + a" is</span></div><div class="options"><label class="option"><input type="radio" name="q179" value="a"> a. If x < y, then x + a < y + a</label><label class="option"><input type="radio" name="q179" value="b"> b. If x + a > y + a, then x > y</label><label class="option"><input type="radio" name="q179" value="c"> c. If x < y, then x + a < y + a</label><label class="option"><input type="radio" name="q179" value="d"> d. If x > y, then x + a < y + a</label></div></div>
+                <div class="question-card" id="qcard180"><div class="q-header"><span class="q-num">180</span><span class="q-text">Anil wants to invest at most ₹12000 in bonds A and B. At least ₹2000 in A and ₹4000 in B. Interest: A=8%, B=10%. To maximise interest, investment in A and B are respectively</span></div><div class="options"><label class="option"><input type="radio" name="q180" value="a"> a. ₹10000 and ₹2000</label><label class="option"><input type="radio" name="q180" value="b"> b. ₹2000 and ₹10000</label><label class="option"><input type="radio" name="q180" value="c"> c. ₹6000 and ₹6000</label><label class="option"><input type="radio" name="q180" value="d"> d. None of the above</label></div></div>
+            </div>
+        </form>
+    </div>
+
+    <div class="bottom-bar">
+        <button class="btn btn-submit" onclick="submitTest()" id="btnSubmit">📩 Submit & Review</button>
+        <button class="btn btn-reset" onclick="resetTest()">🔄 Reset All</button>
+    </div>
+
+    <script>
+        // ANSWER KEY
+        const answerKey = {
+            // Physics 1-60
+            1: 'a',
+            2: 'c',
+            3: 'b',
+            4: 'd',
+            5: 'd',
+            6: 'a',
+            7: 'd',
+            8: 'c',
+            9: 'b',
+            10: 'c',
+            11: 'b',
+            12: 'a',
+            13: 'b',
+            14: 'a',
+            15: 'c',
+            16: 'a',
+            17: 'b',
+            18: 'c',
+            19: 'b',
+            20: 'b',
+            21: 'a',
+            22: 'c',
+            23: 'c',
+            24: 'a',
+            25: 'a',
+            26: 'c',
+            27: 'a',
+            28: 'a',
+            29: 'c',
+            30: 'd',
+            31: 'd',
+            32: 'b',
+            33: 'd',
+            34: 'c',
+            35: 'c',
+            36: 'c',
+            37: 'c',
+            38: 'd',
+            39: 'd',
+            40: 'd',
+            41: 'd',
+            42: 'c',
+            43: 'a',
+            44: 'a',
+            45: 'b',
+            46: 'c',
+            47: 'a',
+            48: 'c',
+            49: 'd',
+            50: 'c',
+            51: 'a',
+            52: 'd',
+            53: 'a',
+            54: 'a',
+            55: 'c',
+            56: 'b',
+            57: 'b',
+            58: 'c',
+            59: 'a',
+            60: 'c',
+            // Chemistry 61-120
+            61: 'd',
+            62: 'd',
+            63: 'd',
+            64: 'd',
+            65: 'c',
+            66: 'c',
+            67: 'd',
+            68: 'b',
+            69: 'a',
+            70: 'c',
+            71: 'a',
+            72: 'c',
+            73: 'b',
+            74: 'a',
+            75: 'd',
+            76: 'b',
+            77: 'a',
+            78: 'd',
+            79: 'c',
+            80: 'c',
+            81: 'a',
+            82: 'b',
+            83: 'b',
+            84: 'd',
+            85: 'a',
+            86: 'c',
+            87: 'a',
+            88: 'b',
+            89: 'b',
+            90: 'a',
+            91: 'a',
+            92: 'b',
+            93: 'd',
+            94: 'c',
+            95: 'b',
+            96: 'c',
+            97: 'b',
+            98: 'b',
+            99: 'a',
+            100: 'b',
+            101: 'b',
+            102: 'd',
+            103: 'b',
+            104: 'b',
+            105: 'a',
+            106: 'b',
+            107: 'a',
+            108: 'b',
+            109: 'd',
+            110: 'c',
+            111: 'd',
+            112: 'b',
+            113: 'c',
+            114: 'a',
+            115: 'b',
+            116: 'a',
+            117: 'c',
+            118: 'c',
+            119: 'b',
+            120: 'c',
+            // Mathematics 121-180
+            121: 'b',
+            122: 'b',
+            123: 'b',
+            124: 'c',
+            125: 'b',
+            126: 'b',
+            127: 'd',
+            128: 'a',
+            129: 'c',
+            130: 'd',
+            131: 'd',
+            132: 'b',
+            133: 'b',
+            134: 'c',
+            135: 'c',
+            136: 'b',
+            137: 'b',
+            138: 'a',
+            139: 'b',
+            140: 'a',
+            141: 'd',
+            142: 'a',
+            143: 'b',
+            144: 'a',
+            145: 'a',
+            146: 'b',
+            147: 'c',
+            148: 'c',
+            149: 'a',
+            150: 'a',
+            151: 'b',
+            152: 'c',
+            153: 'c',
+            154: 'c',
+            155: 'd',
+            156: 'b',
+            157: 'c',
+            158: 'a',
+            159: 'd',
+            160: 'a',
+            161: 'a',
+            162: 'b',
+            163: 'a',
+            164: 'c',
+            165: 'b',
+            166: 'b',
+            167: 'b',
+            168: 'b',
+            169: 'b',
+            170: 'a',
+            171: 'b',
+            172: 'a',
+            173: 'c',
+            174: 'd',
+            175: 'c',
+            176: 'a',
+            177: 'b',
+            178: 'b',
+            179: 'b',
+            180: 'b'
+        };
+
+        let submitted = false;
+        let timerInterval;
+        let totalSeconds = 180 * 60; // 180 minutes
+
+        // Timer
+        function updateTimer() {
+            const mins = Math.floor(totalSeconds / 60);
+            const secs = totalSeconds % 60;
+            const timerEl = document.getElementById('timer');
+            timerEl.textContent = String(mins).padStart(2, '0') + ':' + String(secs).padStart(2, '0');
+            if (totalSeconds <= 300) timerEl.classList.add('warning');
+            if (totalSeconds <= 0) {
+                clearInterval(timerInterval);
+                submitTest();
+            }
+            totalSeconds--;
+        }
+        timerInterval = setInterval(updateTimer, 1000);
+
+        // Toggle subject sections
+        function toggleSection(header) {
+            header.classList.toggle('collapsed');
+            const section = header.getAttribute('data-section');
+            const body = document.getElementById(section + 'Body');
+            body.classList.toggle('collapsed');
+        }
+
+        // Highlight selected options
+        document.addEventListener('change', function(e) {
+            if (e.target.type === 'radio' && !submitted) {
+                const qNum = e.target.name.replace('q', '');
+                const card = document.getElementById('qcard' + qNum);
+                card.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+                e.target.closest('.option').classList.add('selected');
+                updateNavPalette();
+            }
+        });
+
+        // Build navigation palette
+        function buildNavPalette() {
+            const palette = document.getElementById('navPalette');
+            palette.innerHTML = '';
+            for (let i = 1; i <= 180; i++) {
+                const dot = document.createElement('span');
+                dot.className = 'nav-dot';
+                dot.textContent = i;
+                dot.title = 'Q' + i;
+                dot.onclick = () => {
+                    const card = document.getElementById('qcard' + i);
+                    if (card) {
+                        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        card.style.boxShadow = '0 0 0 3px #2563eb';
+                        setTimeout(() => card.style.boxShadow = '', 2000);
+                    }
+                };
+                palette.appendChild(dot);
+            }
+        }
+        buildNavPalette();
+
+        function updateNavPalette() {
+            const dots = document.querySelectorAll('.nav-dot');
+            dots.forEach((dot, idx) => {
+                const qNum = idx + 1;
+                const checked = document.querySelector(`input[name="q${qNum}"]:checked`);
+                dot.classList.toggle('answered', !!checked);
+            });
+        }
+
+        // Submit & Review
+        function submitTest() {
+            if (submitted) return;
+            submitted = true;
+            clearInterval(timerInterval);
+            document.getElementById('btnSubmit').textContent = '✅ Reviewed';
+            document.getElementById('btnSubmit').style.background = '#6b7280';
+
+            let correct = 0,
+                wrong = 0,
+                unanswered = 0;
+            let physCorrect = 0,
+                physTotal = 0;
+            let chemCorrect = 0,
+                chemTotal = 0;
+            let mathCorrect = 0,
+                mathTotal = 0;
+
+            for (let i = 1; i <= 180; i++) {
+                const card = document.getElementById('qcard' + i);
+                const options = card.querySelectorAll('.option');
+                const checked = document.querySelector(`input[name="q${i}"]:checked`);
+                const correctVal = answerKey[i];
+
+                // Determine subject
+                let subject = 'physics';
+                if (i >= 61 && i <= 120) subject = 'chemistry';
+                if (i >= 121 && i <= 180) subject = 'maths';
+
+                // Mark correct answer
+                options.forEach(opt => {
+                    const inp = opt.querySelector('input');
+                    if (inp.value === correctVal) {
+                        opt.classList.add('correct-answer');
+                    }
+                });
+
+                if (!checked) {
+                    unanswered++;
+                    card.classList.add('reviewed-unanswered');
+                    const badge = document.createElement('span');
+                    badge.className = 'feedback-badge unanswered';
+                    badge.textContent = 'Unanswered';
+                    card.querySelector('.q-header').appendChild(badge);
+                } else {
+                    const userVal = checked.value;
+                    if (userVal === correctVal) {
+                        correct++;
+                        card.classList.add('reviewed-correct');
+                        const badge = document.createElement('span');
+                        badge.className = 'feedback-badge correct';
+                        badge.textContent = '✓ Correct';
+                        card.querySelector('.q-header').appendChild(badge);
+                        if (subject === 'physics') physCorrect++;
+                        if (subject === 'chemistry') chemCorrect++;
+                        if (subject === 'maths') mathCorrect++;
+                    } else {
+                        wrong++;
+                        card.classList.add('reviewed-wrong');
+                        const badge = document.createElement('span');
+                        badge.className = 'feedback-badge wrong';
+                        badge.textContent = '✗ Wrong (Ans: ' + correctVal.toUpperCase() + ')';
+                        card.querySelector('.q-header').appendChild(badge);
+                        checked.closest('.option').classList.add('wrong-choice');
+                    }
+                }
+                if (subject === 'physics') physTotal++;
+                if (subject === 'chemistry') chemTotal++;
+                if (subject === 'maths') mathTotal++;
+
+                // Disable further changes
+                card.querySelectorAll('input[type="radio"]').forEach(r => r.disabled = true);
+            }
+
+            // Show score
+            const scoreDisplay = document.getElementById('scoreDisplay');
+            scoreDisplay.classList.add('show');
+            const total = correct + wrong + unanswered;
+            document.getElementById('scoreText').textContent =
+                `📊 Score: ${correct} / ${total} (${Math.round(correct/total*100)}%)`;
+            document.getElementById('scoreBreakdown').innerHTML = `
+            <span style="color:#059669;">✅ Correct: ${correct}</span>
+            <span style="color:#dc2626;">❌ Wrong: ${wrong}</span>
+            <span style="color:#f59e0b;">⬜ Unanswered: ${unanswered}</span>
+            <br><small>Physics: ${physCorrect}/${physTotal} | Chemistry: ${chemCorrect}/${chemTotal} | Maths: ${mathCorrect}/${mathTotal}</small>
+          `;
+            document.getElementById('reviewHint').textContent =
+                '🔍 Scroll through to review all answers. Correct answers are highlighted in green.';
+            scoreDisplay.scrollIntoView({ behavior: 'smooth' });
+
+            updateNavPalette();
+            // Mark nav dots with results
+            const dots = document.querySelectorAll('.nav-dot');
+            dots.forEach((dot, idx) => {
+                const qNum = idx + 1;
+                const correctVal = answerKey[qNum];
+                const checked = document.querySelector(`input[name="q${qNum}"]:checked`);
+                if (!checked) {
+                    dot.classList.add('marked');
+                } else if (checked.value === correctVal) {
+                    dot.style.background = '#d1fae5';
+                    dot.style.borderColor = '#059669';
+                } else {
+                    dot.style.background = '#fee2e2';
+                    dot.style.borderColor = '#dc2626';
+                }
+            });
+        }
+
+        // Reset
+        function resetTest() {
+            if (confirm('Are you sure you want to reset all answers? This cannot be undone.')) {
+                document.querySelectorAll('input[type="radio"]').forEach(r => {
+                    r.checked = false;
+                    r.disabled = false;
+                });
+                document.querySelectorAll('.question-card').forEach(card => {
+                    card.classList.remove('reviewed-correct', 'reviewed-wrong',
+                    'reviewed-unanswered');
+                    card.querySelectorAll('.feedback-badge').forEach(b => b.remove());
+                    card.querySelectorAll('.option').forEach(o => {
+                        o.classList.remove('selected', 'correct-answer', 'wrong-choice');
+                    });
+                });
+                document.getElementById('scoreDisplay').classList.remove('show');
+                submitted = false;
+                totalSeconds = 180 * 60;
+                document.getElementById('timer').classList.remove('warning');
+                document.getElementById('btnSubmit').textContent = '📩 Submit & Review';
+                document.getElementById('btnSubmit').style.background = '#059669';
+                clearInterval(timerInterval);
+                timerInterval = setInterval(updateTimer, 1000);
+                buildNavPalette();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,2016 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>COMEDK 2016 - CBT Examination</title>
+    <style>
+        :root {
+            --bg: #f0f2f5;
+            --card-bg: #ffffff;
+            --primary: #1a73e8;
+            --primary-dark: #1557b0;
+            --correct: #0d904f;
+            --incorrect: #d93025;
+            --border: #e0e0e0;
+            --text: #202124;
+            --text-secondary: #5f6368;
+            --shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            --shadow-hover: 0 4px 16px rgba(0, 0, 0, 0.12);
+            --radius: 12px;
+            --transition: 0.2s ease;
+            --physics: #1a73e8;
+            --chemistry: #e8710a;
+            --math: #7c3aed;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Inter', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: #1a1a2e;
+            color: #fff;
+            padding: 16px 24px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .header .logo {
+            font-size: 1.3rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+        .header .logo span {
+            color: #4da3ff;
+        }
+        .header .exam-info {
+            font-size: 0.85rem;
+            color: #aaa;
+            text-align: right;
+        }
+        .timer-display {
+            background: #2a2a4a;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 1rem;
+            letter-spacing: 1px;
+            color: #ffd700;
+            min-width: 80px;
+            text-align: center;
+        }
+
+        /* Main layout */
+        .main-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 20px 16px 40px;
+        }
+
+        /* Tabs */
+        .tab-nav {
+            display: flex;
+            gap: 4px;
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 6px;
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+            position: sticky;
+            top: 80px;
+            z-index: 50;
+        }
+        .tab-btn {
+            flex: 1;
+            padding: 12px 16px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            border-radius: 8px;
+            transition: var(--transition);
+            color: var(--text-secondary);
+            white-space: nowrap;
+        }
+        .tab-btn:hover {
+            background: #f5f5f5;
+        }
+        .tab-btn.active {
+            color: #fff;
+            font-weight: 700;
+        }
+        .tab-btn.physics.active {
+            background: var(--physics);
+        }
+        .tab-btn.chemistry.active {
+            background: var(--chemistry);
+        }
+        .tab-btn.math.active {
+            background: var(--math);
+        }
+        .tab-btn .badge {
+            display: inline-block;
+            background: rgba(0, 0, 0, 0.15);
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            margin-left: 6px;
+        }
+        .tab-btn.active .badge {
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        /* Section */
+        .section {
+            display: none;
+        }
+        .section.active {
+            display: block;
+        }
+
+        /* Question card */
+        .question-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 20px 24px;
+            margin-bottom: 14px;
+            box-shadow: var(--shadow);
+            border-left: 4px solid transparent;
+            transition: var(--transition);
+            position: relative;
+        }
+        .question-card:hover {
+            box-shadow: var(--shadow-hover);
+        }
+        .question-card.answered {
+            border-left-color: #4da3ff;
+        }
+        .question-card.correct-review {
+            border-left-color: var(--correct);
+            background: #f0faf4;
+        }
+        .question-card.incorrect-review {
+            border-left-color: var(--incorrect);
+            background: #fef5f5;
+        }
+        .question-card.unanswered-review {
+            border-left-color: #ff9800;
+            background: #fffdf5;
+        }
+        .q-number {
+            display: inline-block;
+            background: #e8eaf0;
+            color: var(--text);
+            font-weight: 700;
+            font-size: 0.8rem;
+            padding: 4px 10px;
+            border-radius: 14px;
+            margin-bottom: 8px;
+        }
+        .q-text {
+            font-weight: 500;
+            margin-bottom: 12px;
+            font-size: 0.95rem;
+        }
+        .q-text .math {
+            font-style: italic;
+            color: #333;
+        }
+        .options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+        @media (max-width: 600px) {
+            .options {
+                grid-template-columns: 1fr;
+            }
+            .tab-btn {
+                font-size: 0.75rem;
+                padding: 10px 8px;
+            }
+            .header {
+                padding: 12px;
+            }
+            .header .logo {
+                font-size: 1rem;
+            }
+        }
+        .option-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 14px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.9rem;
+            background: #fafbfc;
+        }
+        .option-label:hover {
+            border-color: #b0b8c0;
+            background: #f0f4f8;
+        }
+        .option-label input[type="radio"] {
+            accent-color: var(--primary);
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+        .option-label:has(input:checked) {
+            border-color: var(--primary);
+            background: #e8f0fe;
+            font-weight: 500;
+        }
+        .review-indicator {
+            display: none;
+            font-weight: 700;
+            font-size: 0.85rem;
+            margin-top: 6px;
+        }
+        .review-indicator.show {
+            display: block;
+        }
+        .review-indicator.correct {
+            color: var(--correct);
+        }
+        .review-indicator.incorrect {
+            color: var(--incorrect);
+        }
+        .review-indicator.unanswered {
+            color: #ff9800;
+        }
+
+        /* Submit area */
+        .submit-area {
+            text-align: center;
+            margin: 30px 0;
+            position: sticky;
+            bottom: 20px;
+            z-index: 40;
+        }
+        .btn-submit {
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            padding: 14px 48px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border-radius: 30px;
+            cursor: pointer;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 16px rgba(26, 115, 232, 0.35);
+            transition: var(--transition);
+        }
+        .btn-submit:hover {
+            background: var(--primary-dark);
+            box-shadow: 0 6px 20px rgba(26, 115, 232, 0.45);
+            transform: translateY(-1px);
+        }
+        .btn-submit:disabled {
+            background: #a0a0a0;
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
+        }
+        .btn-reset {
+            background: #fff;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+            padding: 12px 32px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 30px;
+            cursor: pointer;
+            margin-left: 12px;
+            transition: var(--transition);
+        }
+        .btn-reset:hover {
+            background: #e8f0fe;
+        }
+
+        /* Results */
+        .results-panel {
+            display: none;
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 24px;
+            margin-top: 20px;
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+        .results-panel.show {
+            display: block;
+        }
+        .score-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: conic-gradient(#0d904f var(--score-percent), #e0e0e0 var(--score-percent));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            position: relative;
+        }
+        .score-inner {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1.8rem;
+            color: #202124;
+        }
+        .score-detail {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 16px 0;
+        }
+        .score-item {
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+        .score-item.correct-count {
+            background: #e6f4ea;
+            color: #0d904f;
+        }
+        .score-item.incorrect-count {
+            background: #fce8e6;
+            color: #d93025;
+        }
+        .score-item.unanswered-count {
+            background: #fef7e0;
+            color: #e37400;
+        }
+
+        /* SVG image container */
+        .svg-container {
+            text-align: center;
+            margin: 10px 0;
+        }
+        .svg-container svg {
+            max-width: 100%;
+            height: auto;
+            border-radius: 6px;
+        }
+
+        /* Scroll to top */
+        .scroll-top {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #333;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+            z-index: 60;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            transition: var(--transition);
+        }
+        .scroll-top:hover {
+            background: #555;
+        }
+
+        .progress-bar {
+            height: 4px;
+            background: #e0e0e0;
+            border-radius: 2px;
+            margin: 0 0 16px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: var(--primary);
+            border-radius: 2px;
+            transition: width 0.3s;
+        }
+
+        .question-nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            margin-bottom: 16px;
+            max-height: 120px;
+            overflow-y: auto;
+            padding: 8px;
+            background: #fafbfc;
+            border-radius: 8px;
+        }
+        .q-nav-dot {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: 2px solid #ccc;
+            font-size: 0.7rem;
+            cursor: pointer;
+            background: #fff;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+        .q-nav-dot.answered-dot {
+            background: #d2e3fc;
+            border-color: #1a73e8;
+        }
+        .q-nav-dot:hover {
+            border-color: #1a73e8;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div class="logo">COMEDK <span>2016</span> • CBT</div>
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+            <div class="exam-info">Physics • Chemistry • Mathematics<br>180 Questions • 3 Hours</div>
+            <div class="timer-display" id="timer">180:00</div>
+        </div>
+    </div>
+
+    <div class="main-container" id="mainContainer">
+        <!-- Tab Navigation -->
+        <div class="tab-nav" id="tabNav">
+            <button class="tab-btn physics active" onclick="switchTab('physics')">🔬 Physics <span class="badge">Q1-60</span></button>
+            <button class="tab-btn chemistry" onclick="switchTab('chemistry')">⚗️ Chemistry <span class="badge">Q61-120</span></button>
+            <button class="tab-btn math" onclick="switchTab('math')">📐 Mathematics <span class="badge">Q121-180</span></button>
+        </div>
+
+        <!-- Question Nav Dots -->
+        <div class="question-nav" id="questionNav"></div>
+        <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+
+        <!-- Physics Section -->
+        <div class="section active" id="section-physics"></div>
+
+        <!-- Chemistry Section -->
+        <div class="section" id="section-chemistry"></div>
+
+        <!-- Mathematics Section -->
+        <div class="section" id="section-math"></div>
+
+        <!-- Submit -->
+        <div class="submit-area" id="submitArea">
+            <button class="btn-submit" id="btnSubmit" onclick="submitExam()">📝 Submit & Review</button>
+            <button class="btn-reset" onclick="resetExam()">🔄 Reset All</button>
+        </div>
+
+        <!-- Results -->
+        <div class="results-panel" id="resultsPanel">
+            <h2 style="margin-bottom:12px;">📊 Exam Results</h2>
+            <div class="score-circle" id="scoreCircle"><div class="score-inner" id="scoreInner">0</div></div>
+            <div class="score-detail">
+                <div class="score-item correct-count">✅ Correct: <span id="correctCount">0</span></div>
+                <div class="score-item incorrect-count">❌ Incorrect: <span id="incorrectCount">0</span></div>
+                <div class="score-item unanswered-count">⚠️ Unanswered: <span id="unansweredCount">0</span></div>
+            </div>
+            <p style="color:var(--text-secondary);" id="resultMsg"></p>
+        </div>
+    </div>
+
+    <button class="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Scroll to top">↑</button>
+
+    <script>
+        // ==================== ANSWER KEY ====================
+        const answerKey = {
+            // Physics 1-60
+            1: 'a',
+            2: 'c',
+            3: 'a',
+            4: 'b',
+            5: 'd',
+            6: 'a',
+            7: 'b',
+            8: 'a',
+            9: 'd',
+            10: 'd',
+            11: 'c',
+            12: 'a',
+            13: 'c',
+            14: 'b',
+            15: 'b',
+            16: 'a',
+            17: 'c',
+            18: 'c',
+            19: 'a',
+            20: 'a',
+            21: 'd',
+            22: 'd',
+            23: 'd',
+            24: 'b',
+            25: 'd',
+            26: 'b',
+            27: 'a',
+            28: 'c',
+            29: 'c',
+            30: 'c',
+            31: 'b',
+            32: 'b',
+            33: 'd',
+            34: 'a',
+            35: 'b',
+            36: 'd',
+            37: 'd',
+            38: 'c',
+            39: 'd',
+            40: 'a',
+            41: 'a',
+            42: 'b',
+            43: 'c',
+            44: 'd',
+            45: 'b',
+            46: 'a',
+            47: 'b',
+            48: 'd',
+            49: 'b',
+            50: 'd',
+            51: 'b',
+            52: 'a',
+            53: 'b',
+            54: 'c',
+            55: 'd',
+            56: 'c',
+            57: 'c',
+            58: 'a',
+            59: 'c',
+            60: 'd',
+            // Chemistry 61-120
+            61: 'd',
+            62: 'd',
+            63: 'd',
+            64: 'b',
+            65: 'c',
+            66: 'b',
+            67: 'b',
+            68: 'a',
+            69: 'a',
+            70: 'a',
+            71: 'c',
+            72: 'c',
+            73: 'd',
+            74: 'b',
+            75: 'b',
+            76: 'a',
+            77: 'd',
+            78: 'c',
+            79: 'd',
+            80: 'c',
+            81: 'd',
+            82: 'c',
+            83: 'c',
+            84: 'c',
+            85: 'd',
+            86: 'd',
+            87: 'd',
+            88: 'a',
+            89: 'd',
+            90: 'b',
+            91: 'c',
+            92: 'b',
+            93: 'c',
+            94: 'd',
+            95: 'b',
+            96: 'b',
+            97: 'c',
+            98: 'b',
+            99: 'd',
+            100: 'c',
+            101: 'a',
+            102: 'b',
+            103: 'c',
+            104: 'a',
+            105: 'b',
+            106: 'b',
+            107: 'c',
+            108: 'a',
+            109: 'b',
+            110: 'c',
+            111: 'b',
+            112: 'c',
+            113: 'd',
+            114: 'c',
+            115: 'b',
+            116: 'd',
+            117: 'b',
+            118: 'd',
+            119: 'b',
+            120: 'a',
+            // Mathematics 121-180
+            121: 'd',
+            122: 'b',
+            123: 'a',
+            124: 'c',
+            125: 'b',
+            126: 'd',
+            127: 'a',
+            128: 'c',
+            129: 'd',
+            130: 'c',
+            131: 'c',
+            132: 'a',
+            133: 'a',
+            134: 'a',
+            135: 'd',
+            136: 'c',
+            137: 'b',
+            138: 'd',
+            139: 'a',
+            140: 'b',
+            141: 'c',
+            142: 'c',
+            143: 'd',
+            144: 'c',
+            145: 'b',
+            146: '*',
+            147: '*',
+            148: 'd',
+            149: 'd',
+            150: 'a',
+            151: 'a',
+            152: 'd',
+            153: 'a',
+            154: 'd',
+            155: 'b',
+            156: 'c',
+            157: 'd',
+            158: 'b',
+            159: 'a',
+            160: 'c',
+            161: 'b',
+            162: 'a',
+            163: 'c',
+            164: 'd',
+            165: 'c',
+            166: 'a',
+            167: '*',
+            168: 'b',
+            169: 'c',
+            170: 'a',
+            171: 'c',
+            172: 'b',
+            173: 'a',
+            174: 'd',
+            175: 'c',
+            176: 'b',
+            177: 'd',
+            178: 'b',
+            179: 'a',
+            180: 'd'
+        };
+
+        // Questions with * have no correct option among choices
+        const specialQuestions = { 146: true, 147: true, 167: true };
+
+        // ==================== QUESTION DATA ====================
+        const questionData = [
+            // PHYSICS (1-60)
+            {
+                id: 1,
+                subject: 'physics',
+                text: 'A simple pendulum has a period <i>T</i> inside a lift, when it is stationary. The lift is accelerated upwards with constant acceleration <i>a</i>. The period',
+                options: ['a. decreases', 'b. increases', 'c. remains same', 'd. becomes infinite']
+            }, {
+                id: 2,
+                subject: 'physics',
+                text: '90 dB sound is <i>x</i> times more intense than 40 dB sound, then <i>x</i> is',
+                options: ['a. 5', 'b. 50', 'c. 10<sup>5</sup>', 'd. 500']
+            }, {
+                id: 3,
+                subject: 'physics',
+                text: 'A star is moving away from the earth with speed <i>v</i>. Change in wavelength <i>d&lambda;</i> observed on earth is',
+                options: ['a. <i>&lambda;v/c</i>', 'b. <i>&lambda;v/(c+v)</i>',
+                    'c. <i>&lambda;v/(c-v)</i>', 'd. <i>&lambda;c/v</i>'
+                ]
+            }, {
+                id: 4,
+                subject: 'physics',
+                text: 'An open pipe emits a fundamental frequency <i>n</i>. When it emits the 3rd harmonic, then the pipe can accommodate',
+                options: ['a. 2 nodes, 2 anti-nodes', 'b. 3 nodes, 4 anti-nodes', 'c. 3 nodes, 3 anti-nodes',
+                    'd. 1 node, 2 anti-nodes'
+                ]
+            }, {
+                id: 5,
+                subject: 'physics',
+                text: 'In an adiabatic process,',
+                options: ['a. temperature remains constant', 'b. pressure remains constant', 'c. volume remains constant',
+                    'd. there is no transfer of heat'
+                ]
+            }, {
+                id: 6,
+                subject: 'physics',
+                text: 'Carnot heat engine takes 300 J of heat from a source at 627°C and gives some part of it to sink at 27°C. Work done by engine in one cycle is',
+                options: ['a. 200 J', 'b. 300 J', 'c. 150 J', 'd. 120 J']
+            }, {
+                id: 7,
+                subject: 'physics',
+                text: '15/16th of a radioactive sample disintegrates in 2 h. Mean life of radioactive sample is approximately',
+                options: ['a. 30 min', 'b. 43 min', 'c. 21 min', 'd. 15 min']
+            }, {
+                id: 8,
+                subject: 'physics',
+                text: 'Clear images of soft tissues can be well studied using',
+                options: ['a. MRI', 'b. X-rays', 'c. ultrasonics', 'd. IR rays']
+            }, {
+                id: 9,
+                subject: 'physics',
+                text: 'Particles which are not composite and hence truly elementary are',
+                options: ['a. mesons', 'b. protons', 'c. neutrons', 'd. leptons']
+            }, {
+                id: 10,
+                subject: 'physics',
+                text: 'A logic gate whose output will be in logic 0 state only, when all inputs are in logic 1 state is called',
+                options: ['a. AND', 'b. OR', 'c. NOR', 'd. NAND']
+            }, {
+                id: 11,
+                subject: 'physics',
+                text: 'n-type and p-type semiconductors can be obtained by doping pure silicon, respectively with',
+                options: ['a. arsenic, phosphorous', 'b. indium, aluminium', 'c. phosphorous, indium',
+                    'd. aluminium, boron'
+                ]
+            }, {
+                id: 12,
+                subject: 'physics',
+                text: 'In a CE amplifier, <i>&beta;</i> = 50, <i>R<sub>i</sub></i> = 500&Omega;, <i>R<sub>L</sub></i> = 4k&Omega;. Power gain of the amplifier is',
+                options: ['a. 2×10<sup>4</sup>', 'b. 2×10<sup>2</sup>', 'c. 2×10<sup>3</sup>', 'd. 2×10<sup>5</sup>']
+            }, {
+                id: 13,
+                subject: 'physics',
+                text: 'Electrons are excited from <i>n</i> = 1 to <i>n</i> = 4 state. During downward transitions, possible number of spectral lines observed in Balmer series is',
+                options: ['a. 4', 'b. 3', 'c. 2', 'd. 1']
+            }, {
+                id: 14,
+                subject: 'physics',
+                text: 'IR region lies between',
+                options: ['a. radiowaves and microwave regions', 'b. microwaves and visible', 'c. visible and UV region',
+                    'd. UV rays and X-ray region'
+                ]
+            }, {
+                id: 15,
+                subject: 'physics',
+                text: 'A proton and an alpha particle are subjected to same potential difference V. Their de-Broglie wavelengths <i>&lambda;<sub>p</sub></i>, <i>&lambda;<sub>&alpha;</sub></i> will be in the ratio',
+                options: ['a. 2:1', 'b. 2√2:1', 'c. 1:1', 'd. 1:2']
+            }, {
+                id: 16,
+                subject: 'physics',
+                text: 'Raman shift depends on',
+                options: ['a. incident wavelength', 'b. incident intensity',
+                    'c. resolving power of the spectrograph used', 'd. molecular energy levels of the scatterer'
+                ]
+            }, {
+                id: 17,
+                subject: 'physics',
+                text: '<sub>6</sub>C<sup>14</sup> and <sub>7</sub>N<sup>15</sup> are the examples of',
+                options: ['a. isotopes', 'b. isobars', 'c. isotones', 'd. mirror nuclei']
+            }, {
+                id: 18,
+                subject: 'physics',
+                text: 'In an interference experiment, intensity ratio at the bright to dark fringe is 9:1. Amplitudes of interfering waves are in the ratio',
+                options: ['a. 3:1', 'b. 9:1', 'c. 2:1', 'd. 4:1']
+            }, {
+                id: 19,
+                subject: 'physics',
+                text: 'In Young\'s double slit experiment, 1st dark fringe occurs directly opposite to a slit. Wavelength of light used is',
+                options: ['a. <i>d²/D</i>', 'b. <i>d/D</i>', 'c. <i>D²/d</i>', 'd. <i>2d²/D</i>']
+            }, {
+                id: 20,
+                subject: 'physics',
+                text: 'Newton\'s ring pattern in reflected system, viewed under white light consists of',
+                options: ['a. equally spaced bright and dark bands with central dark spot',
+                    'b. equally spaced bright and dark bands with central white spot',
+                    'c. a few coloured rings with central dark spot', 'd. a few coloured rings with central white spot'
+                ]
+            }, {
+                id: 21,
+                subject: 'physics',
+                text: 'It is difficult to observe diffraction in case of light waves, because',
+                options: ['a. light waves can travel through vacuum', 'b. speed of light is more',
+                    'c. light waves are transverse in nature', 'd. wavelength of light is small'
+                ]
+            }, {
+                id: 22,
+                subject: 'physics',
+                text: 'A calcite crystal is placed over a dot on a paper sheet and the crystal is rotated. On viewing through the calcite one sees,',
+                options: ['a. a single stationary dot', 'b. two stationary dots',
+                    'c. two dots rotating about one another',
+                    'd. one dot rotating about the other stationary dot sometimes coinciding with it'
+                ]
+            }, {
+                id: 23,
+                subject: 'physics',
+                text: 'Critical angle of the medium is 45°. Polarising angle of incidence at the surface of the medium is',
+                options: ['a. 45°', 'b. 38°', 'c. 22.5°', 'd. 54.7°']
+            }, {
+                id: 24,
+                subject: 'physics',
+                text: 'If only 2% of the main current is to be passed through a galvanometer of resistance <i>G</i>, then the resistance of shunt should be',
+                options: ['a. <i>G/50</i>', 'b. <i>G/49</i>', 'c. <i>50G</i>', 'd. <i>49G</i>']
+            }, {
+                id: 25,
+                subject: 'physics',
+                text: 'A small current carrying loop of area <i>A</i> behaves like a tiny magnet of magnetic moment <i>M</i>. Current in the loop is',
+                options: ['a. <i>MA</i>', 'b. <i>A/M</i>', 'c. <i>A²M</i>', 'd. <i>M/A</i>']
+            }, {
+                id: 26,
+                subject: 'physics',
+                text: 'Two concentric circular coils, each having 10 turns with radii 0.2m and 0.4m carry currents 0.2A and 0.3A respectively in opposite directions. Magnetic field at the centre is',
+                options: ['a. (2/3)<i>&mu;</i><sub>0</sub>', 'b. (5/4)<i>&mu;</i><sub>0</sub>',
+                    'c. (1/4)<i>&mu;</i><sub>0</sub>', 'd. (1/6)<i>&mu;</i><sub>0</sub>'
+                ]
+            }, {
+                id: 27,
+                subject: 'physics',
+                text: 'Material of permanent magnet has',
+                options: ['a. high retentivity and high coercivity', 'b. low retentivity and high coercivity',
+                    'c. low retentivity and low coercivity', 'd. high retentivity and low coercivity'
+                ]
+            }, {
+                id: 28,
+                subject: 'physics',
+                text: 'Power factor of a series L-C-R circuit is',
+                options: ['a. <i>R</i>', 'b. <i>Z/R</i>', 'c. <i>R/Z</i>', 'd. <i>RZ</i>']
+            }, {
+                id: 29,
+                subject: 'physics',
+                text: 'An inductor 1H is connected across 220V, 50 Hz supply. Peak value of current is approximately',
+                options: ['a. 0.5 A', 'b. 0.7 A', 'c. 1 A', 'd. 1.4 A']
+            }, {
+                id: 30,
+                subject: 'physics',
+                text: 'Plane polarised light is passed through an analyser and the intensity of emerging light is reduced by 75%. Optical vibrations make an angle <i>&theta;</i> with the axis of analyser, then <i>&theta;</i> is',
+                options: ['a. 60°', 'b. 45°', 'c. 30°', 'd. 58°']
+            }, {
+                id: 31,
+                subject: 'physics',
+                text: 'A charge 10nC is situated in a medium of relative permittivity 10. The potential due to this charge at a distance of 0.1m is',
+                options: ['a. 900 V', 'b. 90 V', 'c. 9 V', 'd. 0.09 V']
+            }, {
+                id: 32,
+                subject: 'physics',
+                text: 'Dielectric constant of a metal is',
+                options: ['a. zero', 'b. infinite', 'c. finite', 'd. unpredictable']
+            }, {
+                id: 33,
+                subject: 'physics',
+                text: 'Distance between the two point charges is increased by 20%. Force of interaction between the charges',
+                options: ['a. increases by 10%', 'b. decreases by 20%', 'c. decreases by 17%', 'd. decreases by 31%']
+            }, {
+                id: 34,
+                subject: 'physics',
+                text: 'Potential energy of 2 charge 10nC each separated by a distance of 0.09m in air is',
+                options: ['a. 10<i>&mu;</i>J', 'b. 1 mJ', 'c. 10 mJ', 'd. 10 J']
+            }, {
+                id: 35,
+                subject: 'physics',
+                text: 'A metal plate of thickness <i>d/2</i> is introduced in between the plates of a parallel plate air capacitor with plate separation of <i>d</i>, then capacity',
+                options: ['a. decreases 2 times', 'b. increases 2 times', 'c. remains same', 'd. becomes zero']
+            }, {
+                id: 36,
+                subject: 'physics',
+                text: 'Specific resistance of a conductor material increases with',
+                options: ['a. increase with area of cross-section', 'b. decrease in length',
+                    'c. decrease in area of cross-section', 'd. increases with temperature'
+                ]
+            }, {
+                id: 37,
+                subject: 'physics',
+                text: 'The resistance of mercury at 4.2 K is',
+                options: ['a. infinity', 'b. greater than at lab temperature', 'c. same as that of lab temperature',
+                    'd. almost zero'
+                ]
+            }, {
+                id: 38,
+                subject: 'physics',
+                text: 'Temperature coefficient of resistance of platinum is 4×10<sup>-3</sup>/K at 20°C. Temperature at which increase in resistance of platinum is 10% its value at 20°C is',
+                options: ['a. 25°C', 'b. 70°C', 'c. 45°C', 'd. 100°C']
+            }, {
+                id: 39,
+                subject: 'physics',
+                text: 'Ideal voltmeter connected as shown reads<br><div class="svg-container"><svg width="200" height="100" viewBox="0 0 200 100"><rect x="10" y="30" width="60" height="10" fill="none" stroke="#333" stroke-width="2"/><rect x="70" y="20" width="40" height="30" fill="none" stroke="#333" stroke-width="2"/><text x="85" y="40" font-size="12" fill="#333">6Ω</text><rect x="110" y="20" width="40" height="30" fill="none" stroke="#333" stroke-width="2"/><text x="125" y="40" font-size="12" fill="#333">12Ω</text><rect x="150" y="30" width="40" height="10" fill="none" stroke="#333" stroke-width="2"/><circle cx="35" cy="55" r="12" fill="none" stroke="#333" stroke-width="2"/><text x="30" y="59" font-size="10" fill="#333">16V</text><text x="100" y="70" font-size="10" fill="#555">V</text></svg></div>',
+                options: ['a. 16 V', 'b. 12 V', 'c. 4 V', 'd. 8 V']
+            }, {
+                id: 40,
+                subject: 'physics',
+                text: 'When a charged particle moves perpendicular to a uniform magnetic field, then',
+                options: ['a. its momentum changes and total energy is same',
+                    'b. Both momentum and its total energy remain the same',
+                    'c. Both momentum and its total energy will change',
+                    'd. total energy changes but momentum remains same'
+                ]
+            }, {
+                id: 41,
+                subject: 'physics',
+                text: '0.04m of glass contains the same number of waves as 0.05m of water, when monochromatic light passes through them normally. Refractive index of water is 4/3. Refractive index of glass is',
+                options: ['a. 5/3', 'b. 5/4', 'c. 5/2', 'd. 4/5']
+            }, {
+                id: 42,
+                subject: 'physics',
+                text: 'Critical angle will be maximum, when light travels from',
+                options: ['a. glass to air', 'b. glass to water', 'c. water to air', 'd. diamond to air']
+            }, {
+                id: 43,
+                subject: 'physics',
+                text: 'A ray of light incident on one face of an equilateral prism at 60° enters and leaves the prism symmetrically. Refractive index of the prism material is',
+                options: ['a. 1.5', 'b. 1.62', 'c. 1.73', 'd. 1.8']
+            }, {
+                id: 44,
+                subject: 'physics',
+                text: 'In the spectrum of visible light produced by a prism dispersion is',
+                options: ['a. uniform throughout the spectrum', 'b. maximum in the middle decreases on either sides',
+                    'c. maximum towards yellow', 'd. maximum towards violet'
+                ]
+            }, {
+                id: 45,
+                subject: 'physics',
+                text: 'Convex lens of focal length <i>f</i> made of glass of refractive index 1.5 is immersed in water of refractive index 4/3. Focal length is',
+                options: ['a. <i>f</i>', 'b. greater than <i>f</i>', 'c. less than <i>f</i>', 'd. <i>-f</i>']
+            }, {
+                id: 46,
+                subject: 'physics',
+                text: 'Two co-axial lenses of power +4D and -2D are placed in contact. The focal length of combination is',
+                options: ['a. 0.5 m', 'b. 0.25 m', 'c. 0.16 m', 'd. -0.5 m']
+            }, {
+                id: 47,
+                subject: 'physics',
+                text: 'Eddy currents are produced in a material, when it is',
+                options: ['a. heated', 'b. placed in a time varying magnetic field', 'c. placed in an electric field',
+                    'd. placed in a uniform magnetic field'
+                ]
+            }, {
+                id: 48,
+                subject: 'physics',
+                text: 'Transformer works on 220V and its efficiency is 80%. If output power is 8kW, primary current is approximately',
+                options: ['a. 35 A', 'b. 18 A', 'c. 22 A', 'd. 45 A']
+            }, {
+                id: 49,
+                subject: 'physics',
+                text: 'Quality factor of a series L-C-R circuit decreases from 3 to 2. Resonant frequency is 600 Hz. Change in bandwidth is',
+                options: ['a. zero', 'b. 100 Hz increase', 'c. 100 Hz decrease', 'd. 300 Hz increase']
+            }, {
+                id: 50,
+                subject: 'physics',
+                text: 'A stone dropped from the top of the tower reaches ground in 4 s. Height of the tower is (<i>g</i> = 10 m/s²)',
+                options: ['a. 20 m', 'b. 40 m', 'c. 60 m', 'd. 80 m']
+            }, {
+                id: 51,
+                subject: 'physics',
+                text: 'Liquid crystal phase which are more close to the solid than to liquid is',
+                options: ['a. Nematic', 'b. Smectic', 'c. Lyotropic', 'd. Cholesteric']
+            }, {
+                id: 52,
+                subject: 'physics',
+                text: 'If the earth shrinks in its size (radius) mass remaining the same, the value of <i>g</i> on its surface will',
+                options: ['a. increase', 'b. decrease', 'c. remains same', 'd. reduce to zero']
+            }, {
+                id: 53,
+                subject: 'physics',
+                text: 'Two rods of same area of cross-section and lengths and conductivities <i>K</i><sub>1</sub> and <i>K</i><sub>2</sub> are connected in series. Then in steady state, conductivity of the combination is',
+                options: ['a. (<i>K</i><sub>1</sub>+<i>K</i><sub>2</sub>)/(<i>K</i><sub>1</sub><i>K</i><sub>2</sub>)',
+                    'b. 2<i>K</i><sub>1</sub><i>K</i><sub>2</sub>/(<i>K</i><sub>1</sub>+<i>K</i><sub>2</sub>)', 'c. (<i>K</i><sub>1</sub>+<i>K</i><sub>2</sub>)/2',
+                    'd. <i>K</i><sub>1</sub><i>K</i><sub>2</sub>/(<i>K</i><sub>1</sub>+<i>K</i><sub>2</sub>)'
+                ]
+            }, {
+                id: 54,
+                subject: 'physics',
+                text: 'The square of the resultant of two equal forces acting at a point is equal to three times their product. Angle between them is',
+                options: ['a. 30°', 'b. 45°', 'c. 60°', 'd. 90°']
+            }, {
+                id: 55,
+                subject: 'physics',
+                text: 'With the addition of impurities, surface tension of a liquid',
+                options: ['a. increases', 'b. decreases', 'c. remains constant',
+                    'd. may increase or decrease depending on impurities'
+                ]
+            }, {
+                id: 56,
+                subject: 'physics',
+                text: 'Viscosity decreases with increase in temperature is the reason for (i) hot water moving faster than cold water. (ii) more viscous oils are used in motorcars during summer than in winter',
+                options: ['a. Only (i) is correct', 'b. Only (ii) correct', 'c. Both are correct',
+                'd. Both are incorrect']
+            }, {
+                id: 57,
+                subject: 'physics',
+                text: 'Moment of momentum of an electron revolving in second Bohr orbit of hydrogen is',
+                options: ['a. 2<i>&pi;h</i>', 'b. <i>h/2&pi;</i>', 'c. <i>h/&pi;</i>', 'd. <i>2h/3&pi;</i>']
+            }, {
+                id: 58,
+                subject: 'physics',
+                text: 'The existence of excitation and ionisation energies in an atom is an evidence for',
+                options: ['a. stability of an atom', 'b. electrical neutrality of an atom', 'c. small size of the atom',
+                    'd. stationary orbits in an atom'
+                ]
+            }, {
+                id: 59,
+                subject: 'physics',
+                text: 'Work function of a photosensitive metal is 3 eV. The wavelength of incident radiations which can just eject photoelectrons from the metal is',
+                options: ['a. 600 nm', 'b. 510 nm', 'c. 414 nm', 'd. 378 nm']
+            }, {
+                id: 60,
+                subject: 'physics',
+                text: 'Three identical capacitors are first connected in series and then in parallel. The ratio of effective capacitances in the two cases is',
+                options: ['a. 9:1', 'b. 3:1', 'c. 1:3', 'd. 1:9']
+            },
+            // CHEMISTRY (61-120)
+            {
+                id: 61,
+                subject: 'chemistry',
+                text: 'A nitrogen containing organic compound gave an oily liquid on heating with bromine and potassium hydroxide solution. On shaking the product with acetic anhydride, an antipyretic drug was obtained. The reactions indicate that the starting compound is',
+                options: ['a. acetamide', 'b. nitrobenzene', 'c. aniline', 'd. benzamide']
+            }, {
+                id: 62,
+                subject: 'chemistry',
+                text: 'The silver salt of a fatty acid on refluxing with an alkyl halide gives an',
+                options: ['a. ether', 'b. amine', 'c. acid', 'd. ester']
+            }, {
+                id: 63,
+                subject: 'chemistry',
+                text: 'Pick out the one which does not belong to the family',
+                options: ['a. ptyalin', 'b. lipase', 'c. pepsin', 'd. cellulose']
+            }, {
+                id: 64,
+                subject: 'chemistry',
+                text: 'Which of the following is wrongly matched?',
+                options: ['a. Decomposition of H<sub>2</sub>O<sub>2</sub> – first order reaction.',
+                    'b. Combination of H<sub>2</sub> and Br<sub>2</sub> to give HBr – zero order reaction.',
+                    'c. Saponification of CH<sub>3</sub>COOC<sub>2</sub>H<sub>5</sub> – second order reaction.',
+                    'd. Hydrolysis of CH<sub>3</sub>COOCH<sub>3</sub> – pseudo unimolecular reaction.'
+                ]
+            }, {
+                id: 65,
+                subject: 'chemistry',
+                text: 'The diameter of colloidal particle ranges from',
+                options: ['a. 10<sup>-3</sup> m to 10<sup>-4</sup> m', 'b. 10<sup>-3</sup> m to 10<sup>-6</sup> m',
+                    'c. 10<sup>-6</sup> m to 10<sup>-9</sup> m', 'd. 10<sup>-9</sup> m to 10<sup>-12</sup> m'
+                ]
+            }, {
+                id: 66,
+                subject: 'chemistry',
+                text: 'The number of 2<i>p</i> electrons having spin quantum number <i>s</i> = -1/2 are<br><div class="svg-container"><svg width="160" height="50" viewBox="0 0 160 50"><rect x="10" y="10" width="40" height="20" fill="none" stroke="#333" stroke-width="1.5"/><text x="20" y="25" font-size="11" fill="#333">↑↓</text><rect x="55" y="10" width="40" height="20" fill="none" stroke="#333" stroke-width="1.5"/><text x="65" y="25" font-size="11" fill="#333">↑↓</text><rect x="100" y="10" width="40" height="20" fill="none" stroke="#333" stroke-width="1.5"/><text x="110" y="25" font-size="11" fill="#333">↑↓</text><text x="30" y="45" font-size="9" fill="#555">2p<sub>x</sub></text><text x="75" y="45" font-size="9" fill="#555">2p<sub>y</sub></text><text x="120" y="45" font-size="9" fill="#555">2p<sub>z</sub></text></svg></div>',
+                options: ['a. 2', 'b. 3', 'c. 6', 'd. 0']
+            }, {
+                id: 67,
+                subject: 'chemistry',
+                text: 'Pick out the alkane which differs from the other members of the group.',
+                options: ['a. 2-methyl butane', 'b. 2,2-dimethyl butane', 'c. 2,2-dimethyl propane', 'd. Pentane']
+            }, {
+                id: 68,
+                subject: 'chemistry',
+                text: '56 g of nitrogen and 8 g of hydrogen gas are heated in a closed vessel. At equilibrium 34 g of ammonia are present. The equilibrium number of moles of nitrogen, hydrogen and ammonia are respectively',
+                options: ['a. 1, 1, 2', 'b. 2, 1, 2', 'c. 1, 2, 2', 'd. 2, 2, 1']
+            }, {
+                id: 69,
+                subject: 'chemistry',
+                text: 'A process is taking place at constant temperature and pressure. Then,',
+                options: ['a. ΔH = 0', 'b. ΔS = 0', 'c. ΔH = ΔE', 'd. ΔH = TΔS']
+            }, {
+                id: 70,
+                subject: 'chemistry',
+                text: 'In a galvanic cell, the electrons flow from',
+                options: ['a. anode to cathode through the external circuit.',
+                    'b. cathode to anode through the external circuit.', 'c. anode to cathode through the solution.',
+                    'd. cathode to anode through the solution.'
+                ]
+            }, {
+                id: 71,
+                subject: 'chemistry',
+                text: 'On treating a mixture of two alkyl halides with sodium metal in dry ether, 2-methyl propane was obtained. The alkyl halides are',
+                options: ['a. chloromethane and chloroethane', 'b. chloromethane and 1-chloropropane',
+                    'c. 2-chloropropane and chloromethane', 'd. 2-chloropropane and chloroethane'
+                ]
+            }, {
+                id: 72,
+                subject: 'chemistry',
+                text: 'Which of the following statements about benzyl chloride is incorrect?',
+                options: ['a. It is a lachrymatory liquid and answers Beilstein\'s test.',
+                    'b. It gives a white precipitate with alcoholic silver nitrate.',
+                    'c. It is less reactive than alkyl halides.',
+                    'd. It can be oxidised to benzaldehyde by boiling with copper nitrate solution.'
+                ]
+            }, {
+                id: 73,
+                subject: 'chemistry',
+                text: 'The main product obtained when a solution of sodium carbonate reacts with mercuric chloride is',
+                options: ['a. HgCO<sub>3</sub>', 'b. HgCO<sub>3</sub>·Hg(OH)<sub>2</sub>', 'c. Hg(OH)<sub>2</sub>',
+                    'd. HgCO<sub>3</sub>·HgO'
+                ]
+            }, {
+                id: 74,
+                subject: 'chemistry',
+                text: 'In the electrothermal process, the compound displaced by silica from calcium phosphate is',
+                options: ['a. phosphorus', 'b. phosphorus pentoxide', 'c. calcium phosphate', 'd. phosphine']
+            }, {
+                id: 75,
+                subject: 'chemistry',
+                text: 'The enthalpy of combustion of methane at 25°C is 890 kJ. The heat liberated when 3.2g of methane is burnt in air is',
+                options: ['a. -890 kJ', 'b. 178 kJ', 'c. 445 kJ', 'd. 278 kJ']
+            }, {
+                id: 76,
+                subject: 'chemistry',
+                text: 'The pressure and temperature of 4 dm³ of carbon dioxide gas are doubled. Then, the volume of carbon dioxide gas would be',
+                options: ['a. 4 dm³', 'b. 8 dm³', 'c. 2 dm³', 'd. 3 dm³']
+            }, {
+                id: 77,
+                subject: 'chemistry',
+                text: '4 g of copper was dissolved in concentrated nitric acid. The copper nitrate solution on strong heating gave 5g of its oxide. The equivalent weight of copper is',
+                options: ['a. 12', 'b. 20', 'c. 23', 'd. 32']
+            }, {
+                id: 78,
+                subject: 'chemistry',
+                text: 'In the manufacture of ammonia by the Haber\'s process, N<sub>2</sub>(g) + 3H<sub>2</sub>(g) ⇌ 2NH<sub>3</sub>(g) + 92.3 kJ, which of the following conditions is unfavourable?',
+                options: ['a. Reducing the temperature', 'b. Removing ammonia as it is formed',
+                    'c. Increasing the temperature', 'd. Increasing the pressure'
+                ]
+            }, {
+                id: 79,
+                subject: 'chemistry',
+                text: 'The chemical equilibrium of a reversible reaction is not influenced by',
+                options: ['a. concentration of the reactants', 'b. temperature', 'c. pressure', 'd. catalyst']
+            }, {
+                id: 80,
+                subject: 'chemistry',
+                text: 'Cumene process is the most important commercial method for the manufacture of phenol. Cumene is',
+                options: ['a. vinyl benzene', 'b. propyl benzene', 'c. 1-methyl ethyl benzene', 'd. ethyl benzene']
+            }, {
+                id: 81,
+                subject: 'chemistry',
+                text: 'A solution contains 1.2046×10<sup>24</sup> hydrochloric acid molecules in one dm³ of the solution. The strength of the solution is',
+                options: ['a. 4N', 'b. 8N', 'c. 6N', 'd. 2N']
+            }, {
+                id: 82,
+                subject: 'chemistry',
+                text: 'Nuclear theory of the atom was put forward by',
+                options: ['a. Neils Bohr', 'b. J.J. Thomson', 'c. Rutherford', 'd. Aston']
+            }, {
+                id: 83,
+                subject: 'chemistry',
+                text: 'In acetylene molecule, the two carbon atoms are linked by',
+                options: ['a. three σ-bonds', 'b. three π-bonds', 'c. one σ-bond and two π-bonds',
+                    'd. two σ-bonds and one π-bond'
+                ]
+            }, {
+                id: 84,
+                subject: 'chemistry',
+                text: 'The enthalpy of the reaction, H<sub>2</sub>(g) + ½O<sub>2</sub>(g) ⇌ H<sub>2</sub>O(g) is ΔH<sub>1</sub> and that of H<sub>2</sub>(g) + ½O<sub>2</sub>(g) ⇌ H<sub>2</sub>O(l) is ΔH<sub>2</sub>. Then',
+                options: ['a. ΔH<sub>1</sub> > ΔH<sub>2</sub>', 'b. ΔH<sub>1</sub> = ΔH<sub>2</sub>', 'c. ΔH<sub>1</sub> < ΔH<sub>2</sub>',
+                    'd. ΔH<sub>1</sub> + ΔH<sub>2</sub> = 0'
+                ]
+            }, {
+                id: 85,
+                subject: 'chemistry',
+                text: 'A radioactive isotope decays at such a rate that after 192 minutes only 1/16 of the original amount remains. The half-life of the radioactive isotope is',
+                options: ['a. 12 min', 'b. 24 min', 'c. 32 min', 'd. 48 min']
+            }, {
+                id: 86,
+                subject: 'chemistry',
+                text: 'The reagent which does not give acid chloride on treating with a carboxylic acid is',
+                options: ['a. SOCl<sub>2</sub>', 'b. PCl<sub>3</sub>', 'c. PCl<sub>5</sub>', 'd. Cl<sub>2</sub>']
+            }, {
+                id: 87,
+                subject: 'chemistry',
+                text: 'Among the halogens, the one which is oxidised by nitric acid is',
+                options: ['a. chlorine', 'b. bromine', 'c. fluorine', 'd. iodine']
+            }, {
+                id: 88,
+                subject: 'chemistry',
+                text: 'The metal which does not form ammonium nitrate by reaction with dilute nitric acid is',
+                options: ['a. Pb', 'b. Mg', 'c. Al', 'd. Fe']
+            }, {
+                id: 89,
+                subject: 'chemistry',
+                text: 'The elements with atomic numbers 9, 17, 35, 53, 85 are all',
+                options: ['a. heavy metals', 'b. light metals', 'c. noble gases', 'd. halogens']
+            }, {
+                id: 90,
+                subject: 'chemistry',
+                text: 'In the electrolytic method of obtaining aluminium from purified bauxite, cryolite is added to the charge in order to',
+                options: ['a. dissolve bauxite and render it conductor of electricity.',
+                    'b. lower the melting point of bauxite.', 'c. minimise the heat loss due to radiation.',
+                    'd. protect aluminium produced from oxygen.'
+                ]
+            }, {
+                id: 91,
+                subject: 'chemistry',
+                text: 'Which of the following is not an amphoteric substance?',
+                options: ['a. H<sub>2</sub>O', 'b. NH<sub>3</sub>', 'c. HNO<sub>3</sub>', 'd. HCO<sub>3</sub><sup>-</sup>']
+            }, {
+                id: 92,
+                subject: 'chemistry',
+                text: 'When 50 cm³ of 0.2N H<sub>2</sub>SO<sub>4</sub> is mixed with 50 cm³ of 1N KOH, the heat liberated is',
+                options: ['a. 573 kJ', 'b. 573 J', 'c. 11.46 kJ', 'd. 57.3 kJ']
+            }, {
+                id: 93,
+                subject: 'chemistry',
+                text: 'An artificial radioactive isotope gave <sup>14</sup><sub>7</sub>N after two successive β-particle emissions. The number of neutrons in the parent nucleus must be',
+                options: ['a. 5', 'b. 7', 'c. 9', 'd. 14']
+            }, {
+                id: 94,
+                subject: 'chemistry',
+                text: 'Stainless steel does not rust because',
+                options: ['a. nickel present in it, does not rust',
+                    'b. iron forms a hard chemical compound with chromium present in it',
+                    'c. chromium and nickel combine with iron',
+                    'd. chromium forms an oxide layer and protects iron from rusting'
+                ]
+            }, {
+                id: 95,
+                subject: 'chemistry',
+                text: 'Which of the following combinations can be used to synthesise ethanol?',
+                options: ['a. CH<sub>3</sub>MgI and CH<sub>3</sub>COOC<sub>2</sub>H<sub>5</sub>',
+                    'b. CH<sub>3</sub>MgI and HCHO', 'c. CH<sub>3</sub>MgI and CH<sub>3</sub>COCH<sub>3</sub>',
+                    'd. CH<sub>3</sub>MgI and C<sub>2</sub>H<sub>5</sub>OH'
+                ]
+            }, {
+                id: 96,
+                subject: 'chemistry',
+                text: 'The reaction, 2SO<sub>2</sub>(g) + O<sub>2</sub>(g) ⇌ 2SO<sub>3</sub>(g) is carried out in a 1 dm³ vessel and 2 dm³ vessel separately. The ratio of the reaction velocities will be',
+                options: ['a. 4:1', 'b. 8:1', 'c. 1:8', 'd. 1:4']
+            }, {
+                id: 97,
+                subject: 'chemistry',
+                text: 'In a mixture of acetic acid and sodium acetate the ratio of concentrations of the salt to the acid is increased ten times. Then the pH of the solution',
+                options: ['a. decreases ten fold', 'b. increases ten fold', 'c. increases by one', 'd. decreases by one']
+            }, {
+                id: 98,
+                subject: 'chemistry',
+                text: 'When a mixture of methane and oxygen is passed through heated molybdenum oxide, the main product formed is',
+                options: ['a. methanol', 'b. methanal', 'c. methanoic acid', 'd. ethanol']
+            }, {
+                id: 99,
+                subject: 'chemistry',
+                text: 'Benzene can be obtained by heating either benzoic acid with X or phenol with Y. X and Y are respectively',
+                options: ['a. zinc dust and sodium hydroxide', 'b. soda lime and copper',
+                    'c. zinc dust and soda lime', 'd. soda lime and zinc dust'
+                ]
+            }, {
+                id: 100,
+                subject: 'chemistry',
+                text: 'An organic compound is boiled with alcoholic potash. The product is cooled and acidified with HCl. A white solid separates out. The starting compound may be',
+                options: ['a. ethyl acetate', 'b. methyl acetate', 'c. ethyl benzoate', 'd. ethyl formate']
+            }, {
+                id: 101,
+                subject: 'chemistry',
+                text: 'In qualitative analysis, in order to detect second group basic radical, H<sub>2</sub>S gas is passed in the presence of dilute HCl to',
+                options: ['a. decrease the dissociation of H<sub>2</sub>S', 'b. increase the dissociation of salt solution',
+                    'c. increase the dissociation of H<sub>2</sub>S', 'd. decrease the dissociation of salt solution'
+                ]
+            }, {
+                id: 102,
+                subject: 'chemistry',
+                text: 'Aluminium displaces hydrogen from dilute HCl, whereas silver does not. The emf of a cell prepared by combining Al/Al<sup>3+</sup> and Ag/Ag<sup>+</sup> is 2.46V. The reduction potential of silver electrode is +0.80V. The reduction potential of aluminium electrode is',
+                options: ['a. 3.26 V', 'b. -1.66 V', 'c. +1.66 V', 'd. -3.26 V']
+            }, {
+                id: 103,
+                subject: 'chemistry',
+                text: 'The first fraction obtained during the fractionation of petroleum is',
+                options: ['a. gasoline', 'b. diesel oil', 'c. hydrocarbon gases', 'd. kerosene oil']
+            }, {
+                id: 104,
+                subject: 'chemistry',
+                text: 'Which of the following compounds gives trichloromethane on distilling with bleaching powder?',
+                options: ['a. Ethanol', 'b. Methanol', 'c. Methanal', 'd. Phenol']
+            }, {
+                id: 105,
+                subject: 'chemistry',
+                text: 'Benzoin is<br><div class="svg-container"><svg width="120" height="60" viewBox="0 0 120 60"><text x="10" y="25" font-size="11" fill="#333">C₆H₅–CH–C–C₆H₅</text><text x="55" y="45" font-size="9" fill="#555">|   ||</text><text x="50" y="22" font-size="9" fill="#555">OH O</text></svg></div>',
+                options: ['a. α-hydroxy aldehyde', 'b. α-hydroxy ketone',
+                    'c. compound containing an aldehyde and a ketonic group', 'd. α-unsaturated acid'
+                ]
+            }, {
+                id: 106,
+                subject: 'chemistry',
+                text: 'The velocity constant of a reaction at 290K was found to be 3.2×10<sup>-3</sup> s<sup>-1</sup>. When the temperature is raised to 310K, it will be about',
+                options: ['a. 9.6×10<sup>-3</sup>', 'b. 1.28×10<sup>-2</sup>', 'c. 6.4×10<sup>-3</sup>',
+                'd. 3.2×10<sup>-4</sup>']
+            }, {
+                id: 107,
+                subject: 'chemistry',
+                text: 'Select the pK<sub>a</sub> value of the strongest acid from the following.',
+                options: ['a. 2.0', 'b. 4.5', 'c. 1.0', 'd. 3.0']
+            }, {
+                id: 108,
+                subject: 'chemistry',
+                text: 'Pick out the unsaturated fatty acid from the following',
+                options: ['a. oleic acid', 'b. palmitic acid', 'c. stearic acid', 'd. lauric acid']
+            }, {
+                id: 109,
+                subject: 'chemistry',
+                text: 'Nylon is not a',
+                options: ['a. copolymer', 'b. homopolymer', 'c. condensation polymer', 'd. polyamide']
+            }, {
+                id: 110,
+                subject: 'chemistry',
+                text: 'The coal tar fraction which contains phenol is',
+                options: ['a. heavy oil', 'b. light oil', 'c. middle oil', 'd. green oil']
+            }, {
+                id: 111,
+                subject: 'chemistry',
+                text: 'The compounds A and B are mixed in equimolar proportion to form the products, A + B ⇌ C + D. At equilibrium, one-third of A and B are consumed. The equilibrium constant for the reaction is',
+                options: ['a. 2.5', 'b. 0.25', 'c. 0.5', 'd. 4.0']
+            }, {
+                id: 112,
+                subject: 'chemistry',
+                text: 'In froth floatation process for the purification of ores, the particles of ore float because',
+                options: ['a. they are insoluble', 'b. they bear electrostatic charge',
+                    'c. their surface is not easily wetted by water', 'd. they are light'
+                ]
+            }, {
+                id: 113,
+                subject: 'chemistry',
+                text: 'Which of the following statements about amorphous solids is incorrect?',
+                options: ['a. There is no orderly arrangement of particles.', 'b. They are rigid and incompressible.',
+                    'c. They melt over a range of temperature.', 'd. They are anisotropic.'
+                ]
+            }, {
+                id: 114,
+                subject: 'chemistry',
+                text: 'Hydrogen diffuses six times faster than gas A. The molar mass of gas A is',
+                options: ['a. 24', 'b. 36', 'c. 72', 'd. 6']
+            }, {
+                id: 115,
+                subject: 'chemistry',
+                text: 'Dulong and Petit\'s law is valid only for',
+                options: ['a. gaseous elements', 'b. solid elements', 'c. metals', 'd. non-metals']
+            }, {
+                id: 116,
+                subject: 'chemistry',
+                text: 'Identify the gas which is readily adsorbed by activated charcoal',
+                options: ['a. H<sub>2</sub>', 'b. O<sub>2</sub>', 'c. N<sub>2</sub>', 'd. SO<sub>2</sub>']
+            }, {
+                id: 117,
+                subject: 'chemistry',
+                text: 'If the distance between Na<sup>+</sup> and Cl<sup>-</sup> ions in sodium chloride crystal is x pm, the length of the edge of the unit cell is',
+                options: ['a. x/2 pm', 'b. 2x pm', 'c. 4x pm', 'd. x/4 pm']
+            }, {
+                id: 118,
+                subject: 'chemistry',
+                text: 'Which of the following statements is incorrect?',
+                options: ['a. In K<sub>4</sub>[Fe(CN)<sub>6</sub>] the ligand has satisfied both primary and secondary valencies of ferrous ion.',
+                    'b. In [Cu(NH<sub>3</sub>)<sub>4</sub>]SO<sub>4</sub>, the ligand has satisfied only the secondary valency of copper.',
+                    'c. In K<sub>4</sub>[Fe(CN)<sub>6</sub>] the ligand has satisfied only the secondary valency of ferric ion.',
+                    'd. In K<sub>4</sub>[Fe(CN)<sub>6</sub>] the ligand has satisfied both primary and secondary valencies of ferric ion.'
+                ]
+            }, {
+                id: 119,
+                subject: 'chemistry',
+                text: '2-acetoxy benzoic acid is used as an',
+                options: ['a. antiseptic', 'b. antipyretic', 'c. antimalarial', 'd. antidepressant']
+            }, {
+                id: 120,
+                subject: 'chemistry',
+                text: 'A nucleoside on hydrolysis gives',
+                options: ['a. an allopentose and a heterocyclic base',
+                    'b. an allopentose and orthophosphoric acid',
+                    'c. a heterocyclic base and orthophosphoric acid',
+                    'd. an allopentose, a heterocyclic base and orthophosphoric acid'
+                ]
+            },
+            // MATHEMATICS (121-180)
+            {
+                id: 121,
+                subject: 'math',
+                text: 'If A = {a,b,c}, B = {b,c,d} and C = {a,d,c} then (A - B) × (B ∩ C) =',
+                options: ['a. {(a,c),(a,d),(b,d)}', 'b. {(c,a),(d,a)}', 'c. {(a,b),(c,d)}', 'd. {(a,c),(a,d)}']
+            }, {
+                id: 122,
+                subject: 'math',
+                text: 'The function f:X→Y defined by f(x) = sin x is one-one but not onto if X and Y are respectively',
+                options: ['a. [-π/2, π/2] and [-1,1]', 'b. [0, π/2] and [-1,1]', 'c. [0, π] and [0,1]', 'd. R and R']
+            }, {
+                id: 123,
+                subject: 'math',
+                text: 'If log<sub>4</sub>2 + log<sub>4</sub>4 + log<sub>4</sub>16 + log<sub>4</sub>x = 6 then x =',
+                options: ['a. 32', 'b. 8', 'c. 4', 'd. 64']
+            }, {
+                id: 124,
+                subject: 'math',
+                text: 'If S<sub>n</sub> = 1/(6·11) + 1/(11·16) + 1/(16·21) + ... to n terms, then 6S<sub>n</sub> =',
+                options: ['a. 1/(5n+6)', 'b. (2n-1)/(5n+6)', 'c. n/(5n+6)', 'd. (5n-4)/(5n+6)']
+            }, {
+                id: 125,
+                subject: 'math',
+                text: 'The remainder obtained when (1!)² + (2!)² + (3!)² + ... + (100!)² is divided by 10² is',
+                options: ['a. 14', 'b. 17', 'c. 28', 'd. 27']
+            }, {
+                id: 126,
+                subject: 'math',
+                text: 'If (p ∧ ~r) → (~p ∨ q) is false, then the truth values of p, q and r are respectively',
+                options: ['a. T, F and T', 'b. F, T and T', 'c. F, F and T', 'd. T, F and F']
+            }, {
+                id: 127,
+                subject: 'math',
+                text: 'If α, β and γ are the roots of the equation x³ - 8x + 8 = 0 then Σα² and Σ(1/αβ) are respectively equal to',
+                options: ['a. 16 and 0', 'b. -16 and 0', 'c. 16 and 8', 'd. 0 and -16']
+            }, {
+                id: 128,
+                subject: 'math',
+                text: 'The gcd of 1080 and 675 is',
+                options: ['a. 125', 'b. 225', 'c. 135', 'd. 145']
+            }, {
+                id: 129,
+                subject: 'math',
+                text: 'If a|(b+c) and a|(b-c), where a,b,c ∈ N, then',
+                options: ['a. c² ≡ a²(mod b²)', 'b. a² ≡ b²(mod c²)', 'c. a² + c² = b²', 'd. b² ≡ c²(mod a²)']
+            }, {
+                id: 130,
+                subject: 'math',
+                text: 'If a, b and c ∈ N, which one of the following is not true?',
+                options: ['a. a|b and a|c ⇒ a|b+c', 'b. a|b+c ⇒ a|b and a|c', 'c. a|b and b|c ⇒ a|c',
+                    'd. a|b and a|c ⇒ a|3b+2c'
+                ]
+            }, {
+                id: 131,
+                subject: 'math',
+                text: 'If 2A + 3B = [[2,-1,4],[3,2,5]] and A + 2B = [[5,0,3],[1,6,2]] then B =',
+                options: ['a. [[8,1,2],[1,10,1]]', 'b. [[8,1,-2],[-1,10,-1]]', 'c. [[8,1,2],[-1,10,-1]]',
+                    'd. [[8,-1,2],[-1,10,-1]]'
+                ]
+            }, {
+                id: 132,
+                subject: 'math',
+                text: 'If O(A)=2×3, O(B)=3×2 and O(C)=3×3 which one of the following is not defined?',
+                options: ['a. C(A+B\')', 'b. C(A+B\')', 'c. BAC', 'd. CB+A\'', ]
+            }, {
+                id: 133,
+                subject: 'math',
+                text: 'If A = [[1,-3],[2,k]] and A² - 4A + 10I = A then k =',
+                options: ['a. 1 or 4', 'b. 4 and not 1', 'c. -4', 'd. 0']
+            }, {
+                id: 134,
+                subject: 'math',
+                text: 'The value of |[x+y, y+z, z+x; x, y, z; x-y, y-z, z-x]| =',
+                options: ['a. 0', 'b. (x+y+z)³', 'c. 2(x+y+z)³', 'd. 2(x+y+z)²']
+            }, {
+                id: 135,
+                subject: 'math',
+                text: 'On the set Q of all rational numbers the operation * which is both associative and commutative is given by a*b =',
+                options: ['a. 2a+3b', 'b. ab+1', 'c. a²+b²', 'd. a+b+ab']
+            }, {
+                id: 136,
+                subject: 'math',
+                text: 'In the group G = {1,5,7,11} under multiplication modulo 12, the solution of 7<sup>-1</sup> × (x × 11) = 5 is x =',
+                options: ['a. 11', 'b. 7', 'c. 1', 'd. 5']
+            }, {
+                id: 137,
+                subject: 'math',
+                text: 'A subset of the additive group of real numbers which is not a subgroup, is',
+                options: ['a. (Q,+)', 'b. (N,+)', 'c. (Z,+)', 'd. (10,+)']
+            }, {
+                id: 138,
+                subject: 'math',
+                text: 'If p = i + j, q = 4k - j and r = i + k, then the unit vector in the direction of 3p + q - 2r is',
+                options: ['a. i+2j+2k', 'b. (1/3)(i-2j+2k)', 'c. (1/3)(i-2j-2k)', 'd. (1/3)(i+2j+2k)']
+            }, {
+                id: 139,
+                subject: 'math',
+                text: 'If a and b are two vectors such that |a|=3√3, |b|=4 and |a+b|=√7, the angle between a and b is',
+                options: ['a. 150°', 'b. 30°', 'c. 60°', 'd. 120°']
+            }, {
+                id: 140,
+                subject: 'math',
+                text: 'If a is vector perpendicular to both b and c, then',
+                options: ['a. a·(b×c)=0', 'b. a×(b×c)=0', 'c. a×(b+c)=0', 'd. a·(b+c)=0']
+            }, {
+                id: 141,
+                subject: 'math',
+                text: 'If the area of the parallelogram with a and b as two adjacent sides is 15 sq units, then the area of the parallelogram having 3a+2b and a+3b as two adjacent sides in sq units is',
+                options: ['a. 45', 'b. 75', 'c. 105', 'd. 120']
+            }, {
+                id: 142,
+                subject: 'math',
+                text: 'The locus of the point which moves such that the ratio of its distances from two fixed points in the plane is always a constant k(<1) is',
+                options: ['a. circle', 'b. straight line', 'c. ellipse', 'd. hyperbola']
+            }, {
+                id: 143,
+                subject: 'math',
+                text: 'If the lines x+3y-9=0, 4x+by-2=0 and 2x-y-4=0 are concurrent, then b =',
+                options: ['a. 0', 'b. 1', 'c. 5', 'd. -5']
+            }, {
+                id: 144,
+                subject: 'math',
+                text: 'The lines represented by ax²+2hxy+by²=0 are perpendicular to each other if',
+                options: ['a. h=0', 'b. h²=ab', 'c. a+b=0', 'd. h²=a+b']
+            }, {
+                id: 145,
+                subject: 'math',
+                text: 'The equation of the circle having x-y-2=0 and x-y+2=0 as two tangents and x+y=0 as a diameter is',
+                options: ['a. x²+y²=1', 'b. x²+y²=2', 'c. x²+y²-2x+2y-1=0', 'd. x²+y²+2x-2y+1=0']
+            }, {
+                id: 146,
+                subject: 'math',
+                text: 'If the length of the tangent from any point on the circle (x-3)²+(y+2)²=5r² to the circle (x-3)²+(y+2)²=r² is 16 units, then the area between the two circles in sq units is',
+                options: ['a. 16π', 'b. 8π', 'c. 4π', 'd. 32π']
+            }, {
+                id: 147,
+                subject: 'math',
+                text: 'The circles ax²+ay²+2g₁x+2f₁y+c₁=0 and bx²+by²+2g₂x+2f₂y+c₂=0 (a≠0 and b≠0) cut orthogonally if',
+                options: ['a. g₁g₂+f₁f₂=c₁+c₂', 'b. bg₁g₂+af₁f₂=bc₁+ac₂', 'c. g₁g₂+f₁f₂=bc₁+ac₂',
+                    'd. g₁g₂+f₁f₂=ac₁+bc₂'
+                ]
+            }, {
+                id: 148,
+                subject: 'math',
+                text: 'The equation of the common tangent of the two touching circles, y²+x²-6x-12y+37=0 and x²+y²-6y+7=0 is',
+                options: ['a. x+y+5=0', 'b. x+y-5=0', 'c. x-y+5=0', 'd. x-y-5=0']
+            }, {
+                id: 149,
+                subject: 'math',
+                text: 'The equation of the parabola with vertex at (-1,1) and focus (2,1) is',
+                options: ['a. y²-2y-12x+13=0', 'b. y²-2y-12x+11=0', 'c. x²+2x-12y+13=0', 'd. y²-2y-12x-11=0']
+            }, {
+                id: 150,
+                subject: 'math',
+                text: 'The equation of the line which is tangent to both the circle x²+y²=5 and the parabola y²=40x is',
+                options: ['a. 2x+y+5=0', 'b. 2x-y-5=0', 'c. 2x-y+5=0', 'd. 2x-y±5=0']
+            }, {
+                id: 151,
+                subject: 'math',
+                text: 'x=4(1+cosθ) and y=3(1+sinθ) are the parametric equations of',
+                options: ['a. ellipse', 'b. parabola', 'c. hyperbola', 'd. circle']
+            }, {
+                id: 152,
+                subject: 'math',
+                text: 'If the distance between the foci and the distance between the directrices of the hyperbola x²/a² - y²/b² = 1 are in ratio 3:2, then a:b is',
+                options: ['a. 2:1', 'b. √3:√2', 'c. 1:2', 'd. √2:1']
+            }, {
+                id: 153,
+                subject: 'math',
+                text: 'The ellipse x²/25 + y²/16 = 1 and the hyperbola x²/25 - y²/16 = 1 have',
+                options: ['a. same foci', 'b. same directrices', 'c. same vertices', 'd. same eccentricity']
+            }, {
+                id: 154,
+                subject: 'math',
+                text: 'If secθ = m and tanθ = n then (1/m)[(m+n) + 1/(m+n)] =',
+                options: ['a. mn', 'b. 2n', 'c. 2m', 'd. 2']
+            }, {
+                id: 155,
+                subject: 'math',
+                text: 'The value of (sin85° - sin15°)/cos65° =',
+                options: ['a. 0', 'b. 1', 'c. -1', 'd. 2']
+            }, {
+                id: 156,
+                subject: 'math',
+                text: 'From an aeroplane flying vertically above a horizontal road, the angles of depression of two consecutive stones on the same side of the aeroplane are observed to be 30° and 60° respectively. The height at which the aeroplane is flying in km, is',
+                options: ['a. 2', 'b. 2/√3', 'c. √3/2', 'd. 4/√3']
+            }, {
+                id: 157,
+                subject: 'math',
+                text: 'If the angles of a triangle are in the ratio 3:4:5 then the sides are in the ratio',
+                options: ['a. 3:4:5', 'b. 2:√3:√3+1', 'c. √2:√6:√3+1', 'd. 2:√6:√3+1']
+            }, {
+                id: 158,
+                subject: 'math',
+                text: 'If cos⁻¹x = α (0<x<1) and sin⁻¹(2x√(1-x²)) + sec⁻¹(1/(2x²-1)) = 2π/3 then tan⁻¹(2x) =',
+                options: ['a. π/2', 'b. π/3', 'c. π/4', 'd. π/6']
+            }, {
+                id: 159,
+                subject: 'math',
+                text: 'If a > b > 0 then the value of tan⁻¹(a/b) + tan⁻¹((a+b)/(a-b)) depends on',
+                options: ['a. neither a nor b', 'b. a and not b', 'c. b and not a', 'd. both a and b']
+            }, {
+                id: 160,
+                subject: 'math',
+                text: 'Which one of the following equations has no solution?',
+                options: ['a. √3 sinθ - cosθ = 2', 'b. cosθ + sinθ = √2', 'c. cosθ·secθ = 1',
+                    'd. cosθ - secθ = cosθ·secθ']
+            }, {
+                id: 161,
+                subject: 'math',
+                text: 'The complex number (-√3+3i)(1-i)/[(3+√3i)(i)(√3+√3i)] when represented in the Argand diagram lies',
+                options: ['a. on the X-axis (Real axis)', 'b. on the Y-axis (Imaginary axis)', 'c. in the first quadrant',
+                    'd. in the second quadrant'
+                ]
+            }, {
+                id: 162,
+                subject: 'math',
+                text: 'If 2x = -1 + √3i then the value of (1-x²+x)⁶ - (1-x+x²)⁶ =',
+                options: ['a. 0', 'b. 64', 'c. -64', 'd. 32']
+            }, {
+                id: 163,
+                subject: 'math',
+                text: 'The modulus and amplitude of (1+i√3)⁶ are respectively',
+                options: ['a. 256 and 8π/3', 'b. 2 and 2π/3', 'c. 256 and 2π/3', 'd. 256 and π/3']
+            }, {
+                id: 164,
+                subject: 'math',
+                text: 'The value of lim<sub>x→0</sub> (5ˣ - 5⁻ˣ)/(2x) =',
+                options: ['a. 2log5', 'b. 1', 'c. 0', 'd. log5']
+            }, {
+                id: 165,
+                subject: 'math',
+                text: 'Which one of the following is not true always?',
+                options: ['a. If a function f(x) is continuous at x=a then lim<sub>x→a</sub> f(x) exists.',
+                    'b. If f(x) and g(x) are differentiable at x=a then f(x)+g(x) is also differentiable at x=a.',
+                    'c. If f(x) is continuous at x=a then it is differentiable at x=a.',
+                    'd. If f(x) is not continuous at x=a then it is not differentiable at x=a.'
+                ]
+            }, {
+                id: 166,
+                subject: 'math',
+                text: 'If y = 1 + 1/x + 1/x² + 1/x³ + ... ∞ with |x|>1 then dy/dx =',
+                options: ['a. -y²/x²', 'b. y²/x²', 'c. x²y²', 'd. x²/y²']
+            }, {
+                id: 167,
+                subject: 'math',
+                text: 'If f(x) and g(x) are two functions with g(x)=x-1/x and fog(x)=x³-1/x³, then f\'(x) =',
+                options: ['a. 3x²+3/x²', 'b. 1+1/x²', 'c. x²-1/x²', 'd. 3x²-3']
+            }, {
+                id: 168,
+                subject: 'math',
+                text: 'The derivative of a<sup>sec x</sup> w.r.t. a<sup>tan x</sup> (a>0) is',
+                options: ['a. a<sup>sec x - tan x</sup>', 'b. sin x·a<sup>sec x - tan x</sup>', 'c. cos x·a<sup>sec x - tan x</sup>',
+                    'd. sec x·a<sup>sec x - tan x</sup>'
+                ]
+            }, {
+                id: 169,
+                subject: 'math',
+                text: 'If sin(x+y)+cos(x+y)=log(x+y) then d²y/dx² =',
+                options: ['a. 1', 'b. -1', 'c. 0', 'd. -y/x']
+            }, {
+                id: 170,
+                subject: 'math',
+                text: 'If f(x) is a function such that f\'\'(x)+f(x)=0 and g(x)=[f(x)]²+[f\'(x)]² and g(3)=8 then g(8)=',
+                options: ['a. 8', 'b. 3', 'c. 0', 'd. 5']
+            }, {
+                id: 171,
+                subject: 'math',
+                text: 'If the curve y=2x³+ax²+bx+c passes through the origin and the tangents drawn to it at x=-1 and x=2 are parallel to the X-axis, then the values of a, b and c are respectively,',
+                options: ['a. 3, -12 and 0', 'b. -3, 12 and 0', 'c. -3, -12 and 0', 'd. 12, -3 and 0']
+            }, {
+                id: 172,
+                subject: 'math',
+                text: 'A circular sector of perimeter 60 m with maximum area is to be constructed. The radius of the circular arc in metre must be',
+                options: ['a. 10', 'b. 15', 'c. 5', 'd. 20']
+            }, {
+                id: 173,
+                subject: 'math',
+                text: 'The tangent and the normal drawn to the curve y=x²-x+4 at P(1,4) cut the X-axis at A and B respectively. If the length of the subtangent drawn to the curve at P is equal to the length of the subnormal, then the area of ΔPAB in square units is',
+                options: ['a. 16', 'b. 8', 'c. 32', 'd. 4']
+            }, {
+                id: 174,
+                subject: 'math',
+                text: '∫(x³+3x²+3x+1)/(x+1)⁵ dx =',
+                options: ['a. tan⁻¹x + c', 'b. log(x+1)+c', 'c. (1/5)log(x+1)+c', 'd. -1/(x+1)+c']
+            }, {
+                id: 175,
+                subject: 'math',
+                text: '∫ cos x / cos²(1+log tan(x/2)) dx =',
+                options: ['a. -tan[1+log tan x/2]+c', 'b. sec²[1+log tan x/2]+c', 'c. tan[1+log tan x/2]+c',
+                    'd. sin[1+log tan x/2]+c'
+                ]
+            }, {
+                id: 176,
+                subject: 'math',
+                text: '∫ dx/(x√(x⁶-16)) =',
+                options: ['a. sec⁻¹(x³/4)+c', 'b. (1/12)sec⁻¹(x³/4)+c', 'c. cosh⁻¹(x³/4)+c', 'd. (1/3)sec⁻¹(x³/4)+c']
+            }, {
+                id: 177,
+                subject: 'math',
+                text: 'If I₁ = ∫₀^(π/2) x sin x dx and I₂ = ∫₀^(π/2) x cos x dx then which one of the following is true?',
+                options: ['a. I₁ = I₂', 'b. I₁ + I₂ = 0', 'c. I₁ = (π/2)I₂', 'd. I₁ + I₂ = π/2']
+            }, {
+                id: 178,
+                subject: 'math',
+                text: 'If f(x) is defined in [-2,2] by f(x)=4x²-3x+1 and g(x)=[f(-x)-f(x)]/(x²+3) then ∫₋₂² g(x)dx =',
+                options: ['a. 24', 'b. 0', 'c. -48', 'd. 64']
+            }, {
+                id: 179,
+                subject: 'math',
+                text: 'The area enclosed between the parabola y=x²-x+2 and the line y=x+2 in sq units =',
+                options: ['a. 4/3', 'b. 2/3', 'c. 1/3', 'd. 8/3']
+            }, {
+                id: 180,
+                subject: 'math',
+                text: 'The solution of the differential equation e⁻ˣ(y+1)dy + (cos²x - sin2x)y(dx) = 0 subjected to the condition that y=1 when x=0 is',
+                options: ['a. (y+1)+eˣcos²x=2', 'b. y+log y=eˣcos²x', 'c. log(y+1)+eˣcos²x=1',
+                    'd. y+log y+eˣcos²x=2']
+            }
+        ];
+
+        // ==================== STATE ====================
+        let userAnswers = {}; // {questionId: 'a'|'b'|'c'|'d'}
+        let examSubmitted = false;
+        let timerInterval;
+        let totalSeconds = 3 * 60 * 60; // 3 hours
+        let currentTab = 'physics';
+
+        // ==================== INITIALIZE ====================
+        function init() {
+            renderAllSections();
+            updateQuestionNav();
+            startTimer();
+            // Restore from localStorage if exists
+            const saved = localStorage.getItem('comedk2016_answers');
+            if (saved) {
+                try {
+                    userAnswers = JSON.parse(saved);
+                    restoreAnswers();
+                } catch (e) { /* ignore */ }
+            }
+            updateProgress();
+        }
+
+        function renderAllSections() {
+            renderSection('physics', 1, 60);
+            renderSection('chemistry', 61, 120);
+            renderSection('math', 121, 180);
+        }
+
+        function renderSection(subject, startId, endId) {
+            const section = document.getElementById('section-' + subject);
+            let html = '';
+            for (let q of questionData) {
+                if (q.id >= startId && q.id <= endId) {
+                    html += renderQuestionCard(q);
+                }
+            }
+            section.innerHTML = html;
+        }
+
+        function renderQuestionCard(q) {
+            const optLabels = ['a', 'b', 'c', 'd'];
+            let optionsHtml = '';
+            for (let i = 0; i < q.options.length; i++) {
+                const optVal = optLabels[i];
+                const checked = userAnswers[q.id] === optVal ? 'checked' : '';
+                optionsHtml += `
+                <label class="option-label" for="q${q.id}_${optVal}">
+                    <input type="radio" name="q${q.id}" id="q${q.id}_${optVal}" value="${optVal}" ${checked} onchange="selectAnswer(${q.id},'${optVal}')">
+                    <span>${q.options[i]}</span>
+                </label>`;
+            }
+            return `
+            <div class="question-card" id="card-${q.id}" data-subject="${q.subject}">
+                <span class="q-number">Q${q.id}</span>
+                <div class="q-text">${q.text}</div>
+                <div class="options">${optionsHtml}</div>
+                <div class="review-indicator" id="review-${q.id}"></div>
+            </div>`;
+        }
+
+        // ==================== ACTIONS ====================
+        function selectAnswer(qId, value) {
+            if (examSubmitted) return;
+            userAnswers[qId] = value;
+            const card = document.getElementById('card-' + qId);
+            if (card) card.classList.add('answered');
+            updateProgress();
+            updateQuestionNav();
+            // Save to localStorage
+            localStorage.setItem('comedk2016_answers', JSON.stringify(userAnswers));
+        }
+
+        function restoreAnswers() {
+            for (const [qId, val] of Object.entries(userAnswers)) {
+                const radio = document.getElementById('q' + qId + '_' + val);
+                if (radio) {
+                    radio.checked = true;
+                    const card = document.getElementById('card-' + qId);
+                    if (card) card.classList.add('answered');
+                }
+            }
+            updateProgress();
+            updateQuestionNav();
+        }
+
+        function switchTab(subject) {
+            currentTab = subject;
+            // Update tab buttons
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            const activeBtn = document.querySelector('.tab-btn.' + subject);
+            if (activeBtn) activeBtn.classList.add('active');
+            // Update sections
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            const section = document.getElementById('section-' + subject);
+            if (section) section.classList.add('active');
+            updateQuestionNav();
+            // Scroll to top of section
+            if (section) section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function updateQuestionNav() {
+            const nav = document.getElementById('questionNav');
+            let startId, endId;
+            if (currentTab === 'physics') { startId = 1;
+                endId = 60; } else if (currentTab === 'chemistry') { startId = 61;
+                endId = 120; } else { startId = 121;
+                endId = 180; }
+            let html = '';
+            for (let i = startId; i <= endId; i++) {
+                const answered = userAnswers[i] ? 'answered-dot' : '';
+                html +=
+                    `<button class="q-nav-dot ${answered}" onclick="scrollToQuestion(${i})" title="Q${i}">${i}</button>`;
+            }
+            nav.innerHTML = html;
+        }
+
+        function scrollToQuestion(qId) {
+            // Determine which tab
+            let subject;
+            if (qId <= 60) subject = 'physics';
+            else if (qId <= 120) subject = 'chemistry';
+            else subject = 'math';
+            if (currentTab !== subject) {
+                switchTab(subject);
+            }
+            setTimeout(() => {
+                const card = document.getElementById('card-' + qId);
+                if (card) {
+                    card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    card.style.boxShadow = '0 0 0 3px #1a73e8';
+                    setTimeout(() => { card.style.boxShadow = ''; }, 2000);
+                }
+            }, 200);
+        }
+
+        function updateProgress() {
+            const total = 180;
+            const answered = Object.keys(userAnswers).length;
+            const pct = Math.round((answered / total) * 100);
+            document.getElementById('progressFill').style.width = pct + '%';
+        }
+
+        // ==================== TIMER ====================
+        function startTimer() {
+            updateTimerDisplay();
+            timerInterval = setInterval(() => {
+                if (totalSeconds > 0 && !examSubmitted) {
+                    totalSeconds--;
+                    updateTimerDisplay();
+                }
+                if (totalSeconds <= 0 && !examSubmitted) {
+                    clearInterval(timerInterval);
+                    submitExam();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const h = Math.floor(totalSeconds / 3600);
+            const m = Math.floor((totalSeconds % 3600) / 60);
+            const s = totalSeconds % 60;
+            document.getElementById('timer').textContent =
+                String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+            if (totalSeconds < 600) {
+                document.getElementById('timer').style.color = '#ff4444';
+            }
+        }
+
+        // ==================== SUBMIT & REVIEW ====================
+        function submitExam() {
+            if (examSubmitted) return;
+            examSubmitted = true;
+            clearInterval(timerInterval);
+            document.getElementById('btnSubmit').disabled = true;
+            document.getElementById('btnSubmit').textContent = '✅ Submitted';
+
+            let correct = 0;
+            let incorrect = 0;
+            let unanswered = 0;
+
+            // Review each question
+            for (let q of questionData) {
+                const card = document.getElementById('card-' + q.id);
+                const reviewEl = document.getElementById('review-' + q.id);
+                const userAns = userAnswers[q.id];
+                const correctAns = answerKey[q.id];
+
+                if (!userAns) {
+                    unanswered++;
+                    if (card) card.classList.add('unanswered-review');
+                    if (reviewEl) {
+                        reviewEl.textContent = '⚠️ Unanswered. Correct: ' + correctAns.toUpperCase();
+                        reviewEl.className = 'review-indicator show unanswered';
+                    }
+                } else if (specialQuestions[q.id]) {
+                    // No correct option among choices
+                    unanswered++;
+                    if (card) card.classList.add('unanswered-review');
+                    if (reviewEl) {
+                        reviewEl.textContent = '⚠️ No correct option among choices (key: *)';
+                        reviewEl.className = 'review-indicator show unanswered';
+                    }
+                } else if (userAns === correctAns) {
+                    correct++;
+                    if (card) card.classList.add('correct-review');
+                    if (reviewEl) {
+                        reviewEl.textContent = '✅ Correct!';
+                        reviewEl.className = 'review-indicator show correct';
+                    }
+                } else {
+                    incorrect++;
+                    if (card) card.classList.add('incorrect-review');
+                    if (reviewEl) {
+                        reviewEl.textContent = '❌ Incorrect. Correct: ' + correctAns.toUpperCase();
+                        reviewEl.className = 'review-indicator show incorrect';
+                    }
+                }
+                // Disable radio buttons
+                const radios = card ? card.querySelectorAll('input[type="radio"]') : [];
+                radios.forEach(r => r.disabled = true);
+            }
+
+            // Show results
+            const total = 180;
+            const scorePercent = Math.round((correct / total) * 100);
+            document.getElementById('scoreInner').textContent = correct + '/' + total;
+            document.getElementById('scoreCircle').style.setProperty('--score-percent', scorePercent + '%');
+            document.getElementById('scoreCircle').style.background =
+                `conic-gradient(#0d904f ${scorePercent}%, #e0e0e0 ${scorePercent}%)`;
+            document.getElementById('correctCount').textContent = correct;
+            document.getElementById('incorrectCount').textContent = incorrect;
+            document.getElementById('unansweredCount').textContent = unanswered;
+            document.getElementById('resultMsg').textContent =
+                `You scored ${correct} out of 180 (${scorePercent}%). ` +
+                (scorePercent >= 70 ? 'Great job! 🎉' : scorePercent >= 40 ? 'Good effort! 👍' :
+                    'Keep practicing! 💪');
+            document.getElementById('resultsPanel').classList.add('show');
+            document.getElementById('resultsPanel').scrollIntoView({ behavior: 'smooth' });
+
+            // Switch to show all sections
+            document.querySelectorAll('.section').forEach(s => s.classList.add('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('tabNav').style.display = 'none';
+            document.getElementById('questionNav').innerHTML =
+                '<span style="color:#666;font-size:0.85rem;">Review mode – all questions visible</span>';
+        }
+
+        function resetExam() {
+            if (confirm('Are you sure you want to reset all answers? This cannot be undone.')) {
+                userAnswers = {};
+                examSubmitted = false;
+                totalSeconds = 3 * 60 * 60;
+                localStorage.removeItem('comedk2016_answers');
+                document.getElementById('btnSubmit').disabled = false;
+                document.getElementById('btnSubmit').textContent = '📝 Submit & Review';
+                document.getElementById('resultsPanel').classList.remove('show');
+                document.getElementById('tabNav').style.display = 'flex';
+                document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+                document.getElementById('section-physics').classList.add('active');
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                document.querySelector('.tab-btn.physics').classList.add('active');
+                currentTab = 'physics';
+                // Clear all radio buttons
+                document.querySelectorAll('input[type="radio"]').forEach(r => { r.checked = false;
+                    r.disabled = false; });
+                // Clear review indicators
+                document.querySelectorAll('.review-indicator').forEach(el => { el.className = 'review-indicator';
+                    el.textContent = ''; });
+                document.querySelectorAll('.question-card').forEach(card => {
+                    card.classList.remove('answered', 'correct-review', 'incorrect-review',
+                        'unanswered-review');
+                });
+                updateProgress();
+                updateQuestionNav();
+                document.getElementById('timer').style.color = '#ffd700';
+                updateTimerDisplay();
+                if (timerInterval) clearInterval(timerInterval);
+                startTimer();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        // ==================== INIT ====================
+        document.addEventListener('DOMContentLoaded', init);
+
+        // Warn before leaving
+        window.addEventListener('beforeunload', function(e) {
+            if (Object.keys(userAnswers).length > 0 && !examSubmitted) {
+                e.preventDefault();
+                e.returnValue = 'You have unsaved answers. Are you sure you want to leave?';
+                return e.returnValue;
+            }
+        });
+    </script>
+</body>
+</html>

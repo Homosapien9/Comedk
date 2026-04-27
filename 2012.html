@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+  <title>COMEDK 2012 · JEE Mains Style Mock Test</title>
+  <style>
+    :root {
+      --bg: #f4f6fc;
+      --card: #ffffff;
+      --primary: #2563eb;
+      --primary-light: #e0e7ff;
+      --success: #059669;
+      --danger: #dc2626;
+      --warning: #d97706;
+      --text: #1e293b;
+      --text-secondary: #64748b;
+      --border: #e2e8f0;
+      --shadow: 0 6px 20px rgba(0,0,0,0.04);
+      --radius: 20px;
+      --physics: #2563eb;
+      --chemistry: #dc2626;
+      --math: #d97706;
+      --font-mono: 'SF Mono', 'JetBrains Mono', 'Consolas', monospace;
+      --nav-bg: #ffffff;
+    }
+    body.dark {
+      --bg: #0f172a;
+      --card: #1e293b;
+      --primary: #3b82f6;
+      --primary-light: #1e3a5f;
+      --text: #f1f5f9;
+      --text-secondary: #94a3b8;
+      --border: #334155;
+      --shadow: 0 6px 20px rgba(0,0,0,0.3);
+      --nav-bg: #1e293b;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+      transition: background 0.3s, color 0.3s;
+    }
+    .header {
+      background: #0f172a;
+      color: #f8fafc;
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      position: sticky;
+      top:0;
+      z-index:120;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+    }
+    .logo {
+      font-weight: 800;
+      font-size: clamp(1rem, 2.5vw, 1.3rem);
+      letter-spacing: -0.4px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .logo span { color: #60a5fa; }
+    .timer-box {
+      background: #1e293b;
+      padding: 8px 18px;
+      border-radius: 32px;
+      font-weight: 700;
+      font-family: var(--font-mono);
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      letter-spacing: 1.5px;
+    }
+    .timer-box.warning { background: #78350f; animation: pulse 1.2s infinite; }
+    .timer-box.danger { background: #7f1d1d; animation: pulse 0.7s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.65} }
+    .theme-toggle {
+      background: #334155;
+      border: none;
+      color: #f1f5f9;
+      padding: 8px 14px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.8rem;
+    }
+    .main-container {
+      display: flex;
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 12px;
+      gap: 14px;
+      min-height: calc(100vh - 130px);
+    }
+    .sidebar {
+      width: 280px;
+      flex-shrink: 0;
+      background: var(--nav-bg);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      max-height: calc(100vh - 140px);
+      position: sticky;
+      top: 80px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+    .subject-tabs {
+      display: flex;
+      gap: 4px;
+      background: var(--border);
+      border-radius: 26px;
+      padding: 3px;
+    }
+    .subject-tab {
+      flex:1;
+      text-align:center;
+      padding: 10px 4px;
+      border-radius: 24px;
+      cursor:pointer;
+      font-weight:700;
+      font-size:0.78rem;
+      border:none;
+      background:transparent;
+      color:var(--text-secondary);
+      transition:0.2s;
+    }
+    .subject-tab.active { background:var(--card); color:var(--text); box-shadow:0 2px 8px rgba(0,0,0,0.08); }
+    .stats-row { display:flex; gap:5px; flex-wrap:wrap; font-size:0.72rem; }
+    .stat { background:var(--border); padding:5px 10px; border-radius:20px; font-weight:600; }
+    .question-nav {
+      display:grid;
+      grid-template-columns: repeat(8,1fr);
+      gap:3px;
+      overflow-y:auto;
+      max-height:340px;
+      padding-right:3px;
+    }
+    .q-nav-btn {
+      aspect-ratio:1;
+      border-radius:5px;
+      border:1px solid var(--border);
+      background:var(--card);
+      cursor:pointer;
+      font-size:0.66rem;
+      font-weight:600;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:var(--text-secondary);
+      transition:0.15s;
+    }
+    .q-nav-btn:hover { background:var(--primary-light); }
+    .q-nav-btn.answered { background:#dbeafe; border-color:#93c5fd; color:#1e40af; }
+    .q-nav-btn.marked { background:#ede9fe; border-color:#c4b5fd; color:#6d28d9; }
+    .q-nav-btn.active { border:2px solid #0f172a; font-weight:800; transform:scale(1.05); }
+    .btn {
+      padding: 10px 18px;
+      border-radius: 28px;
+      border:none;
+      cursor:pointer;
+      font-weight:700;
+      font-size:0.9rem;
+      transition:0.2s;
+      letter-spacing:0.3px;
+    }
+    .btn-primary { background:var(--primary); color:#fff; }
+    .btn-outline { background:transparent; border:2px solid var(--border); color:var(--text); }
+    .btn-danger { background:var(--danger); color:#fff; }
+    .btn-warning { background:#f59e0b; color:#000; }
+    .content {
+      flex:1;
+      background:var(--card);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding: clamp(16px, 3vw, 28px);
+      display:flex;
+      flex-direction:column;
+      gap:14px;
+      border:1px solid var(--border);
+    }
+    .badge {
+      padding:6px 16px;
+      border-radius:22px;
+      font-weight:700;
+      font-size:0.8rem;
+      color:#fff;
+      letter-spacing:0.4px;
+    }
+    .badge.physics { background:var(--physics); }
+    .badge.chemistry { background:var(--chemistry); }
+    .badge.math { background:var(--math); }
+    .question-text { font-size:1.06rem; padding:6px 0; word-break:break-word; }
+    .question-text img { max-width:100%; height:auto; border-radius:10px; margin:10px 0; }
+    .options-list { display:flex; flex-direction:column; gap:10px; list-style:none; }
+    .option-item {
+      display:flex;
+      align-items:flex-start;
+      gap:12px;
+      padding:15px 18px;
+      border:2px solid var(--border);
+      border-radius:14px;
+      cursor:pointer;
+      background:var(--card);
+      transition:0.15s;
+    }
+    .option-item:hover { border-color:#90a4d0; background:var(--primary-light); }
+    .option-item.selected { border-color:var(--primary); background:var(--primary-light); font-weight:600; }
+    .option-letter {
+      width:34px; height:34px; border-radius:50%;
+      background:var(--border); display:flex; align-items:center; justify-content:center;
+      font-weight:700; font-size:0.95rem; flex-shrink:0;
+    }
+    .option-item.selected .option-letter { background:var(--primary); color:#fff; }
+    .solution-box {
+      background:#f0fdf4; border-left:5px solid #16a34a; padding:14px 18px;
+      border-radius:12px; font-size:0.9rem; margin-top:8px; display:none;
+    }
+    .solution-box.show { display:block; }
+    .solution-box.incorrect { background:#fef2f2; border-left-color:#dc2626; }
+    .modal-overlay {
+      position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:200;
+      display:flex; align-items:center; justify-content:center;
+    }
+    .modal {
+      background:var(--card); border-radius:var(--radius); padding:clamp(16px,4vw,28px);
+      max-width:780px; width:96%; max-height:92vh; overflow-y:auto;
+    }
+    .result-summary { display:grid; grid-template-columns:repeat(auto-fit,minmax(100px,1fr)); gap:10px; }
+    .result-card { background:var(--border); padding:14px; border-radius:14px; text-align:center; }
+    .result-card .value { font-size:2rem; font-weight:800; }
+    table { width:100%; border-collapse:collapse; margin:12px 0; }
+    th,td { padding:10px; border:1px solid var(--border); text-align:center; }
+    th { background:#1e293b; color:#fff; }
+    .progress-bar { height:6px; border-radius:3px; background:var(--border); }
+    .progress-fill { height:100%; border-radius:3px; }
+    .progress-fill.good { background:var(--success); }
+    .progress-fill.avg { background:var(--warning); }
+    .progress-fill.poor { background:var(--danger); }
+    @media (max-width:860px) {
+      .main-container { flex-direction:column; }
+      .sidebar { width:100%; max-height:none; position:static; flex-direction:row; flex-wrap:wrap; }
+      .question-nav { grid-template-columns:repeat(12,1fr); max-height:130px; }
+    }
+  </style>
+</head>
+<body>
+<div class="header">
+  <div class="logo">🎯 COMEDK <span>2012</span> · JEE Style Mock</div>
+  <div class="timer-box" id="timerBox"><span>⏱</span> <span id="timerDisplay">03:00:00</span></div>
+  <button class="theme-toggle" onclick="toggleTheme()">🌓 Theme</button>
+</div>
+<div class="main-container">
+  <aside class="sidebar" id="sidebar">
+    <div class="subject-tabs">
+      <button class="subject-tab physics active" id="tabPhysics" onclick="switchSubject('physics')">⚛ Physics</button>
+      <button class="subject-tab chemistry" id="tabChemistry" onclick="switchSubject('chemistry')">🧪 Chemistry</button>
+      <button class="subject-tab math" id="tabMath" onclick="switchSubject('math')">📐 Math</button>
+    </div>
+    <div class="stats-row">
+      <span class="stat" id="statAnswered">✓ 0</span>
+      <span class="stat" id="statSkipped">⊘ 0</span>
+      <span class="stat" id="statMarked">★ 0</span>
+    </div>
+    <div class="question-nav" id="questionNav"></div>
+    <button class="btn btn-danger" onclick="submitTest()" style="width:100%;margin-top:6px;">📝 Submit Test</button>
+  </aside>
+  <main class="content" id="questionContent"></main>
+</div>
+<div class="modal-overlay" id="resultOverlay" style="display:none;"><div class="modal" id="resultModal"></div></div>
+<script>
+  // SVG diagrams embedded directly
+  const diagramQ12 = `<svg width="200" height="140" viewBox="0 0 200 140"><line x1="20" y1="120" x2="180" y2="120" stroke="currentColor"/><line x1="20" y1="120" x2="20" y2="10" stroke="currentColor"/><circle cx="20" cy="120" r="3"/><text x="5" y="135" font-size="10">Q₁</text><circle cx="140" cy="120" r="3"/><text x="128" y="135" font-size="10">Q₂</text><circle cx="80" cy="50" r="3"/><text x="70" y="42" font-size="10">P</text></svg>`;
+  const diagramQ26 = `<svg width="220" height="160" viewBox="0 0 220 160"><line x1="30" y1="140" x2="30" y2="20" stroke="currentColor"/><line x1="30" y1="140" x2="200" y2="140" stroke="currentColor"/><text x="5" y="85">p</text><text x="185" y="155">V</text><rect x="70" y="40" width="90" height="80" fill="none" stroke="currentColor" stroke-width="2"/><text x="25" y="45">4</text><text x="25" y="125">2</text><text x="65" y="155">1</text><text x="155" y="155">6</text></svg>`;
+  const diagramQ38 = `<svg width="220" height="150" viewBox="0 0 220 150"><line x1="30" y1="130" x2="30" y2="10" stroke="currentColor"/><line x1="30" y1="130" x2="190" y2="130" stroke="currentColor"/><text x="8" y="75">Eₖ</text><text x="175" y="145">ν</text><line x1="60" y1="130" x2="110" y2="20" stroke="currentColor"/><text x="85" y="18">N</text><line x1="100" y1="130" x2="150" y2="20" stroke="currentColor"/><text x="125" y="18">M</text></svg>`;
+  const diagramQ50 = `<svg width="180" height="120" viewBox="0 0 180 120"><path d="M 30 90 A 70 70 0 0 1 150 90" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="90" cy="90" r="2"/><line x1="90" y1="90" x2="130" y2="40" stroke="currentColor"/><text x="70" y="70" font-size="10">0.1cm</text></svg>`;
+  const diagramQ55 = `<svg width="200" height="130" viewBox="0 0 200 130"><text x="10" y="70">I₀</text><line x1="30" y1="65" x2="70" y2="65" stroke="currentColor"/><ellipse cx="110" cy="65" rx="12" ry="40" fill="none" stroke="currentColor"/><line x1="110" y1="25" x2="110" y2="105" stroke="currentColor" stroke-dasharray="3"/><text x="100" y="20" font-size="10">A</text><ellipse cx="110" cy="65" rx="12" ry="40" fill="none" stroke="currentColor" transform="rotate(25 110 65)"/><text x="120" y="30" font-size="10">B</text><text x="135" y="45" font-size="12">θ</text><line x1="140" y1="65" x2="180" y2="65" stroke="currentColor"/><text x="170" y="60">I_t</text></svg>`;
+  const diagramQ174 = `<svg width="200" height="120" viewBox="0 0 200 120"><rect x="40" y="20" width="120" height="70" fill="none" stroke="currentColor"/><line x1="40" y1="90" x2="160" y2="20" stroke="currentColor"/><text x="30" y="15">V₁</text><text x="155" y="15">V₂</text><text x="155" y="110">V₃</text><text x="30" y="110">V₄</text></svg>`;
+
+  const physicsQuestions = [
+    {id:1,subject:'physics',text:'Number of neutrons in <sub>92</sub>U<sup>235</sup>',options:['327','235','143','92'],correct:'c',solution:'N = A−Z = 235−92 = 143.'},
+    {id:2,subject:'physics',text:'Reverse saturation current of a diode',options:['independent of temperature','increases with temperature','decreases with temperature','may increase or decrease'],correct:'b',solution:'Minority carriers increase with temperature.'},
+    {id:3,subject:'physics',text:'Half-life 10 min, 64 nuclei. Decayed after 50 min?',options:['2','5','59','62'],correct:'d',solution:'5 half-lives → 2 remain, 62 decayed.'},
+    {id:4,subject:'physics',text:'Carrier of electromagnetic interaction',options:['gluon','photon','meson','graviton'],correct:'b',solution:'Photon mediates EM force.'},
+    {id:5,subject:'physics',text:'NOT gate output when input is 0',options:['is 1','is 0','can be 0 or 1','is 0 and 1'],correct:'a',solution:'Inverter: 0→1.'},
+    {id:6,subject:'physics',text:'LCD stands for',options:['Light Carrying Diode','Liquid Crystal Display','Long Crystal Display','Light Crystal Display'],correct:'b'},
+    {id:7,subject:'physics',text:'False statement:',options:['Sound & light exhibit interference','Sound & light exhibit diffraction','Light polarises, sound does not','Sound polarises, light does not'],correct:'d',solution:'Sound is longitudinal, cannot be polarised.'},
+    {id:8,subject:'physics',text:'Relation for optically active solution',options:['S=θLC','θ=SLC','L=θSC','C=θLS'],correct:'b',solution:'Biot\'s law: θ = S·L·C.'},
+    {id:9,subject:'physics',text:'AC supply 50V, Resistor 40V, Inductor voltage?',options:['10V','20V','30V','60V'],correct:'c',solution:'V_L = √(50²−40²)=30V.'},
+    {id:10,subject:'physics',text:'10μF charged to 10V, parallel with uncharged 10μF',options:['5V','10V','20V','Zero'],correct:'a',solution:'Common potential = 5V.'},
+    {id:11,subject:'physics',text:'After fusion, specific binding energy of product',options:['lower','equal','greater','exactly half'],correct:'c',solution:'Fusion releases energy → higher BE/A.'},
+    {id:12,subject:'physics',text:'Two charges Q₁=2μC, Q₂=1μC. tanθ at P? '+diagramQ12,options:['1','2','3','4'],correct:'b',solution:'E₁∝2/4=0.5, E₂∝1/1=1. tanθ=E₂/E₁=2.'},
+    {id:13,subject:'physics',text:'Force direction on current carrying conductor',options:["Fleming's right hand","Ampere's swimming","Maxwell's cork screw","Fleming's left hand"],correct:'d'},
+    {id:14,subject:'physics',text:'Convex lens F + concave lens F. Equivalent focal length',options:['infinity','F/2','2F','zero'],correct:'a',solution:'1/f = 1/F − 1/F = 0 → f=∞.'},
+    {id:15,subject:'physics',text:'x=at+bt². Dimension of b/a',options:['[LT⁻²]','[LT⁻¹]','[T]','[T⁻¹]'],correct:'d'},
+    {id:16,subject:'physics',text:'Velocity 5 east → 5 north in 10s. Avg acceleration',options:['1/√2 NW','1/2 NW','1/√2 NE','1/2 NE'],correct:'a'},
+    {id:17,subject:'physics',text:'0.1kg at 20cm, rod 0.25kg pivoted centre. Not topple if',options:['no mass','0.15kg at 80cm','0.15kg at 70cm','0.10kg at 70cm'],correct:'c'},
+    {id:18,subject:'physics',text:'Not explained by Bernoulli principle',options:['Lift','Ink filler','Swing','Atomizer'],correct:'b'},
+    {id:19,subject:'physics',text:'Layer reflecting radio waves',options:['stratosphere','mesosphere','troposphere','ionosphere'],correct:'d'},
+    {id:20,subject:'physics',text:'Floor reaction maximum when elevator',options:['stationary','accelerates up','free fall','accelerates down'],correct:'b'},
+    {id:21,subject:'physics',text:'Projectile at 30°, momentum p. At highest point',options:['(√3/4)p','(2/√3)p','p','(1/2)p'],correct:'*',solution:'p cos30 = (√3/2)p. No option matches.'},
+    {id:22,subject:'physics',text:'Block 0.1kg, force 5N, μ=0.5. Friction force',options:['0.98N','0.49N','4.9N','2.5N'],correct:'a',solution:'f=mg=0.98N.'},
+    {id:23,subject:'physics',text:'Ring rolling down incline. Rot KE : Trans KE',options:['1:3','1:1','3:1','2:1'],correct:'b'},
+    {id:24,subject:'physics',text:'120J in 2min. Power',options:['14.4kW','240W','60W','1W'],correct:'d'},
+    {id:25,subject:'physics',text:'Escape velocity Moon (g_m=g/6, D_m=D/4)',options:['11.2/24','11.2√24','11.2/√24','11.2×24'],correct:'c'},
+    {id:26,subject:'physics',text:'Work done in cycle: '+diagramQ26,options:['10⁻⁵J','10⁻³J','10⁻²J','10J'],correct:'d',solution:'Area = 2×5=10J.'},
+    {id:27,subject:'physics',text:'Speed of sound H₂:O₂ at same T',options:['1:4','4:1','1:1','16:1'],correct:'b'},
+    {id:28,subject:'physics',text:'Black body T→T/2. Energy radiated',options:['E/4','E/16','E/8','E/32'],correct:'b'},
+    {id:29,subject:'physics',text:'Distance in one SHM oscillation (amplitude A)',options:['0','A','2A','4A'],correct:'d'},
+    {id:30,subject:'physics',text:'10μF, 10V. Maximum charge',options:['1μC','10μC','100μC','1000μC'],correct:'c'},
+    {id:31,subject:'physics',text:'Wire R cut into 10, parallel. Effective resistance',options:['0.01R','0.1R','R','10R'],correct:'a'},
+    {id:32,subject:'physics',text:'Iron & silicon cooled 50°C→30°C',options:['both decrease','both increase','iron up, silicon down','iron down, silicon up'],correct:'d'},
+    {id:33,subject:'physics',text:'Meter bridge: 10Ω left, balance 0.2m. Coil resistance',options:['40Ω','5Ω','20Ω','2.5Ω'],correct:'a'},
+    {id:34,subject:'physics',text:'Coils X,Y currents 1:2, perpendicular. Net field',options:['B','2B','3B','√5B'],correct:'d'},
+    {id:35,subject:'physics',text:'Mechanical effect of electric current',options:['AC dynamo','DC dynamo','Motor','Geyser'],correct:'c'},
+    {id:36,subject:'physics',text:'Faraday law: emf induced if',options:['electric flux links','magnetic flux links','magnetic flux changes','electric flux changes'],correct:'c'},
+    {id:37,subject:'physics',text:'Current 1→5mA in 4ms, L=10mH. Self-induced emf',options:['10mV','5mV','2.5mV','1mV'],correct:'a'},
+    {id:38,subject:'physics',text:'Photoelectric graph: '+diagramQ38,options:['W_M > W_N','W_M < W_N','W_M = W_N','KE_M > KE_N at threshold'],correct:'a'},
+    {id:39,subject:'physics',text:'Wrong statement:',options:['Alpha scattered by Au','X-ray diffracted','UV photoelectric','Electrons cannot be diffracted'],correct:'d'},
+    {id:40,subject:'physics',text:'Bohr model: Eₖ + U relation',options:['Eₖ+U=0','Eₖ−U=0','2Eₖ+U=0','Eₖ+2U=0'],correct:'c'},
+    {id:41,subject:'physics',text:'Magnetic field ratio centre : half radius',options:['2√5:8','5√5:8','5√5:4','2√5:4'],correct:'b'},
+    {id:42,subject:'physics',text:'Raman shift 100Å, anti-Stokes 5000Å. Incident λ',options:['5050Å','4950Å','5100Å','4900Å'],correct:'a'},
+    {id:43,subject:'physics',text:'Optical pumping transfers electrons',options:['ground→metastable','metastable→higher','higher→metastable','lower→higher than metastable'],correct:'d'},
+    {id:44,subject:'physics',text:'Open pipe half immersed. Frequency ratio',options:['1:2','1:1','1:3','1:4'],correct:'b'},
+    {id:45,subject:'physics',text:'R=8.3, γ=1.4. Cₚ,Cᵥ',options:['29.05,20.75','20.75,29.05','16.60,8.30','8.30,16.60'],correct:'a'},
+    {id:46,subject:'physics',text:'Star A 100× brighter than B. m_B−m_A',options:['100','0.01','5','0.2'],correct:'c'},
+    {id:47,subject:'physics',text:'Light enters glass (n=1.5) along normal. Deviation',options:['90°','45°','30°','0°'],correct:'d'},
+    {id:48,subject:'physics',text:'Incident 65°, critical angle 63° (glass→water)',options:['emerge 2°','refract 2°','TIR 50°','TIR 2°'],correct:'c'},
+    {id:49,subject:'physics',text:'Equilateral prism, i=49°30′. Min deviation',options:['39°','49°30′','40°30′','51°'],correct:'a'},
+    {id:50,subject:'physics',text:'Glass hemisphere spot: '+diagramQ50,options:['0.1cm above','0.1cm below','0.033cm above','exactly on top'],correct:'*',solution:'Apparent depth = 0.1/1.5 ≈ 0.067cm.'},
+    {id:51,subject:'physics',text:'Photoelectric & Raman effect explained by',options:['Newton','Huygens','Maxwell','Planck quantum'],correct:'d'},
+    {id:52,subject:'physics',text:'Intensity bright:dark = 9:1. Amplitude ratio',options:['3:1','2:1','1:4','5:4'],correct:'b'},
+    {id:53,subject:'physics',text:'Diffraction easier for sound because',options:['longitudinal','smaller λ','larger λ','transverse'],correct:'c'},
+    {id:54,subject:'physics',text:'Brewster law: polarising angle θ',options:['sin⁻¹(c/v)','tan⁻¹(c/v)','cos⁻¹(c/v)','sin⁻¹(v/c)'],correct:'b'},
+    {id:55,subject:'physics',text:'Polaroids I_t=0.75I₀. θ = '+diagramQ55,options:['30°','45°','60°','90°'],correct:'a'},
+    {id:56,subject:'physics',text:'Force F in air. Distance in medium for same F',options:['d','d/k','kd','d/√k'],correct:'d'},
+    {id:57,subject:'physics',text:'Positive charge released in uniform E',options:['constant speed','constant velocity','constant acceleration','variable acceleration'],correct:'c'},
+    {id:58,subject:'physics',text:'q and −2q. Field at −2q is',options:['E','E/2','−2E','−E/2'],correct:'b'},
+    {id:59,subject:'physics',text:'Correct statement:',options:['p-type positively charged','Boolean 1·0=0','n-type majority hole','Transistor cannot switch'],correct:'b'},
+    {id:60,subject:'physics',text:'Plum pudding model proposed by',options:['C.V. Raman','N. Bohr','E. Rutherford','J.J. Thomson'],correct:'d'}
+  ];
+
+  const chemistryQuestions = [
+    {id:61,subject:'chemistry',text:'Not a protein',options:['Wool','Cellulose','Hair','Nail'],correct:'b'},
+    {id:62,subject:'chemistry',text:'Not true for adsorption',options:['Increase T favors','ΔH negative','Specific','ΔS negative'],correct:'a'},
+    {id:63,subject:'chemistry',text:'Peptisation converts',options:['precipitate→true','true→suspension','colloid→coagulated','suspension→colloid'],correct:'d'},
+    {id:64,subject:'chemistry',text:'Mole fraction benzene 39% in solvent (M=122)',options:['0.5','0.6','0.4','0.35'],correct:'b'},
+    {id:65,subject:'chemistry',text:'Zn+Cl₂→Zn²⁺+2Cl⁻. Increase emf by',options:['increase Zn²⁺','decrease Zn²⁺','increase Cl⁻','decrease Cl₂'],correct:'b'},
+    {id:66,subject:'chemistry',text:'A⁺(104pm), B⁻(200pm). CN of A⁺',options:['4','8','6','3'],correct:'c'},
+    {id:67,subject:'chemistry',text:'Solute mass (M=60) to reduce VP to 99% in 126g water',options:['2.8g','5.6g','8.4g','4.2g'],correct:'d'},
+    {id:68,subject:'chemistry',text:'pH of boiling water 6.4 implies',options:['slightly basic','slightly acidic','neutral','amphoteric'],correct:'c'},
+    {id:69,subject:'chemistry',text:'Spin magnetic moment Ni²⁺ (BM)',options:['1.73','2.84','3.42','2.25'],correct:'b'},
+    {id:70,subject:'chemistry',text:'Bluish green flame on Cu wire',options:['benzaldehyde','aniline','chlorobenzene','benzoic acid'],correct:'c'},
+    {id:71,subject:'chemistry',text:'Distinguish phenol from ethanol',options:['Na','AlCl₃','NaOH','FeCl₃'],correct:'d'},
+    {id:72,subject:'chemistry',text:'100% completion zero order: time =',options:['a/k','a/2k','2a/k','k/a'],correct:'a'},
+    {id:73,subject:'chemistry',text:'EAN of Co in [Co(NH₃)₆]Cl₃',options:['34','35','36','32'],correct:'c'},
+    {id:74,subject:'chemistry',text:'Hydrolysis of ground nut oil gives',options:['glycol','butan-1-ol','pentan-2-ol','propane-1,2,3-triol'],correct:'d'},
+    {id:75,subject:'chemistry',text:'Froth floatation for',options:['Magnesite','Magnetite','Galena','Malachite'],correct:'c'},
+    {id:76,subject:'chemistry',text:'H-atom transition largest energy',options:['3→2','2→1','5→2','6→2'],correct:'b'},
+    {id:77,subject:'chemistry',text:'Electron m=+3 possible in',options:['s,p','p only','f only','d,f'],correct:'c'},
+    {id:78,subject:'chemistry',text:'Highest IE among Z=16,14,13,15',options:['16','14','13','15'],correct:'d'},
+    {id:79,subject:'chemistry',text:'Atoms in 560cm³ O₂ at STP',options:['N_A/20','N_A/40','N_A/16','N_A/32'],correct:'a'},
+    {id:80,subject:'chemistry',text:'CO₂ from 1.06g Na₂CO₃ + HCl',options:['112cm³','224cm³','56cm³','2240cm³'],correct:'b'},
+    {id:81,subject:'chemistry',text:'Oxidation number of O = −1 in',options:['NO₂','PO₂','Na₂O₂','MnO₂'],correct:'c'},
+    {id:82,subject:'chemistry',text:'ΔH_f H₂O(l)=−286. H₂O(g) likely',options:['−286','+286','−341','−242.8'],correct:'d'},
+    {id:83,subject:'chemistry',text:'298→308K, q_v=200J. ΔU=',options:['200J','140J','−200J','−140J'],correct:'a'},
+    {id:84,subject:'chemistry',text:'100mL N/5 HCl + 1g CaCO₃. Remains',options:['0.5g CaCO₃','neither','50mL HCl','25mL HCl'],correct:'b'},
+    {id:85,subject:'chemistry',text:'RMS ratio CH₄:He:SO₂',options:['16:4:64','2:1:4','2:4:1','1:4:2'],correct:'c'},
+    {id:86,subject:'chemistry',text:'Negative catalyst',options:['lowers Ea','no change','new path','increases Ea'],correct:'d'},
+    {id:87,subject:'chemistry',text:'σ,π bonds in pent-2-ene',options:['12,2','11,2','13,2','12,3'],correct:'a'},
+    {id:88,subject:'chemistry',text:'Lassaigne blue colour due to',options:['ferro-ferricyanide','ferric-ferrocyanide','K ferrocyanide','K ferricyanide'],correct:'b'},
+    {id:89,subject:'chemistry',text:'HBr + propene (peroxide) →',options:['2-bromopropane','2-bromopropene','1-bromopropane','1-bromopropene'],correct:'c'},
+    {id:90,subject:'chemistry',text:'H₂S + Zn²⁺/Cu²⁺ acidic → CuS ppt because',options:['Ksp CuS < ZnS','Ksp equal','Ksp CuS > ZnS','CuS more stable'],correct:'a'},
+    {id:91,subject:'chemistry',text:'H₂ volume from Mg (0.5A,32.2min) + HCl',options:['56cm³','28cm³','5.6cm³','112cm³'],correct:'d'},
+    {id:92,subject:'chemistry',text:'Markownikoff rule applies to',options:['C₃H₆+HBr','C₂H₄+HCl','C₃H₆+Cl₂','C₂H₄+HBr'],correct:'a'},
+    {id:93,subject:'chemistry',text:'Ethene + H⁺ example of',options:['−I','+E','−E','+I'],correct:'b'},
+    {id:94,subject:'chemistry',text:'CH₃CN→...→ D is',options:['acetaldehyde','ethyne','ethene','acetyl chloride'],correct:'c'},
+    {id:95,subject:'chemistry',text:'Optically active if',options:['planar','superimposable','chiral centres','non-superimposable'],correct:'d'},
+    {id:96,subject:'chemistry',text:'Electrophile:',options:['R−NH₂','NH₃','AlCl₃','CN⁻'],correct:'c'},
+    {id:97,subject:'chemistry',text:'Phenol Kₐ > ethanol because',options:['phenoxide stronger base','phenoxide resonance','ethoxide resonance','phenoxide aromatic'],correct:'b'},
+    {id:98,subject:'chemistry',text:'CH₃COOH→(Ca(OH)₂)→heat→NH₂OH→ C',options:['acetaloxime','formaloxime','ethane nitrile','acetoxime'],correct:'d'},
+    {id:99,subject:'chemistry',text:'Not true:',options:['Acetic > chloroacetic','Formic strongest','Benzoic > acetic','Propanoic < acetic'],correct:'a'},
+    {id:100,subject:'chemistry',text:'Max CH₃I with 1 CH₃NH₂',options:['4','3','2','1'],correct:'a'},
+    {id:101,subject:'chemistry',text:'Amine no N₂ with HNO₂',options:['ethyl','methyl','dimethyl','2-aminopropane'],correct:'c'},
+    {id:102,subject:'chemistry',text:'Aromatic amino acid',options:['Lysine','Proline','Serine','Tyrosine'],correct:'d'},
+    {id:103,subject:'chemistry',text:'H₂(g) to saturate 1 mol triolein',options:['6','3','2','9'],correct:'a'},
+    {id:104,subject:'chemistry',text:'Ethanol→ethyl chloride→ethene. Reagents',options:['KOH(aq),PCl₅','PCl₅,KOH(aq)','Cl₂,KOH(alc)','PCl₅,KOH(alc)'],correct:'d'},
+    {id:105,subject:'chemistry',text:'HCl+NaOH neutralisation x kJ. 500mL 2N + 250mL 4N heat',options:['x','x/2','x/4','2x/3'],correct:'a'},
+    {id:106,subject:'chemistry',text:'A+B⇌C+D. A=B initially, C=2A at eq. K=',options:['9/4','4','1/9','4/9'],correct:'b'},
+    {id:107,subject:'chemistry',text:'Limestone dissociation',options:['exothermic +ΔS','endothermic −ΔS','endothermic +ΔS','exothermic no ΔS'],correct:'c'},
+    {id:108,subject:'chemistry',text:'Not true for conc H₂SO₄',options:['Sulphonating','Oxidising','Dehydrating','Deliquescent'],correct:'a'},
+    {id:109,subject:'chemistry',text:'Highest van der Waals force',options:['Ar','Ne','Xe','He'],correct:'c'},
+    {id:110,subject:'chemistry',text:'Coloured ion',options:['Ti⁺','Cu⁺','V⁴⁺','Zn²⁺'],correct:'c'},
+    {id:111,subject:'chemistry',text:'CN of Ni in [Ni(C₂O₄)₃]⁴⁻',options:['3','12','6','4'],correct:'c'},
+    {id:112,subject:'chemistry',text:'IUPAC [CrCl₂(NH₃)₄]NO₃',options:['tetraamminedichlorochromium(II)','dichlorotetraamminechromium(III)','tetraamminedichlorochromium(IV)','tetraamminedichlorochromium(III)'],correct:'d'},
+    {id:113,subject:'chemistry',text:'NH₃ decomposition on Pt, k=2.5×10⁻⁴. Order',options:['0','1','1/2','2'],correct:'b'},
+    {id:114,subject:'chemistry',text:'r=k[A][B]; volume halved, rate',options:['1/4','4','1/2','2'],correct:'b'},
+    {id:115,subject:'chemistry',text:'Increase reduction potential by',options:['area increase','decrease T','increase T','decrease [Mⁿ⁺]'],correct:'b'},
+    {id:116,subject:'chemistry',text:'Ag cathode +0.054g. O₂ volume',options:['5.6cm³','11.2cm³','224cm³','2.8cm³'],correct:'d'},
+    {id:117,subject:'chemistry',text:'pH mixture H₂SO₄+HCl+Ca(OH)₂',options:['1','0.5','0','1.5'],correct:'a'},
+    {id:118,subject:'chemistry',text:'Conjugate acid of NH₂⁻',options:['NH₄⁺','NH₃','NH₂OH','NH⁻'],correct:'b'},
+    {id:119,subject:'chemistry',text:'Phenyl isocyanate from CHCl₃+KOH+',options:['benzaldehyde','aniline','phenol','nitrobenzene'],correct:'b'},
+    {id:120,subject:'chemistry',text:'No aldol condensation',options:['CH₃CHO','ClCH₂CHO','C₆H₅CHO','CHCl₂CHO'],correct:'c'}
+  ];
+
+  const mathQuestions = [
+    {id:121,subject:'math',text:'Circle area 12π, 7x²+7y²−7x+14y+k=0. k=',options:['−43/4','−301/4','−16','±4'],correct:'b'},
+    {id:122,subject:'math',text:'Sum distances=10m, posts 8m apart. Path equation',options:['x²/9+y²/25=1','x²/9+y²/16=1','x²/25+y²/9=1','x²/16+y²/9=1'],correct:'c'},
+    {id:123,subject:'math',text:'Common tangents to two circles',options:['1','2','3','4'],correct:'d'},
+    {id:124,subject:'math',text:'Chord of circle bisected at (0,1)',options:['y−1=x','y+1=x','y+1=2x','y−1=3x'],correct:'a'},
+    {id:125,subject:'math',text:'Angle between asymptotes x²/25−y²/16=1',options:['tan⁻¹(4/5)','2tan⁻¹(4/5)','2tan⁻¹(5/4)','π−2tan⁻¹(4/5)'],correct:'b'},
+    {id:126,subject:'math',text:'Parametric x=t²+1,y=2t+1. Directrix',options:['y=0','x=−1','x=0','x−1=0'],correct:'c'},
+    {id:127,subject:'math',text:'|a×b|=5,|a·b|=3. |a|²|b|²=',options:['16','31','25','34'],correct:'d'},
+    {id:128,subject:'math',text:'DC of 2i+j−2k',options:['2/3,1/3,−2/3','2/3,−1/3,2/3','−2/3,1/3,2/3','2/3,1/3,2/3'],correct:'a'},
+    {id:129,subject:'math',text:'(3+3ω²+5ω)⁶−(2+6ω²+2ω)³',options:['32','64','0','−1'],correct:'c'},
+    {id:130,subject:'math',text:'∫ dy/√(eʸ−1)=π/6. x=',options:['ln4','ln2','4','2'],correct:'a'},
+    {id:131,subject:'math',text:'∫₋₈⁸ (sin⁹³x+x²⁹⁵)dx',options:['1','−1','0','8/3'],correct:'c'},
+    {id:132,subject:'math',text:'Area ellipse x²/25+y²/16=1',options:['25π','20π','4π','5π'],correct:'b'},
+    {id:133,subject:'math',text:'Order of DE [1+(dy/dx)⁵]²/³ = d³y/dx³',options:['2','1','3','2/3'],correct:'c'},
+    {id:134,subject:'math',text:'Solution dy/dx−1=eˣ⁻ʸ',options:['eˣ⁻ʸ+x=c','e⁻⁽ˣ⁻ʸ⁾+x=c','e⁻⁽ˣ⁻ʸ⁾=x+c','e⁻ˣ⁻ʸ=x+c'],correct:'c'},
+    {id:135,subject:'math',text:'sin⁻¹(2p/1+p²)−cos⁻¹(1−q²/1+q²)=tan⁻¹(2x/1+x²). x=',options:['(p+q)/(1+pq)','(p−q)/(1−pq)','(p−q)/(pq−1)','(p−q)/(1+pq)'],correct:'d'},
+    {id:136,subject:'math',text:'Unit vector a+2b−c',options:['(a+2b−c)/√6','(a+2b−c)/4','(a+2b−c)/6','(a+2b−c)/√3'],correct:'a'},
+    {id:137,subject:'math',text:'False statement',options:['Subgroup iff ab⁻¹∈H','Intersection subgroup','Order 3 not abelian','(ab)²=a²b²→abelian'],correct:'c'},
+    {id:138,subject:'math',text:'y=tan⁻¹(1/(1+x+x²))+... n=1, dy/dx at x=0',options:['1/2','−1/2','0','1/3'],correct:'b'},
+    {id:139,subject:'math',text:'cotα cotβ=2. cos(α+β)/cos(α−β)',options:['3','1/2','1/3','tanα tanβ'],correct:'c'},
+    {id:140,subject:'math',text:'Determinant with ω',options:['1+ω','1−ω','0','ω²'],correct:'*',solution:'Evaluates to ω−1, no match.'},
+    {id:141,subject:'math',text:'Tangent 2y³=ax²+x³ at (a,a). α²+β²=61. a=',options:['25','36','±30','±40'],correct:'c'},
+    {id:142,subject:'math',text:'Subtangent length at (a,a) y²=x²/(2a+x)',options:['18/5','18a/5','−18a²/5','18a²/5'],correct:'d'},
+    {id:143,subject:'math',text:'f(x)=5+36x+3x²−2x³ increasing in',options:['(−2,3)','(2,3)','(−3,2)','(0,3)'],correct:'a'},
+    {id:144,subject:'math',text:'Divide 20 max product of one & cube of other',options:['(12,8)','(15,5)','(10,10)','(2,18)'],correct:'b'},
+    {id:145,subject:'math',text:'Positive divisors of 4896',options:['32','34','36','38'],correct:'c'},
+    {id:146,subject:'math',text:'Last digit 583!+7²⁹¹',options:['1','2','0','3'],correct:'d'},
+    {id:147,subject:'math',text:'∫ xˣ(1+log x)dx',options:['xˣ+C','x⁻ˣ+x','x log x+x','log x+x'],correct:'a'},
+    {id:148,subject:'math',text:'∫ xeˣ/(1+x)² dx = eˣ f(x)+c. f(x)=',options:['1/(1+x)²','x/(1+x)','1/(1+x)','x/(1+x)²'],correct:'c'},
+    {id:149,subject:'math',text:'∫₀^(π/2) sin2t/(sin⁴t+cos⁴t) dt',options:['π','π/3','π/4','π/2'],correct:'d'},
+    {id:150,subject:'math',text:'4^(logₓ3)+9^(log₂4)=10^(logₓ83). x=',options:['10','4','−10','−4'],correct:'a'},
+    {id:151,subject:'math',text:'p=3^(1/3)·3^(2/9)...∞. p^(1/3)',options:['3^(1/4)','3','9','3^(1/3)'],correct:'b'},
+    {id:152,subject:'math',text:'Roots x³−3x²+2x−1=0. (1−α)(1−β)(1−γ)',options:['1','2','−1','−2'],correct:'c'},
+    {id:153,subject:'math',text:'Middle term (1+x)²ⁿ',options:['[1·3...(2n−1)/n]xⁿ','[.../n!]2ⁿ⁻¹xⁿ','[...2n/n!]xⁿ','[.../n!]2ⁿxⁿ'],correct:'d'},
+    {id:154,subject:'math',text:'p→(¬q∨r) false. p,q,r',options:['T,T,F','T,F,T','F,T,T','F,F,T'],correct:'a'},
+    {id:155,subject:'math',text:'2/9!+2/(3!7!)+1/(5!5!)=2ᵃ/b!. (a,b)',options:['(10,9)','(10,7)','(9,10)','(5,10)'],correct:'c'},
+    {id:156,subject:'math',text:'tan10°tan20°...tan80°',options:['0','−1','1/√3','1'],correct:'d'},
+    {id:157,subject:'math',text:'tanθ=m/n. n cos2θ+m sin2θ',options:['n','n²','m/n','m²/n²'],correct:'a'},
+    {id:158,subject:'math',text:'(b+c)/11=(c+a)/12=(a+b)/13. cosA',options:['5/7','1/5','2/5','1/7'],correct:'b'},
+    {id:159,subject:'math',text:'√(a/b)+√(b/a) for complex numbers',options:['2i sin(α−β)','2i sin(α+β)','2cos(α+β)','2cos(α−β)'],correct:'d'},
+    {id:160,subject:'math',text:'y=log[tan(π/4+x/2)]. dy/dx',options:['sec x','sin x','cosec x','sec(x/2)'],correct:'a'},
+    {id:161,subject:'math',text:'y=sin²(tan⁻¹√((1−x²)/(1+x²))). dy/dx',options:['x','−x','1','−1'],correct:'b'},
+    {id:162,subject:'math',text:'√(x/y)+√(y/x)=√a. y dx/dy',options:['x/y','y/x','x','0'],correct:'c'},
+    {id:163,subject:'math',text:'x=(1−t)/(1+t),y=2t/(1+t). d²y/dx²',options:['2t/(1+t)²','1/(1+t)⁴','−2/(1+t)²','0'],correct:'d'},
+    {id:164,subject:'math',text:'Group ⊗₁₂. 7⊗₁₂11⁻¹',options:['5','7','11','1'],correct:'a'},
+    {id:165,subject:'math',text:'Subgroup of ⊗₇',options:['{2,6,1}','{1,2,4}','{5,4,2}','{2,3,1}'],correct:'b'},
+    {id:166,subject:'math',text:'|C|/|adj B| matrices',options:['25','−1','5','−5'],correct:'*'},
+    {id:167,subject:'math',text:'AX=B, z =',options:['1','−1','−3','3'],correct:'d'},
+    {id:168,subject:'math',text:'|[[1,log_b a],[log_a b,1]]|',options:['0','log_b b','−1','log_b a'],correct:'a'},
+    {id:169,subject:'math',text:'Vertex (3,3), midpoints. Centroid',options:['(1,3)','(3,0)','(3,1)','(0,3)'],correct:'c'},
+    {id:170,subject:'math',text:'Image of (2,4) on x+y=10',options:['(4,8)','(6,5)','(6,8)','(0,10)'],correct:'c'},
+    {id:171,subject:'math',text:'Sum slopes = 3× product. x²−4pxy+8y²=0. p=',options:['1/4','4','3','3/4'],correct:'d'},
+    {id:172,subject:'math',text:'lim(x→0) ((1+5x²)/(1+3x²))^(1/x²)',options:['e²','e','1/e','5/3'],correct:'a'},
+    {id:173,subject:'math',text:'f continuous at 0. k=',options:['5','3','2','0'],correct:'b'},
+    {id:174,subject:'math',text:'Non-adjacent vertex '+diagramQ174,options:['V₁V₂','V₄V₃','V₂V₄','V₁V₃'],correct:'d'},
+    {id:175,subject:'math',text:'sin[2cos⁻¹cot(2tan⁻¹½)]',options:['3√7/8','5√7/8','5√7/2','3√7/2'],correct:'a'},
+    {id:176,subject:'math',text:'Inverse of (3+4i)/(4−5i)',options:['(−8/25,31/25)','(−8/25,−31/25)','(8/25,−31/25)','(−8/25,31/5)'],correct:'b'},
+    {id:177,subject:'math',text:'tan x−sin x = 1−tan x sin x',options:['x=nπ+π/4 or ...','nπ/4−π/4 or ...','nπ+π/4','nπ+π/6 or ...'],correct:'a'},
+    {id:178,subject:'math',text:'Angle between circles',options:['π/6','π/3','π/2','cos⁻¹(7/16)'],correct:'d'},
+    {id:179,subject:'math',text:'|a|=2,|b|=7,a×b=3i+2j+6k. Angle',options:['π/3','π/6','π/2','π/4'],correct:'b'},
+    {id:180,subject:'math',text:'Domain log(1−x)+√(x²−1)',options:['(−∞,−1)','(−∞,−1]','(−∞,2]','(−∞,0)'],correct:'b'}
+  ];
+
+  const allQuestions = [...physicsQuestions, ...chemistryQuestions, ...mathQuestions];
+  const subjectRanges = { physics:{start:1,end:60,qs:physicsQuestions}, chemistry:{start:61,end:120,qs:chemistryQuestions}, math:{start:121,end:180,qs:mathQuestions} };
+
+  let userAnswers = {}, markedQuestions = {}, questionTimes = {};
+  allQuestions.forEach(q=>{ userAnswers[q.id]=null; markedQuestions[q.id]=false; questionTimes[q.id]=0; });
+  let currentSubject='physics', currentQuestionId=1, timeRemaining=180*60, timerInterval=null, testSubmitted=false, questionStartTime=Date.now();
+
+  function toggleTheme(){ document.body.classList.toggle('dark'); }
+  function formatTime(s){ const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sec=s%60; return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`; }
+  function updateTimer(){ document.getElementById('timerDisplay').textContent=formatTime(timeRemaining); const tb=document.getElementById('timerBox'); tb.classList.remove('warning','danger'); if(timeRemaining<=300&&timeRemaining>120) tb.classList.add('warning'); else if(timeRemaining<=120) tb.classList.add('danger'); }
+  function startTimer(){ updateTimer(); timerInterval=setInterval(()=>{ timeRemaining--; updateTimer(); if(timeRemaining<=0){ clearInterval(timerInterval); submitTest(); } },1000); }
+  function getSubjectQuestions(s){ return subjectRanges[s].qs; }
+  function getSubjectById(id){ return id<=60?'physics':id<=120?'chemistry':'math'; }
+  function saveTime(){ if(testSubmitted)return; const elapsed=Math.round((Date.now()-questionStartTime)/1000); questionTimes[currentQuestionId]=(questionTimes[currentQuestionId]||0)+elapsed; questionStartTime=Date.now(); }
+  function selectOption(l){ if(testSubmitted)return; userAnswers[currentQuestionId]=l; markedQuestions[currentQuestionId]=false; renderQuestion(); updateStats(); }
+  function clearAnswer(){ if(testSubmitted)return; userAnswers[currentQuestionId]=null; renderQuestion(); updateStats(); }
+  function toggleMark(){ if(testSubmitted)return; markedQuestions[currentQuestionId]=!markedQuestions[currentQuestionId]; if(markedQuestions[currentQuestionId]) userAnswers[currentQuestionId]=null; renderQuestion(); updateStats(); }
+  function saveAndNext(){ saveTime(); const sq=getSubjectQuestions(currentSubject); const idx=sq.findIndex(q=>q.id===currentQuestionId); if(idx<sq.length-1) currentQuestionId=sq[idx+1].id; else{ if(currentSubject==='physics'){ switchSubject('chemistry'); currentQuestionId=61; } else if(currentSubject==='chemistry'){ switchSubject('math'); currentQuestionId=121; } } renderQuestion(); renderNav(); updateStats(); }
+  function goToPrevious(){ saveTime(); const sq=getSubjectQuestions(currentSubject); const idx=sq.findIndex(q=>q.id===currentQuestionId); if(idx>0) currentQuestionId=sq[idx-1].id; else{ if(currentSubject==='math'){ switchSubject('chemistry'); currentQuestionId=120; } else if(currentSubject==='chemistry'){ switchSubject('physics'); currentQuestionId=60; } } renderQuestion(); renderNav(); updateStats(); }
+  function switchSubject(s){ saveTime(); currentSubject=s; currentQuestionId=subjectRanges[s].start; document.getElementById('tabPhysics').classList.toggle('active',s==='physics'); document.getElementById('tabChemistry').classList.toggle('active',s==='chemistry'); document.getElementById('tabMath').classList.toggle('active',s==='math'); questionStartTime=Date.now(); renderQuestion(); renderNav(); updateStats(); }
+  function getStats(){ const sq=getSubjectQuestions(currentSubject); let a=0,m=0; sq.forEach(q=>{ if(userAnswers[q.id]!==null) a++; if(markedQuestions[q.id]) m++; }); return {ans:a,skip:sq.length-a,mark:m}; }
+  function updateStats(){ const s=getStats(); document.getElementById('statAnswered').textContent=`✓ ${s.ans}`; document.getElementById('statSkipped').textContent=`⊘ ${s.skip}`; document.getElementById('statMarked').textContent=`★ ${s.mark}`; }
+  function renderNav(){ const nav=document.getElementById('questionNav'); nav.innerHTML=''; getSubjectQuestions(currentSubject).forEach(q=>{ const b=document.createElement('button'); b.className='q-nav-btn'; b.textContent=q.id; if(userAnswers[q.id]!==null) b.classList.add('answered'); if(markedQuestions[q.id]) b.classList.add('marked'); if(q.id===currentQuestionId) b.classList.add('active'); b.onclick=()=>{ saveTime(); currentQuestionId=q.id; renderQuestion(); renderNav(); }; nav.appendChild(b); }); }
+  function renderQuestion(){
+    if(testSubmitted){ renderReview(); return; }
+    const q=allQuestions.find(x=>x.id===currentQuestionId); if(!q)return;
+    const sub=getSubjectById(q.id), sel=userAnswers[q.id], mk=markedQuestions[q.id];
+    document.getElementById('questionContent').innerHTML=`
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;border-bottom:2px solid var(--border);padding-bottom:10px;">
+        <span class="badge ${sub}">${sub.toUpperCase()}</span>
+        <span><strong>Q${q.id} / 180</strong></span>
+        ${mk?'<span style="color:#7c3aed;">★ Marked</span>':''}
+        ${q.correct==='*'?'<span style="color:#b45309;">⚠ No correct option</span>':''}
+      </div>
+      <div class="question-text">${q.text}</div>
+      <ul class="options-list">${['a','b','c','d'].map((l,i)=>`
+        <li class="option-item ${sel===l?'selected':''}" onclick="selectOption('${l}')">
+          <span class="option-letter">${l.toUpperCase()}</span><span>${q.options[i]}</span>
+        </li>`).join('')}</ul>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;padding-top:10px;border-top:1px solid var(--border);">
+        <button class="btn btn-outline" onclick="clearAnswer()">🗑 Clear</button>
+        <button class="btn btn-warning" onclick="toggleMark()">${mk?'★ Unmark':'☆ Mark'}</button>
+        <button class="btn btn-primary" onclick="saveAndNext()">Save & Next →</button>
+        <button class="btn btn-outline" onclick="goToPrevious()">← Prev</button>
+      </div>`;
+    updateStats(); renderNav();
+  }
+  function renderReview(){
+    const q=allQuestions.find(x=>x.id===currentQuestionId); if(!q)return;
+    const ua=userAnswers[q.id], ca=q.correct;
+    let solText=q.solution||'';
+    if(ca==='*') solText='No correct option per official key. '+solText;
+    else if(ua===null) solText='⏭ Skipped. Correct: '+ca.toUpperCase()+'. '+solText;
+    else if(ua===ca) solText='✅ Correct! '+solText;
+    else solText='❌ Your: '+ua.toUpperCase()+'. Correct: '+ca.toUpperCase()+'. '+solText;
+    document.getElementById('questionContent').innerHTML=`
+      <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;border-bottom:2px solid var(--border);padding-bottom:10px;">
+        <span class="badge ${getSubjectById(q.id)}">REVIEW</span><span><strong>Q${q.id}</strong></span>
+      </div>
+      <div class="question-text">${q.text}</div>
+      <ul class="options-list">${['a','b','c','d'].map((l,i)=>{ let cls=''; if(l===ca&&ca!=='*') cls='selected'; else if(l===ua&&l!==ca) cls='selected'; return `<li class="option-item ${cls}" style="pointer-events:none;"><span class="option-letter">${l.toUpperCase()}</span><span>${q.options[i]}</span></li>`; }).join('')}</ul>
+      <div class="solution-box show ${(ua!==ca&&ca!=='*')?'incorrect':''}"><strong>📝 Solution:</strong> ${solText}</div>
+      <p style="font-size:0.8rem;color:var(--text-secondary);">⏱ Time spent: ${questionTimes[q.id]||0}s</p>
+      <div style="display:flex;gap:8px;"><button class="btn btn-outline" onclick="goToPrevious()">← Prev</button><button class="btn btn-primary" onclick="saveAndNext()">Next →</button></div>`;
+    renderNav();
+  }
+  function submitTest(){
+    if(testSubmitted)return; saveTime(); clearInterval(timerInterval); testSubmitted=true;
+    let tc=0,ti=0,ts=0,tno=0; const sr={physics:{c:0,i:0,s:0,t:60,no:0},chemistry:{c:0,i:0,s:0,t:60,no:0},math:{c:0,i:0,s:0,t:60,no:0}};
+    allQuestions.forEach(q=>{
+      const s=getSubjectById(q.id), ua=userAnswers[q.id];
+      if(q.correct==='*'){ sr[s].no++; tno++; if(ua===null) sr[s].s++; else{ sr[s].s++; ts++; } }
+      else if(ua===null){ sr[s].s++; ts++; } else if(ua===q.correct){ sr[s].c++; tc++; } else{ sr[s].i++; ti++; }
+    });
+    const scored=180-tno, pct=scored>0?Math.round(tc/scored*100):0;
+    document.getElementById('resultModal').innerHTML=`
+      <h2>📊 Result · COMEDK 2012</h2>
+      <div class="result-summary">
+        <div class="result-card"><div class="value">${tc}/${scored}</div>Correct</div>
+        <div class="result-card"><div class="value" style="color:#dc2626;">${ti}</div>Incorrect</div>
+        <div class="result-card"><div class="value" style="color:#d97706;">${ts}</div>Skipped</div>
+        <div class="result-card"><div class="value" style="color:#059669;">${pct}%</div>Score</div>
+      </div>
+      <table><tr><th>Subject</th><th>Correct</th><th>Incorrect</th><th>Skipped</th><th>Performance</th></tr>
+      ${['physics','chemistry','math'].map(s=>{ const r=sr[s]; const sc=r.t-r.no; const sp=sc>0?Math.round(r.c/sc*100):0; const cls=sp>=70?'good':sp>=40?'avg':'poor'; return `<tr><td><strong>${s}</strong></td><td>${r.c}</td><td>${r.i}</td><td>${r.s}</td><td><div class="progress-bar"><div class="progress-fill ${cls}" style="width:${sp}%"></div></div>${sp}%</td></tr>`; }).join('')}</table>
+      <div style="text-align:center;margin-top:14px;">
+        <button class="btn btn-primary" onclick="reviewAll()">🔎 Review All Questions</button>
+        <button class="btn btn-outline" onclick="closeResults()">↩ Back</button>
+      </div>`;
+    document.getElementById('resultOverlay').style.display='flex';
+  }
+  function reviewAll(){ document.getElementById('resultOverlay').style.display='none'; testSubmitted=true; currentSubject='physics'; currentQuestionId=1; renderQuestion(); renderNav(); }
+  function closeResults(){ document.getElementById('resultOverlay').style.display='none'; testSubmitted=true; renderQuestion(); renderNav(); }
+  document.addEventListener('keydown',e=>{ if(testSubmitted)return; const k=e.key.toLowerCase(); if(['a','b','c','d'].includes(k)) selectOption(k); else if(k==='arrowright'){e.preventDefault(); saveAndNext();} else if(k==='arrowleft'){e.preventDefault(); goToPrevious();} else if(k==='m') toggleMark(); });
+  window.addEventListener('load',()=>{ switchSubject('physics'); currentQuestionId=1; questionStartTime=Date.now(); renderQuestion(); startTimer(); });
+</script>
+</body>
+</html>

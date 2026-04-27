@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>COMEDK 2014 – CBT</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased}
+:root{
+  --bg:#080b12;--surface:#0f1320;--card:#141927;--border:#1e2740;
+  --accent:#6c63ff;--accent2:#4fc3f7;--gold:#f5c842;
+  --green:#22c55e;--red:#ef4444;--orange:#f97316;--yellow:#eab308;
+  --text:#e2e8f0;--muted:#64748b;--sub:#94a3b8;
+}
+body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow:hidden}
+
+/* SPLASH */
+#splash{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:999;animation:fadeOut 0.5s 0.3s forwards}
+@keyframes fadeOut{to{opacity:0;pointer-events:none}}
+.splash-title{font-size:2.5rem;font-weight:700;background:linear-gradient(135deg,#6c63ff,#4fc3f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.splash-sub{color:var(--muted);font-size:1rem}
+
+/* TOPBAR */
+#topbar{height:56px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 20px;position:fixed;top:0;left:0;right:0;z-index:100}
+.logo{font-weight:700;font-size:1rem;letter-spacing:.5px;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.topbar-center{display:flex;gap:6px}
+.sec-btn{padding:6px 16px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;font-family:inherit;font-size:.8rem;font-weight:500;transition:.2s}
+.sec-btn.active{background:var(--accent);border-color:var(--accent);color:#fff}
+.sec-btn:hover:not(.active){border-color:var(--accent);color:var(--text)}
+#timer{font-family:'JetBrains Mono',monospace;font-size:1.1rem;font-weight:600;color:var(--gold);background:rgba(245,200,66,.1);padding:6px 14px;border-radius:8px;border:1px solid rgba(245,200,66,.2)}
+#timer.warn{color:var(--red);border-color:rgba(239,68,68,.3);background:rgba(239,68,68,.1);animation:pulse 1s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
+
+/* LAYOUT */
+#app{display:grid;grid-template-columns:1fr 260px;height:calc(100vh - 56px);margin-top:56px;overflow:hidden}
+
+/* MAIN */
+#main{overflow-y:auto;padding:24px 28px;display:flex;flex-direction:column;gap:16px}
+.q-header{display:flex;align-items:center;gap:12px}
+.q-num{font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--muted);background:var(--surface);padding:4px 10px;border-radius:6px;border:1px solid var(--border)}
+.q-section-tag{font-size:.72rem;padding:3px 9px;border-radius:12px;font-weight:600;letter-spacing:.5px}
+.tag-physics{background:rgba(108,99,255,.15);color:#a78bfa;border:1px solid rgba(108,99,255,.3)}
+.tag-chemistry{background:rgba(79,195,247,.15);color:#38bdf8;border:1px solid rgba(79,195,247,.3)}
+.tag-maths{background:rgba(249,115,22,.15);color:#fb923c;border:1px solid rgba(249,115,22,.3)}
+.q-text{font-size:1rem;line-height:1.7;color:var(--text);background:var(--card);padding:20px 22px;border-radius:12px;border:1px solid var(--border)}
+.q-text sup{font-size:.7em}
+.options{display:flex;flex-direction:column;gap:10px}
+.opt{display:flex;align-items:flex-start;gap:12px;padding:13px 16px;border-radius:10px;border:1.5px solid var(--border);background:var(--card);cursor:pointer;transition:.18s;user-select:none}
+.opt:hover:not(.disabled){border-color:var(--accent);background:rgba(108,99,255,.08)}
+.opt.selected{border-color:var(--accent);background:rgba(108,99,255,.15)}
+.opt.correct{border-color:var(--green)!important;background:rgba(34,197,94,.12)!important}
+.opt.wrong{border-color:var(--red)!important;background:rgba(239,68,68,.12)!important}
+.opt.disabled{cursor:default}
+.opt-label{font-family:'JetBrains Mono',monospace;font-size:.82rem;color:var(--muted);flex-shrink:0;width:20px;margin-top:1px}
+.opt-text{font-size:.93rem;line-height:1.55;color:var(--sub)}
+.opt.selected .opt-text,.opt.correct .opt-text{color:var(--text)}
+
+/* NAV BUTTONS */
+.nav-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.nav-btn{padding:9px 20px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--text);cursor:pointer;font-family:inherit;font-size:.85rem;font-weight:500;transition:.18s}
+.nav-btn:hover{border-color:var(--accent);color:var(--accent)}
+.nav-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.nav-btn.primary:hover{background:#5b52e0}
+.nav-btn.mark{background:rgba(249,115,22,.1);border-color:rgba(249,115,22,.4);color:var(--orange)}
+.mark-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--orange);margin-right:6px}
+.submit-btn{margin-left:auto;padding:9px 24px;border-radius:8px;background:var(--green);border:none;color:#fff;cursor:pointer;font-family:inherit;font-size:.88rem;font-weight:600;transition:.18s}
+.submit-btn:hover{background:#16a34a}
+
+/* SIDEBAR */
+#sidebar{border-left:1px solid var(--border);background:var(--surface);display:flex;flex-direction:column;overflow:hidden}
+.sidebar-head{padding:14px 16px;border-bottom:1px solid var(--border);font-size:.8rem;font-weight:600;color:var(--sub);letter-spacing:.5px;text-transform:uppercase}
+.legend{display:flex;flex-wrap:wrap;gap:6px;padding:10px 14px;border-bottom:1px solid var(--border)}
+.leg-item{display:flex;align-items:center;gap:5px;font-size:.7rem;color:var(--muted)}
+.leg-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0}
+.dot-unanswered{background:var(--card);border:1px solid var(--border)}
+.dot-answered{background:var(--green)}
+.dot-marked{background:var(--orange)}
+.dot-marked-answered{background:linear-gradient(135deg,var(--orange),var(--green))}
+.palette-scroll{flex:1;overflow-y:auto;padding:12px}
+.palette-section{margin-bottom:12px}
+.palette-sec-label{font-size:.72rem;font-weight:600;color:var(--muted);letter-spacing:.5px;text-transform:uppercase;margin-bottom:8px}
+.palette-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:5px}
+.pq{width:100%;aspect-ratio:1;border-radius:6px;border:1.5px solid var(--border);background:var(--card);color:var(--sub);font-size:.72rem;font-weight:600;cursor:pointer;font-family:'JetBrains Mono',monospace;transition:.15s;display:flex;align-items:center;justify-content:center}
+.pq:hover{border-color:var(--accent)}
+.pq.current{border-color:var(--accent)!important;box-shadow:0 0 0 2px rgba(108,99,255,.3)}
+.pq.answered{background:var(--green);border-color:var(--green);color:#fff}
+.pq.marked{background:var(--orange);border-color:var(--orange);color:#fff}
+.pq.marked.answered{background:linear-gradient(135deg,var(--orange),var(--green));border-color:var(--orange)}
+
+/* STATS BAR */
+.stats-bar{padding:10px 14px;border-top:1px solid var(--border);display:flex;gap:10px;font-size:.75rem}
+.stat{display:flex;flex-direction:column;align-items:center;gap:2px;flex:1}
+.stat-val{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.95rem}
+.stat-label{color:var(--muted);font-size:.65rem;text-transform:uppercase;letter-spacing:.4px}
+.sv-ans{color:var(--green)}
+.sv-unans{color:var(--muted)}
+.sv-marked{color:var(--orange)}
+
+/* RESULTS */
+#results{display:none;position:fixed;inset:0;background:var(--bg);z-index:200;overflow-y:auto;padding:40px 20px;animation:fadeUp .4s ease-out}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.res-card{max-width:900px;margin:0 auto;background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden}
+.res-header{padding:28px 32px;background:linear-gradient(135deg,rgba(108,99,255,.15),rgba(79,195,247,.1));border-bottom:1px solid var(--border);text-align:center}
+.res-title{font-size:1.6rem;font-weight:700;margin-bottom:4px}
+.res-sub{color:var(--muted);font-size:.9rem}
+.score-ring-wrap{display:flex;justify-content:center;gap:40px;padding:28px 32px;border-bottom:1px solid var(--border)}
+.score-block{text-align:center}
+.score-big{font-family:'JetBrains Mono',monospace;font-size:2.8rem;font-weight:700}
+.score-lbl{color:var(--muted);font-size:.8rem;text-transform:uppercase;letter-spacing:.5px;margin-top:4px}
+.sec-scores{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border)}
+.sec-score-card{padding:20px 24px;background:var(--surface);text-align:center}
+.sec-score-name{font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px}
+.sec-score-val{font-family:'JetBrains Mono',monospace;font-size:1.5rem;font-weight:700;margin-bottom:6px}
+.sec-score-detail{font-size:.75rem;color:var(--muted)}
+.bar-track{height:6px;background:var(--border);border-radius:3px;margin:8px 0 4px;overflow:hidden}
+.bar-fill{height:100%;border-radius:3px;transition:width 1s ease-out}
+.res-actions{padding:20px 32px;display:flex;gap:12px;justify-content:center}
+.res-btn{padding:10px 28px;border-radius:8px;cursor:pointer;font-family:inherit;font-size:.9rem;font-weight:600;transition:.18s;border:none}
+.res-btn.primary{background:var(--accent);color:#fff}
+.res-btn.primary:hover{background:#5b52e0}
+.res-btn.outline{background:transparent;border:1px solid var(--border);color:var(--text)}
+.res-btn.outline:hover{border-color:var(--accent);color:var(--accent)}
+
+/* REVIEW overlay */
+#review-panel{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:300;backdrop-filter:blur(4px);align-items:center;justify-content:center}
+#review-panel.show{display:flex}
+.review-inner{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:28px 32px;max-width:400px;width:90%;text-align:center}
+.review-title{font-size:1.1rem;font-weight:700;margin-bottom:10px}
+.review-stats{display:flex;gap:20px;justify-content:center;margin:16px 0 24px}
+.rs{text-align:center}
+.rs-val{font-family:'JetBrains Mono',monospace;font-size:1.5rem;font-weight:700}
+.rs-lbl{font-size:.72rem;color:var(--muted);text-transform:uppercase}
+.review-btns{display:flex;gap:10px;justify-content:center}
+.rv-btn{padding:9px 22px;border-radius:8px;cursor:pointer;font-family:inherit;font-size:.85rem;font-weight:600;border:none;transition:.18s}
+.rv-btn.confirm{background:var(--accent);color:#fff}
+.rv-btn.cancel{background:var(--card);border:1px solid var(--border);color:var(--text)}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+
+/* Mobile guard */
+@media(max-width:700px){
+  #app{grid-template-columns:1fr}
+  #sidebar{display:none}
+}
+</style>
+</head>
+<body>
+
+<div id="splash">
+  <div class="splash-title">COMEDK 2014</div>
+  <div class="splash-sub">Loading CBT Interface…</div>
+</div>
+
+<div id="topbar">
+  <div class="logo">COMEDK 2014 · CBT</div>
+  <div class="topbar-center">
+    <button class="sec-btn active" onclick="jumpSection(0)">Physics</button>
+    <button class="sec-btn" onclick="jumpSection(1)">Chemistry</button>
+    <button class="sec-btn" onclick="jumpSection(2)">Mathematics</button>
+  </div>
+  <div id="timer">03:00:00</div>
+</div>
+
+<div id="app">
+  <div id="main">
+    <div class="q-header">
+      <span class="q-num" id="qnum">Q 1 / 180</span>
+      <span class="q-section-tag tag-physics" id="qtag">Physics</span>
+    </div>
+    <div class="q-text" id="qtext"></div>
+    <div class="options" id="opts"></div>
+    <div class="nav-row">
+      <button class="nav-btn" onclick="prevQ()">← Prev</button>
+      <button class="nav-btn mark" onclick="toggleMark()"><span class="mark-dot"></span>Mark & Next</button>
+      <button class="nav-btn primary" onclick="nextQ()">Next →</button>
+      <button class="submit-btn" onclick="openReview()">Submit Test</button>
+    </div>
+  </div>
+  <div id="sidebar">
+    <div class="sidebar-head">Question Palette</div>
+    <div class="legend">
+      <div class="leg-item"><div class="leg-dot dot-unanswered"></div>Not visited</div>
+      <div class="leg-item"><div class="leg-dot dot-answered"></div>Answered</div>
+      <div class="leg-item"><div class="leg-dot dot-marked"></div>Marked</div>
+    </div>
+    <div class="palette-scroll" id="palette"></div>
+    <div class="stats-bar">
+      <div class="stat"><div class="stat-val sv-ans" id="s-ans">0</div><div class="stat-label">Answered</div></div>
+      <div class="stat"><div class="stat-val sv-unans" id="s-unans">180</div><div class="stat-label">Pending</div></div>
+      <div class="stat"><div class="stat-val sv-marked" id="s-mark">0</div><div class="stat-label">Marked</div></div>
+    </div>
+  </div>
+</div>
+
+<div id="results">
+  <div class="res-card">
+    <div class="res-header">
+      <div class="res-title">Test Submitted ✓</div>
+      <div class="res-sub">COMEDK 2014 · Physics | Chemistry | Mathematics</div>
+    </div>
+    <div class="score-ring-wrap">
+      <div class="score-block"><div class="score-big" id="r-score" style="color:var(--accent)">0</div><div class="score-lbl">Score</div></div>
+      <div class="score-block"><div class="score-big" id="r-correct" style="color:var(--green)">0</div><div class="score-lbl">Correct</div></div>
+      <div class="score-block"><div class="score-big" id="r-wrong" style="color:var(--red)">0</div><div class="score-lbl">Wrong</div></div>
+      <div class="score-block"><div class="score-big" id="r-skip" style="color:var(--muted)">0</div><div class="score-lbl">Skipped</div></div>
+    </div>
+    <div class="sec-scores" id="sec-scores"></div>
+    <div class="res-actions">
+      <button class="res-btn outline" onclick="reviewAnswers()">Review Answers</button>
+      <button class="res-btn primary" onclick="location.reload()">Retake Test</button>
+    </div>
+  </div>
+</div>
+
+<div id="review-panel">
+  <div class="review-inner">
+    <div class="review-title">Submit Test?</div>
+    <div style="color:var(--muted);font-size:.88rem;margin-bottom:8px">Are you sure you want to submit?</div>
+    <div class="review-stats">
+      <div class="rs"><div class="rs-val sv-ans" id="rv-ans">0</div><div class="rs-lbl">Answered</div></div>
+      <div class="rs"><div class="rs-val sv-unans" id="rv-unans">0</div><div class="rs-lbl">Skipped</div></div>
+      <div class="rs"><div class="rs-val sv-marked" id="rv-mark">0</div><div class="rs-lbl">Marked</div></div>
+    </div>
+    <div class="review-btns">
+      <button class="rv-btn cancel" onclick="closeReview()">Continue Test</button>
+      <button class="rv-btn confirm" onclick="submitTest()">Submit Now</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── QUESTIONS DATA ──────────────────────────────────────────────────────────
+const Q = [
+// PHYSICS 1-60
+{s:0,q:"Which of the following statements is NOT correct regarding conservation laws?",o:["A conservation law is a hypothesis based on observations and experiments.","Conservation laws do not have a deep connection with symmetries of nature.","A conservation law cannot be proved.","Conservation of energy, linear momentum, angular momentum are considered to be fundamental laws of Physics."],a:1},
+{s:0,q:"The increase in the height of a tower of height 200 m to get its coverage range tripled is:",o:["800 m","1600 m","900 m","700 m"],a:1},
+{s:0,q:"The value of g at a height equal to half the radius of the earth from the earth's surface is:",o:["g/2","g/3","4g/9","g/4"],a:2},
+{s:0,q:"The maximum and minimum distances of a comet from the sun are 1.4×10¹² m and 7×10¹⁰ m. If its velocity nearest to the sun is 6×10¹⁴ ms⁻¹, its velocity at farthest position is: [Note: Answer key states none of the given options is correct]",o:["1000 ms⁻¹","2000 ms⁻¹","3000 ms⁻¹","4000 ms⁻¹"],a:-1},
+{s:0,q:"The centre of mass of a system of two bodies of masses M and m (M > m), separated by a distance d is:",o:["Midway between the bodies","Closer to the heavier body","Closer to the lighter body","At the centre of the heavier body"],a:1},
+{s:0,q:"A pump on the ground floor of a building can pump up water to fill the tank of 30 m³ in 15 min. If the tank is 40 m above the ground, and efficiency of the pump is 30%, the power consumed by the pump is (g = 10 ms⁻²):",o:["4.4 kW","44 kW","440 kW","0.44 kW"],a:1},
+{s:0,q:"The resistance of a galvanometer is 2.5 Ω and it requires 50 mA for full scale deflection. The shunt resistance to convert it into an ammeter of range 0–5 A is:",o:["2.5×10⁻² Ω","0.25×10⁻² Ω","0.025×10⁻² Ω","0.0025×10⁻² Ω"],a:0},
+{s:0,q:"Zener diode is used to regulate voltage supply because:",o:["Voltage remains constant, even when current varies much","Both voltage and current remain constant","Voltage varies much, but current remains constant","Both voltage and current vary together"],a:0},
+{s:0,q:"In an inelastic collision, which of the following is true?",o:["Momentum is conserved but not KE","KE is conserved, but not momentum","Both momentum and KE are conserved","Neither momentum nor KE are conserved"],a:0},
+{s:0,q:"If a change in current of 0.01 A in one coil produces a change in magnetic flux of 2×10⁻² Wb in another coil, the mutual inductance between coils is:",o:["0 H","0.5 H","2 H","3 H"],a:2},
+{s:0,q:"An aeroplane flies horizontally with velocity 360 km h⁻¹. Distance between wing tips is 50 m. Vertical component of earth's magnetic field is 4×10⁻⁴ Wb m⁻². The induced emf is:",o:["200 V","20 V","2 V","0.2 V"],a:2},
+{s:0,q:"The inductance in a coil plays the same role as:",o:["Inertia in mechanics","Energy in mechanics","Momentum in mechanics","Force in mechanics"],a:0},
+{s:0,q:"The mutual inductance between two coils depends upon:",o:["The medium between the coils only","The separation between the coils only","Both the medium and the separation","Neither the medium nor the separation"],a:2},
+{s:0,q:"The normal magnetic flux through a coil changes as φ = 6t² − 5t + 1. Magnitude of induced current at t = 0.253 s with resistance 10 Ω is:",o:["1.2 A","0.8 A","0.6 A","0.2 A"],a:3},
+{s:0,q:"For an electromagnetic wave, which of the following statements is true?",o:["Electric field is constant and magnetic field varies.","Magnetic field is constant and electric field varies.","Both electric and magnetic fields are constant.","Both electric and magnetic fields vary."],a:3},
+{s:0,q:"If A is the angle of prism and r is angle of refraction, the condition for minimum deviation is:",o:["A = r²","A = 2r","A = r/2","A = r"],a:1},
+{s:0,q:"A concave mirror forms an enlarged, erect, virtual image of an object only when the object is placed:",o:["At focus","Between pole and focus","At the centre of curvature","Between focus and centre of curvature"],a:1},
+{s:0,q:"A man stands symmetrically between two large plane mirrors fixed to two adjacent walls of a rectangular room. The number of images formed is:",o:["4","3","2","6"],a:1},
+{s:0,q:"A sinusoidal voltage of peak value 300 V and angular frequency ω = 400 rad s⁻¹ is applied to a series L-C-R circuit with R = 3 Ω, L = 20 mH and C = 625 μF. The peak current in the circuit is:",o:["30√2 A","60 A","100 A","60√2 A"],a:1},
+{s:0,q:"A ray of light falls on a 60° prism (μ = √2) and it suffers minimum deviation. The angle of incidence must be:",o:["30°","45°","60°","75°"],a:1},
+{s:0,q:"A source of light (λ = 5000 Å) is placed at one end of a table 2 m long and 5 mm above its flat well polished top. The fringe width of interference bands seen on a screen at the end of the table is:",o:["2×10⁻⁵ m","2×10⁻⁴ m","2×10⁻³ m","2×10⁻² m"],a:1},
+{s:0,q:"A screen is placed 2 m away from a narrow slit. The first minimum lies 5 mm from the central maxima when plane waves of wavelength 5×10⁻⁷ m are used. The slit width is:",o:["4.8×10⁻⁴ m","2×10⁻⁴ m","5×10⁻⁴ m","24×10⁻⁴ m"],a:1},
+{s:0,q:"A galaxy moves w.r.t. earth so that sodium line of 589.0 nm is observed at 589.6 nm. The speed of the galaxy is:",o:["300 km s⁻¹","306 km s⁻¹","400 km s⁻¹","406 km s⁻¹"],a:1},
+{s:0,q:"Newton's rings are observed in reflected light of wavelength 5000 Å. Diameter of the 10th dark ring is 0.005 m. The radius of curvature of the lens is:",o:["1 m","1.25 m","2 m","0.5 m"],a:1},
+{s:0,q:"The amount of energy required to separate a hydrogen atom into a proton and an electron is:",o:["1.36 eV","13.6 eV","0.136 eV","136 eV"],a:1},
+{s:0,q:"The energy equivalent of 1 g of a substance is:",o:["4.5×10¹³ J","9×10¹⁶ J","9×10¹³ J","18×10¹³ J"],a:2},
+{s:0,q:"Two small drops of mercury, each of radius r, coalesce to form a single large drop of radius R. The ratio of total surface energies before and after the change is:",o:["1 : 2¹/³","2²/³ : 1","2 : 1","1 : 2"],a:1},
+{s:0,q:"Energy equivalent of one atomic mass unit in joules and MeV is:",o:["1.66×10⁻¹⁰ J, 93.15 MeV","3×10⁻¹⁰ J, 9.315 MeV","1.5×10⁻¹⁰ J, 931.5 MeV","2.5×10⁻¹⁰ J, 931.5 MeV"],a:2},
+{s:0,q:"Two amplifiers are connected in series (cascaded). First has voltage gain 10 and second has 20. If input signal is 0.01 V, the output AC signal is:",o:["1.5 V","2 V","2.5 V","3.0 V"],a:1},
+{s:0,q:"A transistor works as an amplifier when:",o:["Emitter-base junction is forward biased and collector-base junction is reverse biased","Emitter-base junction is reverse biased and collector-base junction is forward biased","Both junctions are forward biased","Both junctions are reverse biased"],a:0},
+{s:0,q:"In a common base circuit, collector base voltage changes by 0.6 V and collector current changes by 0.02 mA. The output resistance is:",o:["6×10⁴ Ω","3×10⁴ Ω","9×10⁴ Ω","18×10⁴ Ω"],a:1},
+{s:0,q:"A repeater in TV transmission is:",o:["Only a receiver","Only a transmitter","A receiver and a transmitter","Demodulator"],a:2},
+{s:0,q:"The waves suitable for transmission of radio signals are:",o:["Infrared","Waves longer than infrared (radiowaves)","Waves shorter than infrared","X-rays"],a:1},
+{s:0,q:"A wire of length 2 m is made from 10 cm³ of copper. Force F increases its length by 2 mm. Another wire of length 8 m is made from the same volume. If force F is applied to it, its length will increase by:",o:["0.8 cm","1.6 cm","2.4 cm","3.2 cm"],a:3},
+{s:0,q:"A tennis ball of mass m strikes a wall with velocity v and retraces the same path. The change in momentum is:",o:["+4mv","−4mv","+2mv","−2mv"],a:3},
+{s:0,q:"A monkey of mass 40 kg climbs a rope that can withstand a maximum tension of 600 N. The rope will break when the monkey:",o:["Climbs up with acceleration 6 ms⁻²","Climbs down with acceleration 4 ms⁻¹","Climbs up with uniform speed 5 ms⁻¹","Slides down freely under gravity"],a:0},
+{s:0,q:"A shell of mass 20 g is fired by a gun of mass 100 kg. Shell leaves at 80 ms⁻¹. The speed of recoil of the gun is:",o:["3.2 cm s⁻¹","1.6 cm s⁻¹","1 cm s⁻¹","2.4 cm s⁻¹"],a:1},
+{s:0,q:"Two boys stand at ends A and B of a 200 m ground. Boy at B runs perpendicular to AB at 6 ms⁻¹. Boy at A chases at 10 ms⁻¹. Time to catch the other is:",o:["50 s","20 s","25 s","12.5 s"],a:2},
+{s:0,q:"A car covers first half of distance at 40 kmph and the other half at 60 kmph. The average speed of the car is:",o:["48 kmph","120 kmph","50 kmph","24 kmph"],a:0},
+{s:0,q:"The dimensions of universal gravitational constant are:",o:["[M²L³T⁻²]","[M⁻¹L³T⁻²]","[M⁻²L³T⁻²]","[M²L⁻³T⁻²]"],a:1},
+{s:0,q:"Which two of the following quantities are dimensionally equivalent?\n(i) Force  (ii) Pressure  (iii) Young's modulus  (iv) Energy",o:["(i) and (ii)","(i) and (iii)","(ii) and (iii)","(ii) and (iv)"],a:2},
+{s:0,q:"The temperature of an object is 60°C. Its value in Fahrenheit scale is:",o:["120°F","130°F","140°F","110°F"],a:2},
+{s:0,q:"A pan cools from 94°C to 86°C in 2 min at room temperature 20°C. Time taken to cool from 86°C to 74°C is:",o:["500 s","420 s","200 s","210 s"],a:3},
+{s:0,q:"In SHM with amplitude A, the position of a mass when PE = KE is:",o:["A","A/√2","A/2","A/√3"],a:1},
+{s:0,q:"The universal gas law (pV/T = constant) is applicable to:",o:["Isothermal changes only","Adiabatic changes only","Both isothermal and adiabatic changes","Neither isothermal nor adiabatic changes"],a:2},
+{s:0,q:"A human heart beats 72 times per minute. Its frequency and period are:",o:["1.2 Hz, 0.83 s","2.5 Hz, 1.2 s","2 Hz, 1.2 s","2.5 Hz, 0.83 s"],a:0},
+{s:0,q:"A hospital ultrasonic scanner operates at 4.2 MHz. Speed of sound in tissue is 1.7 km s⁻¹. Wavelength of sound in the tissue is:",o:["4×10⁻³ m","8×10⁻³ m","4×10⁻⁴ m","8×10⁻⁴ m"],a:2},
+{s:0,q:"A policeman detects a 15% drop in pitch of a motor car horn as it crosses him. Speed of sound = 330 ms⁻¹. Speed of the car is:",o:["26.7 ms⁻¹","27.6 ms⁻¹","53.4 ms⁻¹","54.3 ms⁻¹"],a:0},
+{s:0,q:"An electric dipole placed in a non-uniform electric field experiences:",o:["Only torque","Only force","Both torque and force","Neither torque nor force"],a:2},
+{s:0,q:"For a polar molecule, which statement is true?",o:["The centres of gravity of electrons and protons coincide.","The centres of gravity of electrons and protons do not coincide.","The charge distribution is always symmetrical.","The dipole moment is always zero."],a:1},
+{s:0,q:"A 10 mF capacitor is charged to 100 V. If it suddenly explodes, the energy given out is:",o:["50 J","10⁵ J","50 mJ","10³ J"],a:0},
+{s:0,q:"A capacitor with parallel layers of air (1 mm gap total, paper thickness 0.75 mm, K=4). The ratio of voltage across air to paper is:",o:["1/2","3/4","4/3","1/3"],a:2},
+{s:0,q:"Two copper wires of length 1 m and 9 m have the same resistance. The ratio of their diameters is:",o:["3 : 1","1 : 3","9 : 1","1 : 9"],a:1},
+{s:0,q:"Which of the following is a correct statement?",o:["Heat produced in a conductor varies directly as current.","Heat produced varies inversely as current.","Heat produced varies directly as the square of current.","Heat produced varies inversely as the square of current."],a:2},
+{s:0,q:"A proton and an α-particle are projected with the same kinetic energy at right angles to a uniform magnetic field. The ratio of the radii of their paths (proton : alpha) is:",o:["2 : 1","1 : 2","1 : 1","2 : 3"],a:2},
+{s:0,q:"The magnetic properties of a magnet are lost at its:",o:["Melting point","Boiling point","Curie point","Triple point"],a:2},
+{s:0,q:"Electromagnets are made of soft iron because soft iron has:",o:["Low susceptibility and low retentivity","High susceptibility and low retentivity","High susceptibility and high retentivity","Low susceptibility and high retentivity"],a:1},
+{s:0,q:"Three charges −q, +Q and −q are placed at equal distances in a straight line. If the total PE is zero, then Q/q is:",o:["1/8","1/6","1/4","1/2"],a:2},
+{s:0,q:"The equivalent resistance of the given circuit between A and B: [circuit with 10Ω, 20Ω, 30Ω, 200Ω, 100Ω arranged in a Wheatstone bridge network]. Note: Answer key states none of the options is correct.",o:["30 Ω","20 Ω","10 Ω","8 Ω"],a:-1},
+{s:0,q:"TV signals have a bandwidth of 3.7 MHz. Number of TV channels that can be accommodated with a band of 3700 GHz is:",o:["10⁴","10⁵","10⁶","10⁷"],a:2},
+// CHEMISTRY 61-120
+{s:1,q:"Density of 3 M solution of NaCl is 1.25 g/mL. The mass of the solvent in the solution is:",o:["1075.4 g","10.745 g","10.754 g","1074.5 g"],a:3},
+{s:1,q:"An orbital with n = 3, l = 1 is designated as:",o:["1s","3s","3p","3d"],a:2},
+{s:1,q:"A 150 W bulb emits light of wavelength 6600 Å and only 8% of energy is emitted as light. Number of photons emitted per second:",o:["4×10¹⁹","3.24×10¹⁹","4.23×10²⁰","3×10²⁰"],a:0},
+{s:1,q:"In the set O²⁻, F⁻, Na, Mg²⁺, Al³⁺, Ne — which one is NOT isoelectronic with the rest?",o:["Mg²⁺","Al³⁺","O²⁻","Na"],a:3},
+{s:1,q:"For all gases, at constant pressure, the graph of volume vs temperature (°C) is a straight line called:",o:["Isomer","Isochore","Isobar","Isotherm"],a:2},
+{s:1,q:"Atomic numbers: V=23, Cr=24, Ni=28, Fe=26. Which one has the highest second ionisation enthalpy?",o:["Cr","V","Fe","Ni"],a:0},
+{s:1,q:"Which represents the correct order of increasing bond order?\n(He₂⁺, O₂⁻, O₂⁺, C₂²⁻)",o:["C₂²⁻ < He₂⁺ < O₂⁺ < O₂⁻","He₂⁺ < O₂⁻ < O₂⁺ < C₂²⁻","O₂⁻ < O₂⁺ < C₂²⁻ < He₂⁺","O₂⁺ < C₂²⁻ < O₂⁻ < He₂⁺"],a:1},
+{s:1,q:"Pick up the INCORRECT statement:",o:["Dipole moment of ammonia is due to orbital dipole and resultant dipole in the same direction.","In BF₃ bond dipoles are higher but dipole moment is zero.","Dipole moment is a vector quantity.","O₂ and H₂ show bond dipole due to polarisation."],a:3},
+{s:1,q:"Mole fraction of O₂ in a neon-dioxygen mixture is 0.18. Total pressure = 25 bar. Partial pressure of neon is:",o:["25.18 bar","25.82 bar","4.5 bar","20.5 bar"],a:3},
+{s:1,q:"Standard molar enthalpies of formation of CaCO₃(s), CaO(s) and CO₂(g) are −1206.92, −635.09 and −393.51 kJ mol⁻¹. ΔᵣH for decomposition of CaCO₃(s) is:",o:["178.3 kJ mol⁻¹","−178.3 kJ mol⁻¹","1448.5 kJ mol⁻¹","−1448.5 kJ mol⁻¹"],a:0},
+{s:1,q:"ΔᵣG° for 3/2 O₂(g) → O₃(g) at 298 K (Kp = 1×10⁻²⁹) is:",o:["16.54 kJ mol⁻¹","165.4 kJ mol⁻¹","1654 kJ mol⁻¹","1.654 kJ mol⁻¹"],a:1},
+{s:1,q:"The reaction goes farthest to completion when:",o:["Kc = 10²","Kc = 10","Kc = 10⁻²","Kc = 1"],a:0},
+{s:1,q:"1 mole of PCl₅ heated in a closed 2 dm³ vessel; 40% dissociates at equilibrium. The equilibrium constant is:",o:["0.066","0.154","0.133","0.266"],a:2},
+{s:1,q:"Non-existence of PbI₄ and PbBr₄ is due to:",o:["Highly oxidising nature of Pb⁴⁺ ions","Highly reducing nature of I⁻ and Br⁻ ions","Larger size of Pb⁴⁺, Br⁻ and I⁻ ions","Both (a) and (b)"],a:3},
+{s:1,q:"Which species does NOT show disproportionation reaction?",o:["ClO⁻","ClO₄⁻","ClO₂⁻","ClO₃⁻"],a:1},
+{s:1,q:"Sodium dissolves in liquid NH₃ to give a deep blue solution. This is due to:",o:["Ammoniated Na⁺","Ammoniated Na⁻","Formation of Na⁺/Na⁻ pair","Ammoniated electrons"],a:3},
+{s:1,q:"In fullerene C₆₀, every carbon atom is:",o:["sp-hybridised","sp²-hybridised","sp³-hybridised","Not hybridised"],a:1},
+{s:1,q:"Maleic acid and fumaric acid are:",o:["Optical isomers","Geometrical isomers","Functional isomers","Positional isomers"],a:1},
+{s:1,q:"The IUPAC name of tertiary butyl chloride is:",o:["2-chloro-2-methylpropane","3-chlorobutane","4-chlorobutane","1,2-dichloro-3-methylpropane"],a:0},
+{s:1,q:"The compound which on ozonolysis produces a mixture of propanone and ethanal is:",o:["2-methyl but-1-ene","2-pentene","2-pentyne","2-methyl but-2-ene"],a:3},
+{s:1,q:"When 2-bromopentane is heated with alcoholic KOH, the major product obtained is:",o:["Pent-1-ene","Pent-2-ene","Pent-1-yne","Pent-2-yne"],a:1},
+{s:1,q:"Rain water is called acid rain when its pH:",o:["Falls below zero","Falls below 5.6","Is above 5.6 but less than 10","Is above 10"],a:1},
+{s:1,q:"Schottky defect in crystals is observed when:",o:["An ion leaves its normal site and occupies an interstitial site.","Unequal number of cations and anions are missing from the crystal lattice.","Equal number of cations and anions are missing from the crystal lattice.","There is a large difference in size of positive and negative ions."],a:2},
+{s:1,q:"A crystalline solid has A⁻ ions at corners and face centres, B⁺ ions at body centre and edge centres. The simplest formula of the compound is:",o:["A₂B","AB₂","AB₃","AB"],a:3},
+{s:1,q:"An atom of radius 300 pm crystallises in an FCC lattice. The edge length of the unit cell is:",o:["488.5 pm","848.5 pm","884.5 pm","484.5 pm"],a:1},
+{s:1,q:"When concentration is expressed as moles of solute per kilogram of solvent, it is known as:",o:["Molarity","Molality","Normality","Mole fraction"],a:1},
+{s:1,q:"van't Hoff factors of equimolal solutions of NaCl, BaCl₂ and glucose in water are respectively:",o:["2, 3, 0","2, 3, 6","2, 3, 4","2, 3, 1"],a:3},
+{s:1,q:"A one molal solution of NaCl in water has the same boiling point as:",o:["1 m solution of magnesium sulphate","1 m solution of magnesium chloride","1 m solution of aluminium sulphate","1 m solution of aluminium chloride"],a:0},
+{s:1,q:"Vapour pressure of water at 293 K is 17.535 mm Hg. Vapour pressure with 25 g glucose in 450 g water at 293 K is:",o:["17.439 mm Hg","17.535 mm Hg","0.097 mm Hg","34.973 mm Hg"],a:0},
+{s:1,q:"In an electrochemical cell, the reaction is feasible when:",o:["ΔG = −ve, E = +ve","ΔG = +ve, E = −ve","ΔG = 0, E = −ve","ΔG = 0, E = 0"],a:0},
+{s:1,q:"Standard emf of Zn|Zn²⁺||Ag⁺|Ag is 1.56 V. Standard reduction potential of Ag is 0.8 V. Standard oxidation potential of Zn is:",o:["−0.76 V","+0.76 V","−2.36 V","+2.36 V"],a:1},
+{s:1,q:"Molar conductivities at infinite dilution: NaOH = 2.481×10⁻², NaCl = 1.265×10⁻², BaCl₂ = 2.800×10⁻² S m² mol⁻¹. Molar conductivity of Ba(OH)₂ at infinite dilution is:",o:["5.232×10⁻² S m² mol⁻¹","9.654×10⁻² S m² mol⁻¹","4.016×10⁻² S m² mol⁻¹","1.145×10⁻² S m² mol⁻¹"],a:0},
+{s:1,q:"Rate of a reaction doubles for every 10°C rise. If temperature increases by 60°C, the rate increases:",o:["20 times","32 times","64 times","128 times"],a:2},
+{s:1,q:"An endothermic reaction A→B has activation energy x kJ/mol. Energy change of reaction is y kJ. Activation energy of the reverse reaction is:",o:["−x","x − y","x + y","y − x"],a:1},
+{s:1,q:"For aP + bQ → products: doubling [P] (constant [Q]) doubles rate; doubling [Q] (constant [P]) quadruples rate. Overall order is:",o:["1","2","3","2.5"],a:2},
+{s:1,q:"Semiconductors of very high purity are obtained by:",o:["Liquation","Vapour phase refining","Zone refining","Electrolysis"],a:2},
+{s:1,q:"NaCN is added as a depressant in froth flotation of ZnS + PbS mixture because:",o:["Pb(CN)₂ gets precipitated without any effect on ZnS","ZnS forms soluble complex, while PbS forms froth.","PbS forms soluble complex, while ZnS forms froth.","Zn(CN)₂ gets precipitated without any effect on PbS"],a:1},
+{s:1,q:"Solid A reacts with strong NaOH(aq) liberating a foul smelling gas B which spontaneously burns in air giving smoky rings. A and B are:",o:["P(red) and PH₃","P(white) and PH₃","S and H₂S","P(white) and H₂S"],a:1},
+{s:1,q:"SO₂ + 2H₂S → 3S + 2H₂O. This represents preparation of sulphur sol by:",o:["Hydrolysis","Oxidation","Reduction","Double decomposition"],a:1},
+{s:1,q:"Which of the following inert gas compounds is NOT formed?",o:["XeOF₄","XeO₃","XeF₂","NeF₂"],a:3},
+{s:1,q:"Nitrogen shows maximum covalency of 4 whereas heavier group elements show higher covalency because:",o:["N has higher electronegativity","N has smaller size","N has only 4 orbitals available in the valence shell","N prefers to form multiple bonds"],a:2},
+{s:1,q:"The photographic industry relies on the special light sensitive properties of:",o:["NaI","NaBr","AgCl","AgBr"],a:3},
+{s:1,q:"In acidic medium, KMnO₄ oxidises oxalic acid to:",o:["Oxalate","Carbon dioxide","Acetate","Acetic acid"],a:1},
+{s:1,q:"The complex [PtCl₂(en)₂]²⁺ ion shows:",o:["Structural isomerism only","Optical isomerism only","Geometrical and optical isomerism","Geometrical isomerism only"],a:2},
+{s:1,q:"The complex [Ag(NH₃)₂][Ag(CN)₂] has the IUPAC name:",o:["Diamminesilver (I) dicyanosilver (I)","Diamminesilver (I) dicyanoargentate (I)","Dicyanosilver (I) diammineargentate (I)","Diamminesilver (I) dicyanoargentate (I) [both b and d are correct]"],a:1},
+{s:1,q:"Molar conductance of a cobalt complex is zero. Its structure would be:",o:["[Co(NH₃)₅]Cl₃","[Co(NH₃)₃Cl]Cl₃","[Co(NH₃)₃Cl₂]Cl","[Co(NH₃)₃Cl₃]"],a:3},
+{s:1,q:"CH₃CH₂I + KOH(aq) → CH₃CH₂OH + KI is classified as:",o:["Electrophilic substitution","Nucleophilic substitution","Electrophilic addition","Nucleophilic addition"],a:1},
+{s:1,q:"For SN1 reaction, the order of reactivity of haloalkanes is:",o:["Tertiary < Secondary < Primary","Tertiary < Secondary > Primary","Tertiary > Secondary > Primary","Tertiary > Secondary < Primary"],a:2},
+{s:1,q:"Major product when chlorobenzene is nitrated with HNO₃ + conc. H₂SO₄ is:",o:["1-chloro-4-nitrobenzene","1-chloro-2-nitrobenzene","1-chloro-3-nitrobenzene","1-chloro-1-nitrobenzene"],a:0},
+{s:1,q:"The unstable intermediate dichlorocarbene [:CCl₂] is formed during:",o:["Kolbe's reaction","Friedel-Crafts reaction","Williamson synthesis","Reimer-Tiemann reaction"],a:3},
+{s:1,q:"Phenols are highly acidic compared to alcohols due to:",o:["Higher molecular mass of phenols","Stronger hydrogen bonds in phenols","Alkoxide ion is a strong conjugate base","Phenoxide ion is resonance stabilised"],a:3},
+{s:1,q:"Increasing order of boiling points of n-butane, 1-butanol, ethoxyethane and 1-propanol is:",o:["1-propanol > n-butane > ethoxyethane > 1-butanol","n-butane < ethoxyethane < 1-propanol < 1-butanol","n-butane < 1-propanol < ethoxyethane < 1-butanol","1-propanol < n-butane < ethoxyethane < 1-butanol"],a:1},
+{s:1,q:"Order of Ka values: 2-chloropropanoic acid, 3-chloropropanoic acid, 2,2-dichloroacetic acid and propanoic acid is:",o:["2,2-dichloroacetic > 2-chloropropanoic > 3-chloropropanoic > propanoic","3-chloropropanoic > 2-chloropropanoic > 2,2-dichloroacetic > propanoic","2,2-dichloroacetic > 3-chloropropanoic > 2-chloropropanoic > propanoic","2,2-dichloroacetic > propanoic > 2-chloropropanoic > 3-chloropropanoic"],a:0},
+{s:1,q:"A reaction between a carbonyl compound and a Grignard reagent is termed as:",o:["Nucleophilic addition","Electrophilic addition","SN1 reaction","SN2 reaction"],a:0},
+{s:1,q:"Ethanal treated with primary alcohol in presence of HCl gas. The reaction is known as:",o:["Aldol condensation","Acetal formation","Cross aldol condensation","Cannizzaro reaction"],a:1},
+{s:1,q:"CH₃CN → (NaC₂H₅OH) → A → (HNO₂) → B → (Cu/573K) → C. Here C is:",o:["CH₃−CH₂NHOH","CH₃−CHO","CH₃CO−NH₂","CH₃−COOH"],a:1},
+{s:1,q:"In nucleic acids, the nucleotides are linked by:",o:["Ester linkage","Amide linkage","Peptide linkage","Glycosidic linkage"],a:0},
+{s:1,q:"Amino acids exist as zwitter ions at:",o:["Acidic pH","Basic pH","Neutral pH","Isoelectric pH"],a:3},
+{s:1,q:"Which one of the following is an addition polymer?",o:["Terylene","Nylon-6,6","Neoprene","Teflon"],a:2},
+{s:1,q:"Among the following, the one which is NOT an artificial sweetening agent is:",o:["Aspartame","Sucrose","Sucralose","Saccharin"],a:1},
+// MATHEMATICS 121-180
+{s:2,q:"Which of the following is an empty set?",o:["{x | x is real and x²−1=0}","{x | x is real and x²+3=0}","{x | x is real and x²−9=0}","{x | x is real and x²=x+2}"],a:1},
+{s:2,q:"The number of proper subsets of a set having n+1 elements is:",o:["2ⁿ⁺¹","2ⁿ⁺¹−1","2ⁿ⁺¹−2","2ⁿ⁻²"],a:1},
+{s:2,q:"The domain of the function y = √(x−2) + √(1−x) is:",o:["x ≤ 2","x ≥ 2","Null set","The set of all numbers"],a:2},
+{s:2,q:"If A = {1, 2, 3, 4}, which one of the following is reflexive?",o:["{(1,1),(2,3),(3,3)}","{(1,1),(2,2),(3,3),(4,4)}","{(1,2),(2,1),(3,2),(2,3)}","{(1,2),(1,3),(1,4)}"],a:1},
+{s:2,q:"If f(x) = (2x−3)/(3x+4), then f⁻¹(−4/3) =",o:["Zero","3/4","−2/3","None of these"],a:3},
+{s:2,q:"If f: [0,∞) → [2,∞) is given by f(x) = x + 1/x, then f⁻¹(x) equals:",o:["(x + √(x²−4))/2","x/(1+x²)","(2x − √(x²−4))/2","1 + √(x²−4)"],a:0},
+{s:2,q:"The value of (tan 330° sec 420° sin 300°) / (tan 135° sin 210° sec 315°) is equal to:",o:["1/√2","√2","1/√3","√3"],a:1},
+{s:2,q:"If sin(120°−A) = sin(120°−B) and 0 < A, B < π, then all values of A and B are given by:",o:["A + B = π/3","A = B  or  A + B = π/3","A = B","A + B = 0"],a:1},
+{s:2,q:"If cot⁻¹(1/5) + cot⁻¹(1/3) − cot⁻¹(4/7) = cot⁻¹ x, then x is equal to:",o:["0","3","1/√3","∞"],a:0},
+{s:2,q:"If 1+i = (x+iy)(u+iv), then tan⁻¹(y/x) + cot⁻¹(u/v) has the value:",o:["nπ + π/6, n∈I","2nπ + π/3, n∈I","nπ + π/4, n∈I","nπ − π/3, n∈I"],a:2},
+{s:2,q:"For a natural number n, which is the correct statement?",o:["1³+2³+…+n³ = (1+2+…+n)²","1³+2³+…+n³ > (1+2+…+n)²","1³+2³+…+n³ < (1+2+…+n)²","1³+2³+…+n³ ≠ (1+2+…+n)²"],a:0},
+{s:2,q:"If a complex number lies in the III quadrant, its conjugate lies in:",o:["I quadrant","II quadrant","III quadrant","IV quadrant"],a:1},
+{s:2,q:"If β satisfies the inequation x²−x−6 > 0, a value exists for:",o:["cos⁻¹(cosβ)","sec(sec⁻¹β)","tan(tan⁻¹β)","sin(sin⁻¹β)"],a:1},
+{s:2,q:"If ⁵⁶Pᵣ₊₆ : ⁵⁴Pᵣ₊₃ = 30800 : 1, then:",o:["r = 41","r = 51","r = 31","None of these"],a:0},
+{s:2,q:"If coefficients of x⁵ and x⁶ in (2 + x/3)ⁿ are equal, then n is:",o:["51","31","41","None of these"],a:2},
+{s:2,q:"The term independent of x in [√(x/3) + √(3/2x²)]¹⁰ is:",o:["5/4","7/4","9/4","None of these"],a:3},
+{s:2,q:"Sum of the series (1²)/(1·2) + (1²+2²)/(2·3) + (1²+2²+3²)/(3·4) + … up to 20 terms is:",o:["205/3","200/3","220/3","210/3"],a:2},
+{s:2,q:"The angle between lines √3x + y = 1 and x + √3y = 1 is:",o:["π/6","3π/4","5π/2","π/3"],a:0},
+{s:2,q:"An equation of a family of lines having the sum of intercepts on axes equal to 7 is:",o:["4x + 3y = 12a","3x + 4y = 7a","7x + ay = a(7−a)","ay = (7−a)(a−x)"],a:3},
+{s:2,q:"The equation of the ellipse with centre at origin and X-axis as major axis, passing through (−3,1) and (2,−2) is:",o:["5x² + 3y² = 32","3x² + 5y² = 32","5x² − 3y² = 32","3x² + 5y² + 32 = 0"],a:1},
+{s:2,q:"The equations of lines joining the vertex of y² = 6x to the points with abscissa 24 are:",o:["y ± 2x = 0","2y ± x = 0","x ± y = 0","2x ± 3y = 0"],a:1},
+{s:2,q:"From P(a,b,c) perpendiculars PA, PB are drawn to YZ and ZX planes. The equation of plane OAB (O is origin) is:",o:["bcx + cay + abz = 0","bcx + cay − abz = 0","bcx − cay + abz = 0","−bcx + cay + abz = 0"],a:1},
+{s:2,q:"Distance of point (1, 2, 3) from the plane 3y + 4z + 4 = 0 is:",o:["4.4","4","4.04","4.44"],a:0},
+{s:2,q:"AB and CD are line segments with A(2,3,0), B(6,9,0), C(−6,−9,0). P and Q are midpoints of AB and CD; L is midpoint of PQ. Distance of L from plane 3x + 4z + 25 = 0 is:",o:["25","15","5","40"],a:2},
+{s:2,q:"The plane through the intersection of x+2y+3z−4=0 and 2x+y−z+5=0, perpendicular to 5x+3y+6z+8=0 is:",o:["−51x−15y−50z−173=0","51x+15y−50z+173=0","51x−15y+50z−173=0","51x+50y+15z+173=0"],a:1},
+{s:2,q:"lim(x→0) (x·aˣ − x)/(1 − cos x) is equal to:",o:["log a","(1/2) log a","2 log a","2 log 2"],a:2},
+{s:2,q:"If y = tan x, then d²y/dx² =",o:["1 + y²","2y(1 + y²)","y(1 + y²)","2y(1 − y²)"],a:1},
+{s:2,q:"If y = tan⁻¹((a−x)/(1+ax)), then dy/dx =",o:["1/(1+x²)","a/(1+ax²)","−1/(1+x²)","x/(1+x²)"],a:2},
+{s:2,q:"f(x) = [x]+[−x] for x ≠ 2, and K for x = 2. f is continuous at x = 2 when K is:",o:["2","1","−1","0"],a:2},
+{s:2,q:"The curve x² − xy + y² = 27 has tangents parallel to X-axis at:",o:["(−3,−6) and (3,−6)","(3,6) and (−3,−6)","(−3,6) and (−3,−6)","(3,−6) and (−3,6)"],a:1},
+{s:2,q:"The point on the circle x² + y² = 2 where abscissa and ordinate increase at the same rate is:",o:["(−1,−1)","(1,−1)","(1,1)","(−1,4)"],a:1},
+{s:2,q:"A spherical balloon is inflated at 35 cm³/min. When radius is 7 cm, its surface area increases at:",o:["10 cm²/min","15 cm²/min","20 cm²/min","25 cm²/min"],a:0},
+{s:2,q:"∫eˣ(cos x − sin x) dx is equal to:",o:["eˣ cos x + C","eˣ sin x + C","−eˣ cos x + C","−eˣ sin x + C"],a:0},
+{s:2,q:"The solution of (2x − 10y³)dy/dx + y = 0 is:",o:["xy² = 2y⁵ + C","yx² = 2y⁵ + C","x²y² = 2y⁵ + C","None of these"],a:0},
+{s:2,q:"The solution of (x+y)²(x·dy/dx + y) = xy(1 + dy/dx) is:",o:["log(xy) = −1/(x+y) + C","log(x/y) = −1/(x+y) + C","log(xy) = 1/(x−y) + C","None of the above"],a:0},
+{s:2,q:"sin θ, where θ is the angle between 3î+ĵ+2k̂ and î+ĵ+2k̂, is:",o:["√(5/21)","5/√21","4/√21","√(3/21)"],a:0},
+{s:2,q:"If a and b are two vectors of magnitude 2, inclined at 60°, the angle between a and (a+b) is:",o:["30°","45°","60°","90°"],a:0},
+{s:2,q:"If [−2 5; 3 −1][x; y] = [1 2; 3 4][3; −1], then (x, y) is:",o:["(1,2)","(−1,2)","(1,−2)","(2,1)"],a:3},
+{s:2,q:"Matrix B = [2 6 4; 1 0 1; −1 1 −1], with inverse of BA being C = [−1 0 1; 1 1 3; 2 0 2]. Then A⁻¹ equals the matrix with first row [−3, −5, 5] and entries...",o:["[−3,−5,5; 0,9,14; 2,2,9]","[−3,5,5; 0,0,9; 2,14,16]","[−3,−5,−5; 0,0,2; 2,14,6]","[−3,5,5; 0,9,2; 2,14,6]"],a:3},
+{s:2,q:"If AB = B, BA = A, then A² + B² =",o:["2AB","2BA","A + B","AB"],a:2},
+{s:2,q:"If α, β, γ are roots of x³ + a²x + b = 0, the value of |α β γ; β γ α; γ α β| is:",o:["−a³","a³ − 3b","a³","0"],a:3},
+{s:2,q:"The value of |4 4 4; (a+a⁻¹)² (b+b⁻¹)² (c+c⁻¹)²; (a−a⁻¹)² (b−b⁻¹)² (c−c⁻¹)²| is:",o:["0","4abc","4(abc)⁻¹","4[abc+(abc)⁻¹]"],a:0},
+{s:2,q:"Given P(A)=0.1, P(B|A)=0.6, P(B|Aᶜ)=0.3, then P(A|B) =",o:["2/11","4/11","7/11","9/11"],a:0},
+{s:2,q:"A card is picked from a pack. Given it's a queen, probability it's a spade is:",o:["1/3","4/13","1/4","1/2"],a:2},
+{s:2,q:"If occurrence of event A implies occurrence of event B, then P(Aᶜ ∩ Bᶜ) equals:",o:["P(Bᶜ)","P(Aᶜ)P(Bᶜ)","P(Aᶜ)","1 − P(A ∩ B)"],a:0},
+{s:2,q:"Items from factories F₁(30%), F₂(20%), F₃(50%). Defect rates: F₁=2%, F₂=3%, F₃=4%. Given defective item, P(from F₁) is:",o:["1/16","1/8","1/3","3/16"],a:3},
+{s:2,q:"Ram scored 60 and 85 in first two tests. Minimum marks in third test for average ≥ 55 is:",o:["x ≥ 20","x ≤ 20","x > 20","x < 20"],a:0},
+{s:2,q:"Coefficients of variation of two distributions are 60 and 70 with SD 21 and 16. Their arithmetic means are:",o:["35, 20","35, 22.85","30, 22.85","30, 20"],a:1},
+{s:2,q:"Box has 10 tickets numbered 1–10. Two are drawn at random. Probability both have even numbers is:",o:["4/9","1/3","2/9","1/9"],a:2},
+{s:2,q:"Which of the following is NOT a logical statement?",o:["Two non-empty sets have always a non-empty intersection.","The real number 'n' is less than 2.","Two individuals are always related.","None of the above"],a:3},
+{s:2,q:"The mathematical model 'maximise lb subject to 2(l+b)=10, l,b>0' is not a linear programming problem because:",o:["l and b are always positive.","First constraint is an equation.","The objective function is not maximise.","Objective function is not linear."],a:3},
+{s:2,q:"Laksmi buys x bangles (≥6) at ₹5 each and y ear drops (≤2) at ₹10 each with minimum expenditure. The LP formulation is:",o:["Maximize 5x+10y s.t. x≥6, y≤2, x,y≥0","Minimise 5x+10y s.t. x≥6, y≤2, x,y≥0","Maximise x+y s.t. 5x+10y≤50, x,y≥0","Maximise 6x+2y s.t. 5x+10y≤50, x,y≥0"],a:1},
+{s:2,q:"The function f(x) = log(x + √(x²+1)) is:",o:["An even function","An odd function","A periodic function","Neither even nor odd"],a:1},
+{s:2,q:"The number of real roots of the equation x⁴ + √(x⁴+20) = 22 is:",o:["4","2","0","1"],a:1},
+{s:2,q:"Sum of first n natural numbers is (1/78) times the sum of their cubes. Value of n is:",o:["11","12","13","14"],a:1},
+{s:2,q:"If a polygon of n sides has 275 diagonals, then n is equal to:",o:["25","35","20","15"],a:0},
+{s:2,q:"7⁹ + 9⁷ is divisible by:",o:["128","24","64","72"],a:2},
+{s:2,q:"|1 1 1; a b c; a²−bc b²−ca c²−ab| is equal to:",o:["0","1","abc","(a−b)(b−c)(c−a)"],a:0},
+{s:2,q:"Number of values of x in [0,2π] satisfying 3cos2x − 10cosx + 7 = 0 is:",o:["1","2","3","4"],a:3},
+{s:2,q:"lim(x→−∞) (2x−1)/√(x²+2x+1) is equal to:",o:["2","−2","1","−1"],a:1}
+];
+
+// ── STATE ───────────────────────────────────────────────────────────────────
+let cur=0, answered=new Array(180).fill(-1), marked=new Array(180).fill(false), submitted=false;
+let timerSec=10800, timerInt;
+const SECTIONS=['Physics','Chemistry','Mathematics'];
+const TAGS=['tag-physics','tag-chemistry','tag-maths'];
+
+// ── TIMER ───────────────────────────────────────────────────────────────────
+function startTimer(){
+  timerInt=setInterval(()=>{
+    timerSec--;
+    let h=Math.floor(timerSec/3600),m=Math.floor((timerSec%3600)/60),s=timerSec%60;
+    document.getElementById('timer').textContent=`${pad(h)}:${pad(m)}:${pad(s)}`;
+    if(timerSec<=300)document.getElementById('timer').classList.add('warn');
+    if(timerSec<=0){clearInterval(timerInt);submitTest();}
+  },1000);
+}
+function pad(n){return String(n).padStart(2,'0');}
+
+// ── RENDER ──────────────────────────────────────────────────────────────────
+function render(){
+  const q=Q[cur];
+  document.getElementById('qnum').textContent=`Q ${cur+1} / 180`;
+  const tag=document.getElementById('qtag');
+  tag.className='q-section-tag '+TAGS[q.s];
+  tag.textContent=SECTIONS[q.s];
+  document.getElementById('qtext').innerHTML=q.q.replace(/\n/g,'<br>');
+  const opts=document.getElementById('opts');
+  opts.innerHTML='';
+  const labels=['A','B','C','D'];
+  q.o.forEach((opt,i)=>{
+    const div=document.createElement('div');
+    div.className='opt'+(answered[cur]===i?' selected':'')+(submitted?' disabled':'');
+    if(submitted){
+      if(q.a>=0){
+        if(i===q.a)div.className='opt correct disabled';
+        else if(i===answered[cur]&&answered[cur]!==q.a)div.className='opt wrong disabled';
+      }
+    }
+    div.innerHTML=`<span class="opt-label">${labels[i]}</span><span class="opt-text">${opt}</span>`;
+    if(!submitted)div.onclick=()=>selectOpt(i);
+    opts.appendChild(div);
+  });
+  updatePalette();
+  updateStats();
+  updateSectionBtns();
+}
+
+function selectOpt(i){
+  if(submitted)return;
+  answered[cur]=answered[cur]===i?-1:i;
+  render();
+}
+
+function prevQ(){if(cur>0){cur--;render();}}
+function nextQ(){if(cur<179){cur++;render();}}
+
+function toggleMark(){
+  marked[cur]=!marked[cur];
+  nextQ();
+}
+
+function jumpQ(i){cur=i;render();}
+
+function jumpSection(s){
+  const starts=[0,60,120];
+  cur=starts[s];render();
+}
+
+function updateSectionBtns(){
+  document.querySelectorAll('.sec-btn').forEach((b,i)=>{
+    const starts=[0,60,120],ends=[59,119,179];
+    b.classList.toggle('active',cur>=starts[i]&&cur<=ends[i]);
+  });
+}
+
+// ── PALETTE ─────────────────────────────────────────────────────────────────
+function buildPalette(){
+  const pal=document.getElementById('palette');
+  pal.innerHTML='';
+  SECTIONS.forEach((sec,si)=>{
+    const start=si*60,end=start+60;
+    const wrap=document.createElement('div');wrap.className='palette-section';
+    const lbl=document.createElement('div');lbl.className='palette-sec-label';lbl.textContent=sec;
+    wrap.appendChild(lbl);
+    const grid=document.createElement('div');grid.className='palette-grid';
+    for(let i=start;i<end;i++){
+      const btn=document.createElement('button');
+      btn.className='pq';btn.textContent=i+1;
+      btn.onclick=()=>jumpQ(i);
+      grid.appendChild(btn);
+    }
+    wrap.appendChild(grid);pal.appendChild(wrap);
+  });
+}
+
+function updatePalette(){
+  const btns=document.querySelectorAll('.pq');
+  btns.forEach((btn,i)=>{
+    btn.className='pq';
+    if(i===cur)btn.classList.add('current');
+    if(answered[i]>=0&&marked[i])btn.classList.add('marked','answered');
+    else if(answered[i]>=0)btn.classList.add('answered');
+    else if(marked[i])btn.classList.add('marked');
+  });
+}
+
+function updateStats(){
+  const ans=answered.filter(a=>a>=0).length;
+  const mrk=marked.filter(Boolean).length;
+  document.getElementById('s-ans').textContent=ans;
+  document.getElementById('s-unans').textContent=180-ans;
+  document.getElementById('s-mark').textContent=mrk;
+}
+
+// ── SUBMIT ──────────────────────────────────────────────────────────────────
+function openReview(){
+  const ans=answered.filter(a=>a>=0).length;
+  const mrk=marked.filter(Boolean).length;
+  document.getElementById('rv-ans').textContent=ans;
+  document.getElementById('rv-unans').textContent=180-ans;
+  document.getElementById('rv-mark').textContent=mrk;
+  document.getElementById('review-panel').classList.add('show');
+}
+function closeReview(){document.getElementById('review-panel').classList.remove('show');}
+
+function submitTest(){
+  clearInterval(timerInt);
+  submitted=true;
+  document.getElementById('review-panel').classList.remove('show');
+  // Calculate scores
+  const sec={0:{c:0,w:0,s:0},1:{c:0,w:0,s:0},2:{c:0,w:0,s:0}};
+  Q.forEach((q,i)=>{
+    const si=q.s;
+    if(answered[i]<0)sec[si].s++;
+    else if(q.a<0){}// no answer key - treat as skipped
+    else if(answered[i]===q.a)sec[si].c++;
+    else sec[si].w++;
+  });
+  let totalC=sec[0].c+sec[1].c+sec[2].c;
+  let totalW=sec[0].w+sec[1].w+sec[2].w;
+  let totalS=sec[0].s+sec[1].s+sec[2].s;
+  let score=totalC; // 1 per correct, no negative
+  document.getElementById('r-score').textContent=score;
+  document.getElementById('r-correct').textContent=totalC;
+  document.getElementById('r-wrong').textContent=totalW;
+  document.getElementById('r-skip').textContent=totalS;
+  const colors=['#a78bfa','#38bdf8','#fb923c'];
+  const secHTML=SECTIONS.map((name,si)=>{
+    const pct=Math.round(sec[si].c/60*100);
+    return`<div class="sec-score-card">
+      <div class="sec-score-name" style="color:${colors[si]}">${name}</div>
+      <div class="sec-score-val" style="color:${colors[si]}">${sec[si].c}/60</div>
+      <div class="sec-score-detail">${sec[si].w} wrong · ${sec[si].s} skipped</div>
+      <div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${colors[si]}" id="bar-${si}"></div></div>
+      <div style="font-size:.7rem;color:var(--muted)">${pct}% accuracy</div>
+    </div>`;
+  }).join('');
+  document.getElementById('sec-scores').innerHTML=secHTML;
+  document.getElementById('results').style.display='block';
+  // animate bars
+  setTimeout(()=>{
+    SECTIONS.forEach((_,si)=>{
+      const el=document.getElementById('bar-'+si);
+      if(el)el.style.width=Math.round(sec[si].c/60*100)+'%';
+    });
+  },100);
+}
+
+function reviewAnswers(){
+  document.getElementById('results').style.display='none';
+  cur=0;render();
+}
+
+// ── INIT ────────────────────────────────────────────────────────────────────
+buildPalette();
+render();
+startTimer();
+</script>
+</body>
+</html>

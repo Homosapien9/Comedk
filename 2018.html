@@ -1,0 +1,1930 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>COMEDK 2018 - CBT Mock Test</title>
+    <style>
+        :root {
+            --bg: #f0f2f5;
+            --card-bg: #fff;
+            --primary: #1a73e8;
+            --primary-dark: #1557b0;
+            --success: #0d904f;
+            --danger: #d93025;
+            --warning: #e6a817;
+            --text: #202124;
+            --text-light: #5f6368;
+            --border: #dadce0;
+            --shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            --radius: 12px;
+            --transition: 0.2s ease;
+            --physics: #4285f4;
+            --chemistry: #ea4335;
+            --math: #34a853;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+        .app-header {
+            background: #fff;
+            border-bottom: 1px solid var(--border);
+            padding: 10px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+        .app-header .logo {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--primary);
+            white-space: nowrap;
+        }
+        .app-header .logo span {
+            color: var(--text-light);
+            font-weight: 400;
+            font-size: 0.85rem;
+        }
+        .timer-box {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #f8f9fa;
+            padding: 8px 16px;
+            border-radius: 24px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            border: 2px solid var(--border);
+            transition: var(--transition);
+        }
+        .timer-box.warning {
+            border-color: var(--warning);
+            color: #b06000;
+            animation: pulse 1s infinite;
+        }
+        .timer-box.danger {
+            border-color: var(--danger);
+            color: var(--danger);
+            animation: pulse 0.5s infinite;
+        }
+        @keyframes pulse {
+            0%,
+            100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.6;
+            }
+        }
+        .main-container {
+            display: flex;
+            max-width: 1400px;
+            margin: 0 auto;
+            min-height: calc(100vh - 130px);
+        }
+        .sidebar {
+            width: 280px;
+            background: #fff;
+            border-right: 1px solid var(--border);
+            padding: 16px;
+            overflow-y: auto;
+            max-height: calc(100vh - 130px);
+            position: sticky;
+            top: 70px;
+            flex-shrink: 0;
+        }
+        .sidebar h3 {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-light);
+            margin: 16px 0 8px;
+            padding-bottom: 4px;
+            border-bottom: 2px solid var(--border);
+        }
+        .sidebar h3:first-child {
+            margin-top: 0;
+        }
+        .qn-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+        .qn-dot {
+            width: 30px;
+            height: 30px;
+            border-radius: 6px;
+            border: 1.5px solid #ccc;
+            background: #fafafa;
+            font-size: 0.7rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            color: #555;
+        }
+        .qn-dot:hover {
+            border-color: var(--primary);
+            background: #e8f0fe;
+            transform: scale(1.08);
+        }
+        .qn-dot.active {
+            border-color: var(--primary);
+            background: var(--primary);
+            color: #fff;
+            box-shadow: 0 2px 6px rgba(26, 115, 232, 0.35);
+        }
+        .qn-dot.answered {
+            background: #e6f4ea;
+            border-color: var(--success);
+            color: var(--success);
+        }
+        .qn-dot.review-marked {
+            background: #fef7e0;
+            border-color: var(--warning);
+            color: #b06000;
+        }
+        .content-area {
+            flex: 1;
+            padding: 20px 28px;
+            overflow-y: auto;
+            max-height: calc(100vh - 130px);
+        }
+        .section-tabs {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 20px;
+            background: #fff;
+            border-radius: 28px;
+            padding: 4px;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        .section-tab {
+            flex: 1;
+            padding: 10px 18px;
+            border: none;
+            background: transparent;
+            border-radius: 24px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: var(--transition);
+            color: var(--text-light);
+            white-space: nowrap;
+        }
+        .section-tab.active {
+            background: var(--primary);
+            color: #fff;
+            box-shadow: 0 2px 8px rgba(26, 115, 232, 0.3);
+        }
+        .section-tab:hover:not(.active) {
+            background: #e8f0fe;
+            color: var(--primary);
+        }
+        .question-card {
+            background: #fff;
+            border-radius: var(--radius);
+            padding: 24px 28px;
+            margin-bottom: 16px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            transition: var(--transition);
+            position: relative;
+        }
+        .question-card.reviewed-correct {
+            border-left: 4px solid var(--success);
+            background: #f6fdf8;
+        }
+        .question-card.reviewed-incorrect {
+            border-left: 4px solid var(--danger);
+            background: #fef7f7;
+        }
+        .question-card .q-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+        .q-num {
+            background: var(--primary);
+            color: #fff;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+        .q-num.physics {
+            background: var(--physics);
+        }
+        .q-num.chemistry {
+            background: var(--chemistry);
+        }
+        .q-num.math {
+            background: var(--math);
+        }
+        .q-text {
+            font-size: 1rem;
+            font-weight: 500;
+            flex: 1;
+        }
+        .q-text .math {
+            font-family: 'Cambria Math', 'Times New Roman', serif;
+            font-style: italic;
+        }
+        .options-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        .option-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 14px;
+            border-radius: 8px;
+            border: 1.5px solid var(--border);
+            cursor: pointer;
+            transition: var(--transition);
+            background: #fafbfc;
+            font-size: 0.95rem;
+        }
+        .option-item:hover {
+            border-color: var(--primary);
+            background: #e8f0fe;
+        }
+        .option-item.selected {
+            border-color: var(--primary);
+            background: #d2e3fc;
+            font-weight: 600;
+        }
+        .option-item.correct-answer {
+            border-color: var(--success) !important;
+            background: #e6f4ea !important;
+            font-weight: 600;
+        }
+        .option-item.wrong-answer {
+            border-color: var(--danger) !important;
+            background: #fce8e6 !important;
+            font-weight: 600;
+        }
+        .option-radio {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            border: 2px solid #999;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+        .option-item.selected .option-radio {
+            border-color: var(--primary);
+            background: var(--primary);
+        }
+        .option-item.selected .option-radio::after {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: #fff;
+            border-radius: 50%;
+        }
+        .option-label {
+            font-weight: 600;
+            color: var(--text-light);
+            width: 22px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+        .svg-container {
+            text-align: center;
+            margin: 12px 0;
+        }
+        .svg-container svg {
+            max-width: 100%;
+            height: auto;
+        }
+        .feedback-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+        .feedback-badge.correct {
+            background: #e6f4ea;
+            color: var(--success);
+        }
+        .feedback-badge.incorrect {
+            background: #fce8e6;
+            color: var(--danger);
+        }
+        .btn-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 16px;
+            justify-content: center;
+        }
+        .btn {
+            padding: 10px 20px;
+            border-radius: 24px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-primary {
+            background: var(--primary);
+            color: #fff;
+        }
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            box-shadow: 0 4px 12px rgba(26, 115, 232, 0.3);
+        }
+        .btn-outline {
+            background: #fff;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+        .btn-outline:hover {
+            background: #e8f0fe;
+        }
+        .btn-danger {
+            background: var(--danger);
+            color: #fff;
+        }
+        .btn-danger:hover {
+            background: #b3261e;
+        }
+        .btn-success {
+            background: var(--success);
+            color: #fff;
+        }
+        .btn-success:hover {
+            background: #0b7a3e;
+        }
+        .btn-warning {
+            background: #fff;
+            border: 2px solid var(--warning);
+            color: #b06000;
+        }
+        .btn-warning:hover {
+            background: #fef7e0;
+        }
+        .result-panel {
+            background: #fff;
+            border-radius: var(--radius);
+            padding: 28px;
+            box-shadow: var(--shadow);
+            text-align: center;
+            margin-bottom: 20px;
+            border: 2px solid var(--primary);
+        }
+        .result-panel h2 {
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+        }
+        .score-circle {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: #e8f0fe;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 12px auto;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+            border: 4px solid var(--primary);
+        }
+        .section-score {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 16px;
+            margin: 4px;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+        .section-score.physics {
+            background: #e8f0fe;
+            color: var(--physics);
+        }
+        .section-score.chemistry {
+            background: #fce8e6;
+            color: var(--chemistry);
+        }
+        .section-score.math {
+            background: #e6f4ea;
+            color: var(--math);
+        }
+        .legend {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            font-size: 0.78rem;
+            padding: 8px 0;
+        }
+        .legend span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .legend-dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 3px;
+            display: inline-block;
+        }
+        @media (max-width: 900px) {
+            .main-container {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+                max-height: none;
+                position: static;
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+                display: flex;
+                flex-wrap: wrap;
+                gap: 8px;
+                padding: 12px;
+            }
+            .sidebar h3 {
+                width: 100%;
+                margin: 4px 0;
+            }
+            .qn-dot {
+                width: 26px;
+                height: 26px;
+                font-size: 0.65rem;
+            }
+            .content-area {
+                padding: 12px;
+                max-height: none;
+            }
+            .section-tabs {
+                flex-wrap: wrap;
+            }
+            .section-tab {
+                font-size: 0.75rem;
+                padding: 8px 12px;
+            }
+        }
+        .review-toggle {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            user-select: none;
+        }
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 200;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal {
+            background: #fff;
+            border-radius: var(--radius);
+            padding: 28px;
+            max-width: 420px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+        }
+        .modal h3 {
+            margin-bottom: 12px;
+        }
+        .modal .btn-row {
+            justify-content: center;
+        }
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="app-header">
+        <div class="logo">📝 COMEDK 2018 <span>| Computer Based Test</span></div>
+        <div class="timer-box" id="timerBox">⏱ <span id="timerDisplay">03:00:00</span></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <button class="btn btn-outline btn-sm" onclick="markForReview()" id="reviewBtn" style="font-size:0.8rem;padding:6px 14px;">📌 Mark for Review</button>
+            <button class="btn btn-danger btn-sm" onclick="submitTest()" id="submitBtn" style="font-size:0.8rem;padding:6px 14px;">✅ Submit Test</button>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar" id="sidebar">
+            <div class="legend">
+                <span><span class="legend-dot" style="background:#fafafa;border:1.5px solid #ccc;"></span> Not Visited</span>
+                <span><span class="legend-dot" style="background:#e6f4ea;border:1.5px solid #0d904f;"></span> Answered</span>
+                <span><span class="legend-dot" style="background:#fef7e0;border:1.5px solid #e6a817;"></span> Review</span>
+                <span><span class="legend-dot" style="background:#4285f4;"></span> Current</span>
+            </div>
+            <h3>🔵 Physics (1-60)</h3>
+            <div class="qn-grid" id="physicsGrid"></div>
+            <h3>🔴 Chemistry (61-120)</h3>
+            <div class="qn-grid" id="chemistryGrid"></div>
+            <h3>🟢 Mathematics (121-180)</h3>
+            <div class="qn-grid" id="mathGrid"></div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="content-area" id="contentArea">
+            <!-- Section Tabs -->
+            <div class="section-tabs">
+                <button class="section-tab active" onclick="switchSection('physics')" id="tabPhysics">🔵 Physics (Q1-60)</button>
+                <button class="section-tab" onclick="switchSection('chemistry')" id="tabChemistry">🔴 Chemistry (Q61-120)</button>
+                <button class="section-tab" onclick="switchSection('math')" id="tabMath">🟢 Mathematics (Q121-180)</button>
+            </div>
+            <!-- Question display area -->
+            <div id="questionDisplay"></div>
+            <!-- Navigation buttons -->
+            <div class="btn-row" id="navButtons">
+                <button class="btn btn-outline" onclick="prevQuestion()" id="prevBtn">⬅ Previous</button>
+                <button class="btn btn-outline" onclick="nextQuestion()" id="nextBtn">Next ➡</button>
+            </div>
+            <!-- Result Panel (hidden initially) -->
+            <div id="resultPanel" class="result-panel hidden"></div>
+        </main>
+    </div>
+
+    <!-- Submit Confirmation Modal -->
+    <div class="modal-overlay hidden" id="submitModal">
+        <div class="modal">
+            <h3>⚠️ Submit Test?</h3>
+            <p>You have <strong id="unansweredCount">0</strong> unanswered questions.</p>
+            <p>Once submitted, you cannot change your answers.</p>
+            <div class="btn-row">
+                <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
+                <button class="btn btn-danger" onclick="confirmSubmit()">Submit Now</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==================== QUESTION BANK ====================
+        // All 180 questions with their data
+        const questionBank = [];
+
+        // Helper to add questions
+        function addQ(qnum, section, text, options, correctAnswer, hasSvg = false, svgId = '') {
+            questionBank.push({
+                qnum,
+                section,
+                text,
+                options,
+                correctAnswer: correctAnswer.toLowerCase(),
+                hasSvg,
+                svgId,
+                userAnswer: null,
+                markedForReview: false
+            });
+        }
+
+        // ============ PHYSICS (1-60) ============
+        addQ(1, 'physics',
+            'A ray of light enters from a rarer to a denser medium. The angle of incidence is <i>i</i>. Then, the reflected and refracted rays are mutually perpendicular to each other. The critical angle for the pair of media is',
+            ['sin<sup>-1</sup>(tan θ)', 'tan<sup>-1</sup>(sin θ)', 'sin<sup>-1</sup>(cot θ)', 'cos<sup>-1</sup>(tan θ)'],
+            'c');
+        addQ(2, 'physics',
+            'A fish in water (refractive index <i>n</i>) looks at a bird vertically above in the air. If <i>y</i> is the height of the bird and <i>x</i> is the depth of the fish from the surface, then the distance of the bird as estimated by the fish is',
+            ['x + y(1 − 1/n)', 'x + ny', 'x + y(1 + 1/n)', 'y + x(1 − 1/n)'],
+            'b');
+        addQ(3, 'physics',
+            'Figure shows a mixture of blue, green and red coloured rays incident normally on a right angled prism. The critical angles of the material of the prism for red, green and blue are 46°, 44° and 43° respectively. The arrangement will separate',
+            ['red colour from blue and green', 'blue colour from red and green', 'green colour from red and blue',
+                'All the three colours'
+            ],
+            'a', true, 'svg-q3');
+        addQ(4, 'physics',
+            'A convex and a concave lens separated by distance <i>d</i> are then put in contact. The focal length of the combination',
+            ['decreases', 'increases', 'becomes zero', 'remains the same'],
+            'a');
+        addQ(5, 'physics',
+            'A convex lens is made of 3 layers of glass of 3 different materials as in the figure. A point object is placed on its axis. The number of images of the object are',
+            ['1', '2', '3', '4'],
+            'a', true, 'svg-q5');
+        addQ(6, 'physics',
+            'If μ₀ is permeability of free space and ε₀ is permittivity of free space, then the speed of light in vacuum is given by',
+            ['√(μ₀ε₀)', '√(μ₀/ε₀)', '√(1/(μ₀ε₀))', '√(ε₀/μ₀)'],
+            'c');
+        addQ(7, 'physics',
+            'In Young\'s double slit experiment, a third slit is made in between the double slits. Then,',
+            ['intensity of fringes totally disappears', 'only bright light is observed on the screen',
+                'fringes of unequal width are formed', 'contrast between bright and dark fringes is reduced'
+            ],
+            'd');
+        addQ(8, 'physics',
+            'The maximum number of possible interference maxima when slit separation is equal to 4 times the wavelength of light used in a double slit experiment is',
+            ['∞', '9', '8', '4'],
+            'a'); // Answer key says (a) but note says none correct
+        addQ(9, 'physics',
+            'In a Fraunhofer diffraction experiment at a single slit using a light of wavelength 400 nm the first minimum is formed at an angle of 30°. The direction θ of the first secondary maximum is given by',
+            ['sin<sup>-1</sup>(2/3)', 'sin<sup>-1</sup>(3/4)', 'sin<sup>-1</sup>(1/4)', 'tan<sup>-1</sup>(2/3)'],
+            'c');
+        addQ(10, 'physics',
+            'Maximum diffraction takes place in a given slit for',
+            ['γ-rays', 'ultraviolet light', 'infrared light', 'radio waves'],
+            'd');
+        addQ(11, 'physics',
+            'An unpolarised beam of intensity I₀ falls on a polaroid. The intensity of the emergent light is',
+            ['I₀/2', 'I₀', 'I₀/4', 'Zero'],
+            'a');
+        addQ(12, 'physics',
+            'Which of the following is a dichroic crystal?',
+            ['Quartz', 'Tourmaline', 'Mica', 'Selenite'],
+            'b');
+        addQ(13, 'physics',
+            'Two identical metal spheres charged with +12μF and −8μF are kept at certain distance in air. They are brought into contact and then kept at the same distance. The ratio of the magnitudes of electrostatic forces between them before and after contact is',
+            ['12:1', '8:1', '24:1', '4:1'],
+            'c');
+        addQ(14, 'physics',
+            'A small conducting sphere of radius <i>r</i> is lying concentrically inside a bigger hollow conducting sphere of radius <i>R</i>. The bigger and smaller spheres are charged with <i>Q</i> and <i>q</i> (Q > q) and are insulated from each other. The potential difference between the spheres will be',
+            ['(1/4πε₀)(q/r − q/R)', '(1/4πε₀)(q/R − Q/r)', '(1/4πε₀)(q/r − Q/R)', '(1/4πε₀)(Q/R + q/r)'],
+            'a');
+        addQ(15, 'physics',
+            'The charges Q, +q and +q are placed at the vertices of an equilateral triangle of side <i>l</i>. If the net electrostatic potential energy of the system is zero, then Q is equal to',
+            ['−q/2', '−q', '+q/2', 'Zero'],
+            'a');
+        addQ(16, 'physics',
+            'How many 6μF 200V condensers are needed to make a condenser of 18μF 600V?',
+            ['9', '18', '3', '27'],
+            'd');
+        addQ(17, 'physics',
+            'The total energy stored in the condenser system shown in the figure will be',
+            ['2μJ', '4μJ', '8μJ', '16μJ'],
+            'c', true, 'svg-q17');
+        addQ(18, 'physics',
+            'A metal wire is subjected to a constant potential difference. When the temperature of the metal wire increases, the drift velocity of the electron in it',
+            ['increases, thermal velocity of the electron decreases',
+                'decreases, thermal velocity of the electron decreases',
+                'increases, thermal velocity of the electron increases',
+                'decreases, thermal velocity of the electron increases'
+            ],
+            'd');
+        addQ(19, 'physics',
+            'The equivalent resistance between the points A and B will be (each resistance is 15Ω)',
+            ['30Ω', '8Ω', '10Ω', '40Ω'],
+            'b', true, 'svg-q19');
+        addQ(20, 'physics',
+            'The terminals of a 18V battery with an internal resistance of 1.5Ω are connected to a circular wire of resistance 24Ω at two points distant at one quarter of the circumference of a circular wire. The current through the bigger arc of the circle will be',
+            ['0.75A', '1.5A', '2.25A', '3A'],
+            'a');
+        addQ(21, 'physics',
+            'The potential difference between A and B in the following figure is',
+            ['32V', '48V', '24V', '14V'],
+            'b', true, 'svg-q21');
+        addQ(22, 'physics',
+            'The magnetic field at the centre of a circular current carrying conductor of radius <i>r</i> is B<sub>c</sub>. The magnetic field on its axis at a distance <i>r</i> from the centre is B<sub>a</sub>. The value of B<sub>c</sub> : B<sub>a</sub> will be',
+            ['1:√2', '1:2√2', '2√2:1', '√2:1'],
+            'c');
+        addQ(23, 'physics',
+            'Current I is flowing in a conductor shaped as shown in the figure. The radius of the curved part is <i>r</i> and the length of straight portion is very large. The value of the magnetic field at the centre O will be',
+            ['(μ₀I/4πr)(3π/2 + 1)', '(μ₀I/4πr)((3π−1)/2)', '(μ₀I/4πr)(π/2 + 1)', '(μ₀I/4πr)(π/−1)'],
+            'a', true, 'svg-q23');
+        addQ(24, 'physics',
+            'Two tangent galvanometers A and B are identical except in their number of turns. They are connected in series. On passing a current through them, deflections of 60° and 30° are produced. The ratio of the number of turns in A and B is',
+            ['1:3', '3:1', '1:2', '2:1'],
+            'b');
+        addQ(25, 'physics',
+            'The resultant force on the current loop PQRS due to a long current carrying conductor will be',
+            ['10<sup>-4</sup>N', '3.6×10<sup>-4</sup>N', '1.8×10<sup>-4</sup>N', '5×10<sup>-4</sup>N'],
+            'd', true, 'svg-q25');
+        addQ(26, 'physics',
+            'A certain current on passing through a galvanometer produces a deflection of 100 divisions. When a shunt of one ohm is connected, then the deflection reduces to 1 division. The galvanometer resistance is',
+            ['100Ω', '99Ω', '10Ω', '99Ω'],
+            'b');
+        addQ(27, 'physics',
+            'Two similar circular loops carry equal currents in the same direction. On moving the coils further apart, the electric current will',
+            ['increase in both', 'decrease in both', 'remain unaltered',
+                'increases in one and decreases in the second'
+            ],
+            'a');
+        addQ(28, 'physics',
+            'The value of alternating emf E in the given circuit will be',
+            ['220V', '140V', '100V', '20V'],
+            'c', true, 'svg-q28');
+        addQ(29, 'physics',
+            'A current of 5A is flowing at 220V in the primary coil of a transformer. If the voltage produced in the secondary coil is 2200V and 50% of power is lost, then the current in the secondary will be',
+            ['2.5A', '5A', '0.25A', '0.5A'],
+            'c');
+        addQ(30, 'physics',
+            'For a series L−C−R circuit at resonance, the statement which is not true?',
+            ['Peak energy stored by a capacitor = peak energy stored by an inductor',
+                'Average power = Apparent power', 'Wattless current is zero.', 'Power factor is zero.'
+            ],
+            'd');
+        addQ(31, 'physics',
+            'Solar spectrum is an example for',
+            ['line emission spectrum', 'continuous emission spectrum', 'band absorption spectrum', 'line absorption spectrum'],
+            'd');
+        addQ(32, 'physics',
+            'When a piece of metal is illuminated by a monochromatic light of wavelength λ then stopping potential is 3V<sub>s</sub>. When same surface is illuminated by light of wavelength 2λ then stopping potential becomes V<sub>s</sub>. The value of threshold wavelength for photoelectric emission will be',
+            ['4λ', '8λ', '4/3λ', '6λ'],
+            'a');
+        addQ(33, 'physics',
+            'The maximum kinetic energy of emitted electrons in a photoelectric effect does not depend upon',
+            ['wavelength', 'frequency', 'intensity', 'work-function'],
+            'c');
+        addQ(34, 'physics',
+            'The ratio of minimum wavelength of Lyman and Balmer series will be',
+            ['1.25', '0.25', '5', '10'],
+            'b');
+        addQ(35, 'physics',
+            'Hydrogen atom does not emit X-rays because',
+            ['it contains only a single electron', 'energy levels in it are far apart', 'its size is very small',
+                'energy levels in it are very close to each other'
+            ],
+            'd');
+        addQ(36, 'physics',
+            'If an electron and a proton have the same de-Broglie wavelength, then the kinetic energy of the electron is',
+            ['Zero', 'less than that of a proton', 'more than that of a proton', 'equal to that of a proton'],
+            'c');
+        addQ(37, 'physics',
+            'Two protons are kept at a separation of 40Å. F<sub>n</sub> is the nuclear force and F<sub>e</sub> is the electrostatic force between them. Then,',
+            ['F<sub>n</sub> >> F<sub>e</sub>', 'F<sub>n</sub> = F<sub>e</sub>', 'F<sub>n</sub> << F<sub>e</sub>', 'F<sub>n</sub> = F<sub>e</sub>'],
+            'a');
+        addQ(38, 'physics',
+            'Blue colour of sea water is due to',
+            ['interference of sunlight reflected from the water surface',
+                'scattering of sunlight by the water molecules', 'image of sky in water', 'refraction of sunlight'
+            ],
+            'b');
+        addQ(39, 'physics',
+            'The ratio of the nuclear radii of elements with mass numbers 216 and 125 is',
+            ['216:125', '√216:√125', '6:5', 'None of these'],
+            'c');
+        addQ(40, 'physics',
+            'On bombarding U²³⁵ by slow neutron, 200MeV energy is released. If the power output of atomic reactor is 1.6MW, then the rate of fission will be',
+            ['5×10²²/s', '5×10¹⁶/s', '8×10¹⁶/s', '20×10¹⁶/s'],
+            'b');
+        addQ(41, 'physics',
+            'The masses of two radioactive substances are same and their half-lives are 1 year and 2 years, respectively. The ratio of their activities after 6 years will be',
+            ['1:4', '1:2', '1:3', '1:6'],
+            'a');
+        addQ(42, 'physics',
+            'U²³⁵ undergoes successive disintegrations with the end product of Pb²⁰³. The number of α and β particles emitted are',
+            ['α=6, β=4', 'α=6, β=0', 'α=8, β=6', 'α=3, β=3'],
+            'c');
+        addQ(43, 'physics',
+            'The most stable particle in Baryon group is',
+            ['neutron', 'omega-particle', 'proton', 'lambda-particle'],
+            'a');
+        addQ(44, 'physics',
+            'In an unbiased p−n junction',
+            ['potential at p is more than that at n', 'potential at p is less than that at n',
+                'potential at p is equal to that at n', 'potential at p is +ve and that at n is −ve'
+            ],
+            'b');
+        addQ(45, 'physics',
+            'To get an output Y=1 from the circuit shown, the inputs A, B and C must be respectively',
+            ['0,1,0', '1,0,0', '1,0,1', '1,1,0'],
+            'c');
+        addQ(46, 'physics',
+            'Dimensional formula for the universal gravitational constant G is',
+            ['[M<sup>-1</sup>L<sup>2</sup>T<sup>-2</sup>]', '[M⁰L⁰T⁰]', '[M<sup>-1</sup>L<sup>3</sup>T<sup>-2</sup>]',
+                '[M<sup>-1</sup>L<sup>3</sup>T<sup>-1</sup>]'
+            ],
+            'c');
+        addQ(47, 'physics',
+            'A body is projected vertically upwards. The times corresponding to height <i>h</i>, while ascending and descending are t₁ and t₂ respectively. Then, the velocity of projection is (g is acceleration due to gravity)',
+            ['g√(t₁t₂)', 'g t₁t₂/(t₁+t₂)', 'g√(t₁t₂)/2', 'g(t₁+t₂)/2'],
+            'd');
+        addQ(48, 'physics',
+            'A mass of 10kg is suspended from a spring balance. It is pulled aside by a horizontal string, so that it makes an angle of 60° with the vertical. The new reading of the balance is',
+            ['20 kg-wt', '10 kg-wt', '10√3 kg-wt', '20√3 kg-wt'],
+            'a');
+        addQ(49, 'physics',
+            'A body weighs 50g in air and 40g in water. How much would it weigh in a liquid of specific gravity 1.5?',
+            ['30g', '35g', '65g', '45g'],
+            'b');
+        addQ(50, 'physics',
+            'A body of mass 4kg is accelerated upon by a constant force, travels a distance of 5m in the 1st second and a distance of 2m in the 3rd second. The force acting on the body is',
+            ['2N', '4N', '6N', '8N'],
+            'c');
+        addQ(51, 'physics',
+            'A simple pendulum is suspended from the ceiling of a lift. When the lift is at rest its time period is T. With what acceleration should the lift be accelerated upwards in order to reduce its period to T/2? (g is acceleration due to gravity)',
+            ['2g', '3g', '4g', 'g'],
+            'b');
+        addQ(52, 'physics',
+            'If γ is the ratio of specific heats and R is the universal gas constant, then the molar specific heat at constant volume C<sub>V</sub> is given by',
+            ['γR', '(γ−1)R/γ', 'R/(γ−1)', 'γR/(γ−1)'],
+            'c');
+        addQ(53, 'physics',
+            'An ideal gas is taken via path ABCA as shown in figure. The net work done in the whole cycle is',
+            ['3p₁V₁', '−3p₁V₁', '6p₁V₁', 'Zero'],
+            'b', true, 'svg-q53');
+        addQ(54, 'physics',
+            'In which of the processes, does the internal energy of the system remain constant?',
+            ['Adiabatic', 'Isochoric', 'Isobaric', 'Isothermal'],
+            'd');
+        addQ(55, 'physics',
+            'The coefficient of thermal conductivity of copper is 9 times that of steel. In the composite cylindrical bar shown in the figure, what will be the temperature at the junction of copper and steel?',
+            ['75°C', '60°C', '50°C', '25°C'],
+            'a', true, 'svg-q55');
+        addQ(56, 'physics',
+            'The equation of a simple harmonic wave is given by y = 6sin 2π(2t − 0.1x), where x and y are in mm and t is in seconds. The phase difference between two particles 2mm apart at any instant is',
+            ['18°', '36°', '54°', '72°'],
+            'd');
+        addQ(57, 'physics',
+            'With what velocity should an observer approach a stationary sound source, so that the apparent frequency of sound should appear double the actual frequency? (v is velocity of sound).',
+            ['v/2', '3v', '2v', 'v'],
+            'd');
+        addQ(58, 'physics',
+            'If a black body emits 0.5J of energy per second when it is at 27°C, then the amount of energy emitted by it when it is at 627°C will be',
+            ['40.5J', '162J', '13.5J', '135J'],
+            'a');
+        addQ(59, 'physics',
+            'A string vibrates with a frequency of 200Hz. When its length is doubled and tension is altered, it begins to vibrate with a frequency of 300Hz. The ratio of the new tension to the original tension is',
+            ['9:1', '1:9', '3:1', '1:3'],
+            'a');
+        addQ(60, 'physics',
+            'How many times more intense is a 60dB sound than a 30dB sound?',
+            ['1000', '2', '100', '4'],
+            'a');
+
+        // ============ CHEMISTRY (61-120) ============
+        addQ(61, 'chemistry',
+            'Which of the following is not an ore of magnesium?',
+            ['Carnallite', 'Dolomite', 'Calamine', 'Sea water'],
+            'c');
+        addQ(62, 'chemistry',
+            'The atomic numbers of Ni and Cu are 28 and 29 respectively. The electron configuration 1s²2s²2p⁶3s²3p⁶3d¹⁰ represents',
+            ['Cu⁺', 'Cu²⁺', 'Ni²⁺', 'Ni'],
+            'a');
+        addQ(63, 'chemistry',
+            'In the following, the element with the highest ionisation energy is',
+            ['[Ne]3s²3p¹', '[Ne]3s²3p³', '[Ne]3s²3p²', '[Ne]3s²3p⁴'],
+            'b');
+        addQ(64, 'chemistry',
+            'In the conversion of Br₂ to BrO₃⁻, the oxidation number of Br changes from',
+            ['zero to +5', '+1 to +5', 'zero to −3', '+2 to +5'],
+            'a');
+        addQ(65, 'chemistry',
+            'Among the alkali metals caesium is the most reactive because',
+            ['its incomplete shell is nearest to the nucleus', 'it has a single electron in the valence shell',
+                'it is the heaviest alkali metal',
+                'the outermost electron is more loosely bound than the outermost electron of the other alkali metals'
+            ],
+            'd');
+        addQ(66, 'chemistry',
+            'Which of the following represents the Lewis structure of N₂ molecule?',
+            ['N≡N', 'N=N', 'N−N', 'N···N'],
+            'a');
+        addQ(67, 'chemistry',
+            'Hydrogen bond is strongest in',
+            ['S−H···O', 'O−H···S', 'F−H···F', 'O−H···N'],
+            'c');
+        addQ(68, 'chemistry',
+            'The decomposition of a certain mass of CaCO₃ gave 11.2 dm³ of CO₂ gas at STP. The mass of KOH required to completely neutralise the gas is',
+            ['56g', '28g', '42g', '20g'],
+            'a');
+        addQ(69, 'chemistry',
+            'The density of a gas is 1.964 g dm⁻³ at 273K and 76cm Hg. The gas is',
+            ['CH₄', 'C₂H₆', 'CO₂', 'Xe'],
+            'c');
+        addQ(70, 'chemistry',
+            '0.06 mol of KNO₃ solid is added to 100 cm³ of water at 298K. The enthalpy of KNO₃(aq) solution is 35.8 kJ mol⁻¹. After the solute is dissolved the temperature of the solution will be',
+            ['293K', '298K', '301K', '304K'],
+            'a');
+        addQ(71, 'chemistry',
+            '4 mol each of SO₂ and O₂ gases are allowed to react to form SO₃ in a closed vessel. At equilibrium 25% of O₂ is used up. The total number of moles of all the gases present at equilibrium is',
+            ['6.5', '7.0', '8.0', '2.0'],
+            'b');
+        addQ(72, 'chemistry',
+            'An example for auto-catalysis is',
+            ['oxidation of NO to NO₂', 'oxidation of SO₂ to SO₃', 'decomposition of KClO₃ to KCl and O₂',
+                'oxidation of oxalic acid by acidified KMnO₄'
+            ],
+            'd');
+        addQ(73, 'chemistry',
+            'During the fusion of an organic compound with sodium metal, nitrogen of the compound is converted into',
+            ['NaNO₂', 'NaNH₂', 'NaCN', 'NaNC'],
+            'c');
+        addQ(74, 'chemistry',
+            'Identify the product Y in the following reaction sequence (involving cyclic compounds)',
+            ['pentane', 'cyclobutane', 'cyclopentane', 'cyclopentanone'],
+            'c');
+        addQ(75, 'chemistry',
+            'The reaction C₂H₅ONa + C₂H₅I → C₂H₅OC₂H₅ + NaI is known as',
+            ['Kolbe\'s synthesis', 'Wurtz\'s synthesis', 'Williamson\'s synthesis', 'Grignard\'s synthesis'],
+            'c');
+        addQ(76, 'chemistry',
+            'ΔG° vs T plot in the Ellingham\'s diagram, slopes downwards for the reaction',
+            ['Mg + ½O₂ → MgO', '2Ag + ½O₂ → Ag₂O', 'C + ½O₂ → CO', 'CO + ½O₂ → CO₂'],
+            'c');
+        addQ(77, 'chemistry',
+            'Which of the following reaction taking place in the blast furnace is endothermic?',
+            ['CaCO₃ → CaO + CO₂', '2C + O₂ → 2CO', 'C + O₂ → CO₂', 'Fe₂O₃ + 3CO → 2Fe + 3CO₂'],
+            'a');
+        addQ(78, 'chemistry',
+            'Liquor ammonia bottles are opened only after cooling. This is because',
+            ['it is a mild explosive', 'it is a corrosive liquid', 'it is a lachrymatory',
+                'it generates high vapour pressure'
+            ],
+            'a');
+        addQ(79, 'chemistry',
+            'The formation of O₂⁺[PtF₆]⁻ is basis for the formation of xenon fluorides. This is because',
+            ['O₂ and Xe have comparable sizes', 'Both O₂ and Xe are gases',
+                'O₂ and Xe have comparable ionisation energies', 'O₂ and Xe have comparable electronegativities'
+            ],
+            'c');
+        addQ(80, 'chemistry',
+            'The highest magnetic moment is shown by the transition metal ion with the configuration',
+            ['3d²', '3d⁵', '3d⁷', '3d⁹'],
+            'b');
+        addQ(81, 'chemistry',
+            'A transition metal ion exists in its highest oxidation state. It is expected to behave as',
+            ['a chelating agent', 'a central metal in a coordination compound', 'an oxidising agent', 'a reducing agent'],
+            'c');
+        addQ(82, 'chemistry',
+            'In which of the following complex ion, the central metal ion is in a state of sp³d² hybridisation?',
+            ['[CoF₆]³⁻', '[Co(NH₃)₆]³⁺', '[Fe(CN)₆]³⁻', '[Cr(NH₃)₆]³⁺'],
+            'a');
+        addQ(83, 'chemistry',
+            'Which of the following can participate in linkage isomerism?',
+            ['NO₂', 'H₂NCH₂CH₂NH₂', 'H₂O', 'NH₃'],
+            'a');
+        addQ(84, 'chemistry',
+            'Which of the following has the highest bond order?',
+            ['N₂', 'O₂', 'He₂', 'H₂'],
+            'a');
+        addQ(85, 'chemistry',
+            'Which of the following is diamagnetic?',
+            ['H₂⁺', 'O₂', 'Li₂', 'He₂⁺'],
+            'c');
+        addQ(86, 'chemistry',
+            'The concentration of a reactant X decreases from 0.1M to 0.025M in 40min. If the reaction follows I order kinetics, the rate of the reaction when the concentration of X is 0.01M will be',
+            ['1.73×10⁻⁴ Mmin⁻¹', '3.47×10⁻⁴ Mmin⁻¹', '3.47×10⁻⁵ Mmin⁻¹', '1.73×10⁻⁵ Mmin⁻¹'],
+            'b');
+        addQ(87, 'chemistry',
+            'Chemical reactions with very high E<sub>a</sub> values are generally',
+            ['very fast', 'very slow', 'moderately fast', 'spontaneous'],
+            'b');
+        addQ(88, 'chemistry',
+            'Which of the following does not conduct electricity?',
+            ['Fused NaCl', 'Solid NaCl', 'Brine solution', 'Copper'],
+            'b');
+        addQ(89, 'chemistry',
+            'When a quantity of electricity is passed through CuSO₄ solution, 0.16g of copper gets deposited. If the same quantity of electricity is passed through acidulated water, then the volume of H₂ liberated at STP will be [Given, atomic weight of Cu = 64]',
+            ['4.0 cm³', '56 cm³', '604 cm³', '80 cm³'],
+            'b');
+        addQ(90, 'chemistry',
+            'Solubility product of a salt AB is 1×10⁻⁸ M² in a solution in which the concentration of A⁺ ions is 10⁻³M. The salt will precipitate when the concentration of B⁻ ions is kept',
+            ['between 10⁻⁵M to 10⁻⁷M', 'between 10⁻⁷M to 10⁻⁶M', '>10⁻⁵M', '<10⁻⁵M'],
+            'c');
+        addQ(91, 'chemistry',
+            'Which one of the following condition will increase the voltage of the cell represented by the equation Cu(s) + 2Ag⁺(aq) ⇌ Cu²⁺(aq) + 2Ag(s)',
+            ['increase in the dimensions of Cu electrode', 'increase in the dimensions of Ag electrode',
+                'increase in the concentration of Cu²⁺ ions', 'increase in the concentration of Ag⁺ ions'
+            ],
+            'd');
+        addQ(92, 'chemistry',
+            'The pH of 10⁻⁵M HCl solution is',
+            ['8', 'more than 8', 'between 6 and 7', 'slightly more than 7'],
+            'c');
+        addQ(93, 'chemistry',
+            'The mass of glucose that should be dissolved in 50g of water in order to produce the same lowering of vapour pressure as is produced by dissolving 1g of urea in the same quantity of water is',
+            ['1g', '3g', '6g', '18g'],
+            'b');
+        addQ(94, 'chemistry',
+            'Osmotic pressure observed when benzoic acid is dissolved in benzene is less than that expected from theoretical considerations. This is because',
+            ['benzoic acid is an organic solute', 'benzoic acid has higher molar mass than benzene',
+                'benzoic acid gets associated in benzene', 'benzoic acid gets dissociated in benzene'
+            ],
+            'c');
+        addQ(95, 'chemistry',
+            'For a reaction to be spontaneous at all temperatures',
+            ['ΔG and ΔH should be negative', 'ΔG and ΔH should be positive', 'ΔG = ΔS = 0', 'ΔH < ΔG'],
+            'a');
+        addQ(96, 'chemistry',
+            'Which of the following electrolyte will have maximum flocculation value for Fe(OH)₃ sol?',
+            ['NaCl', 'Na₂S', '(NH₄)₃PO₄', 'K₂SO₄'],
+            'a');
+        addQ(97, 'chemistry',
+            'For a reversible reaction, X(g) + 3Y(g) ⇌ 2Z(g); ΔH = −40kJ, the standard entropies of X, Y and Z are 60, 40 and 50 J K⁻¹ mol⁻¹ respectively. The temperature at which the above reaction attains equilibrium is about',
+            ['400K', '500K', '273K', '373K'],
+            'b');
+        addQ(98, 'chemistry',
+            'The radii of Na⁺ and Cl⁻ ions are 95pm and 181pm respectively. The edge length of NaCl unit cell is',
+            ['276pm', '138pm', '552pm', '415pm'],
+            'c');
+        addQ(99, 'chemistry',
+            'Inductive effect involves',
+            ['displacement of σ-electrons', 'delocalisation of π-electrons', 'delocalisation of σ-electrons',
+                'displacement of π-electrons'
+            ],
+            'a');
+        addQ(100, 'chemistry',
+            'The basicity of aniline is less than that of cyclohexylamine. This is due to',
+            ['+R-effect of −NH₂ group', '−I-effect of −NH₂ group', '−R-effect of −NH₂ group', 'hyperconjugation effect'],
+            'a');
+        addQ(101, 'chemistry',
+            'Methyl bromide is converted into ethane by heating it in ether medium with',
+            ['Al', 'Zn', 'Na', 'Cu'],
+            'c');
+        addQ(102, 'chemistry',
+            'Which of the following compound is expected to be optically active?',
+            ['(CH₃)₂CHCHO', 'CH₃CH₂CH₂CHO', 'CH₃CH₂CHBrCHO', 'CH₃CH₂CBr₂CHO'],
+            'c');
+        addQ(103, 'chemistry',
+            'Which cycloalkane has the lowest heat of combustion per CH₂ group?',
+            ['cyclopropane', 'cyclobutane', 'cyclopentane', 'cyclohexane'],
+            'd');
+        addQ(104, 'chemistry',
+            'The catalyst used in the preparation of an alkyl chloride by the action of dry HCl on an alcohol is',
+            ['anhydrous AlCl₃', 'FeCl₃', 'anhydrous ZnCl₂', 'Cu'],
+            'c');
+        addQ(105, 'chemistry',
+            'In the reaction, R−X →(Alcoholic) A →(Dilute) B, the product B is',
+            ['alkyl chloride', 'aldehyde', 'carboxylic acid', 'ketone'],
+            'c');
+        addQ(106, 'chemistry',
+            'Which of the following compound would not evolve CO₂ when treated with NaHCO₃ solution?',
+            ['Salicylic acid', 'Phenol', 'Benzoic acid', '4-nitro benzoic acid'],
+            'b');
+        addQ(107, 'chemistry',
+            'By heating phenol with chloroform in alkali, it is converted into',
+            ['salicylic acid', 'salicylaldehyde', 'anisole', 'phenyl benzoate'],
+            'b');
+        addQ(108, 'chemistry',
+            'When a mixture of calcium benzoate and calcium acetate is dry distilled, the resulting compound is',
+            ['acetophenone', 'benzaldehyde', 'benzophenone', 'acetaldehyde'],
+            'a');
+        addQ(109, 'chemistry',
+            'Which of the following does not give benzoic acid on hydrolysis?',
+            ['Phenyl cyanide', 'Benzoyl chloride', 'Benzyl chloride', 'Methyl benzoate'],
+            'c');
+        addQ(110, 'chemistry',
+            'Which of the following would undergo Hofmann reaction to give a primary amine?',
+            ['R−CO−Cl', 'RCOONH₂', 'RCONH₂', 'RCOOR'],
+            'c');
+        addQ(111, 'chemistry',
+            'Glucose contains in addition to aldehyde group',
+            ['one secondary OH and four primary OH groups', 'one primary OH and four secondary OH groups',
+                'two primary OH and three secondary OH groups', 'three primary OH and two secondary OH groups'
+            ],
+            'b');
+        addQ(112, 'chemistry',
+            'A distinctive and characteristic functional group of fats is',
+            ['a peptide group', 'an ester group', 'an alcoholic group', 'a ketonic group'],
+            'b');
+        addQ(113, 'chemistry',
+            'At pH = 4 glycine exists as',
+            ['H₃N⁺−CH₂−COO⁻', 'H₃N⁺−CH₂−COOH', 'H₂N−CH₂−COOH', 'H₂N−CH₂−COO⁻'],
+            'b');
+        addQ(114, 'chemistry',
+            'Insulin regulates the metabolism of',
+            ['minerals', 'amino acids', 'glucose', 'vitamins'],
+            'c');
+        addQ(115, 'chemistry',
+            'The formula mass of Mohr\'s salt is 392g. The iron present in it is oxidised by KMnO₄ in acid medium. The equivalent mass of Mohr\'s salt is',
+            ['392', '31.6', '278', '156'],
+            'a');
+        addQ(116, 'chemistry',
+            'The brown ring test for nitrates depends on',
+            ['the reduction of nitrate to nitric oxide', 'oxidation of nitric oxide to nitrogen dioxide',
+                'reduction of ferrous sulphate to iron', 'oxidising action of sulphuric acid'
+            ],
+            'a');
+        addQ(117, 'chemistry',
+            'Acrolein test is positive for',
+            ['polysaccharides', 'proteins', 'oils and fats', 'reducing sugars'],
+            'c');
+        addQ(118, 'chemistry',
+            'An organic compound which produces a bluish green coloured flame on heating in presence of copper is',
+            ['chlorobenzene', 'benzaldehyde', 'aniline', 'benzoic acid'],
+            'a');
+        addQ(119, 'chemistry',
+            'For a reaction, A + B → C + D. If the concentration of A is doubled without altering the concentration of B the rate gets doubled. If the concentration of B is increased by nine times without altering the concentration of A the rate gets tripled. The order of the reaction is',
+            ['2', '1', '3/2', '4/3'],
+            'c');
+        addQ(120, 'chemistry',
+            'Which of the following solutions will exhibit highest boiling point?',
+            ['0.01M Na₂SO₄(aq)', '0.01M KNO₃(aq)', '0.015M urea(aq)', '0.015M glucose(aq)'],
+            'a');
+
+        // ============ MATHEMATICS (121-180) ============
+        addQ(121, 'mathematics',
+            'If u = a − b, v = a + b and |a| = |b| = 2 then |u×v| =',
+            ['2√(16−(a·b)²)', '2√(4−(a·b)²)', '√(16−(a·b)²)', '√(4−(a·b)²)'],
+            'a');
+        addQ(122, 'mathematics',
+            'The volume of the tetrahedron formed by the points (1,1,1), (2,1,3), (3,2,2) and (3,3,4) in cubic units is',
+            ['5/6', '6/5', '5', '2/3'],
+            'a');
+        addQ(123, 'mathematics',
+            'Unit vector perpendicular to i−2j+2k and lying in the plane containing i+j−2k and −i+2j+k is',
+            ['8i−7j+11k', '8i+7j−11k', '8i−7j−11k', '(1/√234)(8i−7j−11k)'],
+            'd');
+        addQ(124, 'mathematics',
+            'In the group Q={1} under the binary operation * defined by a*b = a+b+ab the inverse of 10 is',
+            ['1/10', '11/10', '−11/10', '−10/11'],
+            'd');
+        addQ(125, 'mathematics',
+            'In the group {1,2,3,4,5,6} under multiplication mod 7, 2⁻¹×₇4 =',
+            ['1', '4', '2', '3'],
+            'c');
+        addQ(126, 'mathematics',
+            'The group (Z, +) has',
+            ['exactly one sub-group', 'only two sub-groups', 'no sub-groups', 'infinitely many subgroups'],
+            'd');
+        addQ(127, 'mathematics',
+            'If 3x ≡ 5(mod 7) then',
+            ['x ≡ 2(mod 7)', 'x ≡ 3(mod 7)', 'x ≡ 4(mod 7)', 'None of these'],
+            'c');
+        addQ(128, 'mathematics',
+            'The argument of the complex number sin(6π/5) + i(1+cos(6π/5)) is',
+            ['π/10', '5π/6', '−π/10', '2π/5'],
+            'c');
+        addQ(129, 'mathematics',
+            'The maximum value of n < 101 such that 1 + Σ(k=1 to n) iᵏ = 0 is',
+            ['96', '97', '99', '100'],
+            'c');
+        addQ(130, 'mathematics',
+            'The value of (−1+√(−3))⁶² + (−1−√(−3))⁶² is',
+            ['2⁶²', '2⁶³', '−2⁶²', '0'],
+            'c');
+        addQ(131, 'mathematics',
+            'All complex numbers z which satisfy the equation |(z−6i)/(z+6i)| = 1 lie on the',
+            ['imaginary axis', 'real axis', 'neither of the axes', 'None of the above'],
+            'b');
+        addQ(132, 'mathematics',
+            'The value of sin[cot⁻¹{cos(tan⁻¹x)}] is',
+            ['√((1+x²)/(2+x²))', '√((2+x²)/(1+x²))', '√((x²−2)/(x²−1))', '√((x²−1)/(x²−2))'],
+            'a');
+        addQ(133, 'mathematics',
+            'The value of α (≠0) for which the function f(x)=1+αx is the inverse of itself is',
+            ['−2', '2', '−1', '1'],
+            'c');
+        addQ(134, 'mathematics',
+            'If xʳ occurs in the expansion of (x+1/x)ⁿ, then its coefficient is',
+            ['n!/(r!ʳ)', 'n!/((r+1)!(r−1)!)', 'n!/(((n+r)/2)!((n−r)/2)!)', 'n!/((n/2)²)'],
+            'c');
+        addQ(135, 'mathematics',
+            'If tan A − tan B = x and cot B − cot A = y, then cot(A−B) =',
+            ['1/y − 1/x', '1/x − 1/y', '1/x + 1/y', 'None of these'],
+            'c');
+        addQ(136, 'mathematics',
+            'cos²(π/12) + cos²(π/4) + cos²(5π/12) =',
+            ['3/2', '(3−√3)/2', '2/3', '2/(3+√3)'],
+            'a');
+        addQ(137, 'mathematics',
+            'If sinθ, cosθ and tanθ are in GP, then cot⁶θ − cot²θ is',
+            ['1', '1/2', '2', '3'],
+            'a');
+        addQ(138, 'mathematics',
+            'If (3x²−2x+4)/(x−1)⁶ = A₁/(x+1) + A₂/(x+1)² + ... + A₆/(x+1)⁶, then (A₁+A₃+A₅, A₂+A₄+A₆) =',
+            ['(0,0)', '(−8,−12)', '(8,−12)', '(−8,12)'],
+            'd');
+        addQ(139, 'mathematics',
+            'If log₂(2ˣ⁻¹+6) + log₂(4ˣ⁻¹) = 5, then x =',
+            ['4', '1', '3', '2'],
+            'd');
+        addQ(140, 'mathematics',
+            'If a,b,c and d are the roots of the equation x⁴+2x³+3x²+4x+5=0, then 1+a²+b²+c²+d² is equal to',
+            ['−2', '−1', '2', '1'],
+            'b');
+        addQ(141, 'mathematics',
+            'If c₀,c₁,c₂,...,cₙ are binomial coefficients of order n, then the value of c₁/2 + c₃/4 + c₅/6 + ...',
+            ['(2ⁿ+1)/(n−1)', '(2ⁿ−1)/(n+1)', '(2ⁿ+1)/(n+1)', '2ⁿ/(n+1)'],
+            'b');
+        addQ(142, 'mathematics',
+            'The value of (0.2)^log₅(1/4+1/8+1/16+...) is',
+            ['4', '1/4', '2', '1/2'],
+            'a');
+        addQ(143, 'mathematics',
+            'If n(A) = n(B) = m, then the number of possible bijections from A to B is',
+            ['m', 'm²', 'm!', '2m'],
+            'c');
+        addQ(144, 'mathematics',
+            'sin⁻¹[x√(1−x) − √x√(1−x²)] =',
+            ['sin⁻¹x − sin⁻¹√(1−x²)', 'sin⁻¹x + sin⁻¹√(1−x)', 'sin⁻¹x − sin⁻¹√x', 'sin⁻¹x + sin⁻¹√x'],
+            'c');
+        addQ(145, 'mathematics',
+            'If tanθ + tan4θ + tan7θ = tanθ tan4θ tan7θ then the general solution is',
+            ['θ = nπ/4', 'θ = nπ/12', 'θ = nπ/6', 'None of these'],
+            'b');
+        addQ(146, 'mathematics',
+            'If a circle with the point (−1,1) as its center touches the straight line x+2y+9=0, then the coordinates of the point of contact is',
+            ['(−3,3)', '(−3,−3)', '(0,0)', '(7/3,−17/3)'],
+            'b');
+        addQ(147, 'mathematics',
+            'If the circles x²+y²+2gx+2fy=0 and x²+y²+2g\'x+2f\'y=0 touch each other, then',
+            ['fg = f\'g\'', 'f\'g = fg\'', 'ff\' = gg\'', 'None of these'],
+            'b');
+        addQ(148, 'mathematics',
+            'The number of common tangents to the circles x²+y²=4 and x²+y²−4x+2y−4=0 is',
+            ['1', '2', '3', '4'],
+            'b');
+        addQ(149, 'mathematics',
+            'The length of the tangent drawn from any point on the circle x²+y²−4x+6y−4=0 to the circle x²+y²−4x+6y=0 is',
+            ['8', '4', '2', 'None of these'],
+            'c');
+        addQ(150, 'mathematics',
+            'If the foci of the ellipse x²/25 + y²/b² = 1 and the hyperbola x²/144 − y²/81 = 1/25 coincide, then the value of b² is',
+            ['25', '9', '16', '4'],
+            'c');
+        addQ(151, 'mathematics',
+            'The latus rectum of the ellipse is half the minor axis. Then, its eccentricity is',
+            ['1/√2', '1/√3', '√3/2', 'None of these'],
+            'c');
+        addQ(152, 'mathematics',
+            'The ends of the latus rectum of the parabola x²+10x−16y+25=0 are',
+            ['(3,4), (−13,4)', '(5,−8), (−5,8)', '(3,−4), (13,4)', '(−3,4), (13,−4)'],
+            'a');
+        addQ(153, 'mathematics',
+            'Which of the following functions is differentiable at x=0?',
+            ['cos(|x|)+|x|', 'cos(|x|)−|x|', 'sin(|x|)+|x|', 'sin(|x|)−|x|'],
+            'd');
+        addQ(154, 'mathematics',
+            'If x = a(cos t + log tan(t/2)), y = a sin t, then dy/dx =',
+            ['tan t', 'cot t', '−cot t', 'tan(t/2)'],
+            'd');
+        addQ(155, 'mathematics',
+            'If [1 −tanθ; tanθ 1][1 tanθ; −tanθ 1] = [a −b; b a] then',
+            ['a=1=b', 'a=cos2θ, b=sin2θ', 'a=sin2θ, b=cos2θ', 'a=cosθ, b=sinθ'],
+            'b');
+        addQ(156, 'mathematics',
+            'If A = [1 2; 0 1] then Aⁿ is',
+            ['[1 2ⁿ−2; 0 1]', '[1 n²; 0 1]', '[1 2n; 0 1]', '[1 n²; 1 1]'],
+            'c');
+        addQ(157, 'mathematics',
+            'If α,β,γ are the roots of the equation x³+px+q=0, then the value of the determinant |α β γ; β γ α; γ α β| is',
+            ['q', '0', 'p', 'p²−2q'],
+            'b');
+        addQ(158, 'mathematics',
+            'The number of distinct real roots of |sinx cosx cosx; cosx sinx cosx; cosx cosx sinx| = 0 in the interval [−π/4, π/4] is',
+            ['0', '1', '2', '3'],
+            'b');
+        addQ(159, 'mathematics',
+            'The sum of non-prime positive divisors of 450 is',
+            ['1209', '1299', '1199', '1099'],
+            'c');
+        addQ(160, 'mathematics',
+            'The last digit of Σ(p=1 to 50)(2n)! for 1<p<100, p→prime is',
+            ['2', '4', '6', '8'],
+            'a');
+        addQ(161, 'mathematics',
+            'The interval I such that ∫dx/√(1+x⁴) ∈ I is given by',
+            ['[0,1/√2]', '[0,1]', '[√2,2]', '[1,√2]'],
+            'b');
+        addQ(162, 'mathematics',
+            '∫₀^π/² log(tan x) dx =',
+            ['π/2', '0', '1', 'π/4'],
+            'b');
+        addQ(163, 'mathematics',
+            'The value of ∫₂²(ax³+bx+c)dx depends on the',
+            ['value of b', 'value of c', 'value of a', 'values of a and b'],
+            'b');
+        addQ(164, 'mathematics',
+            'The area of the region bounded by the curves y=x² and y=4x−x² is',
+            ['16/3 sq. units', '8/3 sq. units', '4/3 sq. units', '2/3 sq. units'],
+            'b');
+        addQ(165, 'mathematics',
+            'The particular solution of (y/x)(dy/dx) = (1+y²)/(1+x²), when x=1, y=2 is',
+            ['5(1+y²)=2(1+x²)', '2(1+y²)=5(1+x²)', '5(1+y²)=(1+x²)', '(1+y²)=2(1+x²)'],
+            'b');
+        addQ(166, 'mathematics',
+            'The solution of the differential equation dy/dx = (x+y)² is',
+            ['1/(x+y) = c', 'sin⁻¹(x+y) = x+c', 'tan⁻¹(x+y) = c', 'tan⁻¹(x+y) = x+c'],
+            'd');
+        addQ(167, 'mathematics',
+            'The maximum value of (1/x)^(2x²) is',
+            ['e^(1/e)', '√e', '1', 'e²'],
+            'a');
+        addQ(168, 'mathematics',
+            'Let x be a number which exceeds its square by the greatest possible quantity, then x =',
+            ['1/2', '1/4', '3/4', '1/3'],
+            'a');
+        addQ(169, 'mathematics',
+            'The subtangent at x=π/2 on the curve y=x sin x is',
+            ['0', '1', 'π/2', 'None of these'],
+            'c');
+        addQ(170, 'mathematics',
+            'The value of ∫10^(x/2)/√(10^x−10^(2x)) dx is',
+            ['(1/logₑ10)sin⁻¹(10^x)+c', '2√(10^x+10^(2x))+c', '(1/logₑ10)sin⁻¹(10^x)+c',
+                '(−1/logₑ10)sin⁻¹(10^x)+c'
+            ],
+            'a');
+        addQ(171, 'mathematics',
+            '∫e^x[(1+sin x cos x)/cos²x] dx =',
+            ['e^x cos x + c', 'e^x sec x tan x + c', 'e^x tan x + c', 'e^x cos²x − 1 + c'],
+            'c');
+        addQ(172, 'mathematics',
+            '∫(x²+1)/(x⁴+1) dx =',
+            ['(1/√2)logₑ(x²+1)+c', '(1/√2)tan⁻¹((x²+1)/(x√2))+c', '(1/√2)tan⁻¹(x²−1)+c',
+                '(1/√2)tan⁻¹((x²−1)/(x√2))+c'
+            ],
+            'd');
+        addQ(173, 'mathematics',
+            'The locus of the mid-point of the intercept of the line x cosα + y sinα = p between the coordinate axes is',
+            ['x⁻²+y⁻²=4p⁻²', 'x⁻²+y⁻²=p⁻²', 'x²+y²=4p⁻²', 'x²+y²=p²'],
+            'a');
+        addQ(174, 'mathematics',
+            'If the line through A=(4,−5) is inclined at an angle 45° with the positive direction of the X-axis, then the coordinates of the two points on opposite sides of A at a distance of 3√2 units are',
+            ['(7,2),(1,8)', '(7,2),(1,−8)', '(7,−2),(1,−8)', '(7,2),(−1,8)'],
+            'c');
+        addQ(175, 'mathematics',
+            'If the line px+qy=0 coincides with one of the lines given by ax²+2hxy+by²=0 then',
+            ['ap²+2hpq+bq²=0', 'aq²+2hpq+bp²=0', 'aq²−2hpq+bp²=0', 'None of these'],
+            'c');
+        addQ(176, 'mathematics',
+            'The function f(x)=(logₑ(1+ax)−logₑ(1−bx))/x is undefined at x=0. The value which should be assigned to f at x=0 so that it is continuous at x=0 is',
+            ['(a+b)/2', 'a+b', 'logₑ(ab)', 'a−b'],
+            'b');
+        addQ(177, 'mathematics',
+            'lim(n→∞) [(1²+2²+...+n²)√n]/[(n+1)(n+10)(n+100)] =',
+            ['3', '1/3', '2/3', '∞'],
+            'b');
+        addQ(178, 'mathematics',
+            'The number of triangles in a complete graph with 10 non-collinear vertices is',
+            ['360', '240', '120', '60'],
+            'c');
+        addQ(179, 'mathematics',
+            'The angle between hands of a clock when the time is 4:25 AM is',
+            ['17½°', '14½°', '13½°', '12½°'],
+            'a');
+        addQ(180, 'mathematics',
+            'The point (5,−7) lies outside the circle',
+            ['x²+y²−8x=0', 'x²+y²−5x+7y=0', 'x²+y²−5x+7y−1=0', 'x²+y²−8x+7y−2=0'],
+            'a');
+
+        // ==================== SVG DATA ====================
+        const svgData = {
+            'svg-q3': `<svg viewBox="0 0 300 220" width="300" height="220">
+            <polygon points="50,190 250,190 150,30" fill="none" stroke="#333" stroke-width="2"/>
+            <text x="140" y="20" font-size="10" fill="#555">A</text>
+            <text x="255" y="195" font-size="10" fill="#555">B</text>
+            <text x="35" y="195" font-size="10" fill="#555">C</text>
+            <line x1="60" y1="60" x2="60" y2="185" stroke="#333" stroke-width="1.5" stroke-dasharray="4,3"/>
+            <polygon points="55,62 65,62 60,52" fill="#333"/>
+            <line x1="60" y1="55" x2="155" y2="185" stroke="red" stroke-width="2"/>
+            <line x1="60" y1="55" x2="145" y2="175" stroke="green" stroke-width="2"/>
+            <line x1="60" y1="55" x2="135" y2="165" stroke="blue" stroke-width="2"/>
+            <text x="100" y="80" font-size="9" fill="red">Red</text>
+            <text x="110" y="95" font-size="9" fill="green">Green</text>
+            <text x="120" y="110" font-size="9" fill="blue">Blue</text>
+            <text x="45" y="50" font-size="9">45°</text>
+            <text x="200" y="100" font-size="9">46°,44°,43°</text>
+          </svg>`,
+            'svg-q5': `<svg viewBox="0 0 200 140" width="200" height="140">
+            <ellipse cx="100" cy="70" rx="60" ry="50" fill="none" stroke="#333" stroke-width="2"/>
+            <ellipse cx="100" cy="70" rx="60" ry="18" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="3,3"/>
+            <ellipse cx="100" cy="70" rx="60" ry="35" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="3,3"/>
+            <text x="75" y="40" font-size="9" fill="#555">Layer 1</text>
+            <text x="75" y="62" font-size="9" fill="#555">Layer 2</text>
+            <text x="75" y="90" font-size="9" fill="#555">Layer 3</text>
+            <circle cx="40" cy="70" r="3" fill="#333"/>
+            <text x="18" y="74" font-size="9">Object</text>
+          </svg>`,
+            'svg-q17': `<svg viewBox="0 0 280 160" width="280" height="160">
+            <rect x="30" y="20" width="220" height="120" fill="none" stroke="#333" stroke-width="2"/>
+            <text x="120" y="12" font-size="10" fill="#555">2V</text>
+            <line x1="80" y1="20" x2="80" y2="140" stroke="#333" stroke-width="1.5"/>
+            <text x="35" y="55" font-size="9">2μF</text>
+            <text x="85" y="75" font-size="9">6μF</text>
+            <text x="85" y="115" font-size="9">3μF</text>
+            <line x1="50" y1="50" x2="50" y2="100" stroke="#333" stroke-width="2"/>
+            <line x1="50" y1="100" x2="210" y2="100" stroke="#333" stroke-width="2"/>
+            <line x1="210" y1="20" x2="210" y2="140" stroke="#333" stroke-width="2"/>
+            <line x1="80" y1="70" x2="210" y2="70" stroke="#333" stroke-width="2"/>
+            <circle cx="80" cy="70" r="3" fill="#333"/>
+            <circle cx="80" cy="100" r="3" fill="#333"/>
+          </svg>`,
+            'svg-q19': `<svg viewBox="0 0 300 200" width="300" height="200">
+            <text x="20" y="100" font-size="12" font-weight="bold">A</text>
+            <text x="280" y="100" font-size="12" font-weight="bold">B</text>
+            <line x1="40" y1="100" x2="80" y2="100" stroke="#333" stroke-width="2"/>
+            <line x1="80" y1="100" x2="80" y2="50" stroke="#333" stroke-width="2"/>
+            <line x1="80" y1="50" x2="140" y2="50" stroke="#333" stroke-width="2"/>
+            <line x1="140" y1="50" x2="140" y2="100" stroke="#333" stroke-width="2"/>
+            <line x1="140" y1="100" x2="180" y2="100" stroke="#333" stroke-width="2"/>
+            <line x1="80" y1="100" x2="80" y2="150" stroke="#333" stroke-width="2"/>
+            <line x1="80" y1="150" x2="140" y2="150" stroke="#333" stroke-width="2"/>
+            <line x1="140" y1="150" x2="140" y2="100" stroke="#333" stroke-width="2"/>
+            <line x1="180" y1="100" x2="180" y2="50" stroke="#333" stroke-width="2"/>
+            <line x1="180" y1="50" x2="240" y2="50" stroke="#333" stroke-width="2"/>
+            <line x1="240" y1="50" x2="240" y2="100" stroke="#333" stroke-width="2"/>
+            <line x1="240" y1="100" x2="270" y2="100" stroke="#333" stroke-width="2"/>
+            <text x="105" y="45" font-size="8">15Ω</text>
+            <text x="105" y="145" font-size="8">15Ω</text>
+            <text x="155" y="75" font-size="8">15Ω</text>
+            <text x="205" y="45" font-size="8">15Ω</text>
+          </svg>`,
+            'svg-q21': `<svg viewBox="0 0 300 120" width="280" height="110">
+            <text x="10" y="55" font-size="12" font-weight="bold">A</text>
+            <text x="270" y="55" font-size="12" font-weight="bold">B</text>
+            <line x1="35" y1="50" x2="260" y2="50" stroke="#333" stroke-width="2"/>
+            <circle cx="80" cy="50" r="15" fill="none" stroke="#333" stroke-width="1.5"/>
+            <text x="72" y="30" font-size="8">6Ω</text>
+            <text x="70" y="80" font-size="8">12V</text>
+            <circle cx="160" cy="50" r="15" fill="none" stroke="#333" stroke-width="1.5"/>
+            <text x="150" y="30" font-size="8">9Ω</text>
+            <text x="148" y="80" font-size="8">4V</text>
+            <circle cx="230" cy="50" r="15" fill="none" stroke="#333" stroke-width="1.5"/>
+            <text x="222" y="30" font-size="8">5Ω</text>
+            <text x="55" y="20" font-size="9">2A</text>
+          </svg>`,
+            'svg-q23': `<svg viewBox="0 0 280 180" width="260" height="160">
+            <line x1="20" y1="140" x2="120" y2="140" stroke="#333" stroke-width="2"/>
+            <path d="M120,140 A60,60 0 0,0 120,20" fill="none" stroke="#333" stroke-width="2"/>
+            <line x1="120" y1="20" x2="250" y2="20" stroke="#333" stroke-width="2"/>
+            <circle cx="120" cy="80" r="4" fill="#333"/>
+            <text x="125" y="75" font-size="10">O</text>
+            <text x="70" y="155" font-size="9">Straight portion</text>
+            <text x="185" y="80" font-size="9">Curved part</text>
+            <text x="175" y="95" font-size="8">radius r</text>
+            <text x="125" y="135" font-size="9">I→</text>
+          </svg>`,
+            'svg-q25': `<svg viewBox="0 0 280 180" width="260" height="160">
+            <line x1="10" y1="30" x2="270" y2="30" stroke="#333" stroke-width="3"/>
+            <text x="240" y="25" font-size="9">Long conductor</text>
+            <text x="255" y="40" font-size="8">20A</text>
+            <rect x="60" y="60" width="120" height="80" fill="none" stroke="#333" stroke-width="2"/>
+            <text x="80" y="55" font-size="8">P</text>
+            <text x="175" y="55" font-size="8">Q</text>
+            <text x="80" y="155" font-size="8">S</text>
+            <text x="175" y="155" font-size="8">R</text>
+            <text x="100" y="100" font-size="8">20A</text>
+            <text x="95" y="70" font-size="7">2cm</text>
+            <text x="95" y="145" font-size="7">10cm</text>
+          </svg>`,
+            'svg-q28': `<svg viewBox="0 0 300 120" width="280" height="110">
+            <line x1="20" y1="60" x2="270" y2="60" stroke="#333" stroke-width="2"/>
+            <circle cx="70" cy="60" r="20" fill="none" stroke="#333" stroke-width="1.5"/>
+            <text x="55" y="40" font-size="8">R</text>
+            <text x="50" y="85" font-size="8">80V</text>
+            <circle cx="150" cy="60" r="20" fill="none" stroke="#333" stroke-width="1.5"/>
+            <text x="140" y="40" font-size="8">L</text>
+            <text x="135" y="85" font-size="8">40V</text>
+            <circle cx="220" cy="60" r="20" fill="none" stroke="#333" stroke-width="1.5"/>
+            <text x="210" y="40" font-size="8">C</text>
+            <text x="205" y="85" font-size="8">100V</text>
+            <text x="10" y="30" font-size="10" font-weight="bold">E=?</text>
+          </svg>`,
+            'svg-q53': `<svg viewBox="0 0 280 200" width="250" height="180">
+            <line x1="40" y1="170" x2="250" y2="170" stroke="#333" stroke-width="1.5"/>
+            <line x1="40" y1="170" x2="40" y2="20" stroke="#333" stroke-width="1.5"/>
+            <text x="15" y="175" font-size="9">O</text>
+            <text x="250" y="175" font-size="9">V</text>
+            <text x="25" y="25" font-size="9">p</text>
+            <polygon points="40,170 80,170 80,80 40,80" fill="#e8f0fe" stroke="#333" stroke-width="2"/>
+            <text x="85" y="175" font-size="9">V₁</text>
+            <text x="95" y="85" font-size="9">3V₁</text>
+            <text x="22" y="85" font-size="9">p₁</text>
+            <text x="18" y="55" font-size="9">4p₁</text>
+            <text x="50" y="130" font-size="9">A</text>
+            <text x="85" y="90" font-size="9">B</text>
+            <text x="50" y="90" font-size="9">C</text>
+            <line x1="80" y1="170" x2="80" y2="80" stroke="#333" stroke-width="1" stroke-dasharray="3,3"/>
+            <line x1="40" y1="80" x2="80" y2="80" stroke="#333" stroke-width="1" stroke-dasharray="3,3"/>
+            <line x1="40" y1="55" x2="80" y2="55" stroke="#333" stroke-width="1" stroke-dasharray="3,3"/>
+          </svg>`,
+            'svg-q55': `<svg viewBox="0 0 320 100" width="300" height="90">
+            <rect x="30" y="30" width="130" height="35" fill="#e8c49a" stroke="#333" stroke-width="2"/>
+            <text x="60" y="52" font-size="10" fill="#333">Copper</text>
+            <rect x="160" y="30" width="100" height="35" fill="#c0c0c0" stroke="#333" stroke-width="2"/>
+            <text x="185" y="52" font-size="10" fill="#333">Steel</text>
+            <text x="40" y="22" font-size="9">100°C</text>
+            <text x="260" y="22" font-size="9">0°C</text>
+            <text x="100" y="78" font-size="8">18cm</text>
+            <text x="195" y="78" font-size="8">6cm</text>
+            <text x="145" y="78" font-size="8">Junction T=?</text>
+          </svg>`
+        };
+
+        // ==================== APP STATE ====================
+        let currentSection = 'physics';
+        let currentQIndex = 0;
+        let testSubmitted = false;
+        let timerInterval;
+        let totalSeconds = 3 * 60 * 60; // 3 hours
+        let reviewModeActive = false;
+
+        // ==================== FUNCTIONS ====================
+        function getSectionQuestions(section) {
+            return questionBank.filter(q => q.section === section);
+        }
+
+        function getCurrentSectionQuestions() {
+            return getSectionQuestions(currentSection);
+        }
+
+        function getCurrentQuestion() {
+            const sectionQs = getCurrentSectionQuestions();
+            if (currentQIndex >= sectionQs.length) currentQIndex = sectionQs.length - 1;
+            if (currentQIndex < 0) currentQIndex = 0;
+            return sectionQs[currentQIndex];
+        }
+
+        function getGlobalIndex(q) {
+            return questionBank.indexOf(q);
+        }
+
+        function switchSection(section) {
+            currentSection = section;
+            currentQIndex = 0;
+            updateTabStyles();
+            renderQuestion();
+            updateNavButtons();
+            updateSidebar();
+            document.getElementById('contentArea').scrollTop = 0;
+        }
+
+        function updateTabStyles() {
+            ['physics', 'chemistry', 'math'].forEach(s => {
+                const tab = document.getElementById('tab' + s.charAt(0).toUpperCase() + s.slice(1));
+                if (tab) tab.classList.toggle('active', s === currentSection);
+            });
+        }
+
+        function nextQuestion() {
+            const sectionQs = getCurrentSectionQuestions();
+            if (currentQIndex < sectionQs.length - 1) {
+                currentQIndex++;
+                renderQuestion();
+                updateNavButtons();
+                updateSidebar();
+                document.getElementById('contentArea').scrollTop = 0;
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQIndex > 0) {
+                currentQIndex--;
+                renderQuestion();
+                updateNavButtons();
+                updateSidebar();
+                document.getElementById('contentArea').scrollTop = 0;
+            }
+        }
+
+        function updateNavButtons() {
+            const sectionQs = getCurrentSectionQuestions();
+            document.getElementById('prevBtn').disabled = (currentQIndex === 0);
+            document.getElementById('nextBtn').disabled = (currentQIndex >= sectionQs.length - 1);
+        }
+
+        function selectAnswer(optionLetter) {
+            if (testSubmitted) return;
+            const q = getCurrentQuestion();
+            q.userAnswer = optionLetter;
+            renderQuestion();
+            updateSidebar();
+        }
+
+        function markForReview() {
+            if (testSubmitted) return;
+            const q = getCurrentQuestion();
+            q.markedForReview = !q.markedForReview;
+            renderQuestion();
+            updateSidebar();
+        }
+
+        function navigateToQuestion(globalIndex) {
+            if (testSubmitted && !reviewModeActive) return;
+            const q = questionBank[globalIndex];
+            currentSection = q.section;
+            const sectionQs = getSectionQuestions(currentSection);
+            currentQIndex = sectionQs.indexOf(q);
+            updateTabStyles();
+            renderQuestion();
+            updateNavButtons();
+            updateSidebar();
+            document.getElementById('contentArea').scrollTop = 0;
+        }
+
+        function updateSidebar() {
+            ['physics', 'chemistry', 'math'].forEach(section => {
+                const gridId = section + 'Grid';
+                const grid = document.getElementById(gridId);
+                if (!grid) return;
+                const sectionQs = getSectionQuestions(section);
+                let html = '';
+                sectionQs.forEach(q => {
+                    const gIdx = getGlobalIndex(q);
+                    let cls = 'qn-dot';
+                    if (q === getCurrentQuestion() && currentSection === section) cls += ' active';
+                    else if (q.markedForReview) cls += ' review-marked';
+                    else if (q.userAnswer) cls += ' answered';
+                    html +=
+                        `<div class="${cls}" onclick="navigateToQuestion(${gIdx})" title="Q${q.qnum}">${q.qnum}</div>`;
+                });
+                grid.innerHTML = html;
+            });
+        }
+
+        function renderQuestion() {
+            if (testSubmitted && reviewModeActive) {
+                renderReviewMode();
+                return;
+            }
+            if (testSubmitted && !reviewModeActive) {
+                renderResultPanel();
+                return;
+            }
+            const q = getCurrentQuestion();
+            if (!q) return;
+            const sectionQs = getCurrentSectionQuestions();
+            const displayIndex = currentQIndex + 1;
+            const totalInSection = sectionQs.length;
+
+            let html = '';
+            // Question card
+            html += `<div class="question-card" id="qCard">`;
+            html += `<div class="q-header">`;
+            const sectionClass = q.section === 'physics' ? 'physics' : q.section === 'chemistry' ? 'chemistry' :
+                'math';
+            html += `<div class="q-num ${sectionClass}">${q.qnum}</div>`;
+            html += `<div class="q-text">${q.text}</div>`;
+            html += `</div>`;
+
+            // SVG if needed
+            if (q.hasSvg && svgData[q.svgId]) {
+                html += `<div class="svg-container">${svgData[q.svgId]}</div>`;
+            }
+
+            // Options
+            html += `<ul class="options-list">`;
+            const optLabels = ['a', 'b', 'c', 'd'];
+            q.options.forEach((opt, i) => {
+                const letter = optLabels[i];
+                const isSelected = q.userAnswer === letter;
+                html += `<li class="option-item${isSelected ? ' selected' : ''}" onclick="selectAnswer('${letter}')">`;
+                html += `<div class="option-radio"></div>`;
+                html += `<span class="option-label">${letter.toUpperCase()}.</span>`;
+                html += `<span>${opt}</span>`;
+                html += `</li>`;
+            });
+            html += `</ul>`;
+
+            // Review badge
+            if (q.markedForReview) {
+                html +=
+                    `<div style="margin-top:8px;"><span class="feedback-badge" style="background:#fef7e0;color:#b06000;">📌 Marked for Review</span></div>`;
+            }
+            html += `</div>`;
+
+            // Progress info
+            html +=
+                `<div style="text-align:center;font-size:0.85rem;color:var(--text-light);margin-top:4px;">Question ${displayIndex} of ${totalInSection} in this section | Total: ${q.qnum}/180</div>`;
+
+            document.getElementById('questionDisplay').innerHTML = html;
+            document.getElementById('navButtons').classList.remove('hidden');
+            document.getElementById('resultPanel').classList.add('hidden');
+            updateNavButtons();
+            updateSidebar();
+        }
+
+        function renderReviewMode() {
+            const sectionQs = getCurrentSectionQuestions();
+            const displayIndex = currentQIndex + 1;
+            const totalInSection = sectionQs.length;
+            const q = getCurrentQuestion();
+            if (!q) return;
+
+            let html = '';
+            const isCorrect = q.userAnswer === q.correctAnswer;
+            const cardClass = isCorrect ? 'reviewed-correct' : 'reviewed-incorrect';
+
+            html += `<div class="question-card ${cardClass}" id="qCard">`;
+            html += `<div class="q-header">`;
+            const sectionClass = q.section === 'physics' ? 'physics' : q.section === 'chemistry' ? 'chemistry' :
+                'math';
+            html += `<div class="q-num ${sectionClass}">${q.qnum}</div>`;
+            html +=
+                `<div class="q-text">${q.text} <span class="feedback-badge ${isCorrect ? 'correct' : 'incorrect'}">${isCorrect ? '✓ Correct' : '✗ Incorrect'}</span></div>`;
+            html += `</div>`;
+
+            if (q.hasSvg && svgData[q.svgId]) {
+                html += `<div class="svg-container">${svgData[q.svgId]}</div>`;
+            }
+
+            html += `<ul class="options-list">`;
+            const optLabels = ['a', 'b', 'c', 'd'];
+            q.options.forEach((opt, i) => {
+                const letter = optLabels[i];
+                let cls = 'option-item';
+                if (letter === q.correctAnswer) cls += ' correct-answer';
+                if (letter === q.userAnswer && letter !== q.correctAnswer) cls += ' wrong-answer';
+                if (letter === q.userAnswer && letter === q.correctAnswer) cls += ' correct-answer';
+                html += `<li class="${cls}">`;
+                html += `<span class="option-label">${letter.toUpperCase()}.</span>`;
+                html += `<span>${opt}</span>`;
+                if (letter === q.correctAnswer) html += ` <span style="font-size:0.75rem;color:#0d904f;">✅</span>`;
+                if (letter === q.userAnswer && letter !== q.correctAnswer) html +=
+                    ` <span style="font-size:0.75rem;color:#d93025;">❌ Your answer</span>`;
+                html += `</li>`;
+            });
+            html += `</ul>`;
+            if (!q.userAnswer) {
+                html +=
+                    `<div style="margin-top:8px;color:#d93025;font-weight:600;">⚠️ Not answered. Correct answer: ${q.correctAnswer.toUpperCase()}</div>`;
+            }
+            html += `</div>`;
+            html +=
+                `<div style="text-align:center;font-size:0.85rem;color:var(--text-light);margin-top:4px;">Reviewing Question ${displayIndex} of ${totalInSection} | Q${q.qnum}/180</div>`;
+
+            document.getElementById('questionDisplay').innerHTML = html;
+            document.getElementById('navButtons').classList.remove('hidden');
+            document.getElementById('resultPanel').classList.add('hidden');
+            updateNavButtons();
+            updateSidebar();
+        }
+
+        function renderResultPanel() {
+            const totalQs = questionBank.length;
+            const answered = questionBank.filter(q => q.userAnswer !== null).length;
+            const correct = questionBank.filter(q => q.userAnswer === q.correctAnswer).length;
+            const incorrect = answered - correct;
+            const unanswered = totalQs - answered;
+            const score = correct; // 1 mark per correct answer
+
+            // Section-wise
+            const sections = ['physics', 'chemistry', 'math'];
+            const sectionStats = {};
+            sections.forEach(s => {
+                const sqs = getSectionQuestions(s);
+                const sCorrect = sqs.filter(q => q.userAnswer === q.correctAnswer).length;
+                const sTotal = sqs.length;
+                sectionStats[s] = { correct: sCorrect, total: sTotal };
+            });
+
+            let html = `<div class="result-panel">`;
+            html += `<h2>📊 Test Results</h2>`;
+            html += `<div class="score-circle">${score}<span style="font-size:0.9rem;">/180</span></div>`;
+            html += `<p style="font-size:1rem;color:var(--text-light);">Total Marks: <strong>${score}</strong></p>`;
+            html += `<div style="margin:8px 0;">`;
+            html +=
+                `<span class="section-score physics">🔵 Physics: ${sectionStats['physics'].correct}/${sectionStats['physics'].total}</span> `;
+            html +=
+                `<span class="section-score chemistry">🔴 Chemistry: ${sectionStats['chemistry'].correct}/${sectionStats['chemistry'].total}</span> `;
+            html +=
+                `<span class="section-score math">🟢 Math: ${sectionStats['math'].correct}/${sectionStats['math'].total}</span>`;
+            html += `</div>`;
+            html +=
+                `<p>✅ Correct: <strong>${correct}</strong> | ❌ Incorrect: <strong>${incorrect}</strong> | ⬜ Unanswered: <strong>${unanswered}</strong></p>`;
+            html += `<p style="font-size:0.8rem;color:var(--text-light);">Percentage: ${((score/180)*100).toFixed(1)}%</p>`;
+            html += `<div class="btn-row">`;
+            html +=
+                `<button class="btn btn-primary" onclick="startReview()">🔍 Review All Answers</button>`;
+            html += `<button class="btn btn-outline" onclick="location.reload()">🔄 Retake Test</button>`;
+            html += `</div>`;
+            html += `</div>`;
+
+            document.getElementById('questionDisplay').innerHTML = '';
+            document.getElementById('navButtons').classList.add('hidden');
+            document.getElementById('resultPanel').innerHTML = html;
+            document.getElementById('resultPanel').classList.remove('hidden');
+            document.getElementById('submitBtn').classList.add('hidden');
+            document.getElementById('reviewBtn').classList.add('hidden');
+        }
+
+        function startReview() {
+            reviewModeActive = true;
+            currentSection = 'physics';
+            currentQIndex = 0;
+            updateTabStyles();
+            renderReviewMode();
+            updateNavButtons();
+            updateSidebar();
+            document.getElementById('navButtons').classList.remove('hidden');
+            document.getElementById('resultPanel').classList.add('hidden');
+            document.getElementById('submitBtn').classList.add('hidden');
+            document.getElementById('reviewBtn').classList.add('hidden');
+            document.getElementById('contentArea').scrollTop = 0;
+        }
+
+        function submitTest() {
+            if (testSubmitted) return;
+            const unanswered = questionBank.filter(q => q.userAnswer === null).length;
+            document.getElementById('unansweredCount').textContent = unanswered;
+            document.getElementById('submitModal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('submitModal').classList.add('hidden');
+        }
+
+        function confirmSubmit() {
+            document.getElementById('submitModal').classList.add('hidden');
+            testSubmitted = true;
+            reviewModeActive = false;
+            clearInterval(timerInterval);
+            document.getElementById('timerBox').classList.remove('warning', 'danger');
+            document.getElementById('submitBtn').classList.add('hidden');
+            document.getElementById('reviewBtn').classList.add('hidden');
+            document.getElementById('questionDisplay').innerHTML = '';
+            document.getElementById('navButtons').classList.add('hidden');
+            renderResultPanel();
+            updateSidebar();
+            document.getElementById('contentArea').scrollTop = 0;
+        }
+
+        function updateTimer() {
+            if (totalSeconds <= 0) {
+                clearInterval(timerInterval);
+                confirmSubmit();
+                return;
+            }
+            totalSeconds--;
+            const h = Math.floor(totalSeconds / 3600);
+            const m = Math.floor((totalSeconds % 3600) / 60);
+            const s = totalSeconds % 60;
+            const display = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+            document.getElementById('timerDisplay').textContent = display;
+
+            const timerBox = document.getElementById('timerBox');
+            timerBox.classList.remove('warning', 'danger');
+            if (totalSeconds < 600) timerBox.classList.add('danger');
+            else if (totalSeconds < 1800) timerBox.classList.add('warning');
+        }
+
+        // ==================== KEYBOARD NAVIGATION ====================
+        document.addEventListener('keydown', function(e) {
+            if (testSubmitted && !reviewModeActive) return;
+            const key = e.key.toLowerCase();
+            if (['a', 'b', 'c', 'd'].includes(key)) {
+                selectAnswer(key);
+            } else if (key === 'arrowright') {
+                e.preventDefault();
+                nextQuestion();
+            } else if (key === 'arrowleft') {
+                e.preventDefault();
+                prevQuestion();
+            } else if (key === 'm') {
+                markForReview();
+            }
+        });
+
+        // ==================== INITIALIZATION ====================
+        function init() {
+            updateTabStyles();
+            renderQuestion();
+            updateNavButtons();
+            updateSidebar();
+            timerInterval = setInterval(updateTimer, 1000);
+            updateTimer();
+        }
+
+        // Handle window resize for sidebar
+        window.addEventListener('resize', () => {
+            updateSidebar();
+        });
+
+        // Start the app
+        init();
+
+        console.log('✅ COMEDK 2018 CBT Mock Test Ready');
+        console.log('📋 180 Questions | Physics 1-60 | Chemistry 61-120 | Mathematics 121-180');
+        console.log('⏱ 3 Hour Timer | Keyboard shortcuts: A/B/C/D to answer, ← → to navigate, M to mark review');
+        console.log('📌 Click question numbers in sidebar to jump | Submit to see results & review');
+    </script>
+</body>
+</html>

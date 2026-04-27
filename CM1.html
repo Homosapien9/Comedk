@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>COMEDK Mock Test - CBT</title>
+    <style>
+        :root {
+            --bg: #f0f2f5;
+            --card: #fff;
+            --text: #1a1a2e;
+            --border: #dde1e7;
+            --accent: #2563eb;
+            --accent-hover: #1d4ed8;
+            --correct: #059669;
+            --incorrect: #dc2626;
+            --neutral: #6b7280;
+            --shadow: 0 1px 3px rgba(0, 0, 0, .08);
+            --radius: 10px;
+            --transition: 0.2s ease;
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        header {
+            background: #fff;
+            border-bottom: 1px solid var(--border);
+            padding: 12px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+        header h1 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #1a1a2e;
+            white-space: nowrap;
+        }
+        .header-info {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            flex-wrap: wrap;
+            font-size: .9rem;
+        }
+        .header-info .timer {
+            background: #1a1a2e;
+            color: #fff;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-variant-numeric: tabular-nums;
+            font-family: 'SF Mono', 'Consolas', monospace;
+            letter-spacing: 1px;
+        }
+        .header-info .badge {
+            background: #eef2ff;
+            color: #2563eb;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: .85rem;
+        }
+        nav.tabs {
+            display: flex;
+            gap: 2px;
+            background: #e5e7eb;
+            border-radius: 25px;
+            padding: 4px;
+            margin: 0 10px;
+            flex-wrap: wrap;
+        }
+        nav.tabs button {
+            padding: 10px 22px;
+            border: none;
+            background: transparent;
+            border-radius: 22px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: .9rem;
+            color: #4b5563;
+            transition: var(--transition);
+            white-space: nowrap;
+        }
+        nav.tabs button.active {
+            background: #fff;
+            color: #1a1a2e;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, .1);
+        }
+        nav.tabs button:hover:not(.active) {
+            color: #1a1a2e;
+            background: #d1d5db;
+        }
+        .container {
+            max-width: 1100px;
+            margin: 20px auto;
+            padding: 0 16px 60px;
+        }
+        .section {
+            display: none;
+        }
+        .section.active {
+            display: block;
+        }
+        .question-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 18px 20px;
+            margin-bottom: 14px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            position: relative;
+        }
+        .question-card:hover {
+            box-shadow: 0 3px 10px rgba(0, 0, 0, .1);
+        }
+        .question-card.review-correct {
+            border-left: 5px solid var(--correct);
+            background: #f0fdf6;
+        }
+        .question-card.review-incorrect {
+            border-left: 5px solid var(--incorrect);
+            background: #fef2f2;
+        }
+        .question-card.review-unanswered {
+            border-left: 5px solid #f59e0b;
+            background: #fffdf5;
+        }
+        .q-num {
+            font-weight: 700;
+            color: #2563eb;
+            font-size: .85rem;
+            margin-bottom: 6px;
+            letter-spacing: .5px;
+        }
+        .q-text {
+            font-weight: 500;
+            margin-bottom: 12px;
+            font-size: .95rem;
+        }
+        .q-text svg {
+            display: block;
+            max-width: 100%;
+            margin: 8px 0;
+        }
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .options label {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            padding: 8px 12px;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: .9rem;
+            background: #fafbfc;
+        }
+        .options label:hover {
+            background: #eef2ff;
+            border-color: #2563eb;
+        }
+        .options input[type="radio"] {
+            accent-color: #2563eb;
+            margin-top: 2px;
+            flex-shrink: 0;
+        }
+        .review-badge {
+            display: none;
+            position: absolute;
+            top: 14px;
+            right: 16px;
+            font-weight: 700;
+            font-size: .8rem;
+            padding: 4px 10px;
+            border-radius: 12px;
+        }
+        .review-correct .review-badge.correct-badge {
+            display: inline;
+            background: #d1fae5;
+            color: #065f46;
+        }
+        .review-incorrect .review-badge.incorrect-badge {
+            display: inline;
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        .review-unanswered .review-badge.unanswered-badge {
+            display: inline;
+            background: #fef3c7;
+            color: #92400e;
+        }
+        .review-answer {
+            display: none;
+            margin-top: 8px;
+            font-size: .85rem;
+            font-weight: 600;
+        }
+        .review-correct .review-answer,
+        .review-incorrect .review-answer,
+        .review-unanswered .review-answer {
+            display: block;
+        }
+        .review-correct .review-answer {
+            color: #065f46;
+        }
+        .review-incorrect .review-answer {
+            color: #991b1b;
+        }
+        .review-unanswered .review-answer {
+            color: #92400e;
+        }
+        .btn-submit {
+            display: block;
+            margin: 20px auto;
+            padding: 14px 40px;
+            background: #2563eb;
+            color: #fff;
+            border: none;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            letter-spacing: .5px;
+            transition: var(--transition);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, .3);
+        }
+        .btn-submit:hover {
+            background: #1d4ed8;
+            box-shadow: 0 6px 18px rgba(37, 99, 235, .4);
+            transform: translateY(-1px);
+        }
+        .btn-submit:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
+        }
+        .results-panel {
+            display: none;
+            background: #fff;
+            border-radius: var(--radius);
+            padding: 24px;
+            margin: 16px 0;
+            text-align: center;
+            box-shadow: var(--shadow);
+            border: 2px solid #2563eb;
+        }
+        .results-panel.show {
+            display: block;
+        }
+        .results-panel h2 {
+            font-size: 1.4rem;
+            margin-bottom: 8px;
+        }
+        .results-panel .score {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #2563eb;
+        }
+        .results-panel .breakdown {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            flex-wrap: wrap;
+            margin-top: 12px;
+            font-size: .9rem;
+        }
+        .results-panel .breakdown span {
+            padding: 6px 14px;
+            border-radius: 16px;
+            font-weight: 600;
+        }
+        .breakdown .correct-count {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        .breakdown .incorrect-count {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        .breakdown .unanswered-count {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        .btn-reset {
+            display: none;
+            margin: 10px auto 30px;
+            padding: 10px 28px;
+            background: #fff;
+            color: #2563eb;
+            border: 2px solid #2563eb;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .btn-reset.show {
+            display: block;
+        }
+        .btn-reset:hover {
+            background: #eef2ff;
+        }
+        .q-image-svg {
+            max-width: 100%;
+            height: auto;
+            margin: 8px 0;
+            background: #fafbfc;
+            border-radius: 6px;
+            padding: 4px;
+        }
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                align-items: stretch;
+                text-align: center;
+            }
+            nav.tabs button {
+                padding: 8px 14px;
+                font-size: .8rem;
+            }
+            .question-card {
+                padding: 12px 14px;
+            }
+            .q-text {
+                font-size: .9rem;
+            }
+            .options label {
+                font-size: .85rem;
+                padding: 6px 10px;
+            }
+        }
+        .scroll-top {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: #2563eb;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            font-size: 1.3rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, .2);
+            z-index: 99;
+            transition: var(--transition);
+        }
+        .scroll-top:hover {
+            background: #1d4ed8;
+            transform: scale(1.08);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>📝 COMEDK Mock Test</h1>
+        <nav class="tabs" id="tabNav">
+            <button class="active" data-section="physics">⚛ Physics (1–60)</button>
+            <button data-section="chemistry">🧪 Chemistry (61–120)</button>
+            <button data-section="mathematics">📐 Mathematics (121–180)</button>
+        </nav>
+        <div class="header-info">
+            <span class="badge">180 Questions</span>
+            <span class="timer" id="timer">00:00:00</span>
+        </div>
+    </header>
+
+    <div class="container" id="mainContainer">
+        <!-- Physics Section -->
+        <div class="section active" id="section-physics"></div>
+        <!-- Chemistry Section -->
+        <div class="section" id="section-chemistry"></div>
+        <!-- Mathematics Section -->
+        <div class="section" id="section-mathematics"></div>
+
+        <button class="btn-submit" id="btnSubmit" onclick="submitTest()">✅ Submit & Review Answers</button>
+        <button class="btn-reset" id="btnReset" onclick="resetTest()">🔄 Retake Test</button>
+        <div class="results-panel" id="resultsPanel"></div>
+    </div>
+
+    <button class="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Back to top">↑</button>
+
+    <script>
+        // ─────────────────── DATA ───────────────────
+        const answerKey = {
+            physics: 'a b c b d b b b a a b b a c c c a a b b a a c a c c b b c b a c c d c b b d c d c b c b a b b c c a b d d c b b d a a d'.split(
+                ' '),
+            chemistry: 'a c b a c d a a b a b d a a a a d b b c c c a c d c b b b c a d a c b d c d a d a b c b d c b d a d b d c c b d c a b a b d a a d c a b d a c a b b a'.split(
+                ' '),
+            mathematics: 'b c b a b d c d c d a d a d a c b a a c b a c a c d b b d a d c b c b d c b c d a b b a c c a b c a c b c b d a c a b c b d b d b a c d b a d a c d a a c d a a a d c c a a'.split(
+                ' ')
+        };
+
+        // ─────────────────── QUESTIONS DATA ───────────────────
+        // Physics Questions (1-60)
+        const physicsQuestions = [
+            { num: 1,
+                text: 'Hydrogen atom from excited state comes to the ground state by emitting a photon of wavelength λ. If R is the Rydberg constant, then the principal quantum number n of the excited state is',
+                opts: ['√(λR/(λR−1))', '√(λ/(λR−1))', '√(λR²/(λR−1))', '√(λ/(λ−1))'] },
+            { num: 2,
+                text: 'A car accelerates from rest at constant rate for first 10 s and covers a distance x. It covers a distance y in next 10 s at the same acceleration. Which of the following is true?',
+                opts: ['x = 3y', 'y = 3x', 'x = y', 'y = 2x'] }, { num: 3,
+                text: 'Tritium having a half-life of 12.5 yr undergoes β-decay. Fraction of sample remaining undecayed after 25 yr will be',
+                opts: ['1/8', '1/2', '1/4', '1/16'] }, { num: 4,
+                text: 'The period of oscillation of a simple pendulum is T = 2π√(L/g). Measured value of L is 20.0 cm known to 1 mm accuracy and time for 100 oscillations is 90 s using a wrist watch of 1 s resolution. The accuracy in determination of g is',
+                opts: ['2%', '3%', '1%', '5%'] }, { num: 5,
+                text: 'The plot of the number N of decayed nuclei versus activity R of a radioactive sample is correctly depicted in which graph?',
+                opts: ['Linear positive slope', 'Exponential curve', 'Parabola', 'Straight line with negative slope'],
+                svg: '<svg viewBox="0 0 200 120" class="q-image-svg"><line x1="30" y1="90" x2="170" y2="20" stroke="#dc2626" stroke-width="2"/><text x="140" y="14" font-size="10">N</text><text x="175" y="95" font-size="10">R</text></svg>' },
+            { num: 6,
+                text: 'If F = 6πηᵃrᵇvᶜ, where F = viscous force, η = coefficient of viscosity, r = radius, v = terminal velocity. Values of a, b, c are',
+                opts: ['a=1,b=2,c=1', 'a=1,b=1,c=1', 'a=2,b=1,c=1', 'a=2,b=1,c=2'] }, { num: 7,
+                text: 'A body initially at rest at height R above earth\'s surface (radius R) falls freely. Its velocity on reaching the surface is',
+                opts: ['√(2gR)', '√(gR)', '√(3gR/2)', '√(4gR)'] }, { num: 8,
+                text: 'A sample of gas expands from V₁ to V₂. The work done is greatest when expansion is',
+                opts: ['Adiabatic', 'Isobaric', 'Isothermal', 'Equal in all cases'] }, { num: 9,
+                text: 'A particle executing SHM has max speed 30 cm/s and max acceleration 60 cm/s². The period is',
+                opts: ['π s', 'π/2 s', '2π s', 'π/4 s'] }, { num: 10,
+                text: 'I-V graph for a metallic wire at T₁ and T₂ is shown. It is concluded that',
+                opts: ['T₁ > T₂', 'T₁ < T₂', 'T₁ = T₂', 'T₁ = 2T₂'],
+                svg: '<svg viewBox="0 0 180 130" class="q-image-svg"><line x1="20" y1="110" x2="160" y2="20" stroke="#2563eb" stroke-width="2"/><line x1="20" y1="110" x2="160" y2="50" stroke="#dc2626" stroke-width="2"/><text x="150" y="14" font-size="10">I</text><text x="165" y="115" font-size="10">V</text><text x="90" y="40" fill="#2563eb" font-size="9">slope 1</text><text x="90" y="60" fill="#dc2626" font-size="9">slope 2</text></svg>' },
+            { num: 11, text: 'In a simple pendulum, time period versus length is depicted by',
+                opts: ['Straight line', 'Parabola (T² ∝ L)', 'Hyperbola', 'Exponential'], svg: '<svg viewBox="0 0 150 100" class="q-image-svg"><path d="M30 80 Q70 10 130 20" fill="none" stroke="#2563eb" stroke-width="2"/><text x="10" y="50" font-size="10">T</text><text x="100" y="95" font-size="10">L</text></svg>' },
+            { num: 12, text: 'A carbon resistor of (47±4.7) kΩ colour code sequence will be',
+                opts: ['Yellow-Green-Violet-Gold', 'Yellow-Violet-Orange-Silver', 'Violet-Yellow-Orange-Silver',
+                    'Green-Orange-Violet-Gold'
+                ] }, { num: 13,
+                text: 'A load on a massless spring gives extension x cm. Cut into two unequal parts, larger part (60 cm) gives 7.5 cm extension, smaller gives 5.0 cm. Then',
+                opts: ['x = 12.5 cm', 'x = 3.0 cm', 'Original length = 90 cm', 'Original length = 80 cm'] },
+            { num: 14,
+                text: 'Parallel plate air capacitor has C = 18 μF. Distance tripled, dielectric introduced → C = 72 μF. Dielectric constant is',
+                opts: ['4', '9', '12', '2'] }, { num: 15,
+                text: 'Metal block at atmospheric pressure 10⁵ N/m² placed in vacuum. Bulk modulus = 1.25×10¹¹ N/m². Fractional volume change is',
+                opts: ['4×10⁻⁷', '2×10⁻⁷', '8×10⁻⁷', '1×10⁻⁷'] }, { num: 16,
+                text: 'Three equipotential surfaces are shown. Which option correctly represents the corresponding field lines?',
+                opts: ['Option (a)', 'Option (b)', 'Option (c) - perpendicular to surfaces', 'Option (d)'],
+                svg: '<svg viewBox="0 0 180 80" class="q-image-svg"><ellipse cx="60" cy="40" rx="50" ry="20" fill="none" stroke="#333" stroke-width="1.5"/><ellipse cx="60" cy="40" rx="35" ry="13" fill="none" stroke="#333" stroke-width="1.5"/><ellipse cx="60" cy="40" rx="20" ry="7" fill="none" stroke="#333" stroke-width="1.5"/><line x1="60" y1="5" x2="60" y2="75" stroke="#dc2626" stroke-width="1.5" stroke-dasharray="4"/><line x1="30" y1="25" x2="90" y2="55" stroke="#dc2626" stroke-width="1.5" stroke-dasharray="4"/><line x1="90" y1="25" x2="30" y2="55" stroke="#dc2626" stroke-width="1.5" stroke-dasharray="4"/></svg>' },
+            { num: 17,
+                text: 'Hole at bottom of tank (water, ρ=1000 kg/m³). Total pressure at bottom = 3 atm (1 atm = 10⁵ N/m²). Velocity of efflux is nearest to',
+                opts: ['√400 m/s', '√200 m/s', '√600 m/s', '√500 m/s'] }, { num: 18,
+                text: 'Same charge q inside sphere (r=1 m) and cube (side=2 m). Ratio of flux through them is',
+                opts: ['1:1', '1:8', '8:1', '1:2'] }, { num: 19,
+                text: 'Uniform metallic rod rotates about perpendicular bisector. Heated uniformly → its speed of rotation',
+                opts: ['Increases', 'Decreases', 'Remains same', 'Increases due to I increase'] }, { num: 20,
+                text: 'Ratio of forces between two small charged spheres (i) in air (ii) in medium of dielectric constant K is',
+                opts: ['1:K', 'K:1', '1:K²', 'K²:1'] }, { num: 21,
+                text: 'At what temperature is rms velocity of H₂ equal to that of O₂ at 47°C?', opts: ['20 K', '80 K',
+                    '−73 K', '3 K'] }, { num: 22,
+                text: 'Distance of 5th dark fringe from centre = 4 mm. D = 2 m, λ = 600 nm. Distance between slits is',
+                opts: ['1.35 mm', '2.00 mm', '3.25 mm', '10.35 mm'] }, { num: 23,
+                text: 'Body cools from 50°C to 40°C in 5 min. Surrounding = 20°C. Further time to cool to 30°C (min)',
+                opts: ['5', '15/2', '25/3', '10'] }, { num: 24,
+                text: 'E = 10 cos(10⁷t + kx) j V/m. It can be inferred that', opts: ['λ = 188.4 m', 'k = 0.33 rad/m',
+                    'Amplitude = 20 V/m', 'None'] }, { num: 25,
+                text: 'Straight wire (I=12 A) bent into semicircle (r=2 cm). B at centre (⊙ = out, ⊗ = in)',
+                opts: ['B=1.9×10⁻⁴ T ⊙', 'B=1.9×10⁴ T ⊙', 'B=1.9×10⁻⁴ T ⊗', 'B=1.9×10⁴ T ⊗'] }, { num: 26,
+                text: 'Critical angle for light from medium A to B is θ. Speed in A = υ. Speed in B is',
+                opts: ['υ(1−cosθ)', 'υ/cosθ', 'υ/sinθ', 'υ(1−sinθ)'] }, { num: 27,
+                text: 'Toroid: inner r=0.25 m, outer r=0.26 m, N=3500, I=11 A. B inside core is',
+                opts: ['3×10² T', '3×10⁻² T', '3×10⁻⁷ T', '3×10⁷ T'] }, { num: 28,
+                text: 'EM wave: E_rms=6 V/m. Peak B₀ is', opts: ['1.41×10⁻⁸ T', '2.83×10⁻⁸ T', '0.70×10⁻⁸ T',
+                    '4.23×10⁻⁸ T'] }, { num: 29,
+                text: 'YDSE with blue (4360 Å) and green (5460 Å). x = distance of 4th max. Then',
+                opts: ['x(blue)=x(green)', 'x(blue)>x(green)', 'x(blue)<x(green)', 'ratio = 5460/4360'] },
+            { num: 30, text: 'Masses 5,4,2 kg at speeds 5,4,2 m/s along X-axis. |v_CM| ≈', opts: ['1.0 m/s', '4 m/s',
+                    '0.9 m/s', '1.3 m/s'] }, { num: 31,
+                text: 'Concave lens (n=1.5) both surfaces radius R. Immersed in n=1.75. Behaves as',
+                opts: ['Convergent, f=3.5R', 'Convergent, f=3.0R', 'Divergent, f=3.5R', 'Divergent, f=3.0R'] },
+            { num: 32, text: 'Three particles mass m at vertices of equilateral triangle side l. MI about AX (⊥ AB)',
+                opts: ['(3/4)ml²', '2ml²', '(5/4)ml²', '(3/2)ml²'],
+                svg: '<svg viewBox="0 0 120 100" class="q-image-svg"><polygon points="20,85 100,85 60,15" fill="none" stroke="#333" stroke-width="2"/><text x="8" y="90" font-size="11">A</text><text x="100" y="90" font-size="11">B</text><text x="55" y="12" font-size="11">C</text><line x1="20" y1="85" x2="95" y2="15" stroke="#dc2626" stroke-width="1.5" stroke-dasharray="5"/><text x="70" y="45" font-size="10" fill="#dc2626">AX</text></svg>' },
+            { num: 33, text: 'Horizontal component = √3 × vertical component. Angle of dip is', opts: ['0', 'π/3', 'π/6',
+                    'None'] }, { num: 34, text: 'Particle moves x=0 to x=5 under F=7−2x+3x². Work done =',
+                opts: ['70 J', '270 J', '35 J', '135 J'] }, { num: 35,
+                text: 'M-H curve for paramagnetic material is represented by', opts: ['Hysteresis loop', 'Curved line',
+                    'Straight line through origin', 'Saturation curve'],
+                svg: '<svg viewBox="0 0 150 100" class="q-image-svg"><line x1="20" y1="80" x2="130" y2="20" stroke="#2563eb" stroke-width="2"/><text x="10" y="50" font-size="10">M</text><text x="100" y="95" font-size="10">H</text></svg>' },
+            { num: 36, text: 'Momentum increased by 20%. % increase in KE =', opts: ['54%', '44%', '100%', '50%'] },
+            { num: 37, text: 'Series LCR: C=80μF, L=5H, R=40Ω. Resonance frequency =', opts: ['25 Hz', '25/π Hz',
+                    '50 Hz', '50/π Hz'] }, { num: 38,
+                text: 'Cyclist at 14√3 m/s, turn radius 20√3 m without skidding. Inclination to vertical =',
+                opts: ['30°', '90°', '48°', '60°'] }, { num: 39,
+                text: 'ε=200 sin(314t) V, I=sin(314t+π/3) A. Average power =', opts: ['200 W', '100 W', '50 W', '25 W'] },
+            { num: 40,
+                text: 'Radius of curvature ratio 1:2 for same mass, constant centripetal force. Velocity ratio =',
+                opts: ['1:4', '4:1', '4:2', '1:√2'] }, { num: 41,
+                text: 'Train v=72 km/h, rail separation=1 m, B_vert=2×10⁻⁵ T. Millivoltmeter reading (mV) =',
+                opts: ['1.44', '0.72', '0.4', '0.2'] }, { num: 42,
+                text: 'Lift mass=2000 kg, tension=28000 N. Acceleration is', opts: ['30 m/s² down', '4 m/s² up',
+                    '4 m/s² down', '14 m/s² up'] }, { num: 43,
+                text: '∠AOB conducting wire moves along bisector through B. AO=BO=l. EMF induced =',
+                opts: ['Bvl/√2', 'Bv', '√2 Bvl', 'Bvl'] }, { num: 44,
+                text: 'Explosion: 1 kg at 12 m/s, 2 kg at 8 m/s (right angles). Third part at 4 m/s. Mass =',
+                opts: ['3 kg', '5 kg', '7 kg', '17 kg'] }, { num: 45,
+                text: 'λ_A=2λ_B on identical metal plates. K_A and K_B relation:', opts: ['K_A < K_B/2', '2K_A = K_B',
+                    'K_A = 2K_B', 'K_A > 2K_B'] }, { num: 46,
+                text: 'Ball rolled off table at 4 m/s horiz., hits ground after 0.4 s. Wrong statement:',
+                opts: ['Height=0.8 m', 'Hits at 60° with vertical', 'Horiz. dist=1.6 m', 'Vert. velocity=4 m/s'] },
+            { num: 47, text: 'H and Li⁺ both in 2nd excited state. Angular momentum L and energy |E|:',
+                opts: ['L_H>L_Li, |E_H|>|E_Li|', 'L_H=L_Li, |E_H|<|E_Li|', 'L_H=L_Li, |E_H|>|E_Li|',
+                    'L_H>L_Li, |E_H|<|E_Li|'] }, { num: 48,
+                text: 'Particle from O(0,0) to (√3, 3). Path makes with X-axis angle of', opts: ['30°', '45°', '60°',
+                    '0°'] }, { num: 49,
+                text: 'Semiconductors in decreasing order of energy gap:', opts: ['Sn, Ge, Si', 'Sn, Si, Ge',
+                    'Si, Ge, Sn', 'Si, Sn, Ge'] }, { num: 50,
+                text: 'Logic gate circuit with A,B input and C output waveform. The gate is', opts: ['AND', 'NAND', 'NOR',
+                    'OR'], svg: '<svg viewBox="0 0 140 60" class="q-image-svg"><rect x="10" y="22" width="40" height="16" rx="3" fill="none" stroke="#333"/><text x="20" y="35" font-size="10">A</text><text x="50" y="35" font-size="10">B</text><rect x="80" y="22" width="40" height="16" rx="3" fill="none" stroke="#333"/><text x="95" y="35" font-size="10">C</text></svg>' },
+            { num: 51, text: 'Curve between height/depression h in capillary tube and radius r is',
+                opts: ['h ∝ r', 'h ∝ 1/r (hyperbola)', 'h constant', 'h ∝ r²'],
+                svg: '<svg viewBox="0 0 150 90" class="q-image-svg"><path d="M20 15 Q60 20 120 80" fill="none" stroke="#2563eb" stroke-width="2"/><text x="10" y="10" font-size="10">h</text><text x="125" y="88" font-size="10">r</text></svg>' },
+            { num: 52, text: 'Two charges q at distance 2a, third −2q at midpoint. Potential energy =',
+                opts: ['−q²/(8πε₀a)', '−3q²/(8πε₀a)', '−5q²/(8πε₀a)', '−7q²/(8πε₀a)'] }, { num: 53,
+                text: 'Photoelectric current vs collector potential for I₁>I₂ at fixed frequency:',
+                opts: ['Both saturate at same current', 'I₁ saturates higher, same stopping potential',
+                    'Different stopping potentials', 'Linear relationship'],
+                svg: '<svg viewBox="0 0 160 100" class="q-image-svg"><path d="M20 85 L80 85 L100 30 L140 30" fill="none" stroke="#2563eb" stroke-width="2"/><path d="M20 85 L80 85 L100 50 L140 50" fill="none" stroke="#dc2626" stroke-width="2"/><text x="10" y="40" font-size="10">I</text><text x="100" y="95" font-size="10">V</text></svg>' },
+            { num: 54,
+                text: 'Particle starts from rest, velocity remains constant. Distance s₁ in first 10 s, s₂ in first 20 s:',
+                opts: ['s₂=2s₁', 's₂=3s₁', 's₂=4s₁', 's₂=s₁'] }, { num: 55,
+                text: '3 mol monoatomic gas cycle: T_A=400K, T_B=800K, T_C=2400K, T_D=1200K. Work done ≈',
+                opts: ['10 kJ', '24 kJ', '30 kJ', '40 kJ'] }, { num: 56,
+                text: 'Resonance column: fundamental at 0.1 m, first overtone at 0.35 m. End correction =',
+                opts: ['0.012 m', '0.025 m', '0.05 m', '0.024 m'] }, { num: 57,
+                text: 'Energy to move body mass m from 2R to 4R from earth\'s centre (mass M):',
+                opts: ['GMm/(12R²)', 'GMm/(3R²)', 'GMm/(8R)', 'GMm/(4R)'] }, { num: 58,
+                text: '1 mol monoatomic (γ=5/3) + 1 mol diatomic (γ=7/5). γ_mixture =', opts: ['3/2', '23/15', '35/23',
+                    '4/3'] }, { num: 59,
+                text: 'Wavelength 120 cm when source stationary. Source moves at 60 m/s towards observer (v_sound=330 m/s). Observed wavelength =',
+                opts: ['98 cm', '140 cm', '120 cm', '1440 cm'] }, { num: 60,
+                text: 'Minimum antenna length for 20 MHz radio signal:', opts: ['5 m', '7.5 m', '2 m', '3.75 m'] }
+        ];
+
+        // Chemistry Questions (61-120)
+        const chemistryQuestions = [
+            { num: 61, text: 'Increasing order of density of alkali metals:', opts: ['Li<K<Na<Rb<Cs',
+                    'Li<Na<K<Rb<Cs', 'Cs<Rb<Na<K<Li', 'Cs<Rb<K<Na<Li'] }, { num: 62,
+                text: 'Mix 2.0 L of 3.0 M + 3.0 L of 2.5 M sugar, dilute to 10 L. Final concentrations:',
+                opts: ['5.5 M, 2.7 M', '5.5 M, 1.35 M', '2.7 M, 1.35 M', '3.5 M, 2.5 M'] }, { num: 63,
+                text: 'CH₃CH=CH₂ + HBr → ? Incorrect statement:', opts: ['Electrophilic addition',
+                    'Most stable intermediate is CH₃CH⁺CH₃', 'Product is (CH₃)₂CHCH₃',
+                    'With peroxide → anti-Markovnikov'] }, { num: 64,
+                text: 'Wrong statement:', opts: [
+                    'Isoelectronic: smaller + charge → smaller radius',
+                    'Isoelectronic: greater − charge → larger radius', 'Atomic radius increases down group',
+                    'Atomic radius decreases across period'
+                ] }, { num: 65, text: 'Haemoglobin 0.33% Fe, MW≈67200, Fe at.wt=56. Fe atoms per molecule:',
+                opts: ['1', '6', '4', '2'] }, { num: 66,
+                text: 'Which will NOT show geometrical isomerism?', opts: ['2-butene', '2-pentene',
+                    '2,3-dimethyl-2-butene', '1,2-dichloroethene'] }, { num: 67,
+                text: 'If quantum number l could equal n, Fe(26) would have unpaired electrons:', opts: ['2', '3', '4',
+                    '5'] }, { num: 68,
+                text: '800 g of 40% solution cooled, 100 g solute precipitates. Remaining % =', opts: ['31.4%', '55.6%',
+                    '67.8%', '69.6%'] }, { num: 69, text: 'Rubber for tyres vulcanised with:', opts: ['3% S', '7% S',
+                    '1% S', 'All'] }, { num: 70, text: 'Largest radius ion:', opts: ['Se²⁻', 'F⁻', 'O²⁻', 'Rb⁺'] },
+            { num: 71,
+                text: '2.9 g ideal gas at 368 K occupies same volume as 0.184 g H₂ at 290 K (isobaric). Moles of gas:',
+                opts: ['0.40', '0.0725', '13.8', '0.029'] }, { num: 72,
+                text: 'Vapour pressure: 1 mol A(p°=100 mmHg) + 3 mol B(p°=60 mmHg) = 75 mmHg. This indicates:',
+                opts: ['Positive deviation', 'Boiling point lowered', 'A-B forces weaker', 'All correct'] },
+            { num: 73, text: 'Alkane NOT obtained from:', opts: ['Hydroxylation of ethyne', 'C₂H₅OH + HI/Red P',
+                    'Butanone + Zn-Hg/HCl', 'Electrolysis of sodium propanoate'] }, { num: 74,
+                text: 'Kp=1.2×10⁻² for 2H₂S⇌2H₂+S₂ at 1065°C. Kc is:', opts: ['<1.2×10⁻²', '>1.2×10⁻²', '=1.2×10⁻²',
+                    '0.12×10⁻²'] }, { num: 75,
+                text: 'Gas at constant volume: p=1000 Torr at 0°C. Temperature when p=400 Torr:', opts: ['109 K',
+                    '273 K', '373 K', '0 K'] }, { num: 76, text: 'Reacts with NaOH(aq):', opts: ['C₆H₅OH (phenol)',
+                    'C₆H₅CH₂OH', '(CH₃)₃COH', 'C₂H₅OH'] }, { num: 77,
+                text: 'Among Na₂S₂O₃, Na₂S₄O₆, CaOCl₂ – different oxidation states for same atoms:',
+                opts: ['1 and 3', '2 and 3', '1 and 2', 'All'] }, { num: 78,
+                text: 'Combustion of C₂H₆: 54 g H₂O formed, 370 kcal evolved. ΔH_combustion =', opts: ['370 kcal/mol',
+                    '−370 kcal/mol', '−6.61 kcal/mol', '6.61 kcal/mol'] }, { num: 79,
+                text: 'HI cleaves ether. Product identification:', opts: ['RI + ROH', 'RI + RI', 'ROH + ROH',
+                    'Alkene + H₂O'] }, { num: 80, text: 'Slag from copper pyrites extraction:', opts: ['Cu₂S', 'CuSiO₃',
+                    'FeSiO₃', 'SiO₂'] }, { num: 81, text: 'The compound can exhibit:', opts: ['Geometrical isomerism',
+                    'Both geometrical & optical', 'Optical isomerism', 'Tautomerism'] }, { num: 82,
+                text: 'TiCl₄ is a:', opts: ['Bronsted-Lowry acid', 'Bronsted-Lowry base', 'Lewis acid', 'Lewis base'] },
+            { num: 83,
+                text: 'NH₂CN(s) + 1.5O₂ → N₂+CO₂+H₂O, ΔE°=−742.7 kJ/mol at 298K. ΔH° =',
+                opts: ['−741.5 kJ/mol', '−740.4 kJ/mol', '−742.7 kJ/mol', '+742.7 kJ/mol'] }, { num: 84,
+                text: 'IUPAC name:', opts: ['1-cyclohexenol', '2-cyclohexenol', '1-cyclohexen-1-ol',
+                    '1-cyclohexen-2-ol'] }, { num: 85,
+                text: '[Pt(O₂)(en)₂(Br)]²⁺ coordination number and oxidation number:', opts: ['4,3', '4,5', '4,6',
+                    '6,4'] }, { num: 86, text: 'P−O−P bonds in cyclic metaphosphoric acid:', opts: ['0', '2', '3',
+                    '4'] }, { num: 87, text: 'Fastest hydrolysis:', opts: ['Benzyl chloride', 'Allyl chloride',
+                    'Vinyl chloride', 'Chlorobenzene'] }, { num: 88, text: 'Hybrid state of N-atom in the compound:',
+                opts: ['sp', 'sp²', 'sp³', 'sp³d'] }, { num: 89,
+                text: 'N₂O₄⇌2NO₂, Kc=0.67. Start with 3 mol NO₂+1 mol N₂O₄ in 1L. NO₂ at equilibrium:',
+                opts: ['1.5 mol', '2.0 mol', '0.5 mol', '1.0 mol'] }, { num: 90,
+                text: 'Resonance stabilised compounds among given:', opts: ['I & II', 'I, III, IV', 'All',
+                    'II, III, IV'] }, { num: 91, text: 'Identical bond order: I.CN⁻ II.O₂⁻ III.NO⁺ IV.CN⁺',
+                opts: ['I & III', 'II & IV', 'I, II, III', 'I & IV'] }, { num: 92,
+                text: 'Electrolysis of aq. NaCl – anode reaction:', opts: ['Na⁺+e⁻→Na', '2H₂O→O₂+4H⁺+4e⁻',
+                    'H⁺+e⁻→½H₂', 'Cl⁻→½Cl₂+e⁻'] }, { num: 93,
+                text: 'BOD < 5 ppm indicates water is:', opts: ['Rich in dissolved O₂', 'Poor in dissolved O₂',
+                    'Highly polluted', 'Not suitable for aquatic life'] }, { num: 94,
+                text: 'Isostructural pairs among NF₃, NO₃⁻, BF₃, H₃O⁺, N₃H:',
+                opts: ['[NF₃,NO₃⁻] & [BF₃,H₃O⁺]', '[NF₃,N₃H] & [NO₃⁻,BF₃]', '[NF₃,H₃O⁺] & [NO₃⁻,BF₃]',
+                    '[NF₃,H₃O⁺] & [N₃H,BF₃]'] }, { num: 95,
+                text: 'Relative VP decrease of aq. NaCl = 0.167. Moles of NaCl in 180 g H₂O:', opts: ['2 mol',
+                    '1 mol', '3 mol', '4 mol'] }, { num: 96,
+                text: 'σ-complex in chlorination of benzene is:', opts: ['Arenium ion', 'Carbanion', 'Free radical',
+                    'Carbene'] }, { num: 97, text: 'K₂Cr₂O₇/H⁺ turns green with:', opts: ['Fe²⁺', 'SO₂', 'Both',
+                    'CO₂'] }, { num: 98,
+                text: 'Ice: hexagonal, unit cell volume=132×10⁻²⁴ cm³, density=0.92 g/cm³. H₂O per unit cell:',
+                opts: ['1', '2', '3', '4'] }, { num: 99,
+                text: 'Reaction NOT expected (Corey-House):', opts: ['[(CH₃)₂CH]₂CuLi + C₂H₅Br',
+                    '(C₂H₅)₂CuLi + (CH₃)₃CBr', 'Both', 'None'] }, { num: 100,
+                text: 'Extinguish Li/Na/K fire:', opts: ['Water', 'Nitrogen', 'CO₂', 'Asbestos blanket'] },
+            { num: 101,
+                text: 'Rb halide unit cell 0.30 Å larger than K salt (r_K⁺=1.33 Å). r_Rb⁺ =', opts: ['1.18 Å',
+                    '1.48 Å', '1.63 Å', '1.03 Å'] }, { num: 102, text: 'Stereospecific addition to alkene:',
+                opts: ['I & II', 'II & III', 'I & III', 'All'] }, { num: 103,
+                text: 'Isomers of [Cu(NH₃)₄][PtCl₄]:', opts: ['3', '6', '5', '4'] }, { num: 104,
+                text: '²²⁶Ra → ²²²Rn + X. X is:', opts: ['¹H', '²H', '⁴He', '³He'] }, { num: 105,
+                text: 'NOT true about aspirin:', opts: ['Narcotic analgesic', 'Pain reliever', 'Anti-clotting',
+                    'Neurologically active'] }, { num: 106,
+                text: 'Olefin ozonolysis → acetone + methyl ethyl ketone. Olefin is:', opts: ['2,3-dimethyl-2-butene',
+                    '2-methyl-2-butene', '2-methyl-2-pentene', '2,3-dimethyl-2-pentene'] }, { num: 107,
+                text: 'First order A→P, a/(a−x)=8 after 60 min, [A]=0.1M. Rate =', opts: ['2.226×10⁻³', '3.466×10⁻³',
+                    '4.455×10⁻³', '5.532×10⁻³'] }, { num: 108,
+                text: 'Benzene formed by:', opts: ['Sodium benzoate + sodalime', 'Calcium benzoate heated',
+                    'Ca benzoate + Ca acetate', 'All'] }, { num: 109,
+                text: 'CH₃CH₂OH + bleaching powder →', opts: ['CHCl₃', 'CCl₃CHO', 'CH₂ClCHO', 'CCl₄'] },
+            { num: 110, text: 'Does NOT show d-block properties:', opts: ['Cu,Ag,Au', 'Zn,Hg,Cd', 'Sc,Ti,V',
+                'Fe,Co,Ni'] }, { num: 111, text: 'Glycogen structure similar to:', opts: ['Amylose', 'Amylopectin',
+                    'Cellulose', 'Glucose'] }, { num: 112, text: 'Copper matte contains:', opts: ['Cu(II)S + Fe(II)S',
+                    'Cu(II)S + Fe(III)S', 'Cu(I)S + Fe(II)S', 'Cu(I)S + Fe(III)S'] }, { num: 113,
+                text: 'PCl₅(g)⇌PCl₃(g)+Cl₂(g):', opts: ['ΔH<0,ΔS<0', 'ΔH>0,ΔS>0', 'ΔH>0,ΔS<0', 'ΔH<0,ΔS>0'] },
+            { num: 114,
+                text: '[AgI]I⁻ sol coagulation: 1 mol requires AgNO₃, Pb(NO₃)₂, Fe(NO₃)₃ as:',
+                opts: ['1,1,1', '1,2,3', '1,1,1', '6,3,2'] }, { num: 115, text: 'Acidic oxide:',
+                opts: ['B₂O₃', 'Al₂O₃', 'Ga₂O₃', 'In₂O₃'] }, { num: 116,
+                text: 'Strongest & weakest base among given:', opts: ['IV, I', 'IV, II', 'I, IV', 'III, IV'] },
+            { num: 117, text: 'Enhances lathering of soap:', opts: ['Na₂CO₃', 'Sodium rosinate', 'Sodium stearate',
+                    'Na₃PO₄'] }, { num: 118, text: 'Does NOT liberate H₂ with dil. HCl:', opts: ['Ag', 'Zn', 'Mg',
+                    'Sn'] }, { num: 119,
+                text: 'log(x/m) vs log p: straight line 45°, intercept OA. x/m at 0.2 atm =', opts: ['0.2', '0.4',
+                    '0.6', '0.8'] }, { num: 120, text: 'Electrons in reduction of NO₃⁻ to N₂H₄:', opts: ['7', '5', '8',
+                    '4'] }
+        ];
+
+        // Mathematics Questions (121-180)
+        const mathematicsQuestions = [
+            { num: 121, text: 'A=R−{3}, B=R−{1}, f(x)=(x−2)/(x−3). f is:', opts: ['Injective', 'Bijective',
+                    'Surjective', 'Many-one'] }, { num: 122,
+                text: 'f:N→S, f(x)=4x²+12x+15. f⁻¹(y)=', opts: ['(√(y+6)−3)/2, y≥6', '(√(y−6)+3)/2, y≥6',
+                    '(√(y−6)−3)/2, y≥6', '(√(y+6)+3)/2, y≥6'] }, { num: 123,
+                text: 'f:[1,∞)→[1,∞), f(x)=2^{x(x−1)} invertible. f⁻¹(x)=', opts: ['(1/2)^{x(x−1)}',
+                    '½(1+√(1+4log₂x))', '½(1−√(1+4log₂x))', 'Not defined'] }, { num: 124,
+                text: 'If sin(x+y)/sin(x−y)=(a+b)/(a−b), then tan x/tan y =', opts: ['a/b', 'b/a', '2a', '2b'] },
+            { num: 125, text: 'cos⁴(π/8)+cos⁴(3π/8)+cos⁴(5π/8)+cos⁴(7π/8)=', opts: ['1/√2', '3/2', '1/2', '0'] },
+            { num: 126, text: 'tanα=m/(m+1), tanβ=1/(2m+1). α+β=', opts: ['π/2', 'π/3', 'π/6', 'π/4'] },
+            { num: 127, text: 'tanx+secx=2cosx in [0,2π]. Number of solutions:', opts: ['0', '1', '2', '3'] },
+            { num: 128, text: 'cosθ=x+1/x for real x. Then:', opts: ['θ acute', 'θ right', 'θ obtuse',
+                    'No θ possible'] }, { num: 129, text: 'tan 22°30\' =', opts: ['0', '1/√2', '1/(√2+1)',
+                    '1/(√2−1)'] }, { num: 130,
+                text: 'tan(½[sin⁻¹(2x/(1+x²))+cos⁻¹((1−y²)/(1+y²))]) =', opts: ['x−y', '(x−y)/(1+xy)', 'x+y',
+                    '(x+y)/(1−xy)'] }, { num: 131, text: '10ⁿ+3·4ⁿ⁺²+k divisible by 9 ∀n∈N. Least +ve k:',
+                opts: ['5', '3', '7', '1'] }, { num: 132, text: 'Σ(iⁿ+iⁿ⁺¹) n=1 to 13 =', opts: ['0', 'i', 'i+1',
+                    'i−1'] }, { num: 133, text: 'Re((z̄+2)/(z̄−1))=4. Locus of z:', opts: ['Circle', 'Parabola',
+                    'Ellipse', 'Hyperbola'] }, { num: 134, text: 'sinx+icos2x and cosx−isin2x conjugate for:',
+                opts: ['x=nπ', 'x=(n+½)π/2', 'x=0', 'No x'] }, { num: 135,
+                text: '((3−4ix)/(3+4ix))=α−iβ, α,β∈R. α²+β²=', opts: ['1', '−1', '2', '−2'] }, { num: 136,
+                text: 'Words with 2 vowels & 3 consonants from 4 vowels & 5 consonants:', opts: ['60', '120', '7200',
+                    '720'] }, { num: 137, text: 'Handshakes=66. Number of persons:', opts: ['11', '12', '13', '14'] },
+            { num: 138, text: 'Committee: 4 men, 6 women, ≥2 men, women=2×men. Ways:', opts: ['94', '126', '128',
+                    'None'] }, { num: 139,
+                text: 'Coefficients of (3r)th and (r+2)th terms in (1+x)²ⁿ equal, r>1,n>2. Then:', opts: ['n=2r',
+                    'n=3r', 'n=2r+1', 'None'] }, { num: 140,
+                text: '7th term from beginning = 7th from end in (∛2+1/∛3)ⁿ. n=', opts: ['10', '11', '12', '13'] },
+            { num: 141, text: 'x,2y,3z in AP; x,y,z in GP (distinct). Common ratio:', opts: ['3', '1/3', '2', '1/2'] },
+            { num: 142, text: 'Σ(S_r/s_r) r=1 to n =', opts: ['n(n+1)(n+2)/6', 'n(n+1)/2', '(n²+3n+2)/2',
+                    'None'] }, { num: 143,
+                text: 'Tangent of angle between lines with intercepts (a,−b) and (b,−a):', opts: ['(a²−b²)/ab',
+                    '(b²−a²)/2', '(b²−a²)/(2ab)', 'None'] }, { num: 144,
+                text: 'Distance from intersection of 2x−3y+5=0 & 3x+4y=0 to 5x−2y=0:', opts: ['130/(17√29)',
+                    '13/(7√29)', '130/7', 'None'] }, { num: 145,
+                text: 'Line through (3,−2) inclined 60° to √3x+y=1:', opts: ['y+2=0, √3x−y−2−3√3=0',
+                    'x−2=0, √3x−y+2+3√3=0', '√3x−y−2−3√3=0', 'None'] }, { num: 146,
+                text: 'Circle through (3,6) touching axes:', opts: ['x²+y²+6x+6y+3=0', 'x²+y²−6x−6y−9=0',
+                    'x²+y²−6x−6y+9=0', 'None'] }, { num: 147,
+                text: 'Circle centre origin through vertices of equilateral triangle (median=3a):',
+                opts: ['x²+y²=9a²', 'x²+y²=16a²', 'x²+y²=4a²', 'x²+y²=a²'] }, { num: 148,
+                text: 'Parabola vertex (−3,0), directrix x+5=0. Equation:', opts: ['y²=8(x+3)', 'x²=8(y+3)',
+                    'y²=−8(x+3)', 'y²=8(x+5)'] }, { num: 149, text: 'y=mx+1 tangent to y²=4x. m=',
+                opts: ['0', '1', '2', '3'] }, { num: 150,
+                text: 'Ellipse: focus(1,−1), directrix x−y−3=0, e=½. Equation:', opts: [
+                    '7x²+2xy+7y²−10x+10y+7=0', '7x²+2xy+7y²+7=0', '7x²+2xy+7y²+10x−10y−7=0', 'None'
+                ] }, { num: 151, text: 'Ellipse e=5/8, foci distance=10. Latus rectum =', opts: ['39', '39/4', '39/2',
+                    '39/8'] }, { num: 152,
+                text: 'Hyperbola latus rectum=8, conjugate axis=½(foci distance). Eccentricity =', opts: ['4/3',
+                    '4/√3', '2/√3', 'None'] }, { num: 153,
+                text: 'Point on (x+2)/3=(y+1)/2=(z−3)/2 at distance 6/√2 from (1,2,3):', opts: ['(56,43,111)',
+                    '(56/17,43/17,111/17)', '(2,1,3)', '(−2,−1,−3)'] }, { num: 154,
+                text: 'lim(x→0) sin(mx)cot(x/√3)=2. m=', opts: ['2√3', '2√3/5', '2√3/3', '2√3/7'] },
+            { num: 155, text: 'Function continuous on [0,1]. a=', opts: ['0', '3/5', '2', '5/3'] }, { num: 156,
+                text: 'f(x)=(xⁿ−aⁿ)/(x−a), f\'(a)=', opts: ['1', '0', '1/2', 'Does not exist'] }, { num: 157,
+                text: '∫₀¹ log(eˣ((x−2)/(x+2))^{3/4}) dx =', opts: ['1', '(x²+1)/(x²−4)', '(x²−1)/(x²−4)',
+                    'eˣ(x²−1)/(x²−4)'] }, { num: 158,
+                text: 'cos(x/2)cos(x/2²)...cos(x/2ⁿ)=f(x). ½tan(x/2)+...+(1/2ⁿ)tan(x/2ⁿ)=',
+                opts: ['f\'(x)/f(x)', 'f(x)/f\'(x)', '−f\'(x)/f(x)', '0'] }, { num: 159,
+                text: 'y=|sinx|^|x|, dy/dx at x=−π/6 =', opts: ['(2/6)[6log2−√3π]', '(2/6)[6log2+√3π]',
+                    '(2/6)[6log2+√3]', 'None'] }, { num: 160,
+                text: 'f\'\'(x)=−f(x), g(x)=f\'(x), F(x)=[f(x/2)]²+[g(x/2)]², F(5)=5. F(10)=', opts: ['0', '5', '10',
+                    '25'] }, { num: 161, text: 'f(x)=2x²−3x. True:', opts: ['Strictly increasing (3/4,∞)',
+                    'Strictly decreasing (−∞,3/4)', 'Both true', 'Both false'] }, { num: 162,
+                text: 'Least a so f(x)=x²+ax+1 strictly increasing on (1,2):', opts: ['−1', '−2', '0', '1'] },
+            { num: 163, text: 'd/dx{f(x)}=1/(1+x²). d/dx{f(x³)}=', opts: ['3x/(1+x³)', '3x²/(1+x⁶)',
+                    '−6x⁵/(1+x⁶)²', 'None'] }, { num: 164, text: '∫(10x⁹+10ˣln10)/(x¹⁰+10ˣ) dx =',
+                opts: ['10ˣ−x¹⁰+C', 'ln|x¹⁰+10ˣ|+C', '(10ˣ−x¹⁰)⁻¹+C', 'ln|x¹⁰+10ˣ|+C'] }, { num: 165,
+                text: '∫dx/(sin²x cos²x) =', opts: ['tanx+cotx+C', 'tanx−cotx+C', 'tanx·cotx+C', '−tanx−cotx+C'] },
+            { num: 166, text: '∫√x/√(a³−x³) dx =', opts: ['(1/3)sin⁻¹(√x³/a³)+C', '(2/3)sin⁻¹(√x³/a³)+C',
+                    '(2/3)sin⁻¹(√x/a)+C', '(1/3)sin⁻¹(x/a)+C'] }, { num: 167,
+                text: '∫dx/(x(x²+1)) =', opts: ['ln|x|−½ln(x²+1)+C', 'ln|x|+½ln(x²+1)+C', '−ln|x|+½ln(x²+1)+C',
+                    '½ln|x|+ln(x²+1)+C'] }, { num: 168, text: '∫(x+sinx)/(1+cosx) dx =',
+                opts: ['ln|1+cosx|+C', 'ln|x+sinx|+C', 'x−tan(x/2)+C', 'x·tan(x/2)+C'] }, { num: 169,
+                text: 'lim(x→∞) ∫₀ˣ [1/√(1+t²)−1/(1+t)] dt =', opts: ['log₂e', 'ln2', 'log₂(1/e)',
+                'log_{1/e}2'] }, { num: 170, text: 'Area bounded by y=−x²+2x+3 and y=0:', opts: ['32 sq units',
+                    '32/3 sq units', '1/32 sq unit', '1/3 sq unit'] }, { num: 171,
+                text: 'y=√(a²−x²), x∈(−a,a) solves DE:', opts: ['x+y·dy/dx=0', 'y+x·dy/dx=0', 'x−y·dy/dx=0',
+                    'y−x·dy/dx=0'] }, { num: 172,
+                text: 'DE of circles radius 5, centre on y=2:', opts: ['(x−2)²y\'²=25−(y−2)²',
+                    '(x−2)y\'²=25−(y−2)²', '(y−2)y\'²=25−(y−2)²', '(y−2)²y\'²=25−(y−2)²'] }, { num: 173,
+                text: '|a|=50, collinear with b=6i−8j−(15/2)k, acute with +Z. a=', opts: ['−24i+32j+30k',
+                    '24i−32j−30k', '−12i+16j−15k', '12i−16j−15k'] }, { num: 174,
+                text: '2a+3b−5c=0. Ratio c divides AB:', opts: ['3:2 internally', '3:2 externally', '2:3 internally',
+                    '2:3 externally'] }, { num: 175, text: 'B is inverse of A. α=', opts: ['−2', '1', '2', '5'] },
+            { num: 176, text: 'A²=I. (A−I)³+(A+I)³−7A=', opts: ['A', 'I−A', 'I+A', '3A'] }, { num: 177,
+                text: 'Determinant Δ =', opts: ['abc', 'a²b²', '0', '−ab'] }, { num: 178,
+                text: 'P(B)=3/5, P(A|B)=1/2, P(A∪B)=4/5. P(A)=', opts: ['3/10', '1/5', '1/2', '3/5'] },
+            { num: 179, text: 'Negation of "72 divisible by 2 and 3":', opts: ['72 not divisible by 2 OR by 3',
+                    '72 not divisible by 2 AND by 3', '72 divisible by 2 AND not by 3',
+                    '72 not divisible by 2 AND divisible by 3'] }, { num: 180,
+                text: 'Max Z=4x+3y for given feasible region:', opts: ['112', '100', '72', '0'],
+                svg: '<svg viewBox="0 0 150 100" class="q-image-svg"><polygon points="20,80 80,30 120,80" fill="#eef2ff" stroke="#2563eb" stroke-width="2"/><circle cx="20" cy="80" r="3" fill="#333"/><circle cx="80" cy="30" r="3" fill="#333"/><circle cx="120" cy="80" r="3" fill="#333"/><text x="5" y="85" font-size="9">O(0,0)</text><text x="70" y="22" font-size="9">B(16,16)</text><text x="118" y="85" font-size="9">C(0,24)</text></svg>' }
+        ];
+
+        // ─────────────────── BUILD QUESTIONS ───────────────────
+        function buildQuestionHTML(q, section) {
+            const svgHTML = q.svg ? q.svg : '';
+            const opts = q.opts.map((opt, i) => {
+                const letter = String.fromCharCode(97 + i);
+                return `<label><input type="radio" name="q_${section}_${q.num}" value="${letter}"> <span>${letter}. ${opt}</span></label>`;
+            }).join('');
+            return `
+        <div class="question-card" id="card_${section}_${q.num}">
+          <span class="review-badge correct-badge">✓ Correct</span>
+          <span class="review-badge incorrect-badge">✗ Incorrect</span>
+          <span class="review-badge unanswered-badge">⚠ Unanswered</span>
+          <div class="q-num">Question ${q.num}</div>
+          <div class="q-text">${q.text}${svgHTML}</div>
+          <div class="options">${opts}</div>
+          <div class="review-answer" id="review_${section}_${q.num}"></div>
+        </div>`;
+        }
+
+        function populateSection(sectionId, questions, sectionKey) {
+            const container = document.getElementById('section-' + sectionId);
+            container.innerHTML = questions.map(q => buildQuestionHTML(q, sectionKey)).join('');
+        }
+
+        populateSection('physics', physicsQuestions, 'physics');
+        populateSection('chemistry', chemistryQuestions, 'chemistry');
+        populateSection('mathematics', mathematicsQuestions, 'mathematics');
+
+        // ─────────────────── TIMER ───────────────────
+        let timerInterval;
+        let elapsedSeconds = 0;
+
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                elapsedSeconds++;
+                const h = String(Math.floor(elapsedSeconds / 3600)).padStart(2, '0');
+                const m = String(Math.floor((elapsedSeconds % 3600) / 60)).padStart(2, '0');
+                const s = String(elapsedSeconds % 60).padStart(2, '0');
+                document.getElementById('timer').textContent = `${h}:${m}:${s}`;
+            }, 1000);
+        }
+        startTimer();
+
+        // ─────────────────── TAB NAVIGATION ───────────────────
+        const tabButtons = document.querySelectorAll('#tabNav button');
+        const sections = document.querySelectorAll('.section');
+        tabButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                tabButtons.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                const target = btn.getAttribute('data-section');
+                sections.forEach(s => s.classList.remove('active'));
+                document.getElementById('section-' + target).classList.add('active');
+                window.scrollTo({ top: 200, behavior: 'smooth' });
+            });
+        });
+
+        // ─────────────────── SUBMIT & REVIEW ───────────────────
+        let testSubmitted = false;
+
+        function submitTest() {
+            if (testSubmitted) return;
+            testSubmitted = true;
+            clearInterval(timerInterval);
+
+            const allSections = [
+                { key: 'physics', questions: physicsQuestions },
+                { key: 'chemistry', questions: chemistryQuestions },
+                { key: 'mathematics', questions: mathematicsQuestions }
+            ];
+
+            let totalCorrect = 0;
+            let totalIncorrect = 0;
+            let totalUnanswered = 0;
+            const totalQuestions = 180;
+
+            allSections.forEach(section => {
+                section.questions.forEach(q => {
+                    const card = document.getElementById(`card_${section.key}_${q.num}`);
+                    const reviewDiv = document.getElementById(`review_${section.key}_${q.num}`);
+                    const correctAnswer = answerKey[section.key][q.num - 1];
+                    const selected = document.querySelector(
+                        `input[name="q_${section.key}_${q.num}"]:checked`);
+                    const selectedValue = selected ? selected.value : null;
+
+                    // Disable all radios in this question
+                    const radios = document.querySelectorAll(
+                        `input[name="q_${section.key}_${q.num}"]`);
+                    radios.forEach(r => r.disabled = true);
+
+                    if (!selectedValue) {
+                        totalUnanswered++;
+                        card.classList.add('review-unanswered');
+                        reviewDiv.textContent =
+                            `Unanswered. Correct answer: ${correctAnswer.toUpperCase()}`;
+                    } else if (selectedValue === correctAnswer) {
+                        totalCorrect++;
+                        card.classList.add('review-correct');
+                        reviewDiv.textContent =
+                            `Your answer: ${selectedValue.toUpperCase()} — Correct ✓`;
+                    } else {
+                        totalIncorrect++;
+                        card.classList.add('review-incorrect');
+                        reviewDiv.textContent =
+                            `Your answer: ${selectedValue.toUpperCase()} — Incorrect. Correct: ${correctAnswer.toUpperCase()}`;
+                    }
+                });
+            });
+
+            // Show results
+            const resultsPanel = document.getElementById('resultsPanel');
+            const scorePercent = ((totalCorrect / totalQuestions) * 100).toFixed(1);
+            resultsPanel.innerHTML = `
+        <h2>📊 Test Results</h2>
+        <div class="score">${totalCorrect} / ${totalQuestions}</div>
+        <p style="font-size:1.2rem;font-weight:600;color:#2563eb;">Score: ${scorePercent}%</p>
+        <div class="breakdown">
+          <span class="correct-count">✅ Correct: ${totalCorrect}</span>
+          <span class="incorrect-count">❌ Incorrect: ${totalIncorrect}</span>
+          <span class="unanswered-count">⚠ Unanswered: ${totalUnanswered}</span>
+        </div>
+        <p style="margin-top:10px;font-size:0.85rem;color:#6b7280;">Scroll through questions to review color-coded answers.</p>
+      `;
+            resultsPanel.classList.add('show');
+            document.getElementById('btnReset').classList.add('show');
+            document.getElementById('btnSubmit').disabled = true;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function resetTest() {
+            testSubmitted = false;
+            document.querySelectorAll('input[type="radio"]').forEach(r => {
+                r.checked = false;
+                r.disabled = false;
+            });
+            document.querySelectorAll('.question-card').forEach(card => {
+                card.classList.remove('review-correct', 'review-incorrect', 'review-unanswered');
+            });
+            document.querySelectorAll('.review-answer').forEach(d => d.textContent = '');
+            document.getElementById('resultsPanel').classList.remove('show');
+            document.getElementById('btnReset').classList.remove('show');
+            document.getElementById('btnSubmit').disabled = false;
+            elapsedSeconds = 0;
+            document.getElementById('timer').textContent = '00:00:00';
+            clearInterval(timerInterval);
+            startTimer();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
