@@ -879,7 +879,7 @@
             <span class="candidate-name-header" id="candidateNameHeader">Candidate</span>
         </div>
         <div class="header-center">
-            <span class="test-title-header">COMEDK 2012</span>
+            <span class="test-title-header">COMEDK CM6</span>
             <div class="timer-box" id="timer">03:00:00</div>
         </div>
         <div class="header-right">
@@ -2095,7 +2095,7 @@
             function triggerFirebaseSave(name) {
                 firebaseStatus.textContent = '⏳ Saving to leaderboard...';
                 if (typeof window.saveScoreToFirebase === 'function') {
-                    window.saveScoreToFirebase(name, '2012', finalScore, 180, finalAccuracy)
+                    window.saveScoreToFirebase(name, 'CM6', finalScore, 180, finalAccuracy)
                         .then(() => {
                             firebaseStatus.textContent = '✅ Score saved to leaderboard!';
                         })
@@ -2106,12 +2106,12 @@
                     firebaseStatus.textContent = '⚠️ Leaderboard unavailable.';
                 }
                 // Update localStorage best score
-                const bestKey = 'comedk_best_score_2012';
+                const bestKey = 'comedk_best_score_CM6';
                 const prevBest = parseInt(localStorage.getItem(bestKey) || '0');
                 if (finalScore > prevBest) {
                     localStorage.setItem(bestKey, finalScore);
                 }
-                const attemptsKey = 'comedk_attempts_2012';
+                const attemptsKey = 'comedk_attempts_CM6';
                 const prevAttempts = parseInt(localStorage.getItem(attemptsKey) || '0');
                 localStorage.setItem(attemptsKey, prevAttempts + 1);
             }
