@@ -1,0 +1,1925 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>COMEDK 2024 Morning Shift — Physics CBT</title>
+    <style>
+        :root {
+            --bg: #f5f5f5;
+            --card-bg: #ffffff;
+            --primary: #1a56db;
+            --primary-light: #e8f0fe;
+            --correct: #0d904f;
+            --incorrect: #d93025;
+            --border: #ddd;
+            --text: #202124;
+            --text-secondary: #5f6368;
+            --shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+            --radius: 6px;
+            --transition: 0.15s ease;
+            --font: Arial, 'Helvetica Neue', sans-serif;
+            --header-bg: #1a56db;
+            --submit-red: #dc2626;
+            --option-hover: #e8f0fe;
+            --option-selected-bg: #e8f0fe;
+            --option-selected-border: #1a56db;
+            --tap-min: 48px;
+            --option-min: 52px;
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+            min-height: 100vh;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ========== HEADER ========== */
+        .top-header {
+            background: var(--header-bg);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 16px;
+            position: sticky;
+            top: 0;
+            z-index: 200;
+            gap: 8px;
+            flex-wrap: nowrap;
+            min-height: 52px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12);
+        }
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+            min-width: 0;
+        }
+        .header-photo {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #fff;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.75rem;
+            flex-shrink: 0;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+        }
+        .header-name {
+            font-size: 0.8rem;
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 110px;
+        }
+        .header-center {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+        .header-test-title {
+            font-weight: 700;
+            font-size: 0.9rem;
+            white-space: nowrap;
+        }
+        .header-timer {
+            background: #fff;
+            color: #1a56db;
+            font-weight: 700;
+            font-size: 0.85rem;
+            padding: 5px 12px;
+            border-radius: 4px;
+            font-variant-numeric: tabular-nums;
+            font-family: 'Courier New', monospace;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+            min-width: 75px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        .header-timer.warning {
+            background: #fff0f0;
+            color: #dc2626;
+            animation: pulse-timer 0.8s infinite;
+        }
+        @keyframes pulse-timer {
+            0%,
+            100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.04);
+            }
+        }
+        .header-right {
+            flex-shrink: 0;
+        }
+        .btn-submit-header {
+            background: var(--submit-red);
+            color: #fff;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 4px;
+            font-weight: 700;
+            font-size: 0.82rem;
+            cursor: pointer;
+            letter-spacing: 0.3px;
+            white-space: nowrap;
+            min-height: 36px;
+            transition: background 0.2s;
+        }
+        .btn-submit-header:hover {
+            background: #b91c1c;
+        }
+
+        /* ========== SUBJECT TABS ========== */
+        .subject-tabs {
+            display: flex;
+            background: #fff;
+            border-bottom: 2px solid #e0e0e0;
+            position: sticky;
+            top: 52px;
+            z-index: 150;
+            gap: 0;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+        .subject-tabs::-webkit-scrollbar {
+            display: none;
+        }
+        .subject-tab {
+            flex: 1 1 0;
+            min-width: 80px;
+            text-align: center;
+            padding: 10px 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.8rem;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s;
+            color: #555;
+            white-space: nowrap;
+            user-select: none;
+            min-height: var(--tap-min);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
+        .subject-tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+        .subject-tab .tab-count {
+            font-size: 0.7rem;
+            color: #888;
+            font-weight: 400;
+        }
+        .subject-tab.active .tab-count {
+            color: var(--primary);
+        }
+
+        /* ========== MAIN LAYOUT ========== */
+        .main-layout {
+            display: flex;
+            gap: 0;
+            max-width: 1300px;
+            margin: 0 auto;
+            min-height: calc(100vh - 104px);
+        }
+        .question-panel {
+            flex: 1 1 75%;
+            padding: 16px 20px;
+            min-width: 0;
+            background: #fff;
+            border-right: 1px solid var(--border);
+        }
+        .palette-panel {
+            flex: 0 0 260px;
+            background: #fafafa;
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            position: sticky;
+            top: 104px;
+            max-height: calc(100vh - 104px);
+            overflow-y: auto;
+            border-left: 1px solid var(--border);
+        }
+        .palette-panel .palette-title {
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: #333;
+            text-align: center;
+        }
+        .palette-panel .palette-name {
+            font-size: 0.75rem;
+            color: #666;
+            text-align: center;
+            margin-bottom: 4px;
+        }
+        .palette-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 5px;
+        }
+        .palette-btn {
+            width: 100%;
+            aspect-ratio: 1;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            cursor: pointer;
+            background: #e0e0e0;
+            color: #555;
+            transition: all 0.15s;
+            min-height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            user-select: none;
+        }
+        .palette-btn.visited-unanswered {
+            background: #fca5a5;
+            border-color: #ef4444;
+            color: #7f1d1d;
+        }
+        .palette-btn.answered {
+            background: #86efac;
+            border-color: #22c55e;
+            color: #14532d;
+        }
+        .palette-btn.current {
+            box-shadow: 0 0 0 3px #1a56db;
+            border-color: #1a56db;
+            z-index: 2;
+            position: relative;
+            font-weight: 800;
+        }
+        .palette-legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            font-size: 0.68rem;
+            color: #555;
+            justify-content: center;
+            margin-top: 4px;
+        }
+        .palette-legend span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .legend-dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 2px;
+            border: 1px solid #aaa;
+            flex-shrink: 0;
+        }
+        .legend-dot.not-visited {
+            background: #e0e0e0;
+        }
+        .legend-dot.visited-unanswered {
+            background: #fca5a5;
+            border-color: #ef4444;
+        }
+        .legend-dot.answered {
+            background: #86efac;
+            border-color: #22c55e;
+        }
+
+        /* ========== QUESTION CARD ========== */
+        .q-card {
+            background: #fff;
+            border-radius: var(--radius);
+            padding: 16px 20px;
+            border: 1px solid var(--border);
+        }
+        .q-card .q-meta {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+        }
+        .q-card .q-num-label {
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: #333;
+            white-space: nowrap;
+        }
+        .q-card .q-subject-badge {
+            background: var(--primary-light);
+            color: var(--primary);
+            font-size: 0.7rem;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-weight: 600;
+        }
+        .q-card .q-text {
+            font-size: 1rem;
+            font-weight: 500;
+            margin-bottom: 14px;
+            line-height: 1.6;
+            color: #1a1a1a;
+            padding: 4px 0;
+        }
+        .svg-container {
+            display: flex;
+            justify-content: center;
+            margin: 10px 0;
+            background: #fafafa;
+            border-radius: 6px;
+            padding: 8px;
+            overflow-x: auto;
+            border: 1px solid #eee;
+        }
+        .svg-container svg {
+            max-width: 100%;
+            height: auto;
+        }
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+        .option-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 14px;
+            border-radius: 4px;
+            cursor: pointer;
+            border: 2px solid #ddd;
+            background: #fafafa;
+            font-size: 0.95rem;
+            min-height: var(--option-min);
+            transition: all 0.15s;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        .option-row:hover {
+            background: var(--option-hover);
+            border-color: #a8c8fa;
+        }
+        .option-row.selected {
+            background: var(--option-selected-bg);
+            border-color: var(--option-selected-border);
+            font-weight: 600;
+            color: #0d1d3e;
+        }
+        .option-row .opt-letter {
+            font-weight: 700;
+            font-size: 0.85rem;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            color: #444;
+        }
+        .option-row.selected .opt-letter {
+            background: var(--primary);
+            color: #fff;
+        }
+        .option-row input[type="radio"] {
+            display: none;
+        }
+        .option-row.correct-highlight {
+            background: #c8e6c9 !important;
+            border-color: #4caf50 !important;
+            font-weight: 700 !important;
+        }
+        .option-row.incorrect-highlight {
+            background: #ffcdd2 !important;
+            border-color: #ef5350 !important;
+        }
+
+        /* ========== NAV BUTTONS ========== */
+        .nav-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 8px;
+        }
+        .btn-nav {
+            padding: 10px 18px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            border: 1px solid #ccc;
+            transition: all 0.15s;
+            letter-spacing: 0.2px;
+            min-height: var(--tap-min);
+            white-space: nowrap;
+            background: #fff;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .btn-nav.save-next {
+            background: #0d904f;
+            color: #fff;
+            border-color: #0d904f;
+        }
+        .btn-nav.save-next:hover {
+            background: #0b7d43;
+        }
+        .btn-nav.clear {
+            background: #fff;
+            color: #d93025;
+            border-color: #d93025;
+        }
+        .btn-nav.clear:hover {
+            background: #fff5f5;
+        }
+        .btn-nav.prev {
+            background: #fff;
+            color: #555;
+            border-color: #bbb;
+        }
+        .btn-nav.prev:hover {
+            background: #f5f5f5;
+        }
+        .btn-nav:disabled {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        /* ========== SOLUTION BLOCK ========== */
+        .solution-block {
+            display: none;
+            margin-top: 14px;
+            padding: 14px 16px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            border-left: 4px solid var(--primary);
+            font-size: 0.88rem;
+            color: #444;
+            white-space: pre-wrap;
+            line-height: 1.5;
+        }
+        .solution-block.visible {
+            display: block;
+        }
+
+        /* ========== RESULTS OVERLAY ========== */
+        .results-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 500;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            overflow-y: auto;
+        }
+        .results-overlay.show {
+            display: flex;
+        }
+        .results-card {
+            background: #fff;
+            border-radius: 8px;
+            padding: 24px;
+            max-width: 550px;
+            width: 100%;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .results-card h2 {
+            margin-bottom: 16px;
+            color: #1a1a1a;
+            font-size: 1.3rem;
+        }
+        .results-card .big-score {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--primary);
+            letter-spacing: 1px;
+        }
+        .results-card .score-subtitle {
+            color: #666;
+            font-size: 0.85rem;
+            margin-bottom: 16px;
+        }
+        .results-stats {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+            font-size: 0.9rem;
+        }
+        .results-stats div {
+            text-align: center;
+        }
+        .results-stats .stat-val {
+            font-weight: 700;
+            font-size: 1.3rem;
+        }
+        .stat-correct {
+            color: #0d904f;
+        }
+        .stat-incorrect {
+            color: #d93025;
+        }
+        .stat-unattempted {
+            color: #888;
+        }
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 12px 0;
+            font-size: 0.82rem;
+        }
+        .results-table th,
+        .results-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        .results-table th {
+            background: #f0f0f0;
+            font-weight: 600;
+        }
+        .results-name-input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            margin: 8px 0;
+            text-align: center;
+            font-family: var(--font);
+        }
+        .results-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 14px;
+        }
+        .btn-result {
+            padding: 10px 22px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            border: none;
+            min-height: var(--tap-min);
+            transition: all 0.15s;
+        }
+        .btn-retake {
+            background: var(--primary);
+            color: #fff;
+        }
+        .btn-retake:hover {
+            background: #1542a8;
+        }
+        .btn-home {
+            background: #fff;
+            color: #333;
+            border: 1px solid #ccc;
+        }
+        .btn-home:hover {
+            background: #f5f5f5;
+        }
+
+        /* ========== MOBILE PALETTE DRAWER ========== */
+        .mobile-palette-toggle {
+            display: none;
+            position: fixed;
+            bottom: 16px;
+            right: 16px;
+            z-index: 300;
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            border-radius: 50px;
+            padding: 12px 20px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(26, 86, 219, 0.4);
+            min-height: var(--tap-min);
+            letter-spacing: 0.3px;
+        }
+        .mobile-palette-drawer {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 350;
+            background: #fff;
+            border-top: 2px solid #ddd;
+            border-radius: 14px 14px 0 0;
+            padding: 16px;
+            max-height: 60vh;
+            overflow-y: auto;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
+        }
+        .mobile-palette-drawer.open {
+            transform: translateY(0);
+        }
+        .mobile-palette-drawer .palette-grid {
+            grid-template-columns: repeat(8, 1fr);
+            gap: 4px;
+        }
+        .mobile-palette-drawer .palette-btn {
+            font-size: 0.65rem;
+            min-height: 26px;
+            aspect-ratio: 1;
+        }
+        .mobile-palette-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 340;
+        }
+        .mobile-palette-overlay.show {
+            display: block;
+        }
+
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 768px) {
+            .palette-panel {
+                display: none;
+            }
+            .mobile-palette-toggle {
+                display: block;
+            }
+            .mobile-palette-drawer {
+                display: block;
+            }
+            .question-panel {
+                border-right: none;
+                padding: 12px 10px;
+                flex: 1 1 100%;
+            }
+            .main-layout {
+                flex-direction: column;
+            }
+            .top-header {
+                padding: 6px 10px;
+                gap: 4px;
+                flex-wrap: nowrap;
+            }
+            .header-test-title {
+                font-size: 0.75rem;
+            }
+            .header-timer {
+                font-size: 0.75rem;
+                padding: 4px 8px;
+                min-width: 60px;
+            }
+            .header-name {
+                font-size: 0.7rem;
+                max-width: 70px;
+            }
+            .header-photo {
+                width: 26px;
+                height: 26px;
+                font-size: 0.65rem;
+            }
+            .btn-submit-header {
+                font-size: 0.72rem;
+                padding: 6px 12px;
+                min-height: 32px;
+            }
+            .subject-tabs {
+                top: 44px;
+                gap: 0;
+            }
+            .subject-tab {
+                font-size: 0.7rem;
+                padding: 8px 6px;
+                min-height: 40px;
+            }
+            .q-card .q-text {
+                font-size: 0.9rem;
+            }
+            .option-row {
+                font-size: 0.85rem;
+                padding: 8px 10px;
+                min-height: var(--option-min);
+                gap: 8px;
+            }
+            .btn-nav {
+                font-size: 0.78rem;
+                padding: 8px 12px;
+                min-height: 44px;
+            }
+            .nav-buttons {
+                gap: 6px;
+            }
+            .results-card {
+                padding: 16px;
+                max-width: 95vw;
+            }
+            .results-card .big-score {
+                font-size: 2.2rem;
+            }
+            .palette-panel {
+                top: auto;
+                max-height: none;
+            }
+        }
+        @media (max-width: 480px) {
+            .top-header {
+                padding: 4px 6px;
+                gap: 2px;
+            }
+            .header-test-title {
+                font-size: 0.68rem;
+            }
+            .header-timer {
+                font-size: 0.7rem;
+                padding: 3px 6px;
+                min-width: 52px;
+                letter-spacing: 0;
+            }
+            .header-name {
+                font-size: 0.65rem;
+                max-width: 55px;
+            }
+            .header-photo {
+                width: 22px;
+                height: 22px;
+                font-size: 0.6rem;
+            }
+            .btn-submit-header {
+                font-size: 0.68rem;
+                padding: 5px 10px;
+                min-height: 28px;
+            }
+            .subject-tab {
+                font-size: 0.65rem;
+                padding: 6px 4px;
+                min-height: 36px;
+            }
+            .q-card {
+                padding: 10px 8px;
+            }
+            .q-card .q-text {
+                font-size: 0.82rem;
+            }
+            .option-row {
+                font-size: 0.78rem;
+                padding: 7px 8px;
+                min-height: var(--option-min);
+                gap: 6px;
+            }
+            .option-row .opt-letter {
+                width: 20px;
+                height: 20px;
+                font-size: 0.7rem;
+            }
+            .btn-nav {
+                font-size: 0.72rem;
+                padding: 7px 10px;
+                min-height: 40px;
+            }
+            .nav-buttons {
+                gap: 4px;
+            }
+            .mobile-palette-toggle {
+                bottom: 10px;
+                right: 10px;
+                padding: 10px 16px;
+                font-size: 0.78rem;
+            }
+            .mobile-palette-drawer .palette-grid {
+                grid-template-columns: repeat(7, 1fr);
+                gap: 3px;
+            }
+            .mobile-palette-drawer .palette-btn {
+                font-size: 0.6rem;
+                min-height: 22px;
+            }
+            .results-card {
+                padding: 12px;
+            }
+            .results-card .big-score {
+                font-size: 1.8rem;
+            }
+            .results-stats {
+                gap: 10px;
+                font-size: 0.78rem;
+            }
+            .results-stats .stat-val {
+                font-size: 1.1rem;
+            }
+            .results-table {
+                font-size: 0.7rem;
+            }
+            .results-table th,
+            .results-table td {
+                padding: 5px 3px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ==================== HEADER ==================== -->
+    <header class="top-header" id="topHeader">
+        <div class="header-left">
+            <div class="header-photo" id="headerPhoto">👤</div>
+            <span class="header-name" id="headerName">Candidate</span>
+        </div>
+        <div class="header-center">
+            <span class="header-test-title">COMEDK 2024</span>
+            <span class="header-timer" id="headerTimer">01:00:00</span>
+        </div>
+        <div class="header-right">
+            <button class="btn-submit-header" onclick="submitExam()" id="headerSubmitBtn">Submit Test</button>
+        </div>
+    </header>
+
+    <!-- ==================== SUBJECT TABS ==================== -->
+    <div class="subject-tabs" id="subjectTabs">
+        <div class="subject-tab active" data-subject="physics" onclick="switchSubject('physics')">
+            ⚛️ Physics <span class="tab-count" id="tabCountPhysics">(0/60)</span>
+        </div>
+        <div class="subject-tab" data-subject="chemistry" onclick="switchSubject('chemistry')">
+            🧪 Chemistry <span class="tab-count" id="tabCountChemistry">(0/0)</span>
+        </div>
+        <div class="subject-tab" data-subject="math" onclick="switchSubject('math')">
+            📐 Math <span class="tab-count" id="tabCountMath">(0/0)</span>
+        </div>
+    </div>
+
+    <!-- ==================== MAIN LAYOUT ==================== -->
+    <div class="main-layout">
+        <!-- Question Panel -->
+        <div class="question-panel" id="questionPanel">
+            <div class="q-card" id="qCard">
+                <div class="q-meta">
+                    <span class="q-num-label" id="qNumLabel">Question 1 of 60</span>
+                    <span class="q-subject-badge" id="qSubjectBadge">Physics</span>
+                </div>
+                <div class="q-text" id="qText"></div>
+                <div class="svg-container" id="qSvgContainer" style="display:none;"></div>
+                <div class="options-list" id="optionsList"></div>
+                <div class="solution-block" id="solutionBlock"></div>
+                <div class="nav-buttons">
+                    <button class="btn-nav prev" onclick="goToPrevious()" id="btnPrev">⬅ Previous</button>
+                    <button class="btn-nav clear" onclick="clearResponse()" id="btnClear">🔴 Clear Response</button>
+                    <button class="btn-nav save-next" onclick="saveAndNext()" id="btnSaveNext">🟢 Save & Next</button>
+                </div>
+            </div>
+            <!-- Empty state for Chemistry/Math -->
+            <div class="q-card" id="emptySubjectCard" style="display:none; text-align:center; padding:40px;">
+                <p style="color:#888; font-size:1rem;">No questions available for this subject.</p>
+            </div>
+        </div>
+
+        <!-- Desktop Palette -->
+        <div class="palette-panel" id="desktopPalette">
+            <div class="palette-name" id="paletteName">Candidate</div>
+            <div class="palette-title">📋 Question Palette</div>
+            <div class="palette-grid" id="paletteGrid"></div>
+            <div class="palette-legend">
+                <span><span class="legend-dot not-visited"></span> Not Visited</span>
+                <span><span class="legend-dot visited-unanswered"></span> Not Answered</span>
+                <span><span class="legend-dot answered"></span> Answered</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== MOBILE PALETTE ==================== -->
+    <button class="mobile-palette-toggle" id="mobilePaletteToggle" onclick="toggleMobilePalette()">📋 Questions</button>
+    <div class="mobile-palette-overlay" id="mobilePaletteOverlay" onclick="closeMobilePalette()"></div>
+    <div class="mobile-palette-drawer" id="mobilePaletteDrawer">
+        <div class="palette-title" style="margin-bottom:8px;">📋 Question Palette</div>
+        <div class="palette-grid" id="mobilePaletteGrid"></div>
+        <div class="palette-legend" style="margin-top:8px;">
+            <span><span class="legend-dot not-visited"></span> Not Visited</span>
+            <span><span class="legend-dot visited-unanswered"></span> Not Answered</span>
+            <span><span class="legend-dot answered"></span> Answered</span>
+        </div>
+    </div>
+
+    <!-- ==================== RESULTS OVERLAY ==================== -->
+    <div class="results-overlay" id="resultsOverlay">
+        <div class="results-card" id="resultsCard">
+            <h2>📊 Test Results</h2>
+            <div class="big-score" id="resultsBigScore">0/60</div>
+            <div class="score-subtitle" id="resultsSubtitle"></div>
+            <div class="results-stats">
+                <div><span class="stat-val stat-correct" id="resCorrect">0</span><br>✅ Correct</div>
+                <div><span class="stat-val stat-incorrect" id="resIncorrect">0</span><br>❌ Incorrect</div>
+                <div><span class="stat-val stat-unattempted" id="resUnattempted">0</span><br>⚠️ Unattempted</div>
+            </div>
+            <table class="results-table">
+                <thead>
+                    <tr><th>Subject</th><th>Score</th><th>Correct</th><th>Wrong</th><th>Unattempted</th></tr>
+                </thead>
+                <tbody id="resultsTableBody"></tbody>
+            </table>
+            <input type="text" class="results-name-input" id="resultsNameInput" placeholder="Enter your name for leaderboard" maxlength="40">
+            <p style="font-size:0.7rem;color:#888;margin-top:2px;" id="resultsSavedMsg"></p>
+            <div class="results-buttons">
+                <button class="btn-result btn-retake" onclick="retakeTest()">🔄 Retake Test</button>
+                <button class="btn-result btn-home" onclick="goHome()">🏠 Back to Home</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== FIREBASE SCRIPT ==================== -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBz6qXqOpTqQot1GZtJCIwCXnRYg9Hghn4",
+            authDomain: "comedk-20399.firebaseapp.com",
+            projectId: "comedk-20399",
+            storageBucket: "comedk-20399.firebasestorage.app",
+            messagingSenderId: "111466152803",
+            appId: "1:111466152803:web:4e6ca3c7f131ca0dbcc956"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        window.saveScoreToFirebase = async function(name, testName, score, total, accuracy) {
+            try {
+                await addDoc(collection(db, "leaderboard"), {
+                    name,
+                    testName,
+                    score,
+                    total,
+                    accuracy,
+                    timestamp: serverTimestamp()
+                });
+                console.log("Score saved to Firebase!");
+                return true;
+            } catch (e) {
+                console.error("Firebase error:", e);
+                return false;
+            }
+        };
+    </script>
+
+    <script>
+        // ==================== QUESTION DATA (PRESERVED EXACTLY) ====================
+        const questionsData = [
+            { id: 1, text: "The resistance of the galvanometer and shunt of an ammeter are 90 ohm and 10 ohm respectively, then the fraction of the main current passing through the galvanometer and the shunt respectively are:",
+                options: ["A. 1/90 and 1/10", "B. 1/10 and 1/90", "C. 1/10 and 9/10", "D. 9/10 and 1/10"],
+                answer: "C", svg: null, subject: "physics",
+                solution: "The shunt carries most of the current. The fraction through galvanometer = shunt/(galv+shunt) = 10/(90+10) = 1/10. The fraction through shunt = 90/(90+10) = 9/10. Hence option C." },
+            { id: 2,
+                text: "A glass of hot water cools from 90°C to 70°C in 3 minutes when the temperature of surroundings is 20°C. What is the time taken to cool from 60°C to 40°C if surrounding temperature remains 20°C?",
+                options: ["A. 15 minutes", "B. 6 minutes", "C. 12 minutes", "D. 10 minutes"], answer: "B", svg: null,
+                subject: "physics",
+                solution: "Using Newton's law of cooling: (ΔT/Δt) ∝ (T_avg - T_surr). For first case: (20/3) ∝ (80-20)=60. For second: (20/t) ∝ (50-20)=30. Ratio gives t=6 min." },
+            { id: 3,
+                text: "When two objects move along a straight line in the same direction, distance increases by 6 m in one second. If they move towards each other, distance decreases by 8 m in one second. The speeds are:",
+                options: ["A. 14 m/s and 2 m/s", "B. 7 m/s and 1 m/s", "C. 3.5 m/s and 2 m/s", "D. 3.5 m/s and 1 m/s"],
+                answer: "B", svg: null, subject: "physics", solution: "|v1-v2|=6, v1+v2=8. Solving: v1=7, v2=1 (or vice versa). Option B." },
+            { id: 4,
+                text: "In Young's double slit experiment, n-th bright for red coincides with (n+1)-th bright for violet. Find 'n'. (λ_red=6300 Å, λ_violet=4200 Å)",
+                options: ["A. 2", "B. 4", "C. 3", "D. 1"], answer: "A", svg: null, subject: "physics",
+                solution: "n·6300 = (n+1)·4200 → 6300n = 4200n + 4200 → 2100n = 4200 → n=2." },
+            { id: 5,
+                text: "A metal ball of 20 g is projected at 30° with initial velocity 10 m/s. If mass and angle are doubled (same initial velocity), ratio of max height former:latter is:",
+                options: ["A. 1:2", "B. 2:1", "C. 1:3", "D. 3:1"], answer: "C", svg: null, subject: "physics",
+                solution: "H ∝ sin²θ. θ₁=30°, sin²30=0.25. θ₂=60°, sin²60=0.75. Ratio=0.25/0.75=1/3. Option C." },
+            { id: 6,
+                text: "Threshold frequency is ν₀. Photocurrent I produced by light of frequency (11/6)ν₀ and intensity Iₙ. If both frequency and intensity are halved, new photocurrent I₁ is:",
+                options: ["A. I₁ = I/4", "B. I₁ = 2I", "C. I₁ = 0", "D. I₁ = I/2"], answer: "C", svg: null,
+                subject: "physics", solution: "New frequency = (11/12)ν₀ < ν₀ (threshold). No photoemission occurs. Current = 0." },
+            { id: 7,
+                text: "A 500 W heating unit designed for 400 V line. If voltage drops to 160 V, percentage drop in heat output is:",
+                options: ["A. 74%", "B. 85%", "C. 84%", "D. 75%"], answer: "C", svg: null, subject: "physics",
+                solution: "P ∝ V². P₂/P₁ = (160/400)² = 0.16. P₂=80W. Drop = (420/500)×100 = 84%." },
+            { id: 8,
+                text: "Current flows through uniform square frames as shown. In which case is the magnetic field at the centre NOT zero?",
+                options: ["A. A", "B. D", "C. C", "D. B"], answer: "C", svg: "q8", subject: "physics",
+                solution: "In frames A, B, D the currents in opposite sides produce equal and opposite fields at centre (cancelling). In frame C, the asymmetry means net field ≠ 0." },
+            { id: 9,
+                text: "A transformer steps down 330 V to 33 V. Device impedance is 110 Ω. Current drawn by primary coil is:",
+                options: ["A. 0.3 A", "B. 0.03 A", "C. 3 A", "D. 1.5 A"], answer: "B", svg: null, subject: "physics",
+                solution: "k=330/33=10. I_s=33/110=0.3A. I_p=I_s/k=0.03A." },
+            { id: 10,
+                text: "A cell (emf E, internal resistance r) connected to R₁ and R₂. Current measured in 4 cases: (a) no external resistance, (b) R₁ only, (c) R₁+R₂ series, (d) R₁||R₂ parallel. Ascending order of currents:",
+                options: ["A. c < b < d < a", "B. a < b < d < c", "C. c < d < b < a", "D. a < d < b < c"], answer: "A",
+                svg: null, subject: "physics",
+                solution: "Higher resistance → lower current. Series has highest resistance, then R₁ only, then parallel, then short circuit (no external R). So: c < b < d < a." },
+            { id: 11,
+                text: "Select the unit of coefficient of mutual induction:",
+                options: ["A. volt·second/ampere", "B. weber·ampere", "C. ampere/weber", "D. volt·ampere/second"],
+                answer: "A", svg: null, subject: "physics",
+                solution: "From ε = -M(dI/dt), M = ε/(dI/dt). Units: V/(A/s) = V·s/A = volt·second/ampere." },
+            { id: 12,
+                text: "Steel is preferred to soft iron for making permanent magnets because:",
+                options: ["A. Susceptibility of steel < 1", "B. Permeability of steel > soft iron",
+                    "C. Steel has more coercivity than soft iron", "D. Steel is more paramagnetic"
+                ], answer: "C", svg: null, subject: "physics",
+                solution: "Higher coercivity means steel retains magnetism better, making it ideal for permanent magnets." },
+            { id: 13,
+                text: "A particle executes SHM of amplitude A. Distance from mean position where KE = PE is:",
+                options: ["A. 0.91 A", "B. 0.71 A", "C. 0.81 A", "D. 0.51 A"], answer: "B", svg: null, subject: "physics",
+                solution: "KE=PE → ½k(A²-x²)=½kx² → A²-x²=x² → 2x²=A² → x=A/√2 ≈ 0.71A." },
+            { id: 14,
+                text: "Body of mass 5 kg at rest rotated for 25 s with constant torque 10 Nm. Moment of inertia = 5 kg·m². Work done is:",
+                options: ["A. 625 J", "B. 125 J", "C. 6250 J", "D. 1250 J"], answer: "C", svg: null, subject: "physics",
+                solution: "α=τ/I=2 rad/s². ω=αt=50 rad/s. W=½Iω²=½·5·2500=6250 J." },
+            { id: 15,
+                text: "In normal adjustment of astronomical telescope, objective and eyepiece are 32 cm apart. Magnifying power = 7. Focal lengths are:",
+                options: ["A. f₀=7 cm, f_e=28 cm", "B. f₀=28 cm, f_e=7 cm", "C. f_e=28 cm, f₀=4 cm",
+                    "D. f₀=28 cm, f_e=4 cm"
+                ], answer: "D", svg: null, subject: "physics",
+                solution: "M=f₀/f_e=7, f₀+f_e=32. → 7f_e+f_e=32 → f_e=4 cm, f₀=28 cm." },
+            { id: 16,
+                text: "In a semiconductor, ratio of electron to hole number density is 2:1. 1/7 of total current is due to holes. Ratio of drift velocity of holes to electrons is:",
+                options: ["A. 2/3", "B. 3/1", "C. 3/2", "D. 1/3"], answer: "D", svg: null, subject: "physics",
+                solution: "n_e=2n_h. J_h/J_e = (1/7)/(6/7)=1/6. (n_h·v_h)/(n_e·v_e)=1/6. (v_h/v_e)·(1/2)=1/6 → v_h/v_e=1/3." },
+            { id: 17,
+                text: "If A is the areal velocity of a planet of mass M, its angular momentum is:",
+                options: ["A. MA", "B. M²A", "C. 2MA", "D. MA/2"], answer: "C", svg: null, subject: "physics",
+                solution: "Areal velocity A = ½r²ω. L = Iω = Mr²ω = M·2A = 2MA." },
+            { id: 18,
+                text: "Focal length of convex mirror is 10 cm for a particular wavelength. If wavelength is doubled (area constant), focal length becomes:",
+                options: ["A. 5 cm", "B. 20 cm", "C. 15 cm", "D. 10 cm"], answer: "D", svg: null, subject: "physics",
+                solution: "Focal length of a mirror depends on curvature, not wavelength. It remains 10 cm." },
+            { id: 19,
+                text: "Mass of particle A is double that of B. KE of B is 1/8 that of A. Ratio of de Broglie wavelength of A to B is:",
+                options: ["A. 1:2", "B. 2:1", "C. 1:4", "D. 4:1"], answer: "C", svg: null, subject: "physics",
+                solution: "λ=h/√(2mK). λ_A/λ_B = √(m_B·K_B/(m_A·K_A)) = √((m_B·K_A/8)/(2m_B·K_A)) = √(1/16) = 1/4." },
+            { id: 20,
+                text: "Coil: L=1 H, R=100 Ω. AC source frequency = 50/π Hz. Phase difference between current & voltage:",
+                options: ["A. 90°", "B. 30°", "C. 60°", "D. 45°"], answer: "D", svg: null, subject: "physics",
+                solution: "X_L=2πfL=2π·(50/π)·1=100 Ω. tanφ=X_L/R=1 → φ=45°." },
+            { id: 21,
+                text: "Current through conductor is 'a' at 0°C and 'b' at 100°C. Current at 220°C is:",
+                options: ["A. 5ab/(11b-6a)", "B. 5ab/(6a-11b)", "C. 5ab/(11a-6b)", "D. 11ab/(5a-6b)"],
+                answer: "C", svg: null, subject: "physics",
+                solution: "Using R_T=R₀(1+αT) and I=V/R. Solving gives I₂₂₀ = 5ab/(11a-6b)." },
+            { id: 22,
+                text: "Which graph shows variation of velocity with mass for constant momentum?",
+                options: ["A. Fig 3", "B. Fig 1", "C. Fig 2", "D. Fig 4"], answer: "B", svg: "q22", subject: "physics",
+                solution: "p=mv=constant → v=p/m. This is a rectangular hyperbola (v ∝ 1/m). Fig 1 shows this." },
+            { id: 23,
+                text: "For a 30° prism, ray incident at 60° on one face, emergent ray normal to other surface. Refractive index of prism is:",
+                options: ["A. √3", "B. √3/2", "C. 1.5", "D. 1.33"], answer: "A", svg: null, subject: "physics",
+                solution: "Using Snell's law and prism geometry: sin60=n·sin30 → √3/2 = n·1/2 → n=√3." },
+            { id: 24,
+                text: "A coil offers 20 Ω resistance for DC. For AC, the resistance offered will be:",
+                options: ["A. 0 Ω", "B. Greater than 20 Ω", "C. Less than 20 Ω", "D. 20 Ω"], answer: "B", svg: null,
+                subject: "physics", solution: "AC sees impedance Z=√(R²+X_L²) which is always ≥ R. With inductance, Z > 20 Ω." },
+            { id: 25,
+                text: "Square aluminium coin weighs 0.75 g, diagonal 14 mm. Equal ± charges separated by side length. Dipole moment is:",
+                options: ["A. 34.8 C·m", "B. 3.48 C·m", "C. 3480 C·m", "D. 348 C·m"], answer: "D", svg: null,
+                subject: "physics",
+                solution: "Side = diagonal/√2 = 14/1.414 ≈ 9.9 mm. The dipole moment computes to 348 C·m based on given parameters." },
+            { id: 26,
+                text: "Earth has mass 9× and radius 4× that of planet X. Ratio of escape speed (planet X : Earth) is:",
+                options: ["A. 2/3", "B. 9/4", "C. 3/2", "D. 4/9"], answer: "A", svg: null, subject: "physics",
+                solution: "v_e ∝ √(M/R). Ratio = √(M_X/R_X) / √(9M_X/4R_X) = √(1) / √(9/4) = 1/(3/2) = 2/3." },
+            { id: 27,
+                text: "Two similar coils A and B (radius r, N turns) placed concentrically with planes perpendicular. Currents: I and 2I. Net magnetic induction at centre:",
+                options: ["A. √3(μ₀NI/2r)", "B. √5(μ₀NI/2r)", "C. 5μ₀NI/2r", "D. 3μ₀NI/r"], answer: "B", svg: null,
+                subject: "physics",
+                solution: "B_A=μ₀NI/2r, B_B=μ₀N(2I)/2r=μ₀NI/r=2·(μ₀NI/2r). Perpendicular fields: B_net=√(1²+2²)·(μ₀NI/2r)=√5(μ₀NI/2r)." },
+            { id: 28,
+                text: "Ideal diode in series with capacitor connected across 220 V AC source. Potential difference across capacitor is:",
+                options: ["A. 110 V", "B. 311 V", "C. 2√110 V", "D. √220 V"], answer: "B", svg: null, subject: "physics",
+                solution: "Capacitor charges to peak voltage = V_rms·√2 = 220×1.414 ≈ 311 V." },
+            { id: 29,
+                text: "Which statement is true regarding centre of mass of a system?",
+                options: ["A. Depends on size & shape but not mass distribution",
+                    "B. Depends on coordinate system",
+                    "C. Depends on size & shape but independent of coordinate system",
+                    "D. Always lies inside the body"
+                ], answer: "C", svg: null, subject: "physics",
+                solution: "Centre of mass depends on mass distribution and geometry but is independent of the choice of coordinate system." },
+            { id: 30,
+                text: "Light from medium of refractive index 5/4 incident on glass (n=3/2) at 30°. Angle of refraction is:",
+                options: ["A. sin⁻¹(1/2)", "B. sin⁻¹(1/3)", "C. sin⁻¹(5/12)", "D. sin⁻¹(6/5)"], answer: "C",
+                svg: null, subject: "physics",
+                solution: "(5/4)·sin30 = (3/2)·sinθ₂ → (5/4)·(1/2) = (3/2)·sinθ₂ → 5/8 = 1.5·sinθ₂ → sinθ₂ = 5/12." },
+            { id: 31,
+                text: "Ratio of radii of nuclei of elements X (mass 232) and Y (mass 29) is:",
+                options: ["A. 4:1", "B. 1:4", "C. 1:2", "D. 2:1"], answer: "D", svg: null, subject: "physics",
+                solution: "R ∝ A^(1/3). Ratio = (232/29)^(1/3) = 8^(1/3) = 2:1." },
+            { id: 32,
+                text: "When light passes from medium of refractive index μ to another of 2μ, phase change is:",
+                options: ["A. 180°", "B. 90°", "C. 60°", "D. zero"], answer: "D", svg: null, subject: "physics",
+                solution: "Phase change of 180° occurs only upon reflection from a denser medium. For transmission, there is no phase change." },
+            { id: 33,
+                text: "On increasing temperature of a conductor, its resistance increases because:",
+                options: ["A. Electron density decreases", "B. Relaxation time increases",
+                    "C. Number of collisions decreases", "D. Relaxation time decreases"
+                ], answer: "D", svg: null, subject: "physics",
+                solution: "Higher temperature → more lattice vibrations → more collisions → relaxation time τ decreases → resistance R ∝ 1/τ increases." },
+            { id: 34,
+                text: "Energy difference between two excited levels = 13.75 eV. Wavelength of emitted radiation is:",
+                options: ["A. 900 nm", "B. 9⁰ Å", "C. 9000 nm", "D. 900 Å"], answer: "D", svg: null, subject: "physics",
+                solution: "E=hc/λ → λ=hc/E = (6.6×10⁻³⁴·3×10⁸)/(13.75·1.6×10⁻¹⁹) ≈ 900 Å = 90 nm." },
+            { id: 35,
+                text: "String: length 25 cm, mass 10⁻³ kg, tension 2.5 N. Minimum Δt for constructive interference between successive pulses is:",
+                options: ["A. 0.2 s", "B. 1 s", "C. 40 ms", "D. 20 ms"], answer: "D", svg: null, subject: "physics",
+                solution: "μ=m/L=4×10⁻³ kg/m. v=√(T/μ)=√(2.5/4×10⁻³)=25 m/s. Round trip time = 2L/v = 0.5/25 = 0.02 s = 20 ms." },
+            { id: 36,
+                text: "Cubical box (1 m side) contains Boron gas at 100 N/m². Atom makes 500 hits on a wall in 1 s (no collisions). Total mass of gas is:",
+                options: ["A. 30 g", "B. 0.3 g", "C. 3 g", "D. 0.03 g"], answer: "B", svg: null, subject: "physics",
+                solution: "v_rms=500×2/1=1000 m/s. P=⅓ρv² → 100=⅓·m·10⁶ → m=3×10⁻⁴ kg = 0.3 g." },
+            { id: 37,
+                text: "Air-cored solenoid: length 20 cm, area 1.4×10⁻³ m², 3000 turns. Another coil of 250 turns wound on it. Current 2 A reversed in 0.2 s. Induced emf is:",
+                options: ["A. 1.32×10⁻¹ V", "B. 4×10⁻¹ V", "C. 1.16×10⁻¹ V", "D. 8×10⁻² V"], answer: "A", svg: null,
+                subject: "physics",
+                solution: "B=μ₀(N/L)I. Flux linkage changes. Calculated emf ≈ 1.32×10⁻¹ V." },
+            { id: 38,
+                text: "Circular coil (radius 0.1 m) in X-Y plane, current 2 A clockwise from above. Magnetic dipole moment is:",
+                options: ["A. 0.02π A·m² in -ve X direction", "B. 0.02π A·m² in -ve Z direction",
+                    "C. 0.02π A·m² in +ve Y direction", "D. 0.02π A·m² in +ve Z direction"
+                ], answer: "B", svg: null, subject: "physics",
+                solution: "μ=IA=2·π(0.1)²=0.02π A·m². Clockwise from above → moment points downward (-ve Z)." },
+            { id: 39,
+                text: "Body moves on circular path of radius r with frequency = radius numerically. If r=5/π m, acceleration is:",
+                options: ["A. 100π m/s²", "B. 500π m/s²", "C. 25π m/s²", "D. (500/π) m/s²"], answer: "D",
+                svg: null, subject: "physics",
+                solution: "f=r=5/π Hz. ω=2πf=10 rad/s. a=ω²r=100·(5/π)=500/π m/s²." },
+            { id: 40,
+                text: "Dimensional formula of heat capacity is:",
+                options: ["A. [ML²T⁻²K⁻¹]", "B. [ML²T⁻¹K⁻¹]", "C. [ML²T⁻²K⁻²]", "D. [MLT⁻²K⁻¹]"],
+                answer: "A", svg: null, subject: "physics", solution: "Heat capacity = Q/ΔT. [Q]=[ML²T⁻²], [ΔT]=[K]. So [C]=[ML²T⁻²K⁻¹]." },
+            { id: 41,
+                text: "Potential V(x,y,z)=6xy-y+2yz. Electric field at (1,0,1) is:",
+                options: ["A. -7j", "B. +7j", "C. 6i-7j", "D. 7j"], answer: "A", svg: null, subject: "physics",
+                solution: "E=-∇V. E_x=-6y=0, E_y=-(6x-1+2z)=-(6-1+2)=-7, E_z=-2y=0. So E=-7j." },
+            { id: 42,
+                text: "Closest approach of alpha particle to gold nucleus is 10×10⁻¹⁴ m. Kinetic energy of alpha particle:",
+                options: ["A. 3640 J", "B. 3.64 J", "C. 3.64×10⁻¹⁶ J", "D. 3.64×10⁻¹³ J"], answer: "D", svg: null,
+                subject: "physics",
+                solution: "KE = k·(2e)(79e)/r = 9×10⁹·2·79·(1.6×10⁻¹⁹)²/(10⁻¹³) ≈ 3.64×10⁻¹³ J." },
+            { id: 43,
+                text: "1 kg ice at -1.5°C falls from 1.5 km. 60% energy converts to heat. Ice melted is: (c_ice=0.5 cal/g°C, L_f=80 cal/g)",
+                options: ["A. 1.69 g", "B. 10 g", "C. 16.9 g", "D. 17.9 g"], answer: "C", svg: null, subject: "physics",
+                solution: "PE=mgh=1·10·1500=15000 J. 60%=9000 J=2150 cal. Warming ice to 0°C uses 1.5·0.5·1000=750 cal. Remaining 1400 cal melts 1400/80=17.5g ≈16.9g considering g=10." },
+            { id: 44,
+                text: "64 rain drops of same radius fall with steady velocity 0.5 cm/s. If they coalesce, terminal velocity is:",
+                options: ["A. 1.25 cm/s", "B. 0.08 m/s", "C. 0.8 m/s", "D. 1.25 m/s"], answer: "B", svg: null,
+                subject: "physics",
+                solution: "Volume conservation: R_large = 4r. v_t ∝ r² → v_large = 16×0.5 = 8 cm/s = 0.08 m/s." },
+            { id: 45,
+                text: "Capacitor: 400 pF, AC source 100 V, ω=100 rad/s. RMS current = 4 μA. Displacement current is:",
+                options: ["A. 4×10⁻² μA", "B. 0.4 μA", "C. 4 μA", "D. 4 A"], answer: "C", svg: null, subject: "physics",
+                solution: "Displacement current equals the conduction current in the circuit = 4 μA." },
+            { id: 46,
+                text: "Sn is a metal while Si is a semiconductor because:",
+                options: ["A. Sn has more electrons", "B. Energy gap of Sn is zero, Si is 0.07 eV",
+                    "C. Energy gap of Sn is 1.1 eV, Si is 0.07 V", "D. Sn has more holes"
+                ], answer: "B", svg: null, subject: "physics",
+                solution: "Sn has overlapping bands (zero gap) → metallic. Si has a small band gap → semiconductor." },
+            { id: 47,
+                text: "Five charges 'q' each at corners of regular pentagon. Charge at A removed, then replaced with equal opposite charge. Ratio of electric field magnitudes at O (without charge at A : with opposite charge at A) is:",
+                options: ["A. 4:1", "B. 2:1", "C. 1:4", "D. 1:2"], answer: "D", svg: "q47", subject: "physics",
+                solution: "With 5 equal charges, net field at centre=0. Removing one leaves field of that one pointing away. Replacing with -q doubles the field in opposite direction. Ratio = 1:2." },
+            { id: 48,
+                text: "Two circular coils (radii a and 2a) placed coaxially at distances x and 2x from origin. Same current, same direction. Ratio of B at origin (smaller : bigger) is:",
+                options: ["A. 2:1", "B. 1:1", "C. 1:4", "D. 1:2"], answer: "A", svg: null, subject: "physics",
+                solution: "B ∝ a²/(x²+a²)^(3/2). For smaller: a²/(x²+a²)^(3/2). For larger: 4a²/(4x²+4a²)^(3/2)=4a²/[8(x²+a²)^(3/2)]=a²/[2(x²+a²)^(3/2)]. Ratio = 2:1." },
+            { id: 49,
+                text: "Metallic rod of 2 m length rotated at 100 Hz about axis through centre. B=2 T parallel to axis. EMF developed is:",
+                options: ["A. 800π V", "B. 1600π V", "C. 1600 V", "D. 400π V"], answer: "A", svg: null, subject: "physics",
+                solution: "ω=2π·100=200π. ε=½BωL²=½·2·200π·4=800π V." },
+            { id: 50,
+                text: "Power of gun firing 120 bullets/min at 120 m/s. Mass of each bullet = 100 g. Power is:",
+                options: ["A. 86400 W", "B. 14.4 kW", "C. 1.44 kW", "D. 1220 W"], answer: "C", svg: null, subject: "physics",
+                solution: "KE per bullet=½·0.1·14400=720 J. 120 bullets/min=2 bullets/s. Power=720×2=1440 W=1.44 kW." },
+            { id: 51,
+                text: "Fringe width in YDSE is 2.6 mm with λ=6000 Å in air. Apparatus immersed in liquid (n=1.3). New fringe width:",
+                options: ["A. 2.6 mm", "B. 5.2 mm", "C. 2 mm", "D. 4 mm"], answer: "C", svg: null, subject: "physics",
+                solution: "β ∝ λ. In liquid, λ'=λ/n. β'=β/n=2.6/1.3=2 mm." },
+            { id: 52,
+                text: "Electric bulb: volume 300 cm³, sealed at 1 mm Hg pressure, 27°C. Number of air molecules is: (R=8.31 J/mol·K, N_A=6.02×10²³)",
+                options: ["A. 9.67×10¹⁶", "B. 9.65×10¹⁵", "C. 9.67×10¹⁷", "D. 9.65×10¹⁸"], answer: "D", svg: null,
+                subject: "physics",
+                solution: "PV=nRT. n=133.322·3×10⁻⁴/(8.31·300.15)≈1.6×10⁻⁵ mol. N=n·N_A≈9.65×10¹⁸." },
+            { id: 53,
+                text: "Binding energy of tritium nucleus: (m_T=3.01605 u, m_p=1.00782 u, m_n=1.00866 u)",
+                options: ["A. 8.5 MeV", "B. 8.5 J", "C. 0.00909 MeV", "D. 0.00909 eV"], answer: "A", svg: null,
+                subject: "physics",
+                solution: "Mass defect = (1.00782+2·1.00866)-3.01605 = 0.00909 u. BE = 0.00909×931.5 ≈ 8.5 MeV." },
+            { id: 54,
+                text: "In single slit diffraction, slit width 'α', central maxima width 'β'. If slit width doubled, new central maxima width:",
+                options: ["A. 4β", "B. β", "C. β/2", "D. 2β"], answer: "C", svg: null, subject: "physics",
+                solution: "Width ∝ 1/a. Doubling slit width halves the central maxima width." },
+            { id: 55,
+                text: "Two charges -q fixed, separated by 2d. Third charge +q of mass m at midpoint displaced slightly by x (x<<d) perpendicular to line. Time period of oscillation:",
+                options: ["A. T=√(8ε₀mπ²d³/q²)", "B. T=√(8ε₀mπ³d³/q³)", "C. T=√(4ε₀mπ³d³/q²)",
+                    "D. T=√(8ε₀mπ³d³/q²)"
+                ], answer: "D", svg: "q55", subject: "physics",
+                solution: "Restoring force analysis gives T = √(8ε₀mπ³d³/q²)." },
+            { id: 56,
+                text: "Two metal spheres (radii R/2 and 2R) have same surface charge density. Brought in contact and separated. Ratio of new surface charge densities is:",
+                options: ["A. 2:1", "B. 4:1", "C. 1:4", "D. 1:2"], answer: "B", svg: null, subject: "physics",
+                solution: "After contact, potentials equalize. Charges redistribute. New σ ratio = 4:1 (the smaller sphere has higher density)." },
+            { id: 57,
+                text: "Find 'n' in P = ρⁿv² (P=pressure, ρ=density, v=velocity):",
+                options: ["A. n=1/2", "B. n=1", "C. n=3", "D. n=2"], answer: "B", svg: null, subject: "physics",
+                solution: "Dimensional analysis: [ML⁻¹T⁻²]=[ML⁻³]ⁿ·[LT⁻¹]². M: 1=n; L: -1=-3n+2 → n=1." },
+            { id: 58,
+                text: "Stone (2 kg) hung from ceiling using two strings at 60° and 30° with horizontal. Tension in longer string is: (g=10 m/s²)",
+                options: ["A. √3/2 N", "B. 10√3 N", "C. 10 N", "D. √3 N"], answer: "C", svg: null, subject: "physics",
+                solution: "The longer string makes 30° with horizontal. Balancing forces: T_long = 10 N." },
+            { id: 59,
+                text: "Parallel plate capacitor with dielectric (ε=2U). Similar capacitor without dielectric charged to U₀=78 V, then connected to uncharged capacitor with dielectric. Final voltage:",
+                options: ["A. 6 V", "B. 8 V", "C. 2 V", "D. 4 V"], answer: "A", svg: null, subject: "physics",
+                solution: "Charge conservation with voltage-dependent dielectric. Solving gives final voltage = 6 V." },
+            { id: 60,
+                text: "Ratio of lengths, radii, and Young's moduli of steel and brass wires are a, b, c. Ratio of increase in lengths is:",
+                options: ["A. a/(3b²c)", "B. 3a/(2b²c)", "C. 2a/(3b²c)", "D. 2ab²/c"], answer: "C",
+                svg: "q60", subject: "physics", solution: "ΔL ∝ FL/(AY). For the configuration shown, ratio = 2a/(3b²c)." }
+        ];
+
+        const TOTAL_QUESTIONS = questionsData.length; // 60
+        const TOTAL_TIME_SEC = 60 * 60; // 60 minutes
+
+        // ==================== STATE ====================
+        let userAnswers = {}; // { questionId: "A"/"B"/"C"/"D" }
+        let visitedQuestions = new Set();
+        let currentSubject = 'physics';
+        let currentIndex = 0; // index within filtered questions for current subject
+        let reviewMode = false;
+        let timerInterval = null;
+        let timeRemaining = TOTAL_TIME_SEC;
+        let examSubmitted = false;
+
+        // ==================== DERIVED ====================
+        function getQuestionsForSubject(subject) {
+            return questionsData.filter(q => q.subject === subject);
+        }
+
+        function getCurrentQuestionList() {
+            return getQuestionsForSubject(currentSubject);
+        }
+
+        function getCurrentQuestion() {
+            const list = getCurrentQuestionList();
+            if (list.length === 0) return null;
+            if (currentIndex < 0) currentIndex = 0;
+            if (currentIndex >= list.length) currentIndex = list.length - 1;
+            return list[currentIndex];
+        }
+
+        function getGlobalIndex(qid) {
+            return questionsData.findIndex(q => q.id === qid);
+        }
+
+        // ==================== INIT ====================
+        function initExam() {
+            const savedName = localStorage.getItem('comedk_username');
+            if (savedName) {
+                document.getElementById('headerName').textContent = savedName;
+                document.getElementById('paletteName').textContent = savedName;
+                document.getElementById('headerPhoto').textContent = savedName.charAt(0).toUpperCase();
+            }
+            updateSubjectTabCounts();
+            renderDesktopPalette();
+            renderMobilePalette();
+            renderCurrentQuestion();
+            startTimer();
+            updateNavButtons();
+        }
+
+        function startTimer() {
+            const timerEl = document.getElementById('headerTimer');
+            updateTimerDisplay();
+            timerInterval = setInterval(() => {
+                if (timeRemaining <= 0) {
+                    clearInterval(timerInterval);
+                    submitExam();
+                    return;
+                }
+                timeRemaining--;
+                updateTimerDisplay();
+                if (timeRemaining < 300) {
+                    timerEl.classList.add('warning');
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const timerEl = document.getElementById('headerTimer');
+            const hrs = Math.floor(timeRemaining / 3600);
+            const mins = Math.floor((timeRemaining % 3600) / 60);
+            const secs = timeRemaining % 60;
+            timerEl.textContent =
+                `${String(hrs).padStart(2, '0')}:${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+        }
+
+        function updateSubjectTabCounts() {
+            const physQuestions = getQuestionsForSubject('physics');
+            const chemQuestions = getQuestionsForSubject('chemistry');
+            const mathQuestions = getQuestionsForSubject('math');
+            const physAnswered = physQuestions.filter(q => userAnswers[q.id]).length;
+            const chemAnswered = chemQuestions.filter(q => userAnswers[q.id]).length;
+            const mathAnswered = mathQuestions.filter(q => userAnswers[q.id]).length;
+            document.getElementById('tabCountPhysics').textContent = `(${physAnswered}/${physQuestions.length})`;
+            document.getElementById('tabCountChemistry').textContent = `(${chemAnswered}/${chemQuestions.length})`;
+            document.getElementById('tabCountMath').textContent = `(${mathAnswered}/${mathQuestions.length})`;
+        }
+
+        // ==================== RENDER QUESTION ====================
+        function renderCurrentQuestion() {
+            const q = getCurrentQuestion();
+            const emptyCard = document.getElementById('emptySubjectCard');
+            const qCard = document.getElementById('qCard');
+            const solutionBlock = document.getElementById('solutionBlock');
+
+            if (!q) {
+                qCard.style.display = 'none';
+                emptyCard.style.display = 'block';
+                solutionBlock.classList.remove('visible');
+                return;
+            }
+            qCard.style.display = 'block';
+            emptyCard.style.display = 'none';
+
+            const list = getCurrentQuestionList();
+            document.getElementById('qNumLabel').textContent = `Question ${currentIndex + 1} of ${list.length}`;
+            document.getElementById('qSubjectBadge').textContent =
+                currentSubject === 'physics' ? 'Physics' : currentSubject === 'chemistry' ? 'Chemistry' : 'Math';
+            document.getElementById('qText').textContent = q.text;
+
+            // SVG
+            const svgContainer = document.getElementById('qSvgContainer');
+            if (q.svg) {
+                svgContainer.style.display = 'flex';
+                svgContainer.innerHTML = getSVG(q.svg);
+            } else {
+                svgContainer.style.display = 'none';
+                svgContainer.innerHTML = '';
+            }
+
+            // Options
+            const optionsList = document.getElementById('optionsList');
+            optionsList.innerHTML = '';
+            const selectedAns = userAnswers[q.id] || null;
+            const correctAns = q.answer;
+            q.options.forEach(opt => {
+                const optLetter = opt.charAt(0);
+                const row = document.createElement('div');
+                row.className = 'option-row';
+                if (reviewMode && selectedAns === optLetter && optLetter === correctAns) {
+                    row.classList.add('correct-highlight');
+                } else if (reviewMode && selectedAns === optLetter && optLetter !== correctAns) {
+                    row.classList.add('incorrect-highlight');
+                } else if (reviewMode && optLetter === correctAns) {
+                    row.classList.add('correct-highlight');
+                }
+                if (!reviewMode && selectedAns === optLetter) {
+                    row.classList.add('selected');
+                }
+                row.innerHTML = `
+                  <span class="opt-letter">${optLetter}</span>
+                  <span>${opt.substring(2).trim()}</span>
+                  <input type="radio" name="q${q.id}" value="${optLetter}" ${selectedAns === optLetter ? 'checked' : ''} ${reviewMode ? 'disabled' : ''}>
+                `;
+                if (!reviewMode) {
+                    row.addEventListener('click', () => selectAnswer(q.id, optLetter));
+                }
+                optionsList.appendChild(row);
+            });
+
+            // Solution block
+            if (reviewMode) {
+                solutionBlock.classList.add('visible');
+                solutionBlock.innerHTML =
+                    `<strong>✅ Solution:</strong> ${q.solution || 'Refer to detailed solution in the PDF.'}`;
+            } else {
+                solutionBlock.classList.remove('visible');
+                solutionBlock.innerHTML = '';
+            }
+
+            // Mark as visited
+            if (!reviewMode) {
+                visitedQuestions.add(q.id);
+            }
+
+            updateNavButtons();
+            updateDesktopPalette();
+            updateMobilePalette();
+            updateSubjectTabCounts();
+        }
+
+        function selectAnswer(qid, value) {
+            if (reviewMode || examSubmitted) return;
+            userAnswers[qid] = value;
+            renderCurrentQuestion();
+        }
+
+        function clearResponse() {
+            if (reviewMode || examSubmitted) return;
+            const q = getCurrentQuestion();
+            if (!q) return;
+            delete userAnswers[q.id];
+            renderCurrentQuestion();
+        }
+
+        function saveAndNext() {
+            if (reviewMode || examSubmitted) return;
+            const list = getCurrentQuestionList();
+            if (currentIndex < list.length - 1) {
+                currentIndex++;
+                renderCurrentQuestion();
+            } else {
+                // At last question of current subject, try next subject
+                if (currentSubject === 'physics') {
+                    switchSubject('chemistry');
+                } else if (currentSubject === 'chemistry') {
+                    switchSubject('math');
+                }
+            }
+        }
+
+        function goToPrevious() {
+            if (reviewMode || examSubmitted) return;
+            if (currentIndex > 0) {
+                currentIndex--;
+                renderCurrentQuestion();
+            } else {
+                if (currentSubject === 'math') {
+                    switchSubject('chemistry');
+                    const list = getCurrentQuestionList();
+                    currentIndex = list.length - 1;
+                    renderCurrentQuestion();
+                } else if (currentSubject === 'chemistry') {
+                    switchSubject('physics');
+                    const list = getCurrentQuestionList();
+                    currentIndex = list.length - 1;
+                    renderCurrentQuestion();
+                }
+            }
+        }
+
+        function updateNavButtons() {
+            const list = getCurrentQuestionList();
+            const btnPrev = document.getElementById('btnPrev');
+            const btnSaveNext = document.getElementById('btnSaveNext');
+            const btnClear = document.getElementById('btnClear');
+
+            if (reviewMode || examSubmitted) {
+                btnPrev.disabled = true;
+                btnSaveNext.disabled = true;
+                btnClear.disabled = true;
+                return;
+            }
+            btnPrev.disabled = (currentIndex === 0 && currentSubject === 'physics');
+            const isLastOverall = (currentSubject === 'math' && currentIndex >= list.length - 1) ||
+                (currentSubject === 'chemistry' && list.length === 0 && currentIndex === 0) ||
+                (currentSubject === 'physics' && currentIndex >= list.length - 1 &&
+                    getQuestionsForSubject('chemistry').length === 0 && getQuestionsForSubject('math').length === 0);
+            btnSaveNext.disabled = isLastOverall;
+            btnClear.disabled = false;
+        }
+
+        // ==================== SUBJECT SWITCHING ====================
+        function switchSubject(subject) {
+            currentSubject = subject;
+            currentIndex = 0;
+            const list = getCurrentQuestionList();
+            if (list.length === 0) {
+                document.getElementById('qCard').style.display = 'none';
+                document.getElementById('emptySubjectCard').style.display = 'block';
+                document.getElementById('solutionBlock').classList.remove('visible');
+            } else {
+                document.getElementById('qCard').style.display = 'block';
+                document.getElementById('emptySubjectCard').style.display = 'none';
+            }
+            // Update tab styles
+            document.querySelectorAll('.subject-tab').forEach(tab => {
+                tab.classList.toggle('active', tab.dataset.subject === subject);
+            });
+            renderCurrentQuestion();
+            updateDesktopPalette();
+            updateMobilePalette();
+            updateNavButtons();
+        }
+
+        // ==================== PALETTE ====================
+        function getPaletteButtonClass(q) {
+            const isAnswered = !!userAnswers[q.id];
+            const isVisited = visitedQuestions.has(q.id);
+            if (isAnswered) return 'answered';
+            if (isVisited) return 'visited-unanswered';
+            return '';
+        }
+
+        function renderDesktopPalette() {
+            const grid = document.getElementById('paletteGrid');
+            const list = getCurrentQuestionList();
+            grid.innerHTML = '';
+            list.forEach((q, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'palette-btn ' + getPaletteButtonClass(q);
+                if (idx === currentIndex && !reviewMode) {
+                    btn.classList.add('current');
+                }
+                btn.textContent = q.id;
+                btn.title = `Q${q.id}`;
+                btn.addEventListener('click', () => {
+                    if (reviewMode) return;
+                    currentIndex = idx;
+                    renderCurrentQuestion();
+                    document.getElementById('questionPanel').scrollIntoView({ behavior: 'smooth',
+                        block: 'start' });
+                });
+                grid.appendChild(btn);
+            });
+        }
+
+        function updateDesktopPalette() {
+            const grid = document.getElementById('paletteGrid');
+            const list = getCurrentQuestionList();
+            const buttons = grid.querySelectorAll('.palette-btn');
+            buttons.forEach((btn, idx) => {
+                if (idx < list.length) {
+                    const q = list[idx];
+                    btn.className = 'palette-btn ' + getPaletteButtonClass(q);
+                    if (idx === currentIndex && !reviewMode) {
+                        btn.classList.add('current');
+                    }
+                }
+            });
+        }
+
+        function renderMobilePalette() {
+            const grid = document.getElementById('mobilePaletteGrid');
+            const list = getCurrentQuestionList();
+            grid.innerHTML = '';
+            list.forEach((q, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'palette-btn ' + getPaletteButtonClass(q);
+                if (idx === currentIndex && !reviewMode) {
+                    btn.classList.add('current');
+                }
+                btn.textContent = q.id;
+                btn.addEventListener('click', () => {
+                    if (reviewMode) return;
+                    currentIndex = idx;
+                    renderCurrentQuestion();
+                    closeMobilePalette();
+                    document.getElementById('questionPanel').scrollIntoView({ behavior: 'smooth',
+                        block: 'start' });
+                });
+                grid.appendChild(btn);
+            });
+        }
+
+        function updateMobilePalette() {
+            const grid = document.getElementById('mobilePaletteGrid');
+            const list = getCurrentQuestionList();
+            const buttons = grid.querySelectorAll('.palette-btn');
+            buttons.forEach((btn, idx) => {
+                if (idx < list.length) {
+                    const q = list[idx];
+                    btn.className = 'palette-btn ' + getPaletteButtonClass(q);
+                    if (idx === currentIndex && !reviewMode) {
+                        btn.classList.add('current');
+                    }
+                }
+            });
+        }
+
+        function toggleMobilePalette() {
+            const drawer = document.getElementById('mobilePaletteDrawer');
+            const overlay = document.getElementById('mobilePaletteOverlay');
+            if (drawer.classList.contains('open')) {
+                closeMobilePalette();
+            } else {
+                renderMobilePalette();
+                drawer.classList.add('open');
+                overlay.classList.add('show');
+            }
+        }
+
+        function closeMobilePalette() {
+            const drawer = document.getElementById('mobilePaletteDrawer');
+            const overlay = document.getElementById('mobilePaletteOverlay');
+            drawer.classList.remove('open');
+            overlay.classList.remove('show');
+        }
+
+        // ==================== SUBMIT & RESULTS ====================
+        function submitExam() {
+            if (examSubmitted) return;
+            clearInterval(timerInterval);
+            examSubmitted = true;
+            reviewMode = true;
+
+            // Disable header submit button
+            document.getElementById('headerSubmitBtn').disabled = true;
+            document.getElementById('headerSubmitBtn').textContent = 'Submitted';
+            document.getElementById('headerSubmitBtn').style.opacity = '0.6';
+
+            let correctCount = 0;
+            let incorrectCount = 0;
+            let unansweredCount = 0;
+            const subjectStats = {
+                physics: { correct: 0, incorrect: 0, unattempted: 0, total: 0 },
+                chemistry: { correct: 0, incorrect: 0, unattempted: 0, total: 0 },
+                math: { correct: 0, incorrect: 0, unattempted: 0, total: 0 }
+            };
+
+            questionsData.forEach(q => {
+                const subj = q.subject;
+                subjectStats[subj].total++;
+                const userAns = userAnswers[q.id];
+                if (!userAns) {
+                    unansweredCount++;
+                    subjectStats[subj].unattempted++;
+                } else if (userAns === q.answer) {
+                    correctCount++;
+                    subjectStats[subj].correct++;
+                } else {
+                    incorrectCount++;
+                    subjectStats[subj].incorrect++;
+                }
+            });
+
+            const score = correctCount;
+            const total = TOTAL_QUESTIONS;
+            const accuracy = total > 0 ? Math.round((correctCount / total) * 100) : 0;
+
+            // Update header timer
+            document.getElementById('headerTimer').classList.remove('warning');
+            document.getElementById('headerTimer').textContent = '--:--:--';
+
+            // Re-render current question in review mode
+            renderCurrentQuestion();
+            updateDesktopPalette();
+            updateMobilePalette();
+            updateNavButtons();
+            updateSubjectTabCounts();
+
+            // Populate results
+            document.getElementById('resultsBigScore').textContent = `${score}/${total}`;
+            document.getElementById('resultsSubtitle').textContent = `Accuracy: ${accuracy}%`;
+            document.getElementById('resCorrect').textContent = correctCount;
+            document.getElementById('resIncorrect').textContent = incorrectCount;
+            document.getElementById('resUnattempted').textContent = unansweredCount;
+
+            const tbody = document.getElementById('resultsTableBody');
+            tbody.innerHTML = '';
+            ['physics', 'chemistry', 'math'].forEach(subj => {
+                const s = subjectStats[subj];
+                const subjName = subj === 'physics' ? '⚛️ Physics' : subj === 'chemistry' ? '🧪 Chemistry' :
+                    '📐 Math';
+                tbody.innerHTML += `
+                <tr>
+                  <td>${subjName}</td>
+                  <td><strong>${s.correct}/${s.total}</strong></td>
+                  <td style="color:#0d904f;">${s.correct}</td>
+                  <td style="color:#d93025;">${s.incorrect}</td>
+                  <td style="color:#888;">${s.unattempted}</td>
+                </tr>`;
+            });
+
+            // Pre-fill name
+            const savedName = localStorage.getItem('comedk_username') || '';
+            document.getElementById('resultsNameInput').value = savedName;
+            document.getElementById('resultsSavedMsg').textContent = '';
+
+            // Show results overlay
+            document.getElementById('resultsOverlay').classList.add('show');
+
+            // Auto-save to Firebase
+            const nameToSave = savedName || 'Anonymous';
+            const testName = 'COMEDK 2024';
+            if (typeof window.saveScoreToFirebase === 'function') {
+                window.saveScoreToFirebase(nameToSave, testName, score, total, accuracy + '%').then(() => {
+                    document.getElementById('resultsSavedMsg').textContent =
+                        '✅ Score saved to leaderboard!';
+                }).catch(() => {
+                    document.getElementById('resultsSavedMsg').textContent =
+                        '⚠️ Could not save to leaderboard.';
+                });
+            }
+
+            // Save name if provided
+            document.getElementById('resultsNameInput').addEventListener('input', function() {
+                const newName = this.value.trim();
+                if (newName && newName !== savedName) {
+                    localStorage.setItem('comedk_username', newName);
+                    document.getElementById('headerName').textContent = newName;
+                    document.getElementById('paletteName').textContent = newName;
+                    document.getElementById('headerPhoto').textContent = newName.charAt(0).toUpperCase();
+                    // Re-save with updated name
+                    if (typeof window.saveScoreToFirebase === 'function') {
+                        window.saveScoreToFirebase(newName, testName, score, total, accuracy + '%')
+                            .then(() => {
+                                document.getElementById('resultsSavedMsg').textContent =
+                                    '✅ Score saved to leaderboard!';
+                            });
+                    }
+                }
+            });
+
+            // Track best score
+            const bestKey = 'comedk_best_score_2024';
+            const prevBest = parseInt(localStorage.getItem(bestKey) || '0');
+            if (score > prevBest) {
+                localStorage.setItem(bestKey, score);
+            }
+        }
+
+        function retakeTest() {
+            reviewMode = false;
+            examSubmitted = false;
+            userAnswers = {};
+            visitedQuestions = new Set();
+            currentSubject = 'physics';
+            currentIndex = 0;
+            timeRemaining = TOTAL_TIME_SEC;
+            clearInterval(timerInterval);
+            document.getElementById('resultsOverlay').classList.remove('show');
+            document.getElementById('headerSubmitBtn').disabled = false;
+            document.getElementById('headerSubmitBtn').textContent = 'Submit Test';
+            document.getElementById('headerSubmitBtn').style.opacity = '1';
+            document.getElementById('headerTimer').classList.remove('warning');
+            document.getElementById('solutionBlock').classList.remove('visible');
+            document.getElementById('solutionBlock').innerHTML = '';
+            document.querySelectorAll('.subject-tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelector('.subject-tab[data-subject="physics"]').classList.add('active');
+            updateSubjectTabCounts();
+            renderCurrentQuestion();
+            renderDesktopPalette();
+            renderMobilePalette();
+            updateNavButtons();
+            startTimer();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function goHome() {
+            window.location.href = 'index.html';
+        }
+
+        // ==================== SVG GENERATORS (PRESERVED) ====================
+        function getSVG(svgId) {
+            switch (svgId) {
+                case 'q8':
+                    return `
+                <svg width="500" height="200" viewBox="0 0 500 200" xmlns="http://www.w3.org/2000/svg">
+                  <g transform="translate(20,20)">
+                    <rect x="0" y="0" width="100" height="100" fill="none" stroke="#333" stroke-width="2"/>
+                    <polygon points="10,50 30,15 70,15 90,50 70,85 30,85" fill="none" stroke="#e53935" stroke-width="2" stroke-dasharray="6,3"/>
+                    <text x="50" y="120" text-anchor="middle" font-size="13" fill="#333">A</text>
+                    <text x="50" y="55" text-anchor="middle" font-size="11" fill="#555">I</text>
+                  </g>
+                  <g transform="translate(140,20)">
+                    <rect x="0" y="0" width="100" height="100" fill="none" stroke="#333" stroke-width="2"/>
+                    <rect x="20" y="20" width="60" height="60" fill="none" stroke="#1e88e5" stroke-width="2"/>
+                    <text x="50" y="120" text-anchor="middle" font-size="13" fill="#333">B</text>
+                    <text x="50" y="55" text-anchor="middle" font-size="11" fill="#555">I</text>
+                  </g>
+                  <g transform="translate(260,20)">
+                    <rect x="0" y="0" width="100" height="100" fill="none" stroke="#333" stroke-width="2"/>
+                    <path d="M20,20 L80,20 L80,80 L20,80 Z" fill="none" stroke="#43a047" stroke-width="2"/>
+                    <circle cx="50" cy="50" r="25" fill="none" stroke="#43a047" stroke-width="1.5" stroke-dasharray="4,4"/>
+                    <text x="50" y="120" text-anchor="middle" font-size="13" fill="#333">C</text>
+                    <text x="50" y="55" text-anchor="middle" font-size="11" fill="#555">I</text>
+                  </g>
+                  <g transform="translate(380,20)">
+                    <rect x="0" y="0" width="100" height="100" fill="none" stroke="#333" stroke-width="2"/>
+                    <circle cx="50" cy="50" r="35" fill="none" stroke="#ff8f00" stroke-width="2"/>
+                    <text x="50" y="120" text-anchor="middle" font-size="13" fill="#333">D</text>
+                    <text x="50" y="55" text-anchor="middle" font-size="11" fill="#555">I</text>
+                  </g>
+                </svg>`;
+                case 'q22':
+                    return `
+                <svg width="500" height="300" viewBox="0 0 500 300" xmlns="http://www.w3.org/2000/svg">
+                  <line x1="60" y1="250" x2="460" y2="250" stroke="#333" stroke-width="1.5" marker-end="url(#arrow)"/>
+                  <line x1="60" y1="250" x2="60" y2="20" stroke="#333" stroke-width="1.5" marker-end="url(#arrow)"/>
+                  <text x="470" y="255" font-size="12" fill="#333">m</text>
+                  <text x="55" y="15" font-size="12" fill="#333">v</text>
+                  <text x="120" y="40" font-size="12" fill="#1a73e8" font-weight="bold">Fig 1</text>
+                  <path d="M80,230 Q140,140 200,105 Q280,72 400,55" fill="none" stroke="#1a73e8" stroke-width="2.5"/>
+                  <text x="320" y="40" font-size="12" fill="#e53935" font-weight="bold">Fig 2</text>
+                  <line x1="80" y1="230" x2="400" y2="55" stroke="#e53935" stroke-width="2" stroke-dasharray="6,3"/>
+                  <text x="120" y="170" font-size="12" fill="#43a047" font-weight="bold">Fig 3</text>
+                  <path d="M80,230 Q200,230 300,130 Q370,50 430,50" fill="none" stroke="#43a047" stroke-width="2" stroke-dasharray="4,4"/>
+                  <text x="320" y="170" font-size="12" fill="#ff8f00" font-weight="bold">Fig 4</text>
+                  <line x1="80" y1="140" x2="400" y2="140" stroke="#ff8f00" stroke-width="2" stroke-dasharray="2,4"/>
+                  <defs>
+                    <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                      <path d="M0,0 L10,5 L0,10 Z" fill="#333"/>
+                    </marker>
+                  </defs>
+                </svg>`;
+                case 'q47':
+                    return `
+                <svg width="320" height="320" viewBox="0 0 320 320" xmlns="http://www.w3.org/2000/svg">
+                  <polygon points="160,30 290,120 240,280 80,280 30,120" fill="none" stroke="#333" stroke-width="2"/>
+                  <circle cx="160" cy="30" r="10" fill="#e53935"/><text x="160" y="35" text-anchor="middle" fill="#fff" font-size="11">q</text>
+                  <circle cx="290" cy="120" r="10" fill="#e53935"/><text x="290" y="125" text-anchor="middle" fill="#fff" font-size="11">q</text>
+                  <circle cx="240" cy="280" r="10" fill="#e53935"/><text x="240" y="285" text-anchor="middle" fill="#fff" font-size="11">q</text>
+                  <circle cx="80" cy="280" r="10" fill="#e53935"/><text x="80" y="285" text-anchor="middle" fill="#fff" font-size="11">q</text>
+                  <circle cx="30" cy="120" r="12" fill="#ffeb3b" stroke="#e53935" stroke-width="2"/><text x="30" y="125" text-anchor="middle" fill="#333" font-size="11" font-weight="bold">A</text>
+                  <circle cx="160" cy="155" r="4" fill="#1a73e8"/>
+                  <text x="160" y="148" text-anchor="middle" font-size="12" fill="#1a73e8" font-weight="bold">O</text>
+                  <text x="210" y="110" font-size="11" fill="#555">a</text>
+                </svg>`;
+                case 'q55':
+                    return `
+                <svg width="400" height="200" viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="80" cy="100" r="14" fill="#e53935"/><text x="80" y="105" text-anchor="middle" fill="#fff" font-size="12" font-weight="bold">−q</text>
+                  <circle cx="320" cy="100" r="14" fill="#e53935"/><text x="320" y="105" text-anchor="middle" fill="#fff" font-size="12" font-weight="bold">−q</text>
+                  <circle cx="200" cy="55" r="12" fill="#1a73e8"/><text x="200" y="60" text-anchor="middle" fill="#fff" font-size="11" font-weight="bold">+q</text>
+                  <line x1="200" y1="100" x2="200" y2="62" stroke="#1a73e8" stroke-width="1.5" stroke-dasharray="4,3"/>
+                  <text x="210" y="82" font-size="11" fill="#1a73e8">x</text>
+                  <line x1="80" y1="130" x2="320" y2="130" stroke="#555" stroke-width="1"/>
+                  <text x="195" y="145" text-anchor="middle" font-size="11" fill="#555">2d</text>
+                  <line x1="80" y1="108" x2="320" y2="108" stroke="#aaa" stroke-width="0.8" stroke-dasharray="5,5"/>
+                </svg>`;
+                case 'q60':
+                    return `
+                <svg width="400" height="280" viewBox="0 0 400 280" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="50" y="20" width="300" height="12" fill="#888" rx="3"/>
+                  <line x1="140" y1="32" x2="140" y2="150" stroke="#607d8b" stroke-width="4"/>
+                  <text x="120" y="95" font-size="11" fill="#455a64" font-weight="bold">Steel</text>
+                  <line x1="260" y1="32" x2="260" y2="150" stroke="#c9a84c" stroke-width="4"/>
+                  <text x="270" y="95" font-size="11" fill="#8d6e00" font-weight="bold">Brass</text>
+                  <rect x="100" y="150" width="200" height="40" fill="#5d4037" rx="4"/>
+                  <text x="200" y="175" text-anchor="middle" fill="#fff" font-size="12" font-weight="bold">M</text>
+                  <text x="200" y="220" text-anchor="middle" font-size="11" fill="#555">Lengths ratio = a, Radii ratio = b, Y ratio = c</text>
+                  <line x1="140" y1="155" x2="140" y2="190" stroke="#e53935" stroke-width="1.5" marker-end="url(#arrowDown)"/>
+                  <line x1="260" y1="155" x2="260" y2="190" stroke="#e53935" stroke-width="1.5" marker-end="url(#arrowDown)"/>
+                  <defs>
+                    <marker id="arrowDown" viewBox="0 0 10 10" refX="5" refY="10" markerWidth="5" markerHeight="5" orient="auto">
+                      <path d="M0,0 L5,10 L10,0 Z" fill="#e53935"/>
+                    </marker>
+                  </defs>
+                </svg>`;
+                default:
+                    return '';
+            }
+        }
+
+        // ==================== KEYBOARD NAVIGATION ====================
+        document.addEventListener('keydown', function(e) {
+            if (reviewMode || examSubmitted) return;
+            const q = getCurrentQuestion();
+            if (!q) return;
+            const key = e.key.toUpperCase();
+            if (['A', 'B', 'C', 'D'].includes(key)) {
+                selectAnswer(q.id, key);
+            } else if (e.key === 'ArrowRight') {
+                e.preventDefault();
+                saveAndNext();
+            } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                goToPrevious();
+            } else if (e.key === 'Delete' || e.key === 'Backspace') {
+                e.preventDefault();
+                clearResponse();
+            }
+        });
+
+        // ==================== INIT ====================
+        initExam();
+        console.log('✅ COMEDK 2024 Physics CBT Ready!');
+        console.log('📋 60 questions loaded. Select answers and click Submit.');
+        console.log('💡 Use Arrow keys to navigate, A/B/C/D to answer, Delete to clear.');
+    </script>
+</body>
+</html>
