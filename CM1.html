@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>COMEDK 2012 - CBT Mock Test</title>
+    <title>COMEDK CM1 - CBT Mock Test</title>
     <style>
         :root {
             --bg: #f5f5f5;
@@ -858,7 +858,7 @@
             <span class="candidate-name-header" id="candidateNameHeader">Candidate</span>
         </div>
         <div class="header-center">
-            <span class="test-title-header">COMEDK 2012</span>
+            <span class="test-title-header">COMEDK CM1</span>
             <span class="timer-box" id="timerBox">03:00:00</span>
         </div>
         <div class="header-right">
@@ -1723,7 +1723,7 @@
             const scorePercent = ((totalCorrect / totalQuestions) * 100).toFixed(1);
 
             // Store in localStorage
-            const bestScoreKey = 'comedk_best_score_2012';
+            const bestScoreKey = 'comedk_best_score_CM1';
             const previousBest = localStorage.getItem(bestScoreKey);
             if (!previousBest || totalCorrect > parseInt(previousBest)) {
                 localStorage.setItem(bestScoreKey, totalCorrect);
@@ -1739,7 +1739,7 @@
             const candidateName = getCandidateName();
             window.saveScoreToFirebase(
                 candidateName,
-                '2012',
+                'CM1',
                 totalCorrect,
                 180,
                 accuracy
@@ -1770,7 +1770,7 @@
             });
 
             panel.innerHTML = `
-        <h2>📊 Test Results — COMEDK 2012</h2>
+        <h2>📊 Test Results — COMEDK CM1</h2>
         <div class="score-big">${totalCorrect} / ${totalQuestions}</div>
         <div class="score-pct">Score: ${scorePercent}% &nbsp;|&nbsp; Accuracy: ${accuracy}</div>
         <div class="results-breakdown">
