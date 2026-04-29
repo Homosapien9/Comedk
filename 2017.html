@@ -1,0 +1,2165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>COMEDK 2017 - Computer Based Test</title>
+    <style>
+        :root {
+            --primary: #1a56db;
+            --primary-dark: #1e40af;
+            --danger: #dc2626;
+            --danger-hover: #b91c1c;
+            --bg: #f5f5f5;
+            --card-bg: #ffffff;
+            --text: #1f2937;
+            --text-secondary: #6b7280;
+            --border: #d1d5db;
+            --border-light: #e5e7eb;
+            --correct: #16a34a;
+            --wrong: #dc2626;
+            --answered-bg: #e8f0fe;
+            --answered-border: #1a56db;
+            --visited-wrong: #fef2f2;
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+            --shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            --radius: 6px;
+            --font: Arial, sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        html {
+            scroll-behavior: smooth;
+            overflow-x: hidden;
+        }
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+            min-height: 100vh;
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        /* ========== HEADER ========== */
+        .cbt-header {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: var(--primary);
+            color: #fff;
+            padding: 8px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            flex-wrap: nowrap;
+            min-height: 52px;
+            box-shadow: var(--shadow);
+        }
+        .cbt-header .user-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+            min-width: 0;
+        }
+        .cbt-header .avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #fff;
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            letter-spacing: 0;
+            overflow: hidden;
+        }
+        .cbt-header .avatar svg {
+            width: 18px;
+            height: 18px;
+            fill: var(--primary);
+        }
+        .cbt-header .candidate-name {
+            font-size: 0.85rem;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 130px;
+        }
+        .cbt-header .test-title {
+            font-size: 0.9rem;
+            font-weight: 700;
+            text-align: center;
+            white-space: nowrap;
+            flex-shrink: 1;
+            min-width: 0;
+        }
+        .cbt-header .timer-box {
+            background: #fff;
+            color: #1f2937;
+            padding: 5px 10px;
+            border-radius: var(--radius);
+            font-weight: 700;
+            font-size: 0.9rem;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+            flex-shrink: 0;
+            border: 2px solid transparent;
+            transition: all 0.3s;
+        }
+        .cbt-header .timer-box.warning {
+            background: #fef2f2;
+            color: #dc2626;
+            border-color: #dc2626;
+            animation: pulse 1s infinite;
+        }
+        @keyframes pulse {
+            0%,
+            100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.6;
+            }
+        }
+        .cbt-header .btn-submit-header {
+            background: #fff;
+            color: var(--primary);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            white-space: nowrap;
+            flex-shrink: 0;
+            letter-spacing: 0.3px;
+            transition: all 0.15s;
+        }
+        .cbt-header .btn-submit-header:hover {
+            background: #e8f0fe;
+        }
+        .cbt-header .btn-submit-header.urgent {
+            background: #dc2626;
+            color: #fff;
+            animation: pulse 1s infinite;
+        }
+
+        /* ========== SUBJECT TABS ========== */
+        .subject-tabs {
+            position: sticky;
+            top: 52px;
+            z-index: 999;
+            background: #fff;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            gap: 0;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+            box-shadow: var(--shadow-sm);
+        }
+        .subject-tabs::-webkit-scrollbar {
+            display: none;
+        }
+        .subject-tabs button {
+            flex: 1 1 0;
+            min-width: 0;
+            padding: 10px 6px;
+            border: none;
+            background: transparent;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            color: var(--text-secondary);
+            border-bottom: 3px solid transparent;
+            transition: all 0.15s;
+            white-space: nowrap;
+            letter-spacing: 0.2px;
+        }
+        .subject-tabs button.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+        .subject-tabs button .tab-count {
+            font-size: 0.7rem;
+            font-weight: 400;
+            color: var(--text-secondary);
+            display: block;
+        }
+        .subject-tabs button.active .tab-count {
+            color: var(--primary);
+        }
+
+        /* ========== MAIN LAYOUT ========== */
+        .main-layout {
+            display: flex;
+            gap: 0;
+            max-width: 1300px;
+            margin: 0 auto;
+            min-height: calc(100vh - 92px);
+        }
+        .question-panel {
+            flex: 1 1 75%;
+            min-width: 0;
+            padding: 16px;
+            background: var(--bg);
+        }
+        .question-panel .q-nav-info {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        .question-panel .q-nav-info .q-label {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--text);
+        }
+        .question-panel .q-nav-info .subject-badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            background: #e8f0fe;
+            color: var(--primary);
+        }
+
+        /* Question Card */
+        .question-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px 22px;
+            margin-bottom: 16px;
+            display: none;
+            box-shadow: var(--shadow-sm);
+        }
+        .question-card.active {
+            display: block;
+        }
+        .question-card .q-text {
+            font-size: 1rem;
+            font-weight: 500;
+            margin-bottom: 16px;
+            line-height: 1.7;
+            color: var(--text);
+        }
+        .question-card .svg-container {
+            text-align: center;
+            margin: 12px 0;
+        }
+        .question-card .svg-container svg {
+            max-width: 100%;
+            height: auto;
+            border-radius: 4px;
+            background: #fafafa;
+            padding: 6px;
+        }
+        .question-card .options {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+        .question-card .option {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 12px 14px;
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: all 0.15s;
+            border: 2px solid var(--border-light);
+            background: #fafafa;
+            font-size: 0.95rem;
+            min-height: 48px;
+        }
+        .question-card .option:hover {
+            background: #f0f4ff;
+            border-color: #a0c4ff;
+        }
+        .question-card .option input[type="radio"] {
+            margin-top: 2px;
+            accent-color: var(--primary);
+            width: 17px;
+            height: 17px;
+            flex-shrink: 0;
+        }
+        .question-card .option.selected {
+            background: var(--answered-bg);
+            border-color: var(--answered-border);
+            font-weight: 500;
+        }
+        .question-card .option.correct-answer {
+            background: #f0fdf4;
+            border-color: var(--correct);
+        }
+        .question-card .option.wrong-answer {
+            background: #fef2f2;
+            border-color: var(--wrong);
+        }
+        .question-card .note {
+            font-size: 0.8rem;
+            color: #888;
+            font-style: italic;
+            margin-top: 8px;
+            display: none;
+            padding: 8px 12px;
+            background: #fffbeb;
+            border-radius: 4px;
+            border-left: 3px solid #f59e0b;
+        }
+        .question-card.reviewing {
+            border-color: #f59e0b;
+            background: #fffdf5;
+        }
+
+        /* Action buttons */
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding: 8px 0;
+        }
+        .action-buttons button {
+            padding: 10px 18px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            border: 2px solid var(--border);
+            background: #fff;
+            color: var(--text);
+            transition: all 0.15s;
+            min-height: 44px;
+            white-space: nowrap;
+        }
+        .action-buttons .btn-save-next {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+        }
+        .action-buttons .btn-save-next:hover {
+            background: var(--primary-dark);
+        }
+        .action-buttons .btn-clear {
+            background: #fff;
+            color: var(--danger);
+            border-color: #fca5a5;
+        }
+        .action-buttons .btn-clear:hover {
+            background: #fef2f2;
+        }
+        .action-buttons .btn-prev {
+            background: #fff;
+            color: var(--text);
+            border-color: var(--border);
+        }
+        .action-buttons .btn-prev:hover {
+            background: #f9fafb;
+        }
+        .action-buttons button:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        /* ========== PALETTE (Desktop) ========== */
+        .palette-sidebar {
+            flex: 0 0 260px;
+            background: #fff;
+            border-left: 1px solid var(--border);
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            position: sticky;
+            top: 92px;
+            align-self: flex-start;
+            max-height: calc(100vh - 92px);
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: #cbd5e1 #f8fafc;
+        }
+        .palette-sidebar::-webkit-scrollbar {
+            width: 5px;
+        }
+        .palette-sidebar::-webkit-scrollbar-track {
+            background: #f8fafc;
+        }
+        .palette-sidebar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+        .palette-sidebar .palette-title {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-align: center;
+            color: var(--text-secondary);
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            padding-bottom: 4px;
+            border-bottom: 1px solid var(--border-light);
+        }
+        .palette-sidebar .candidate-label {
+            font-size: 0.75rem;
+            text-align: center;
+            color: var(--text);
+            font-weight: 600;
+            padding: 2px 0;
+        }
+        .palette-grid {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 3px;
+        }
+        .palette-grid button {
+            width: 100%;
+            aspect-ratio: 1;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            font-size: 0.65rem;
+            font-weight: 600;
+            cursor: pointer;
+            background: #e5e7eb;
+            color: #6b7280;
+            transition: all 0.12s;
+            min-width: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .palette-grid button:hover {
+            transform: scale(1.05);
+            z-index: 2;
+            box-shadow: var(--shadow);
+        }
+        .palette-grid button.visited-not-answered {
+            background: #fecaca;
+            color: #991b1b;
+            border-color: #f87171;
+        }
+        .palette-grid button.answered {
+            background: #bbf7d0;
+            color: #166534;
+            border-color: #4ade80;
+        }
+        .palette-grid button.current-question {
+            outline: 3px solid #1a56db;
+            outline-offset: 1px;
+            z-index: 3;
+        }
+        .palette-legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            font-size: 0.65rem;
+            color: var(--text-secondary);
+            padding-top: 6px;
+            border-top: 1px solid var(--border-light);
+            justify-content: center;
+        }
+        .palette-legend span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .palette-legend .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 3px;
+            display: inline-block;
+            flex-shrink: 0;
+        }
+        .palette-legend .dot.gray {
+            background: #e5e7eb;
+            border: 1px solid #d1d5db;
+        }
+        .palette-legend .dot.red {
+            background: #fecaca;
+            border: 1px solid #f87171;
+        }
+        .palette-legend .dot.green {
+            background: #bbf7d0;
+            border: 1px solid #4ade80;
+        }
+
+        /* ========== RESULTS PANEL ========== */
+        .results-container {
+            display: none;
+            max-width: 700px;
+            margin: 24px auto;
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px 28px;
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+        .results-container.visible {
+            display: block;
+        }
+        .results-container .score-big {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--primary);
+        }
+        .results-container .score-subtitle {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+        }
+        .results-container .stats-row {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin: 12px 0;
+        }
+        .results-container .stat-box {
+            background: #f9fafb;
+            border-radius: var(--radius);
+            padding: 12px 18px;
+            text-align: center;
+            min-width: 80px;
+        }
+        .results-container .stat-box .stat-num {
+            font-size: 1.4rem;
+            font-weight: 700;
+        }
+        .results-container .stat-box .stat-label {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .results-container .stat-box.correct .stat-num {
+            color: var(--correct);
+        }
+        .results-container .stat-box.incorrect .stat-num {
+            color: var(--wrong);
+        }
+        .results-container .stat-box.unattempted .stat-num {
+            color: #9ca3af;
+        }
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 0.85rem;
+        }
+        .results-table th,
+        .results-table td {
+            padding: 8px 10px;
+            border: 1px solid var(--border-light);
+            text-align: center;
+        }
+        .results-table th {
+            background: #f9fafb;
+            font-weight: 700;
+            color: var(--text);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .results-table td {
+            font-weight: 500;
+        }
+        .results-container .name-input-row {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            margin: 12px 0;
+        }
+        .results-container .name-input-row input {
+            padding: 10px 14px;
+            border: 2px solid var(--border);
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-family: var(--font);
+            width: 200px;
+            text-align: center;
+        }
+        .results-container .name-input-row button {
+            padding: 10px 18px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            background: var(--primary);
+            color: #fff;
+            border: none;
+        }
+        .results-container .btn-row {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 16px;
+        }
+        .results-container .btn-row button,
+        .results-container .btn-row a {
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            border: 2px solid var(--border);
+            background: #fff;
+            color: var(--text);
+            transition: all 0.15s;
+        }
+        .results-container .btn-row .btn-retake {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+        }
+        .results-container .btn-row .btn-retake:hover {
+            background: var(--primary-dark);
+        }
+        .results-container .btn-row .btn-home {
+            background: #fff;
+            color: var(--text);
+        }
+        .results-container .btn-row .btn-home:hover {
+            background: #f9fafb;
+        }
+        .results-container .firebase-status {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            margin-top: 8px;
+        }
+
+        /* ========== MOBILE PALETTE DRAWER ========== */
+        .mobile-drawer-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+        }
+        .mobile-drawer-overlay.open {
+            display: block;
+        }
+        .mobile-drawer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #fff;
+            z-index: 2001;
+            max-height: 70vh;
+            border-radius: 16px 16px 0 0;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            padding: 12px 12px 20px;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.2);
+        }
+        .mobile-drawer.open {
+            transform: translateY(0);
+        }
+        .mobile-drawer .drawer-handle {
+            width: 40px;
+            height: 4px;
+            background: #d1d5db;
+            border-radius: 2px;
+            margin: 0 auto 10px;
+        }
+        .mobile-drawer .drawer-title {
+            font-weight: 700;
+            font-size: 0.85rem;
+            text-align: center;
+            margin-bottom: 8px;
+            color: var(--text);
+        }
+        .mobile-drawer .palette-grid {
+            grid-template-columns: repeat(10, 1fr);
+            gap: 4px;
+            overflow-y: auto;
+            flex: 1;
+            padding: 4px;
+        }
+        .mobile-drawer .palette-grid button {
+            font-size: 0.7rem;
+            aspect-ratio: 1;
+            min-height: 32px;
+        }
+        .mobile-drawer .drawer-close {
+            display: block;
+            margin: 8px auto 0;
+            padding: 8px 24px;
+            border-radius: 20px;
+            background: #e5e7eb;
+            border: none;
+            font-weight: 600;
+            font-size: 0.8rem;
+            cursor: pointer;
+            color: var(--text);
+        }
+        .mobile-palette-toggle {
+            display: none;
+            position: fixed;
+            bottom: 16px;
+            right: 16px;
+            z-index: 1500;
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            padding: 12px 18px;
+            border-radius: 24px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(26, 86, 219, 0.4);
+            letter-spacing: 0.3px;
+        }
+
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 768px) {
+            .cbt-header {
+                padding: 6px 10px;
+                gap: 6px;
+                min-height: 46px;
+            }
+            .cbt-header .candidate-name {
+                font-size: 0.7rem;
+                max-width: 80px;
+            }
+            .cbt-header .test-title {
+                font-size: 0.7rem;
+            }
+            .cbt-header .timer-box {
+                font-size: 0.75rem;
+                padding: 4px 7px;
+            }
+            .cbt-header .btn-submit-header {
+                font-size: 0.7rem;
+                padding: 6px 10px;
+            }
+            .cbt-header .avatar {
+                width: 26px;
+                height: 26px;
+                font-size: 0.65rem;
+            }
+            .subject-tabs {
+                top: 46px;
+            }
+            .subject-tabs button {
+                font-size: 0.7rem;
+                padding: 8px 4px;
+            }
+            .subject-tabs button .tab-count {
+                font-size: 0.6rem;
+            }
+            .main-layout {
+                flex-direction: column;
+                min-height: auto;
+            }
+            .palette-sidebar {
+                display: none;
+            }
+            .question-panel {
+                flex: 1 1 100%;
+                padding: 10px 8px;
+            }
+            .question-card {
+                padding: 14px 12px;
+            }
+            .question-card .q-text {
+                font-size: 0.9rem;
+            }
+            .question-card .option {
+                padding: 12px 10px;
+                font-size: 0.85rem;
+                min-height: 52px;
+                gap: 8px;
+            }
+            .question-card .option input[type="radio"] {
+                width: 18px;
+                height: 18px;
+            }
+            .action-buttons button {
+                padding: 10px 12px;
+                font-size: 0.75rem;
+                min-height: 48px;
+                border-radius: 16px;
+            }
+            .mobile-palette-toggle {
+                display: block;
+            }
+            .question-card .svg-container svg {
+                max-width: 100%;
+                height: auto;
+            }
+            .results-container {
+                margin: 12px 8px;
+                padding: 16px 14px;
+            }
+            .results-container .score-big {
+                font-size: 2.2rem;
+            }
+            .results-table {
+                font-size: 0.7rem;
+            }
+            .results-table th,
+            .results-table td {
+                padding: 5px 4px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .cbt-header {
+                padding: 4px 6px;
+                gap: 4px;
+                min-height: 42px;
+            }
+            .cbt-header .candidate-name {
+                font-size: 0.65rem;
+                max-width: 60px;
+            }
+            .cbt-header .test-title {
+                font-size: 0.65rem;
+            }
+            .cbt-header .timer-box {
+                font-size: 0.7rem;
+                padding: 3px 5px;
+                letter-spacing: 0;
+            }
+            .cbt-header .btn-submit-header {
+                font-size: 0.65rem;
+                padding: 5px 8px;
+            }
+            .cbt-header .avatar {
+                width: 22px;
+                height: 22px;
+                font-size: 0.6rem;
+            }
+            .subject-tabs {
+                top: 42px;
+            }
+            .subject-tabs button {
+                font-size: 0.65rem;
+                padding: 6px 2px;
+            }
+            .subject-tabs button .tab-count {
+                font-size: 0.55rem;
+            }
+            .question-card .option {
+                min-height: 52px;
+                padding: 11px 8px;
+                font-size: 0.8rem;
+            }
+            .action-buttons {
+                gap: 6px;
+            }
+            .action-buttons button {
+                padding: 8px 10px;
+                font-size: 0.7rem;
+                min-height: 44px;
+                border-radius: 14px;
+            }
+            .mobile-drawer .palette-grid {
+                grid-template-columns: repeat(9, 1fr);
+                gap: 3px;
+            }
+            .mobile-drawer .palette-grid button {
+                font-size: 0.6rem;
+                min-height: 28px;
+            }
+        }
+
+        @media print {
+            .cbt-header,
+            .subject-tabs,
+            .palette-sidebar,
+            .action-buttons,
+            .mobile-palette-toggle,
+            .mobile-drawer,
+            .mobile-drawer-overlay {
+                display: none !important;
+            }
+            .main-layout {
+                flex-direction: column;
+            }
+            .question-panel {
+                flex: 1 1 100%;
+                padding: 0;
+            }
+            .question-card {
+                display: block !important;
+                break-inside: avoid;
+                box-shadow: none;
+                border: 1px solid #ccc;
+                margin-bottom: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <header class="cbt-header" id="cbt-header">
+        <div class="user-info">
+            <div class="avatar" id="header-avatar">
+                <svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v1.2c0 .66.54 1.2 1.2 1.2h16.8c.66 0 1.2-.54 1.2-1.2v-1.2c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
+            </div>
+            <span class="candidate-name" id="header-name">Candidate</span>
+        </div>
+        <span class="test-title">COMEDK 2017</span>
+        <span class="timer-box" id="timer-box">03:00:00</span>
+        <button class="btn-submit-header" id="btn-submit-header" onclick="submitAndReview()">Submit Test</button>
+    </header>
+
+    <!-- SUBJECT TABS -->
+    <nav class="subject-tabs" id="subject-tabs">
+        <button class="active" data-subject="physics" onclick="jumpToSubject('physics')">
+            Physics <span class="tab-count" id="tab-physics-count">(0/60)</span>
+        </button>
+        <button data-subject="chemistry" onclick="jumpToSubject('chemistry')">
+            Chemistry <span class="tab-count" id="tab-chemistry-count">(0/60)</span>
+        </button>
+        <button data-subject="mathematics" onclick="jumpToSubject('mathematics')">
+            Mathematics <span class="tab-count" id="tab-mathematics-count">(0/60)</span>
+        </button>
+    </nav>
+
+    <!-- MAIN LAYOUT -->
+    <div class="main-layout" id="main-layout">
+        <!-- Question Panel -->
+        <div class="question-panel" id="question-panel">
+            <div class="q-nav-info">
+                <span class="q-label" id="q-label">Question 1 of 180</span>
+                <span class="subject-badge" id="subject-badge">Physics</span>
+            </div>
+            <div id="questions-container"></div>
+            <div class="action-buttons" id="action-buttons">
+                <button class="btn-prev" id="btn-prev" onclick="goToPrevious()">⬅ Previous</button>
+                <button class="btn-clear" id="btn-clear" onclick="clearResponse()">🔴 Clear Response</button>
+                <button class="btn-save-next" id="btn-save-next" onclick="saveAndNext()">🟢 Save & Next</button>
+            </div>
+        </div>
+
+        <!-- Palette Sidebar (Desktop) -->
+        <aside class="palette-sidebar" id="palette-sidebar">
+            <div class="candidate-label" id="palette-name">Candidate</div>
+            <div class="palette-title">Question Palette</div>
+            <div class="palette-grid" id="palette-grid"></div>
+            <div class="palette-legend">
+                <span><span class="dot gray"></span> Not Visited</span>
+                <span><span class="dot red"></span> Visited</span>
+                <span><span class="dot green"></span> Answered</span>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Results Container -->
+    <div class="results-container" id="results-container">
+        <div class="score-big" id="result-score">0 / 180</div>
+        <div class="score-subtitle">Test Completed</div>
+        <div class="stats-row">
+            <div class="stat-box correct"><div class="stat-num" id="result-correct">0</div><div class="stat-label">Correct</div></div>
+            <div class="stat-box incorrect"><div class="stat-num" id="result-incorrect">0</div><div class="stat-label">Incorrect</div></div>
+            <div class="stat-box unattempted"><div class="stat-num" id="result-unattempted">0</div><div class="stat-label">Unattempted</div></div>
+        </div>
+        <table class="results-table">
+            <thead>
+                <tr><th>Subject</th><th>Score</th><th>Correct</th><th>Wrong</th><th>Unattempted</th></tr>
+            </thead>
+            <tbody>
+                <tr id="row-physics"><td>Physics</td><td>0</td><td>0</td><td>0</td><td>60</td></tr>
+                <tr id="row-chemistry"><td>Chemistry</td><td>0</td><td>0</td><td>0</td><td>60</td></tr>
+                <tr id="row-mathematics"><td>Mathematics</td><td>0</td><td>0</td><td>0</td><td>60</td></tr>
+            </tbody>
+        </table>
+        <div id="name-prompt-section" style="display:none;">
+            <p style="font-weight:600;margin-bottom:6px;">Enter your name for the leaderboard:</p>
+            <div class="name-input-row">
+                <input type="text" id="name-input" placeholder="Your name" maxlength="40">
+                <button onclick="saveNameAndSubmit()">Save & Post Score</button>
+            </div>
+        </div>
+        <div class="firebase-status" id="firebase-status"></div>
+        <div class="btn-row">
+            <button class="btn-retake" onclick="retakeTest()">🔄 Retake Test</button>
+            <a class="btn-home" href="index.html">🏠 Back to Home</a>
+        </div>
+    </div>
+
+    <!-- Mobile Palette Toggle -->
+    <button class="mobile-palette-toggle" id="mobile-palette-toggle" onclick="openMobileDrawer()">📋 Questions</button>
+
+    <!-- Mobile Drawer Overlay -->
+    <div class="mobile-drawer-overlay" id="mobile-drawer-overlay" onclick="closeMobileDrawer()"></div>
+    <div class="mobile-drawer" id="mobile-drawer">
+        <div class="drawer-handle"></div>
+        <div class="drawer-title">Question Palette</div>
+        <div class="palette-grid" id="mobile-palette-grid"></div>
+        <button class="drawer-close" onclick="closeMobileDrawer()">Close</button>
+    </div>
+
+    <script>
+        // ==================== ANSWER KEY ====================
+        const answerKey = {
+            1: 'c',
+            2: 'c',
+            3: 'd',
+            4: 'b',
+            5: 'c',
+            6: 'b',
+            7: 'd',
+            8: 'd',
+            9: 'a',
+            10: 'c',
+            11: 'c',
+            12: 'b',
+            13: 'c',
+            14: 'c',
+            15: 'a',
+            16: 'b',
+            17: 'b',
+            18: 'b',
+            19: 'c',
+            20: 'b',
+            21: 'c',
+            22: 'b',
+            23: 'c',
+            24: 'a',
+            25: 'b',
+            26: 'c',
+            27: 'b',
+            28: 'a',
+            29: 'b',
+            30: 'b',
+            31: 'c',
+            32: 'a',
+            33: 'b',
+            34: 'c',
+            35: 'c',
+            36: 'c',
+            37: 'b',
+            38: 'c',
+            39: 'b',
+            40: 'c',
+            41: 'b',
+            42: 'a',
+            43: 'c',
+            44: 'd',
+            45: 'd',
+            46: 'b',
+            47: 'c',
+            48: 'a',
+            49: 'a',
+            50: 'b',
+            51: 'a',
+            52: 'b',
+            53: 'b',
+            54: 'b',
+            55: 'b',
+            56: 'd',
+            57: 'd',
+            58: 'd',
+            59: 'd',
+            60: 'a',
+            61: 'b',
+            62: 'c',
+            63: 'd',
+            64: 'c',
+            65: 'c',
+            66: 'c',
+            67: 'b',
+            68: 'c',
+            69: 'c',
+            70: 'c',
+            71: 'd',
+            72: 'a',
+            73: 'd',
+            74: 'b',
+            75: 'c',
+            76: 'b',
+            77: 'b',
+            78: 'c',
+            79: 'b',
+            80: 'a',
+            81: 'a',
+            82: 'b',
+            83: 'b',
+            84: 'b',
+            85: 'c',
+            86: 'd',
+            87: 'b',
+            88: 'c',
+            89: 'a',
+            90: 'd',
+            91: 'a',
+            92: 'd',
+            93: 'c',
+            94: 'c',
+            95: 'a',
+            96: 'b',
+            97: 'a',
+            98: 'a',
+            99: 'b',
+            100: 'c',
+            101: 'b',
+            102: 'b',
+            103: 'c',
+            104: 'b',
+            105: 'c',
+            106: 'a',
+            107: 'c',
+            108: 'c',
+            109: 'a',
+            110: 'a',
+            111: 'a',
+            112: 'd',
+            113: 'b',
+            114: 'b',
+            115: 'b',
+            116: 'c',
+            117: 'd',
+            118: 'd',
+            119: 'c',
+            120: 'd',
+            121: 'b',
+            122: 'a',
+            123: 'd',
+            124: 'a',
+            125: 'd',
+            126: 'c',
+            127: 'b',
+            128: 'd',
+            129: 'a',
+            130: 'd',
+            131: 'c',
+            132: 'd',
+            133: 'b',
+            134: 'c',
+            135: 'd',
+            136: 'd',
+            137: 'd',
+            138: 'a',
+            139: 'd',
+            140: 'a',
+            141: 'a',
+            142: 'd',
+            143: 'a',
+            144: 'c',
+            145: 'b',
+            146: 'a',
+            147: 'c',
+            148: 'c',
+            149: 'a',
+            150: 'b',
+            151: 'a',
+            152: 'b',
+            153: 'c',
+            154: 'b',
+            155: 'a',
+            156: 'd',
+            157: 'd',
+            158: 'd',
+            159: 'c',
+            160: 'a',
+            161: 'a',
+            162: 'a',
+            163: 'b',
+            164: 'c',
+            165: 'b',
+            166: 'a',
+            167: 'c',
+            168: 'a',
+            169: 'a',
+            170: 'b',
+            171: 'd',
+            172: 'd',
+            173: 'c',
+            174: 'c',
+            175: 'c',
+            176: 'd',
+            177: 'c',
+            178: 'c',
+            179: 'b',
+            180: 'd'
+        };
+
+        // ==================== QUESTION DATA ====================
+        const physicsQuestions = [
+            { id: 1, text: 'When a body falls in air, the resistance of air depends to a great extent on the shape of the body. Three different shapes are given. Identify the combination of air resistances which truly represents the physical situation. (The cross-sectional areas are the same.)',
+                options: ['1 < 11 < 111', '11 < 111 < 1', '111 < 11 < 1', '111 < 11 < 1'],
+                svg: `<svg width="380" height="100" viewBox="0 0 380 100"><text x="10" y="30" font-size="12" fill="#333">I (Cigar)</text><ellipse cx="80" cy="50" rx="55" ry="14" fill="#cbd5e1" stroke="#333" stroke-width="1.5"/><text x="130" y="30" font-size="12" fill="#333">II (Sphere)</text><circle cx="210" cy="48" r="22" fill="#cbd5e1" stroke="#333" stroke-width="1.5"/><text x="270" y="30" font-size="12" fill="#333">III (Disc)</text><rect x="300" y="22" width="60" height="50" rx="5" fill="#cbd5e1" stroke="#333" stroke-width="1.5"/><text x="315" y="50" font-size="10">flat face</text></svg>`,
+                explanation: 'Air resistance is max for disc (III) as area normal to flow is max. Cigar shape (I) is streamlined so min resistance. Order: III < II < I.' },
+            { id: 2, text: 'The adjacent figure is the part of a horizontally stretched net. Section AB is stretched with a force of 10 N. The tensions in the sections BC and BF are:',
+                options: ['10 N, 11 N', '10 N, 6 N', '10 N, 10 N', "Can't calculate due to insufficient data"],
+                svg: `<svg width="200" height="140" viewBox="0 0 200 140"><line x1="100" y1="20" x2="100" y2="70" stroke="#333" stroke-width="2"/><line x1="100" y1="70" x2="40" y2="120" stroke="#333" stroke-width="2"/><line x1="100" y1="70" x2="160" y2="120" stroke="#333" stroke-width="2"/><text x="105" y="45" font-size="11">A</text><text x="105" y="65" font-size="11">B</text><text x="20" y="130" font-size="11">C</text><text x="162" y="130" font-size="11">F</text><text x="130" y="100" font-size="11">120¬∞</text><text x="55" y="100" font-size="11">120¬∞</text></svg>`,
+                explanation: "By Lami's theorem, TвВБ/sin120¬∞ = TвВВ/sin120¬∞ = 10/sin120¬∞, so TвВБ = TвВВ = 10 N." },
+            { id: 3, text: 'Out of the following four dimensional quantities, which one qualifies to be called a dimensional constant?',
+                options: ['Acceleration due to gravity', 'Surface tension of water', 'Weight of a standard kilogram mass',
+                    'Velocity of light in vacuum'] },
+            { id: 4, text: 'The relationship between force F and position x of a body is as shown. Work done from x=1m to x=5m:',
+                options: ['10 J', '15 J', '20 J', '25 J'],
+                svg: `<svg width="300" height="150" viewBox="0 0 300 150"><rect x="40" y="30" width="220" height="100" fill="#fff" stroke="#333"/><line x1="60" y1="110" x2="260" y2="110" stroke="#333"/><line x1="60" y1="30" x2="60" y2="110" stroke="#333"/><text x="260" y="125" font-size="10">x(m)</text><text x="30" y="35" font-size="10">F(N)</text><text x="100" y="125" font-size="9">1</text><text x="180" y="125" font-size="9">5</text><rect x="60" y="60" width="40" height="50" fill="#e8f0fe" stroke="#1a73e8"/><rect x="100" y="85" width="40" height="25" fill="#e8f0fe" stroke="#1a73e8"/><rect x="140" y="95" width="40" height="15" fill="#fce8e6" stroke="#d93025"/><polygon points="180,110 220,110 220,70" fill="#e8f0fe" stroke="#1a73e8"/></svg>`,
+                explanation: 'Area under F-x graph = work done = 15 J.' },
+            { id: 5, text: 'From top of a tower, two stones (mass ratio 1:2) are thrownвАФone up with speed u, the other down with speed u. Neglecting air resistance:',
+                options: ['Heavier stone hits ground with higher speed', 'Lighter stone hits ground with higher speed',
+                    'Both hit ground with same speed', "Speed can't be determined"] },
+            { id: 6, text: 'If M is mass of earth and R its radius, ratio g/G is:', options: ['R¬≤/M', 'M/R¬≤', 'MR¬≤', 'M/R'] },
+            { id: 7, text: 'A student tries to pull himself up by tugging on his hair. He will not succeed because:',
+                options: ['Force exerted is small', 'Frictional force while gripping is small',
+                    "Newton's law of inertia not applicable to living beings", 'Force applied is internal to the system'] },
+            { id: 8, text: 'From the adjacent figure (two tanks with water at same height), correct observation:',
+                options: ['Pressure bottom (I) > bottom (II)', 'Pressure bottom (I) < bottom (II)',
+                    'Pressure depends on shape', 'Pressure on bottom of (I) and (II) is same'],
+                svg: `<svg width="240" height="120" viewBox="0 0 240 120"><rect x="20" y="20" width="60" height="80" fill="#dbeafe" stroke="#333" stroke-width="1.5"/><rect x="140" y="20" width="80" height="80" fill="#dbeafe" stroke="#333" stroke-width="1.5"/><text x="35" y="62" font-size="10">Water</text><text x="160" y="62" font-size="10">Water</text><text x="50" y="110" font-size="10">(I)</text><text x="175" y="110" font-size="10">(II)</text><line x1="20" y1="30" x2="80" y2="30" stroke="#333" stroke-width="1" stroke-dasharray="4"/><line x1="140" y1="30" x2="220" y2="30" stroke="#333" stroke-width="1" stroke-dasharray="4"/><text x="95" y="60" font-size="9">h</text><text x="225" y="60" font-size="9">h</text></svg>`,
+                explanation: 'P = hѕБg, same height and liquid вЖТ same pressure at bottom.' },
+            { id: 9, text: "Which is NOT a unit of Young's modulus?", options: ['N mвБї¬є', 'N mвБї¬≤', 'dyne cmвБї¬≤',
+                    'Mega pascal'] },
+            { id: 10, text: 'Blue glass heated high & red glass at room temp in dim room:',
+                options: ['Blue looks blue, red as usual', 'Red looks brighter, blue ordinary',
+                    'Blue shines brighter red than red piece', 'Both look equally red'] },
+            { id: 11, text: 'Wavelength of radiation emitted by a body depends upon:',
+                options: ['Nature of surface', 'Area of surface', 'Temperature of surface', 'All of the above'] },
+            { id: 12, text: 'Ideal monoatomic gas in cycle ABCDA (pV diagram). Work done:',
+                options: ['¬љ pV', 'pV', '2pV', '4pV'],
+                svg: `<svg width="200" height="150" viewBox="0 0 200 150"><rect x="40" y="20" width="140" height="110" fill="#fff" stroke="#333"/><text x="40" y="140" font-size="10">V</text><text x="180" y="135" font-size="10">2V</text><text x="10" y="115" font-size="10">p</text><text x="10" y="55" font-size="10">2p</text><rect x="60" y="60" width="100" height="55" fill="#e8f0fe" stroke="#1a73e8" stroke-width="2"/><text x="85" y="90" font-size="11">A</text><text x="152" y="90" font-size="11">B</text><text x="152" y="52" font-size="11">C</text><text x="85" y="52" font-size="11">D</text></svg>`,
+                explanation: 'W = area = (2p-p)(2V-V) = pV.' },
+            { id: 13, text: 'Which mirror for parallel beam from small lamp?',
+                options: ['Plane mirror', 'Convex mirror', 'Concave mirror', 'Any one'] },
+            { id: 14, text: 'Wrong statement about lens power:',
+                options: ['D = 1/f', 'Power in dioptre when f in metres', 'Dioptre independent of unit system',
+                    'D positive for convergent, negative for divergent'] },
+            { id: 15, text: 'Identify wrong description (eye defect figures):',
+                options: ['First figure: near-sightedness', 'Second figure: far-sightedness', 'Both correct',
+                'Both wrong'] },
+            { id: 16, text: 'Infrared radiation discovered in 1800 by:',
+                options: ['William Wollaston', 'William Herschel', 'Wilhelm Roentgen', 'Thomas Young'] },
+            { id: 17, text: 'Particle on trough of wave comes to mean position after time (T = time period):',
+                options: ['T/2', 'T/4', 'T', '2T'] },
+            { id: 18, text: 'Siren disc 60 holes, 360 rpm. Emitted sound frequency:',
+            options: ['10 Hz', '360 Hz', '216 kHz', '6 Hz'] },
+            { id: 19, text: 'Ratio of velocity of sound in HвВВ and OвВВ at STP:', options: ['16:1', '8:1', '4:1', '2:1'] },
+            { id: 20, text: 'Sonometer: 256 Hz at 25 cm, another at 16 cm. Frequency of second:',
+                options: ['163.84 Hz', '400 Hz', '320 Hz', '204.8 Hz'] },
+            { id: 21, text: 'Apparent frequency 200 Hz moving towards source at 40 m/s, 160 Hz moving away. Speed of sound:',
+                options: ['340 m/s', '330 m/s', '360 m/s', '320 m/s'] },
+            { id: 22, text: 'Wave theory of light first postulated by:',
+                options: ['Isaac Newton', 'Christian Huygens', 'Thomas Young', 'Augustin Jean Fresnel'] },
+            { id: 23, text: 'If liquid does not wet glass, angle of contact is:',
+            options: ['Zero', 'Acute', 'Obtuse', 'Right angle'] },
+            { id: 24, text: 'Magnitude of I in ampere (circuit diagram):', options: ['0.1 A', '0.3 A', '0.6 A', 'None'],
+                svg: `<svg width="200" height="100" viewBox="0 0 200 100"><rect x="30" y="25" width="140" height="55" fill="#fff" stroke="#333"/><text x="60" y="55" font-size="10">60ќ©</text><text x="120" y="40" font-size="9">15ќ©</text><text x="120" y="70" font-size="9">5ќ©</text><text x="155" y="55" font-size="9">10ќ©</text><text x="85" y="20" font-size="9">I</text></svg>`,
+                explanation: 'Using parallel-series combination, I = 0.1 A.' },
+            { id: 25, text: 'Electron mass m, charge q, speed v in B field. If v doubled, B halved, new radius:',
+                options: ['2r', '4r', 'r/4', 'r/2'] },
+            { id: 26, text: 'If p.d. across rвВБ equals E, then:', options: ['R = rвВБ+rвВВ', 'R = rвВБ/rвВВ', 'R = rвВБвИТrвВВ',
+                    'R = rвВВ/rвВБ'],
+                svg: `<svg width="200" height="100" viewBox="0 0 200 100"><rect x="20" y="25" width="160" height="50" fill="#fff" stroke="#333"/><text x="40" y="55" font-size="10">E,rвВБ</text><text x="100" y="55" font-size="10">E,rвВВ</text><text x="150" y="55" font-size="10">R</text></svg>`,
+                explanation: 'R = rвВБ вИТ rвВВ from circuit analysis.' },
+            { id: 27, text: 'Two resistance coils give 3,4,12,16 ќ©. The separate resistances:',
+                options: ['3 & 4', '4 & 12', '12 & 16', '16 & 3'] },
+            { id: 28, text: 'Electrons move SouthвЖТNorth, Earth B vertical down. Deflected towards:',
+                options: ['West', 'No deflection', 'East', 'North to South'] },
+            { id: 29, text: 'Tangent galvanometer reduction factor 1A, perpendicular to meridian, 1A current:',
+                options: ['60¬∞', '45¬∞', '30¬∞', 'None'] },
+            { id: 30, text: 'Voltmeter records 5V. Resistance of voltmeter (ќ©):', options: ['200', '100', '10', '50'],
+                svg: `<svg width="200" height="100" viewBox="0 0 200 100"><rect x="20" y="20" width="160" height="60" fill="#fff" stroke="#333"/><text x="40" y="50" font-size="10">10V</text><text x="90" y="40" font-size="9">100ќ©</text><text x="90" y="65" font-size="9">50ќ©</text><text x="150" y="50" font-size="9">V</text></svg>`,
+                explanation: 'Voltmeter resistance = 100 ќ©.' },
+            { id: 31, text: 'Three parallel wires, force on 25 cm of wire C:',
+                options: ['10вБї¬≥ N', '25√Ч10вБї¬≥ N', 'Zero', '15√Ч10вБї¬≥ N'],
+                svg: `<svg width="200" height="100" viewBox="0 0 200 100"><circle cx="60" cy="50" r="4" fill="#333"/><circle cx="100" cy="50" r="4" fill="#333"/><circle cx="140" cy="50" r="4" fill="#333"/><text x="55" y="42" font-size="9">D</text><text x="96" y="42" font-size="9">C</text><text x="136" y="42" font-size="9">G</text><text x="50" y="70" font-size="8">30A</text><text x="90" y="70" font-size="8">10A</text><text x="130" y="70" font-size="8">20A</text></svg>`,
+                explanation: 'Forces from D and G cancel, net force = 0.' },
+            { id: 32, text: '5A, 6V battery for 6 min. Chemical energy reduced by:',
+                options: ['1.08√Ч10вБі J', '1.08√Ч10вБі V', '1.8√Ч10вБі J', '1.8√Ч10вБі V'] },
+            { id: 33, text: 'Current drops 5AвЖТ4A when 2ќ© added in series. Original resistance:',
+                options: ['1.25 ќ©', '8 ќ©', '10 ќ©', '20 ќ©'] },
+            { id: 34, text: 'E=6V, RвВБ=100ќ©, RвВВ=RвВГ=50ќ©, RвВД=75ќ©. Equivalent resistance:',
+                options: ['11.875 ќ©', '26.31 ќ©', '118.75 ќ©', 'None'],
+                svg: `<svg width="200" height="100" viewBox="0 0 200 100"><rect x="15" y="20" width="170" height="60" fill="#fff" stroke="#333"/><text x="30" y="50" font-size="9">RвВБ</text><text x="70" y="40" font-size="8">RвВВ</text><text x="70" y="65" font-size="8">RвВГ</text><text x="110" y="50" font-size="8">RвВД</text><text x="150" y="50" font-size="9">E</text></svg>`,
+                explanation: 'Parallel combo + series = 118.75 ќ©.' },
+            { id: 35, text: 'Meter bridge: balance at 20cm, +15ќ© shifts to 40cm. Smaller resistance:',
+                options: ['3 ќ©', '6 ќ©', '9 ќ©', '12 ќ©'] },
+            { id: 36, text: 'E=1500 V/m, B=0.40 Wb/m¬≤. Minimum speed for straight line:',
+                options: ['1.6√Ч10¬євБµ m/s', '6√Ч10вБї¬євБґ m/s', '3.75√Ч10¬≥ m/s', '3.75√Ч10¬≤ m/s'] },
+            { id: 37, text: '10% of main current through galvanometer (resistance G). Shunt:',
+            options: ['9G', 'G/9', '90G', 'G/90'] },
+            { id: 38, text: 'Wrong property of diamagnetism:',
+                options: ['No permanent magnetic moment', 'Explained by electromagnetic induction',
+                    'Small positive susceptibility', 'Magnetic moments of electrons neutralize'] },
+            { id: 39, text: 'Induction coil works on principle of:', options: ['Self-induction', 'Mutual induction',
+                    "Ampere's rule", "Fleming's right hand rule"] },
+            { id: 40, text: 'вИЪ(LC) has dimension of:', options: ['Length', 'Mass', 'Time', 'No dimension'] },
+            { id: 41, text: 'Electric flux for Gaussian surface A (qвВБ=-14nC, qвВВ=78.85nC, qвВГ=-56nC):',
+                options: ['10¬≥ N¬Јm¬≤/C', '10¬≥ C/N¬Јm¬≤', '6.32√Ч10¬≥ N¬Јm¬≤/C', '6.32√Ч10¬≥ C/N¬Јm¬≤'],
+                svg: `<svg width="200" height="100" viewBox="0 0 200 100"><ellipse cx="100" cy="50" rx="60" ry="35" fill="#fef3c7" stroke="#333" stroke-width="1.5"/><text x="70" y="40" font-size="9">qвВБ</text><text x="100" y="60" font-size="9">qвВВ</text><text x="125" y="40" font-size="9">qвВГ</text><text x="155" y="50" font-size="10">A</text></svg>`,
+                explanation: 'ќ¶ = (qвВБ+qвВВ+qвВГ)/ќµвВА = 10¬≥ C/N¬Јm¬≤.' },
+            { id: 42, text: 'Four shapes (sphere, cylindrical, pear, lightning conductor) charged. Best for retaining charge:',
+                options: ['Sphere', 'Cylindrical', 'Pear', 'Lightning conductor'] },
+            { id: 43, text: 'Potential of a conductor depends on:', options: ['Amount of charge', 'Geometry & size',
+                    'Both (a) and (b)', 'None'] },
+            { id: 44, text: 'Work done carrying charge q around circle of radius r with charge Q at centre:',
+                options: ['qQ/(4ѕАќµвВАr)', 'qQ/(4ѕАќµвВАr¬≤)', 'qQ/(4ѕАќµвВАr¬≤)', 'Zero'] },
+            { id: 45, text: 'Air capacitor 2pF, plates doubled & wax filled вЖТ 6pF. Dielectric constant:',
+                options: ['2', '3', '4', '6'] },
+            { id: 46, text: "Wrong statement about Coulomb's law:",
+                options: ['Binds electrons to nucleus', 'Binds protons & neutrons in nucleus',
+                    'Binds atoms into molecules', 'Binds atoms/molecules into solids'] },
+            { id: 47, text: 'Single slit width a, ќї=400nm, pattern width y. Half covered, ќї=600nm:',
+                options: ['Pattern vanishes', 'y/3', '3y', 'None'] },
+            { id: 48, text: 'Telescope diameter 1mвЖТ2.54m at Kavalur:',
+                options: ['Resolving power increases 2.54√Ч', 'Limiting angle increases 2.54√Ч',
+                    'Resolving power decreases', 'No effect on limiting angle'] },
+            { id: 49, text: 'Unpolarised light airвЖТglass (n=1.5) at polarising angle:',
+                options: ['Reflected beam 100% polarised', 'Both partially polarised', 'Almost all light reflected',
+                    'All of above'] },
+            { id: 50, text: 'Correct statement about light:',
+                options: ['Huygens: transverse waves', 'Maxwell: theoretical evidence transverse',
+                    'Young: proved wave behaviour & Huygens assumption', 'All correctly answer "what is light"'] },
+            { id: 51, text: 'Two coherent beams I and 4I superposed. Max & min intensities:',
+            options: ['9I & I', '9I & 3I', '5I & I', '5I & 3I'] },
+            { id: 52, text: 'Photoelectric effect figure: correct inference:',
+                options: ['Same threshold frequency', 'Max KE depends linearly on frequency',
+                    'Different stopping potentials for same ќФf', 'Al better photosensitive than Na'] },
+            { id: 53, text: 'Hydrogen electron nвВБвЖТnвВВ, T(nвВБ)=8T(nвВВ). Possible nвВБ,nвВВ:',
+            options: ['8,1', '4,2', '2,4', '1,8'] },
+            { id: 54, text: 'Forward voltage in diode increased вЖТ depletion region width:',
+                options: ['Increases', 'Decreases', 'Fluctuates', 'No change'] },
+            { id: 55, text: 'Two nucleons at 1 Fermi. Forces FвВБ(neutrons), FвВВ(protons), FвВГ(proton+neutron):',
+                options: ['FвВБ=FвВВ>FвВГ', 'FвВБ=FвВВ=FвВГ', 'FвВБ<FвВВ<FвВГ', 'FвВБ>FвВВ>FвВГ'] },
+            { id: 56, text: 'Energy to reduce de-Broglie ќї from 1nm to 0.5nm:',
+                options: ['4√Ч initial', 'Equal to initial', '2√Ч initial', '3√Ч initial'] },
+            { id: 57, text: 'Mean life 100s. Half-life (min):', options: ['0.693', '1', '10вБївБі', '1.155'] },
+            { id: 58, text: 'Two nuclei same nuclide: one 5B yrs ago, one 5min ago. Decay probability:',
+                options: ['Different', 'Explosion one first', 'Reactor one first', 'Independent of creation time'] },
+            { id: 59, text: "Bohr's atom model assumes:",
+                options: ['Nucleus infinite mass at rest', "Quantised orbit electrons don't radiate",
+                    'Electron mass constant', 'All of above'] },
+            { id: 60, text: 'NOT characteristic of semiconductor:',
+                options: ['At very low temp behaves as insulator', 'At higher temp two charge carriers',
+                    'Electrons & holes in valence band at higher temp', 'Electrically neutral'] },
+        ];
+
+        const chemistryQuestions = [
+            { id: 61, text: 'Correct order of increasing first ionisation potential:',
+                options: ['Na, K, Be', 'K, Na, Be', 'K, Be, Na', 'Be, Na, K'] },
+            { id: 62, text: '10 cm¬≥ 0.1N monobasic acid + 15 cm¬≥ NaOH. Normality of NaOH:',
+                options: ['1.5 N', '0.15 N', '0.066 N', '0.66 N'] },
+            { id: 63, text: 'IUPAC name of tertiary butyl iodide:',
+                options: ['4-iodobutane', '2-iodobutane', '1-iodo,3-methyl propane', '2-iodo,2-methyl propane'] },
+            { id: 64, text: 'SOвВВ in acidified KвВВCrвВВOвВЗ, oxidation state of S changes:',
+                options: ['+4 to 0', '+4 to +2', '+4 to +6', '+6 to +4'] },
+            { id: 65, text: 'Mass of 0.1 mole of methane:', options: ['1 g', '16 g', '1.6 g', '0.1 g'] },
+            { id: 66, text: 'Methoxy methane and ethanol are:',
+                options: ['Position isomers', 'Chain isomers', 'Functional isomers', 'Optical isomers'] },
+            { id: 67, text: 'Azimuthal quantum number = 2, number of orbitals:', options: ['7', '5', '3', '0'] },
+            { id: 68, text: 'FeвВВOвВГ+3COвЖТ2Fe+3COвВВ. Volume CO to reduce 1 mole FeвВВOвВГ:',
+                options: ['22.4 dm¬≥', '44.8 dm¬≥', '67.2 dm¬≥', '11.2 dm¬≥'] },
+            { id: 69, text: 'Monomers of Buna-S rubber:',
+                options: ['Vinyl chloride & sulphur', 'Butadiene', 'Styrene & butadiene', 'Isoprene & butadiene'] },
+            { id: 70, text: 'Element atomic number 21 is:',
+                options: ['Halogen', 'Representative element', 'Transition element', 'Alkali metal'] },
+            { id: 71, text: 'Max number of hydrogen bonds a water molecule can have:', options: ['1', '2', '3', '4'] },
+            { id: 72, text: 'Gas deviates from ideal at high pressure because molecules:',
+                options: ['Attract one another', 'Show Tyndall effect', 'Have kinetic energy',
+                'Bound by covalent bonds'] },
+            { id: 73, text: 'Reagent to convert alkyne to alkene:', options: ['Zn/HCl', 'Sn/HCl', 'Zn-Hg/HCl', 'Pd/HвВВ'] },
+            { id: 74, text: 'ќФG¬∞ for AlвВВOвВГ vs CrвВВOвВГ formation:',
+                options: ['Higher for AlвВВOвВГ', 'Lower for AlвВВOвВГ', 'Same', 'Unpredicted'] },
+            { id: 75, text: 'To increase gas volume by 10%, pressure should be:',
+                options: ['Increased 10%', 'Increased 1%', 'Decreased 10%', 'Decreased 1%'] },
+            { id: 76, text: 'Catalytic dehydrogenation of primary alcohol gives:',
+                options: ['Secondary alcohol', 'Aldehyde', 'Ketone', 'Ester'] },
+            { id: 77, text: 'Excess PClвВЕ + conc HвВВSOвВД gives:',
+                options: ['Chlorosulphonic acid', 'Thionyl chloride', 'Sulphuryl chloride', 'Sulphurous acid'] },
+            { id: 78, text: 'NHвВГ+HClвЖТNHвВДCl in closed container:',
+            options: ['ќФH > ќФU', 'ќФH = ќФU', 'ќФH < ќФU', 'No relationship'] },
+            { id: 79, text: 'Compound gives ketone on dehydrogenation. Original is:',
+                options: ['Primary alcohol', 'Secondary alcohol', 'Tertiary alcohol', 'Carboxylic acid'] },
+            { id: 80, text: 'Most easily liquefiable rare gas:', options: ['Xe', 'Kr', 'Ar', 'Ne'] },
+            { id: 81, text: 'Mesomeric effect involves delocalisation of:',
+            options: ['ѕА-electrons', 'ѕГ-electrons', 'Protons', 'None'] },
+            { id: 82, text: 'Maximum unpaired d-electrons:', options: ['Zn¬≤вБЇ', 'Fe¬≤вБЇ', 'Ni¬≥вБЇ', 'CuвБЇ'] },
+            { id: 83, text: 'One mole of which has highest entropy:',
+            options: ['Liquid nitrogen', 'Hydrogen gas', 'Mercury', 'Diamond'] },
+            { id: 84, text: 'Does NOT exert resonance effect:',
+                options: ['CвВЖHвВЕNHвВВ', 'CвВЖHвВЕNHвВГвБЇ', 'CвВЖHвВЕOH', 'CвВЖHвВЕCl'] },
+            { id: 85, text: 'Complex with metal oxidation number zero:',
+                options: ['KвВД[Fe(CN)вВЖ]', 'KвВД[Fe(CN)вВЖ]', '[Ni(CO)вВД]', '[Pt(NHвВГ)вВД]ClвВВ'] },
+            { id: 86, text: 'PClвВГ, PClвВЕ, ClвВВ equilibrium. Moles of PClвВГ at equilibrium:',
+            options: ['5', '3', '6', '4.5'] },
+            { id: 87, text: 'Optically active stereomers for butan-2,3-diol:', options: ['1', '2', '3', '4'] },
+            { id: 88, text: 'Octahedral complex hybrid orbitals:', options: ['sp¬≥', 'dsp¬≤', 'd¬≤sp¬≥', 'sp¬≤d¬≤'] },
+            { id: 89, text: '2HIвЗМHвВВ+IвВВ, equilibrium constant depends on:',
+            options: ['Temperature', 'Pressure', 'Catalyst', 'Volume'] },
+            { id: 90, text: 'Angle strain in cyclobutane:', options: ["24¬∞44'", "29¬∞16'", "19¬∞22'", "9¬∞44'"] },
+            { id: 91, text: 'Nodal planes in ѕГ*-antibonding orbital:', options: ['1', '2', '0', '3'] },
+            { id: 92, text: 'Least specific conductance:', options: ['0.02 N', '0.2 N', '2 N', '0.002 N'] },
+            { id: 93, text: 'Overlapping in benzene:', options: ['sp-sp', 'p-p', 'sp¬≤-sp¬≤', 'sp¬≥-sp¬≥'] },
+            { id: 94, text: 'Bond order of superoxide ion (OвВВвБї):', options: ['2.5', '2', '1.5', '1'] },
+            { id: 95, text: 'Ostwald-Walker method measures:',
+                options: ['Relative lowering of vapour pressure', 'Lowering of vapour pressure',
+                    'Vapour pressure of solvent', 'All of above'] },
+            { id: 96, text: 'n-Propyl bromide + alcoholic KOH вЖТ', options: ['Propane', 'Propene', 'Propyne',
+                'Propanol'] },
+            { id: 97, text: 'Mercury is liquid because:',
+                options: ['Completely filled s-orbital', 'Small atomic size',
+                    'Filled d-orbital prevents d-d overlap', 'Filled d-orbital causes d-d overlap'] },
+            { id: 98, text: 'Compound AB, A at cube corners, B at body centre. Formula:',
+            options: ['AB', 'AвВВB', 'ABвВВ', 'ABвВГ'] },
+            { id: 99, text: 'Anisole from methyl iodide + sodium phenate:',
+                options: ["Wurtz's reaction", "Williamson's reaction", "Fitting's reaction", "Etard's reaction"] },
+            { id: 100, text: 'Malleability & ductility due to:',
+                options: ['Electrostatic force', 'Crystalline structure', 'Layers sliding over each other',
+                    'Electron-ion interaction'] },
+            { id: 101, text: 'Tetrahedral structure if rвБЇ/rвБї range:',
+            options: ['0.414-0.732', '0.225-0.414', '0.155-0.225', '0.732-1'] },
+            { id: 102, text: 'Least acidic:', options: ['Phenol', 'o-Cresol', 'p-Nitrophenol', 'p-Chlorophenol'] },
+            { id: 103, text: 'Ligand can be regarded as:', options: ['Lewis acid', 'Bronsted base', 'Lewis base',
+                    'Bronsted acid'] },
+            { id: 104, text: 'Colour of sky due to:',
+                options: ['Transmission', 'Wavelength of scattered light', 'Absorption by gases', 'All'] },
+            { id: 105, text: "Gives both iodoform & Fehling's test:",
+            options: ['Ethanol', 'Methanol', 'Ethanal', 'Propanone'] },
+            { id: 106, text: 'Helium used in balloons because:',
+                options: ['Incombustible', 'Lighter than hydrogen', 'Radioactive', 'More abundant'] },
+            { id: 107, text: "Cottrell's precipitator principle:",
+                options: ["Le-Chatelier's", 'Peptisation', 'Neutralisation of colloid charge',
+                'Scattering of light'] },
+            { id: 108, text: 'CO + solid NaOH at 200¬∞C вЖТ',
+            options: ['NaвВВCOвВГ', 'NaHCOвВГ', 'HCOONa', 'CHвВГCOONa'] },
+            { id: 109, text: 'NвВВ+3HвВВвЗМ2NHвВГ+Heat. Increase temp:',
+                options: ['Equilibrium left', 'Equilibrium right', 'Unaltered', 'Rate unchanged'] },
+            { id: 110, text: 'HвВВ NOT liberated with dil HCl:', options: ['Ag', 'Zn', 'Mg', 'Sn'] },
+            { id: 111, text: 'Born-Haber cycle compound Z:', options: ['MвБЇXвБї', 'MвБЇXвБї(s)', 'MX', 'MвБЇXвБї(g)'] },
+            { id: 112, text: 'Brown ring test colour due to:',
+                options: ['Ferrous nitrate', 'Ferric nitrate', 'NO+NOвВВ mixture', 'Nitrosoferrous sulphate'] },
+            { id: 113, text: 'Amines behave as:', options: ['Lewis acids', 'Lewis base', 'Aprotic acid', 'Neutral'] },
+            { id: 114, text: 'Dalda prepared from oils by:', options: ['Oxidation', 'Reduction', 'Hydrolysis',
+                'Distillation'] },
+            { id: 115, text: 'Chemical name of anisole:', options: ['Ethanoic acid', 'Methoxy benzene', 'Propanone',
+                    'Acetone'] },
+            { id: 116, text: 'Number of disulphide linkages in insulin:', options: ['1', '2', '3', '4'] },
+            { id: 117, text: '80g OвВВ contains as many atoms as in:', options: ['80g HвВВ', '1g HвВВ', '10g HвВВ',
+                '5g HвВВ'] },
+            { id: 118, text: 'Greatest tendency to form metal oxide:', options: ['Cr', 'Fe', 'Al', 'Ca'] },
+            { id: 119, text: 'Reaction NOT in blast furnace:',
+                options: ['CaCOвВГвЖТCaO+COвВВ', 'CaO+SiOвВВвЖТCaSiOвВГ', '2FeO+3CвЖТ4Fe+3COвВВ', 'COвЖТCOвВВ'] },
+            { id: 120, text: 'Waxes are esters of:',
+                options: ['Glycerol', 'Long chain alcohols', 'Glycerol & fatty acid',
+                    'Long chain alcohols & fatty acids'] },
+        ];
+
+        const mathsQuestions = [
+            { id: 121, text: 'Which is an even function?', options: ['вИЪx', 'x¬≤+sin¬≤x', 'sin¬≤x', 'None'] },
+            { id: 122, text: 'A={x:x¬≤вИТx+2>0}, B={x:x¬≤вИТ4x+3вЙ§0}. AвИ©B:',
+                options: ['[1,3]', '(вИТвИЮ,вИЮ)', '{1,3}', '(вИТвИЮ,1)вИ™(3,вИЮ)'] },
+            { id: 123, text: 'Binary operation *, identity e. b is inverse of a if:',
+                options: ['a*a=b*b', 'a=b', 'a*a=b*b', 'a*b=b*a=e'] },
+            { id: 124, text: 'ќФABC, вИ†C=ѕА/2. tanвБї¬є(a/(b+c))+tanвБї¬є(b/(c+a))=',
+            options: ['ѕА/4', 'ѕА/2', 'ѕА/3', 'None'] },
+            { id: 125, text: 'Sides a,b,c in AP. cosќ±=a/(b+c)... tan¬≤(ќ±/2)+tan¬≤(ќ≥/2)=',
+            options: ['1', '1/2', '1/3', '2/3'] },
+            { id: 126, text: 'cos(35¬∞+A)cos(35¬∞вИТB)+sin(35¬∞+A)sin(35¬∞вИТB)=',
+                options: ['sin(A+B)', 'sin(AвИТB)', 'cos(A+B)', 'cos(AвИТB)'] },
+            { id: 127, text: '2cosec2x+cosecx=',
+                options: ['tanx¬Јsec(x/2)', 'secx¬Јcot(x/2)', 'secx¬Јtan(x/2)', 'tanx¬Јcot(x/2)'] },
+            { id: 128, text: 'cot2x¬ЈcotxвИТcot3x¬Јcot2xвИТcot3x¬Јcotx=',
+            options: ['3', '0', 'вИТ1', '1'] },
+            { id: 129, text: 'cos(ѕА/4вИТx)cos(ѕА/4вИТy)вИТsin(ѕА/4вИТx)sin(ѕА/4вИТy)=',
+                options: ['sin(x+y)', 'sin(xвИТy)', 'cos(x+y)', 'cos(xвИТy)'] },
+            { id: 130, text: 'For all nвИИвДХ, 2¬Ј4¬≤вБњвБЇ¬є+3¬≥вБњвБЇ¬є divisible by:',
+            options: ['2', '9', '3', '11'] },
+            { id: 131, text: 'P(n): 1¬Ј1!+2¬Ј2!+...+n¬Јn!=(n+1)!вИТ1 is true:',
+                options: ['For all n>1', 'Not true for any n', 'For all nвИИвДХ', 'None'] },
+            { id: 132, text: 'If z=reвБ±бґњ, |eвБ±бґї|=', options: ['1', 'e¬≤ѕАвБ±бґњ', 'eвБ±ѕАбґњ', 'eвБївБ±ѕАбґњ'] },
+            { id: 133, text: '(вИЪ5+вИЪ3i)¬≥¬≥=2вБівБєz, |z|=', options: ['1', 'вИЪ2', '2вИЪ2', '4'] },
+            { id: 134, text: 'Modulus of [1вИТcosќЄ+isinќЄ]вБї¬є:', options: ['1', '2', '1/(2|sin(ќЄ/2)|)',
+                '|cosecќЄ|/2'] },
+            { id: 135, text: 'a+bѕЙ+cѕЙ¬≤=0 (ѕЙ cube root of unity), a,b,c real вЖТ',
+            options: ['a=b=c', 'aвЙ†bвЙ†c', 'b=0', 'a=b=c'] },
+            { id: 136, text: '(xвИТ1)¬≥+8=0, roots:',
+                options: ['вИТ1,1вИТ2ѕЙ,1вИТ2ѕЙ¬≤', '1,вИТ1+2ѕЙ,вИТ1+2ѕЙ¬≤', 'вИТ1 only', 'вИТ1,1вИТ2ѕЙ,1вИТ2ѕЙ¬≤'] },
+            { id: 137, text: 'ќ±,ќ≤ roots of ax¬≤+bx+c=0. Root of a¬≥x¬≤+abcx+c¬≥=0:',
+                options: ['ќ±+ќ≤', 'ќ±¬≤+ќ≤', 'ќ±¬≤вИТќ≤', 'ќ±ќ≤'] },
+            { id: 138, text: 'Sum of all 4-digit numbers using 2,4,6,8 (no repetition):',
+                options: ['133320', '123330', '113230', '323430'] },
+            { id: 139, text: 'Arrange 4 red,3 yellow,2 green discs (indistinguishable same colour):',
+                options: ['1200', '1220', '1240', '1260'] },
+            { id: 140, text: 'Choose 4 face cards from 52 cards:', options: ['495', '493', '490', '492'] },
+            { id: 141, text: 'Coefficients of (3r)th & (r+2)th terms in (1+x)¬≤вБњ equal, r>1,n>2: n=',
+                options: ['2r', '2rвИТ1', '2r+1', '3r'] },
+            { id: 142, text: 'HM:GM=4:5 for a,b. a:b=', options: ['1:2', '2:3', '3:4', '1:4'] },
+            { id: 143, text: 'Four numbers in GP, subtract 2,7,9,5 вЖТ AP. Smallest:',
+            options: ['вИТ24', '12', '6', '3'] },
+            { id: 144, text: '1/3!+2/5!+3/7!+...вИЮ =', options: ['e', '2e', '1/(2e)', 'e/2'] },
+            { id: 145, text: 'Right isosceles ќФPQR at P(2,1), QR:2x+y=3. Combined eq of PQ & PR:',
+                options: ['3x¬≤вИТ3y¬≤+8xy+20x+10y+25=0', '3x¬≤вИТ3y¬≤+8xyвИТ20xвИТ10y+25=0',
+                    '3x¬≤вИТ3y¬≤+8xy+10x+15y+20=0', '3x¬≤вИТ3y¬≤вИТ8xyвИТ10xвИТ15yвИТ20=0'] },
+            { id: 146, text: 'Triangle sides x=2, y+1=0, x+2y=4. Circumcenter:',
+            options: ['(4,0)', '(2,вИТ1)', '(0,4)', '(2,3)'] },
+            { id: 147, text: 'Foci & latus rectum of x¬≤/9вИТy¬≤/16=1:',
+                options: ['(0,¬±2),32/3', '(0,¬±5),32/3', '(¬±5,0),32/3', '(0,¬±5),32/3'] },
+            { id: 148, text: 'Line 21x+5y=116 tangent to 7x¬≤вИТ5y¬≤=232. Point of contact:',
+                options: ['(вИТ6,вИТ2)', '(6,2)', '(6,вИТ2)', '(вИТ6,2)'] },
+            { id: 149, text: 'Chords of x¬≤+y¬≤=r¬≤ touch x¬≤/a¬≤вИТy¬≤/b¬≤=1. Locus of midpoints:',
+                options: ['(x¬≤+y¬≤)¬≤=a¬≤x¬≤вИТb¬≤y¬≤', '(x¬≤+y¬≤)¬≤=a¬≤x¬≤+b¬≤y¬≤', 'x¬≤+y¬≤=a¬≤x¬≤вИТb¬≤y¬≤',
+                    'x¬≤+y¬≤=a¬≤x¬≤+b¬≤y¬≤'] },
+            { id: 150, text: 'Latus rectum subtends right angle at other focus. Eccentricity:',
+                options: ['вИЪ3+1', 'вИЪ2+1', 'вИЪ3+вИЪ2', '2'] },
+            { id: 151, text: 'From (0,1) two tangents to 2x¬≤вИТy¬≤=1. tanќЄ=',
+            options: ['4/3', '3/4', '3/2', '2/3'] },
+            { id: 152, text: 'Endpoints of sphere diameter (3,4,вИТ1)&(вИТ1,2,3). Radius:',
+            options: ['2', '3', '6', '7'] },
+            { id: 153, text: 'd/dx[cosвБї¬є((1вИТx)/(1+x))]=',
+                options: ['1/(1+x)', '1/(x(1+x))', '1/((1+x)вИЪx)', '1/(вИЪx(1+x))'] },
+            { id: 154, text: 'f(x)=5/x+7 decreasing for:',
+                options: ['xвИИвДЭ', 'xвИИвДЭвИТ{0}', 'xвИИвДЭвИТ{1}', 'xвИИвДЭвИТ{вИТ1,1}'] },
+            { id: 155, text: 'Approximate (15)^(1/4):', options: ['1.9688', '0.9687', '2.0312', '0.1968'] },
+            { id: 156, text: 'Point on y=x¬≤ where slope= x-coordinate:',
+            options: ['(1,1)', '(вИТ1,вИТ1)', '(1,2)', '(0,0)'] },
+            { id: 157, text: 'Tangent & normal to y=x¬≥/(4вИТx) at (2,4):',
+                options: ['8x+yвИТ12=0; x+8y+34=0', '8xвИТyвИТ12=0; xвИТ8yвИТ34=0', '8x+4y+12=0; xвИТ8y+34=0',
+                    '8xвИТyвИТ12=0; x+8yвИТ34=0'] },
+            { id: 158, text: 'y=logвВРx+logвВРa+logвВРx+logвВРa, dy/dx:',
+                options: ['1/x+logвВРa', '(logвВРa)/x+x/logвВРa', '1/(xlogвВРa)+logвВРa',
+                    '1/(xlogвВРa)вИТ(logвВРa)/(x(logвВРa)¬≤)'] },
+            { id: 159, text: 'вИЂdx/(sinx+вИЪ3cosx)=',
+                options: ['log|tan(x/2)|+C', 'вИТ¬љlog|tan(x/2+ѕА/6)|+C', '¬љlog|tan(x/2+ѕА/6)|+C', 'None'] },
+            { id: 160, text: 'вИЂe¬≤Ћ£(2sin3x+3cos3x)dx=',
+                options: ['e¬≤Ћ£sin3x+C', 'e¬≤Ћ£cos3x+C', 'e¬≤Ћ£+C', 'e¬≤Ћ£(sin3x)+C'] },
+            { id: 161, text: 'Evaluate вИЂвВА¬є 1/x¬≤ dx:', options: ['1/2', '1', '2', 'вИТ1'] },
+            { id: 162, text: 'вИЂвВА^(ѕА/2) cosx/(cos(x/2)+sin(x/2)) dx:',
+            options: ['2вИТвИЪ2', '2+вИЪ2', '3+вИЪ3', '3вИТвИЪ3'] },
+            { id: 163, text: 'Area bounded by |x|+|y|=1:', options: ['1 sq unit', '2 sq units', '2вИЪ2 sq units',
+                    '4 sq units'] },
+            { id: 164, text: 'вИЂdx/(вИЪx+вИЫx):',
+                options: ['3вИЪx+3вИЫxвИТ6вБґвИЪx+log(вБґвИЪx+1)+C', '2вИЪx+6вИЫxвИТ6log(вБґвИЪx+1)+C',
+                    '2вИЪxвИТ3вИЫx+6вБґвИЪxвИТ6log(вБґвИЪx+1)+C', 'None'] },
+            { id: 165, text: 'вИЂвВРбµЗ xвБњ/(xвБњ+(16вИТx)вБњ)dx=6, then:',
+            options: ['a=4,b=12', 'a=2,b=14', 'a=вИТ4,b=20', 'a=2,b=8'] },
+            { id: 166, text: 'вИЂвВА^ѕА x/(1+cos¬≤x)dx=', options: ['ѕА¬≤/2', 'ѕА¬≤/4', 'ѕА¬≤', 'ѕА¬≤/8'] },
+            { id: 167, text: 'DE of y=aeбµЗЋ£вБЇбґЬ:', options: ['yвВВ=yвВБ+y', 'yвВВ¬≤=yвВБyвВБ', 'yвВБ¬≤=yвВБyвВВ',
+                'yвВВ¬≤=yвВБyвВВ'] },
+            { id: 168, text: 'a=i+j+2k, b=3i+2jвИТk. (a+3b)¬Ј(2aвИТb)=',
+            options: ['вИТ15', '12', '13', 'вИТ10'] },
+            { id: 169, text: '[aвИТb bвИТc cвИТa], |a|=1,|b|=5,|c|=3:', options: ['0', '1', '6', 'None'] },
+            { id: 170, text: 'A=[[2,вИТ3],[5,вИТ7]], A+AвБї¬є=',
+                options: ['[[1,0],[0,1]]', '[[вИТ5,0],[0,вИТ5]]', '[[5,0],[0,5]]', '[[4,0],[0,вИТ5]]'] },
+            { id: 171, text: 'A=[[cosќЄ,вИТsinќЄ,0],[sinќЄ,cosќЄ,0],[0,0,1]]. Minor & cofactor of aвВГвВВ:',
+                options: ['1,вИТ1', '0,1', 'вИТ1,0', '0,0'] },
+            { id: 172, text: 'Anti-aircraft gun 4 shots, P=0.4,0.3,0.2,0.1. P(hit):',
+                options: ['0.6972', '0.6875', '0.64', '0.6976'] },
+            { id: 173, text: 'Negation of "If I become teacher, then I will open school":',
+                options: ['Neither teacher nor open school', 'Not teacher or open school',
+                    'Become teacher and not open school', 'Not teacher or not open school'] },
+            { id: 174, text: 'Max Z=7xвВБвИТ3xвВВ, constraints. Solution:',
+            options: ['Unique', 'Unbounded', 'Infeasible', 'Infinite'] },
+            { id: 175, text: 'xyвИТxвИТy+1=0, originвЖТ(1,1). Transformed eq:',
+            options: ['xy=5', 'xy=2', 'xy=0', 'xy=8'] },
+            { id: 176, text: 'logвВЖa+logвВЖb+logвВЖc=6, GP, bвИТa square. a+b+c=',
+                options: ['95', '99', '105', '111'] },
+            { id: 177, text: 'CDF of X (prob dist given):',
+                options: ['F: 0.12,0.18,0.2,0.5', 'F: 0.5,0.88,1,0.7', 'F: 0.5,0.7,0.88,1', 'F: 1,0.5,0.88,0.7'] },
+            { id: 178, text: '20 items,4 defective, draw 2. Mean of defective count X:',
+                options: ['3/8', '1/95', '2/5', '28/57'] },
+            { id: 179, text: 'Set A has 56 more subsets than B. |A|=', options: ['5', '6', '7', '8'] },
+            { id: 180, text: 'logвВД2+logвВД4+logвВДx+logвВД16=6. x=', options: ['64', '4', '8', '32'] },
+        ];
+
+        const allQuestions = [...physicsQuestions, ...chemistryQuestions, ...mathsQuestions];
+
+        // ==================== STATE ====================
+        let currentQuestionIndex = 0;
+        let visitedQuestions = new Set();
+        let testSubmitted = false;
+        let totalSeconds = 180 * 60;
+        let timerInterval = null;
+        let pendingScoreData = null;
+
+        // ==================== BUILD QUESTIONS ====================
+        const container = document.getElementById('questions-container');
+        const paletteGrid = document.getElementById('palette-grid');
+        const mobilePaletteGrid = document.getElementById('mobile-palette-grid');
+
+        function buildAllQuestions() {
+            container.innerHTML = '';
+            paletteGrid.innerHTML = '';
+            mobilePaletteGrid.innerHTML = '';
+
+            allQuestions.forEach((q, index) => {
+                // Create question card
+                const card = document.createElement('div');
+                card.className = 'question-card';
+                card.id = 'q' + q.id;
+                card.setAttribute('data-index', index);
+
+                let cardHTML = `<div class="q-text">${q.text}</div>`;
+                if (q.svg) {
+                    cardHTML += `<div class="svg-container">${q.svg}</div>`;
+                }
+                cardHTML += `<div class="options" data-qid="${q.id}">`;
+                const labels = ['a', 'b', 'c', 'd'];
+                q.options.forEach((opt, idx) => {
+                    cardHTML += `
+                    <label class="option" data-opt="${labels[idx]}">
+                        <input type="radio" name="q${q.id}" value="${labels[idx]}">
+                        <span>(${labels[idx].toUpperCase()}) ${opt}</span>
+                    </label>`;
+                });
+                cardHTML += `</div>`;
+                cardHTML +=
+                    `<div class="note" id="explanation-${q.id}">💡 ${q.explanation || 'Refer to answer key.'}</div>`;
+                card.innerHTML = cardHTML;
+                container.appendChild(card);
+
+                // Add event listeners
+                const optionsDiv = card.querySelector('.options');
+                const radioButtons = optionsDiv.querySelectorAll('input[type="radio"]');
+                radioButtons.forEach(radio => {
+                    radio.addEventListener('change', function() {
+                        optionsDiv.querySelectorAll('.option').forEach(opt => opt.classList
+                            .remove('selected'));
+                        if (this.checked) {
+                            this.parentElement.classList.add('selected');
+                        }
+                        updateAllPalettes();
+                        updateSubjectTabCounts();
+                    });
+                });
+
+                // Create palette buttons
+                const btn = document.createElement('button');
+                btn.textContent = q.id;
+                btn.setAttribute('data-qid', q.id);
+                btn.onclick = function(e) {
+                    e.preventDefault();
+                    navigateToQuestion(index);
+                    if (window.innerWidth <= 768) closeMobileDrawer();
+                };
+                paletteGrid.appendChild(btn);
+
+                const btnMobile = document.createElement('button');
+                btnMobile.textContent = q.id;
+                btnMobile.setAttribute('data-qid', q.id);
+                btnMobile.onclick = function(e) {
+                    e.preventDefault();
+                    navigateToQuestion(index);
+                    closeMobileDrawer();
+                };
+                mobilePaletteGrid.appendChild(btnMobile);
+            });
+        }
+
+        // ==================== NAVIGATION ====================
+        function navigateToQuestion(index) {
+            if (index < 0 || index >= allQuestions.length) return;
+            // Mark current as visited
+            if (currentQuestionIndex >= 0 && currentQuestionIndex < allQuestions.length) {
+                visitedQuestions.add(allQuestions[currentQuestionIndex].id);
+            }
+            currentQuestionIndex = index;
+            visitedQuestions.add(allQuestions[currentQuestionIndex].id);
+            showCurrentQuestion();
+            updateAllPalettes();
+            updateSubjectTabCounts();
+            updateNavButtons();
+            updateQlabel();
+            // Scroll question panel to top
+            document.getElementById('question-panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function showCurrentQuestion() {
+            const allCards = container.querySelectorAll('.question-card');
+            allCards.forEach((card, i) => {
+                card.classList.toggle('active', i === currentQuestionIndex);
+            });
+            // Update palette current-question highlight
+            updateAllPalettes();
+        }
+
+        function updateQlabel() {
+            const q = allQuestions[currentQuestionIndex];
+            const label = document.getElementById('q-label');
+            const badge = document.getElementById('subject-badge');
+            label.textContent = `Question ${q.id} of 180`;
+            if (q.id <= 60) badge.textContent = 'Physics';
+            else if (q.id <= 120) badge.textContent = 'Chemistry';
+            else badge.textContent = 'Mathematics';
+        }
+
+        function updateNavButtons() {
+            const btnPrev = document.getElementById('btn-prev');
+            const btnNext = document.getElementById('btn-save-next');
+            btnPrev.disabled = (currentQuestionIndex === 0);
+            if (currentQuestionIndex === allQuestions.length - 1) {
+                btnNext.textContent = '🟢 Save & Finish';
+            } else {
+                btnNext.textContent = '🟢 Save & Next';
+            }
+        }
+
+        function saveAndNext() {
+            if (currentQuestionIndex < allQuestions.length - 1) {
+                visitedQuestions.add(allQuestions[currentQuestionIndex].id);
+                navigateToQuestion(currentQuestionIndex + 1);
+            } else {
+                // Last question - prompt submit
+                visitedQuestions.add(allQuestions[currentQuestionIndex].id);
+                updateAllPalettes();
+                if (confirm('You are on the last question. Do you want to submit the test?')) {
+                    submitAndReview();
+                }
+            }
+        }
+
+        function goToPrevious() {
+            if (currentQuestionIndex > 0) {
+                visitedQuestions.add(allQuestions[currentQuestionIndex].id);
+                navigateToQuestion(currentQuestionIndex - 1);
+            }
+        }
+
+        function clearResponse() {
+            const q = allQuestions[currentQuestionIndex];
+            const radios = document.querySelectorAll(`input[name="q${q.id}"]`);
+            radios.forEach(r => r.checked = false);
+            const optionsDiv = document.querySelector(`.options[data-qid="${q.id}"]`);
+            if (optionsDiv) {
+                optionsDiv.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
+            }
+            updateAllPalettes();
+            updateSubjectTabCounts();
+        }
+
+        function jumpToSubject(subject) {
+            let targetIndex = 0;
+            if (subject === 'physics') targetIndex = 0;
+            else if (subject === 'chemistry') targetIndex = 60;
+            else if (subject === 'mathematics') targetIndex = 120;
+            navigateToQuestion(targetIndex);
+            updateSubjectTabsActive(subject);
+        }
+
+        function updateSubjectTabsActive(subject) {
+            document.querySelectorAll('.subject-tabs button').forEach(btn => {
+                btn.classList.toggle('active', btn.getAttribute('data-subject') === subject);
+            });
+        }
+
+        // ==================== PALETTE UPDATES ====================
+        function updateAllPalettes() {
+            updatePaletteGrid(paletteGrid);
+            updatePaletteGrid(mobilePaletteGrid);
+        }
+
+        function updatePaletteGrid(grid) {
+            const buttons = grid.querySelectorAll('button');
+            buttons.forEach(btn => {
+                const qid = parseInt(btn.getAttribute('data-qid'));
+                const q = allQuestions.find(qq => qq.id === qid);
+                const index = allQuestions.indexOf(q);
+                const radioSelected = document.querySelector(`input[name="q${qid}"]:checked`);
+                btn.classList.remove('visited-not-answered', 'answered', 'current-question');
+                if (radioSelected) {
+                    btn.classList.add('answered');
+                } else if (visitedQuestions.has(qid)) {
+                    btn.classList.add('visited-not-answered');
+                }
+                if (index === currentQuestionIndex) {
+                    btn.classList.add('current-question');
+                }
+            });
+        }
+
+        function updateSubjectTabCounts() {
+            let physCount = 0,
+                chemCount = 0,
+                mathCount = 0;
+            for (let i = 1; i <= 60; i++) {
+                if (document.querySelector(`input[name="q${i}"]:checked`)) physCount++;
+            }
+            for (let i = 61; i <= 120; i++) {
+                if (document.querySelector(`input[name="q${i}"]:checked`)) chemCount++;
+            }
+            for (let i = 121; i <= 180; i++) {
+                if (document.querySelector(`input[name="q${i}"]:checked`)) mathCount++;
+            }
+            document.getElementById('tab-physics-count').textContent = `(${physCount}/60)`;
+            document.getElementById('tab-chemistry-count').textContent = `(${chemCount}/60)`;
+            document.getElementById('tab-mathematics-count').textContent = `(${mathCount}/60)`;
+        }
+
+        // ==================== MOBILE DRAWER ====================
+        function openMobileDrawer() {
+            document.getElementById('mobile-drawer').classList.add('open');
+            document.getElementById('mobile-drawer-overlay').classList.add('open');
+            updatePaletteGrid(mobilePaletteGrid);
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeMobileDrawer() {
+            document.getElementById('mobile-drawer').classList.remove('open');
+            document.getElementById('mobile-drawer-overlay').classList.remove('open');
+            document.body.style.overflow = '';
+        }
+
+        // ==================== TIMER ====================
+        function updateTimer() {
+            if (totalSeconds <= 0) {
+                document.getElementById('timer-box').textContent = '00:00:00';
+                document.getElementById('timer-box').classList.add('warning');
+                document.getElementById('btn-submit-header').classList.add('urgent');
+                if (!testSubmitted) {
+                    submitAndReview();
+                }
+                return;
+            }
+            totalSeconds--;
+            const h = Math.floor(totalSeconds / 3600);
+            const m = Math.floor((totalSeconds % 3600) / 60);
+            const s = totalSeconds % 60;
+            const timerBox = document.getElementById('timer-box');
+            timerBox.textContent =
+                `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+            if (totalSeconds < 300) {
+                timerBox.classList.add('warning');
+                document.getElementById('btn-submit-header').classList.add('urgent');
+            } else if (totalSeconds < 600) {
+                timerBox.style.color = '#f59e0b';
+            }
+        }
+
+        // ==================== SUBMIT & REVIEW ====================
+        function submitAndReview() {
+            if (testSubmitted) return;
+            if (!confirm('Are you sure you want to submit the test? You cannot undo this action.')) return;
+
+            testSubmitted = true;
+            clearInterval(timerInterval);
+            visitedQuestions.add(allQuestions[currentQuestionIndex]?.id);
+
+            let score = 0;
+            let correctCount = 0;
+            let incorrectCount = 0;
+            let unattemptedCount = 0;
+            let physCorrect = 0,
+                physWrong = 0,
+                physUnattempted = 0;
+            let chemCorrect = 0,
+                chemWrong = 0,
+                chemUnattempted = 0;
+            let mathCorrect = 0,
+                mathWrong = 0,
+                mathUnattempted = 0;
+
+            document.querySelectorAll('.question-card').forEach(card => card.classList.remove('reviewing'));
+            document.querySelectorAll('.option').forEach(opt => {
+                opt.classList.remove('correct-answer', 'wrong-answer');
+            });
+            document.querySelectorAll('.note').forEach(n => n.style.display = 'none');
+
+            allQuestions.forEach(q => {
+                const selectedEl = document.querySelector(`input[name="q${q.id}"]:checked`);
+                const correctOpt = answerKey[q.id];
+                const optionsDiv = document.querySelector(`.options[data-qid="${q.id}"]`);
+                const card = document.getElementById('q' + q.id);
+
+                if (optionsDiv && correctOpt) {
+                    const correctLabel = optionsDiv.querySelector(`.option[data-opt="${correctOpt}"]`);
+                    if (correctLabel) correctLabel.classList.add('correct-answer');
+                }
+
+                if (selectedEl) {
+                    const selectedOpt = selectedEl.value;
+                    const selectedLabel = optionsDiv ? optionsDiv.querySelector(`.option[data-opt="${selectedOpt}"]`) :
+                        null;
+                    if (selectedOpt === correctOpt) {
+                        correctCount++;
+                        score++;
+                        if (q.id <= 60) physCorrect++;
+                        else if (q.id <= 120) chemCorrect++;
+                        else mathCorrect++;
+                    } else {
+                        incorrectCount++;
+                        if (selectedLabel) selectedLabel.classList.add('wrong-answer');
+                        if (card) card.classList.add('reviewing');
+                        if (q.id <= 60) physWrong++;
+                        else if (q.id <= 120) chemWrong++;
+                        else mathWrong++;
+                    }
+                } else {
+                    unattemptedCount++;
+                    if (card) card.classList.add('reviewing');
+                    if (q.id <= 60) physUnattempted++;
+                    else if (q.id <= 120) chemUnattempted++;
+                    else mathUnattempted++;
+                }
+
+                const explEl = document.getElementById('explanation-' + q.id);
+                if (explEl) explEl.style.display = 'block';
+            });
+
+            // Make all questions visible for review
+            document.querySelectorAll('.question-card').forEach(card => card.classList.add('active'));
+
+            // Update results panel
+            document.getElementById('result-score').textContent = `${score} / 180`;
+            document.getElementById('result-correct').textContent = correctCount;
+            document.getElementById('result-incorrect').textContent = incorrectCount;
+            document.getElementById('result-unattempted').textContent = unattemptedCount;
+
+            document.getElementById('row-physics').children[1].textContent = physCorrect;
+            document.getElementById('row-physics').children[2].textContent = physCorrect;
+            document.getElementById('row-physics').children[3].textContent = physWrong;
+            document.getElementById('row-physics').children[4].textContent = physUnattempted;
+
+            document.getElementById('row-chemistry').children[1].textContent = chemCorrect;
+            document.getElementById('row-chemistry').children[2].textContent = chemCorrect;
+            document.getElementById('row-chemistry').children[3].textContent = chemWrong;
+            document.getElementById('row-chemistry').children[4].textContent = chemUnattempted;
+
+            document.getElementById('row-mathematics').children[1].textContent = mathCorrect;
+            document.getElementById('row-mathematics').children[2].textContent = mathCorrect;
+            document.getElementById('row-mathematics').children[3].textContent = mathWrong;
+            document.getElementById('row-mathematics').children[4].textContent = mathUnattempted;
+
+            // Show results
+            document.getElementById('results-container').classList.add('visible');
+            document.getElementById('action-buttons').style.display = 'none';
+            document.getElementById('palette-sidebar').style.display = 'none';
+            if (window.innerWidth <= 768) {
+                document.getElementById('mobile-palette-toggle').style.display = 'none';
+            }
+            document.getElementById('results-container').scrollIntoView({ behavior: 'smooth' });
+
+            // Handle name + Firebase
+            const accuracy = totalAttempted() > 0 ? Math.round((correctCount / totalAttempted()) * 100) : 0;
+            const storedName = localStorage.getItem('comedk_username');
+            pendingScoreData = { score, correctCount, incorrectCount, unattemptedCount, accuracy };
+
+            if (!storedName || storedName.trim() === '') {
+                document.getElementById('name-prompt-section').style.display = 'block';
+            } else {
+                document.getElementById('name-prompt-section').style.display = 'none';
+                doSaveToFirebase(storedName, score, accuracy);
+            }
+
+            // Update best score in localStorage
+            const bestKey = 'comedk_best_score_2017';
+            const prevBest = parseInt(localStorage.getItem(bestKey) || '0');
+            if (score > prevBest) {
+                localStorage.setItem(bestKey, score);
+            }
+            const attemptedTests = JSON.parse(localStorage.getItem('comedk_attempted_tests') || '[]');
+            if (!attemptedTests.includes('2017')) {
+                attemptedTests.push('2017');
+                localStorage.setItem('comedk_attempted_tests', JSON.stringify(attemptedTests));
+            }
+
+            // Disable submit button
+            document.getElementById('btn-submit-header').disabled = true;
+            document.getElementById('btn-submit-header').textContent = 'Submitted';
+            document.getElementById('btn-submit-header').style.opacity = '0.6';
+
+            updateAllPalettes();
+            updateSubjectTabCounts();
+        }
+
+        function totalAttempted() {
+            let count = 0;
+            allQuestions.forEach(q => {
+                if (document.querySelector(`input[name="q${q.id}"]:checked`)) count++;
+            });
+            return count;
+        }
+
+        function saveNameAndSubmit() {
+            const nameInput = document.getElementById('name-input');
+            const name = nameInput.value.trim();
+            if (!name) {
+                alert('Please enter your name.');
+                return;
+            }
+            localStorage.setItem('comedk_username', name);
+            updateHeaderName(name);
+            document.getElementById('name-prompt-section').style.display = 'none';
+            if (pendingScoreData && typeof window.saveScoreToFirebase === 'function') {
+                doSaveToFirebase(name, pendingScoreData.score, pendingScoreData.accuracy);
+            }
+        }
+
+        function doSaveToFirebase(name, score, accuracy) {
+            if (typeof window.saveScoreToFirebase === 'function') {
+                window.saveScoreToFirebase(name, '2017', score, 180, accuracy);
+                document.getElementById('firebase-status').textContent =
+                    '📤 Score submitted to leaderboard...';
+            } else {
+                document.getElementById('firebase-status').textContent =
+                    '⚠ Leaderboard unavailable (Firebase not loaded).';
+            }
+        }
+
+        function retakeTest() {
+            if (confirm('Are you sure you want to retake the test? All answers will be cleared.')) {
+                testSubmitted = false;
+                totalSeconds = 180 * 60;
+                currentQuestionIndex = 0;
+                visitedQuestions.clear();
+                pendingScoreData = null;
+                document.getElementById('timer-box').classList.remove('warning');
+                document.getElementById('timer-box').style.color = '';
+                document.getElementById('btn-submit-header').classList.remove('urgent');
+                document.getElementById('btn-submit-header').disabled = false;
+                document.getElementById('btn-submit-header').textContent = 'Submit Test';
+                document.getElementById('btn-submit-header').style.opacity = '1';
+                document.querySelectorAll('input[type="radio"]').forEach(r => r.checked = false);
+                document.querySelectorAll('.option').forEach(opt => {
+                    opt.classList.remove('selected', 'correct-answer', 'wrong-answer');
+                });
+                document.querySelectorAll('.question-card').forEach(card => {
+                    card.classList.remove('reviewing', 'active');
+                });
+                document.querySelectorAll('.note').forEach(n => n.style.display = 'none');
+                document.getElementById('results-container').classList.remove('visible');
+                document.getElementById('action-buttons').style.display = 'flex';
+                document.getElementById('palette-sidebar').style.display = '';
+                if (window.innerWidth <= 768) {
+                    document.getElementById('mobile-palette-toggle').style.display = 'block';
+                }
+                document.getElementById('name-prompt-section').style.display = 'none';
+                document.getElementById('firebase-status').textContent = '';
+                document.getElementById('name-input').value = '';
+                visitedQuestions.add(allQuestions[0].id);
+                showCurrentQuestion();
+                updateAllPalettes();
+                updateSubjectTabCounts();
+                updateNavButtons();
+                updateQlabel();
+                updateSubjectTabsActive('physics');
+                document.getElementById('question-panel').scrollIntoView({ behavior: 'smooth' });
+                if (timerInterval) clearInterval(timerInterval);
+                timerInterval = setInterval(updateTimer, 1000);
+            }
+        }
+
+        // ==================== HEADER NAME ====================
+        function updateHeaderName(name) {
+            document.getElementById('header-name').textContent = name || 'Candidate';
+            document.getElementById('palette-name').textContent = name || 'Candidate';
+            const avatar = document.getElementById('header-avatar');
+            const initials = (name || 'C').charAt(0).toUpperCase();
+            avatar.innerHTML = initials;
+        }
+
+        // ==================== INITIALIZE ====================
+        function init() {
+            buildAllQuestions();
+            // Set initial visited
+            visitedQuestions.add(allQuestions[0].id);
+            showCurrentQuestion();
+            updateAllPalettes();
+            updateSubjectTabCounts();
+            updateNavButtons();
+            updateQlabel();
+            updateSubjectTabsActive('physics');
+
+            // Load name
+            const storedName = localStorage.getItem('comedk_username');
+            updateHeaderName(storedName || 'Candidate');
+
+            // Start timer
+            timerInterval = setInterval(updateTimer, 1000);
+            updateTimer();
+
+            // Handle window resize for mobile palette visibility
+            window.addEventListener('resize', () => {
+                if (window.innerWidth > 768) {
+                    closeMobileDrawer();
+                    document.getElementById('palette-sidebar').style.display = testSubmitted ? 'none' :
+                        '';
+                    document.getElementById('mobile-palette-toggle').style.display = 'none';
+                } else {
+                    document.getElementById('palette-sidebar').style.display = 'none';
+                    if (!testSubmitted) {
+                        document.getElementById('mobile-palette-toggle').style.display = 'block';
+                    }
+                }
+            });
+
+            // Initial mobile check
+            if (window.innerWidth <= 768) {
+                document.getElementById('palette-sidebar').style.display = 'none';
+                document.getElementById('mobile-palette-toggle').style.display = 'block';
+            }
+
+            console.log('✅ COMEDK 2017 CBT Ready!');
+            console.log('📋 180 Questions loaded: Physics(1-60), Chemistry(61-120), Mathematics(121-180)');
+            console.log('🖱 Click "Submit Test" to check answers with the official answer key.');
+        }
+
+        init();
+    </script>
+
+    <!-- Firebase Leaderboard Integration -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, serverTimestamp } from
+        "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBz6qXqOpTqQot1GZtJCIwCXnRYg9Hghn4",
+            authDomain: "comedk-20399.firebaseapp.com",
+            projectId: "comedk-20399",
+            storageBucket: "comedk-20399.firebasestorage.app",
+            messagingSenderId: "111466152803",
+            appId: "1:111466152803:web:4e6ca3c7f131ca0dbcc956"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        window.saveScoreToFirebase = async function(name, testName, score, total, accuracy) {
+            try {
+                await addDoc(collection(db, "leaderboard"), {
+                    name,
+                    testName,
+                    score,
+                    total,
+                    accuracy,
+                    timestamp: serverTimestamp()
+                });
+                console.log("Score saved to Firebase!");
+                const statusEl = document.getElementById('firebase-status');
+                if (statusEl) statusEl.textContent = '✅ Score saved to leaderboard!';
+            } catch (e) {
+                console.error("Firebase error:", e);
+                const statusEl = document.getElementById('firebase-status');
+                if (statusEl) statusEl.textContent = '⚠ Failed to save score. Please try again.';
+            }
+        };
+    </script>
+</body>
+</html>
