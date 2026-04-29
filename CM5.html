@@ -745,7 +745,7 @@
             <span class="candidate-name" id="headerCandidateName">Candidate</span>
         </div>
         <div class="header-center">
-            <span class="test-title">COMEDK 2012</span>
+            <span class="test-title">COMEDK CM5</span>
             <div class="timer-box" id="timerDisplay">03:00:00</div>
         </div>
         <div class="header-right">
@@ -2039,7 +2039,7 @@
             const statusEl = document.getElementById('firebaseStatus');
             if (statusEl) statusEl.textContent = 'Saving score...';
             if (window.saveScoreToFirebase) {
-                window.saveScoreToFirebase(finalName, '2012', correct, TOTAL_QUESTIONS, accuracy + '%')
+                window.saveScoreToFirebase(finalName, 'CM5', correct, TOTAL_QUESTIONS, accuracy + '%')
                     .then(() => {
                         if (statusEl) statusEl.textContent = '✅ Score saved to leaderboard!';
                     })
