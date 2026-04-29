@@ -1,0 +1,2091 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>COMEDK 2012 - CBT Mock Test</title>
+    <style>
+        :root {
+            --bg: #f5f5f5;
+            --card-bg: #ffffff;
+            --primary: #1a56db;
+            --primary-light: #e8f0fe;
+            --correct: #0d904f;
+            --wrong: #d93025;
+            --border: #ddd;
+            --text: #202124;
+            --text-light: #5f6368;
+            --radius: 6px;
+            --shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+            --header-bg: #1a56db;
+            --submit-red: #dc2626;
+            --font: Arial, sans-serif;
+            --tap-min: 48px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        html {
+            font-size: 16px;
+            -webkit-text-size-adjust: 100%;
+        }
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+            min-height: 100vh;
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+            padding-bottom: 0;
+        }
+
+        /* ============ HEADER ============ */
+        .header {
+            background: var(--header-bg);
+            color: #fff;
+            padding: 8px 16px;
+            position: sticky;
+            top: 0;
+            z-index: 200;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            flex-wrap: nowrap;
+            min-height: 52px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 1;
+            min-width: 0;
+        }
+        .avatar-circle {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #fff;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+        }
+        .candidate-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 140px;
+        }
+        .header-center {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+        .test-title {
+            font-weight: 700;
+            font-size: 0.95rem;
+            white-space: nowrap;
+            letter-spacing: 0.3px;
+        }
+        .timer-box {
+            background: #0d3b8c;
+            color: #fff;
+            padding: 6px 14px;
+            border-radius: 4px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            letter-spacing: 1px;
+            font-variant-numeric: tabular-nums;
+            font-family: 'Courier New', monospace;
+            white-space: nowrap;
+            transition: background 0.3s;
+            min-width: 90px;
+            text-align: center;
+        }
+        .timer-box.warning {
+            background: #dc2626;
+            animation: pulse-timer 0.8s infinite;
+        }
+        @keyframes pulse-timer {
+            0%,
+            100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.6;
+            }
+        }
+        .header-right {
+            flex-shrink: 0;
+        }
+        .btn-submit-header {
+            background: var(--submit-red);
+            color: #fff;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 4px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            letter-spacing: 0.3px;
+            white-space: nowrap;
+            min-height: var(--tap-min);
+            transition: background 0.2s;
+        }
+        .btn-submit-header:hover {
+            background: #b91c1c;
+        }
+
+        /* ============ SUBJECT TABS ============ */
+        .subject-tabs {
+            display: flex;
+            background: #fff;
+            border-bottom: 2px solid var(--border);
+            position: sticky;
+            top: 52px;
+            z-index: 150;
+            gap: 0;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+            box-shadow: var(--shadow);
+        }
+        .subject-tabs::-webkit-scrollbar {
+            display: none;
+        }
+        .subj-tab {
+            flex: 1 1 0;
+            min-width: 80px;
+            padding: 10px 8px;
+            text-align: center;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.82rem;
+            border: none;
+            background: transparent;
+            color: var(--text-light);
+            border-bottom: 3px solid transparent;
+            transition: all 0.15s;
+            white-space: nowrap;
+            min-height: var(--tap-min);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+        }
+        .subj-tab:hover {
+            background: #f8f9fa;
+            color: var(--primary);
+        }
+        .subj-tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+            font-weight: 700;
+        }
+        .subj-tab .tab-count {
+            font-size: 0.7rem;
+            font-weight: 400;
+            color: var(--text-light);
+        }
+        .subj-tab.active .tab-count {
+            color: var(--primary);
+        }
+
+        /* ============ MAIN LAYOUT ============ */
+        .main-layout {
+            display: flex;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 12px 16px 20px;
+            gap: 14px;
+            min-height: calc(100vh - 200px);
+        }
+        .question-panel {
+            flex: 1 1 72%;
+            min-width: 0;
+            background: #fff;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            padding: 18px 20px;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .palette-sidebar {
+            flex: 0 0 250px;
+            width: 250px;
+            background: #fff;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            padding: 14px 10px;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            align-self: flex-start;
+            position: sticky;
+            top: 120px;
+            max-height: calc(100vh - 140px);
+            overflow-y: auto;
+        }
+        .palette-title {
+            font-weight: 700;
+            font-size: 0.85rem;
+            text-align: center;
+            color: var(--text);
+            padding-bottom: 6px;
+            border-bottom: 1px solid var(--border);
+        }
+        .palette-name {
+            font-size: 0.75rem;
+            text-align: center;
+            color: var(--text-light);
+        }
+        .palette-grid {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 4px;
+            justify-items: center;
+        }
+        .palette-btn {
+            width: 100%;
+            aspect-ratio: 1;
+            min-width: 20px;
+            min-height: 24px;
+            max-height: 28px;
+            border-radius: 3px;
+            border: 1px solid #ccc;
+            background: #e0e0e0;
+            cursor: pointer;
+            font-size: 0.6rem;
+            font-weight: 600;
+            color: #555;
+            transition: all 0.1s;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .palette-btn:hover {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(26, 86, 219, 0.2);
+        }
+        .palette-btn.visited-unanswered {
+            background: #fca5a5;
+            border-color: #ef4444;
+            color: #7f1d1d;
+        }
+        .palette-btn.answered {
+            background: #86efac;
+            border-color: #22c55e;
+            color: #14532d;
+        }
+        .palette-btn.current {
+            box-shadow: 0 0 0 3px #1a56db;
+            border-color: #1a56db;
+            z-index: 2;
+            position: relative;
+            font-weight: 700;
+            font-size: 0.65rem;
+        }
+        .palette-legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            font-size: 0.65rem;
+            color: var(--text-light);
+            justify-content: center;
+            padding-top: 6px;
+            border-top: 1px solid var(--border);
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .legend-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 2px;
+            border: 1px solid #999;
+            flex-shrink: 0;
+        }
+        .legend-dot.gray {
+            background: #e0e0e0;
+        }
+        .legend-dot.red {
+            background: #fca5a5;
+            border-color: #ef4444;
+        }
+        .legend-dot.green {
+            background: #86efac;
+            border-color: #22c55e;
+        }
+
+        /* ============ QUESTION PANEL ELEMENTS ============ */
+        .q-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .q-counter {
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: var(--text);
+        }
+        .q-subject-badge {
+            background: var(--primary-light);
+            color: var(--primary);
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .q-text {
+            font-size: 1rem;
+            font-weight: 500;
+            line-height: 1.6;
+            color: var(--text);
+            padding: 4px 0;
+        }
+        .q-image {
+            text-align: center;
+            margin: 6px 0;
+        }
+        .q-image svg {
+            max-width: 100%;
+            height: auto;
+        }
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 4px;
+        }
+        .opt-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 14px;
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: all 0.15s;
+            font-weight: 500;
+            font-size: 0.95rem;
+            background: #fafafa;
+            user-select: none;
+            min-height: 52px;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .opt-row:hover {
+            border-color: var(--primary);
+            background: #f0f4ff;
+        }
+        .opt-row.selected {
+            border-color: var(--primary);
+            background: var(--primary-light);
+            font-weight: 700;
+        }
+        .opt-letter {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #e0e0e0;
+            font-weight: 700;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+            transition: all 0.15s;
+        }
+        .opt-row.selected .opt-letter {
+            background: var(--primary);
+            color: #fff;
+        }
+        .opt-text {
+            flex: 1;
+            min-width: 0;
+        }
+        .nav-buttons {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 8px;
+            justify-content: center;
+        }
+        .btn-nav {
+            padding: 10px 16px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            border: 2px solid var(--border);
+            transition: all 0.15s;
+            letter-spacing: 0.2px;
+            min-height: var(--tap-min);
+            white-space: nowrap;
+            background: #fff;
+            color: var(--text);
+        }
+        .btn-nav:hover {
+            border-color: #999;
+            background: #f5f5f5;
+        }
+        .btn-save-next {
+            background: #22c55e;
+            color: #fff;
+            border-color: #22c55e;
+            font-weight: 700;
+        }
+        .btn-save-next:hover {
+            background: #16a34a;
+            border-color: #16a34a;
+        }
+        .btn-clear {
+            background: #fff;
+            color: #dc2626;
+            border-color: #dc2626;
+        }
+        .btn-clear:hover {
+            background: #fef2f2;
+        }
+        .btn-prev {
+            background: #fff;
+            color: var(--text);
+            border-color: #ccc;
+        }
+
+        /* ============ MOBILE PALETTE DRAWER ============ */
+        .mobile-palette-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.45);
+            z-index: 300;
+            opacity: 0;
+            transition: opacity 0.25s;
+            pointer-events: none;
+        }
+        .mobile-palette-overlay.open {
+            display: block;
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .mobile-palette-drawer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #fff;
+            z-index: 310;
+            border-radius: 16px 16px 0 0;
+            padding: 14px 16px 24px;
+            box-shadow: 0 -6px 24px rgba(0, 0, 0, 0.2);
+            transform: translateY(100%);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            max-height: 75vh;
+            overflow-y: auto;
+        }
+        .mobile-palette-drawer.open {
+            transform: translateY(0);
+        }
+        .drawer-handle {
+            width: 40px;
+            height: 5px;
+            background: #ccc;
+            border-radius: 3px;
+            margin: 0 auto 10px;
+        }
+        .drawer-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+        .drawer-close {
+            background: none;
+            border: none;
+            font-size: 1.4rem;
+            cursor: pointer;
+            color: #666;
+            padding: 4px 10px;
+            min-height: 40px;
+            min-width: 40px;
+        }
+        .mobile-palette-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 5px;
+            justify-items: center;
+        }
+        .mobile-palette-grid .palette-btn {
+            min-height: 28px;
+            max-height: 32px;
+            font-size: 0.6rem;
+        }
+        .mobile-toggle-btn {
+            display: none;
+            position: fixed;
+            bottom: 16px;
+            right: 16px;
+            z-index: 250;
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            padding: 12px 18px;
+            border-radius: 28px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(26, 86, 219, 0.4);
+            letter-spacing: 0.3px;
+            min-height: var(--tap-min);
+        }
+        .mobile-toggle-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* ============ RESULTS SCREEN ============ */
+        .results-container {
+            max-width: 700px;
+            margin: 24px auto;
+            background: #fff;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            padding: 24px 20px;
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+        .results-container h2 {
+            font-size: 1.4rem;
+            color: var(--text);
+            margin-bottom: 6px;
+        }
+        .results-container .big-score {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--primary);
+            letter-spacing: -1px;
+        }
+        .results-container .score-sub {
+            font-size: 1rem;
+            color: var(--text-light);
+            margin-bottom: 16px;
+        }
+        .results-stats {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 12px 0;
+        }
+        .stat-chip {
+            padding: 10px 18px;
+            border-radius: 24px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            border: 2px solid #e0e0e0;
+        }
+        .stat-chip.correct {
+            background: #e6f4ea;
+            border-color: #22c55e;
+            color: #0d652d;
+        }
+        .stat-chip.wrong {
+            background: #fce8e6;
+            border-color: #ef4444;
+            color: #a50e0e;
+        }
+        .stat-chip.unattempted {
+            background: #f5f5f5;
+            border-color: #ccc;
+            color: #666;
+        }
+        .subject-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 0.85rem;
+        }
+        .subject-table th,
+        .subject-table td {
+            border: 1px solid var(--border);
+            padding: 10px 8px;
+            text-align: center;
+        }
+        .subject-table th {
+            background: #f0f4ff;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        .subject-table td {
+            font-weight: 500;
+        }
+        .name-input-row {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            margin: 12px 0;
+        }
+        .name-input-row input {
+            padding: 10px 14px;
+            border: 2px solid var(--border);
+            border-radius: 4px;
+            font-size: 0.9rem;
+            font-family: var(--font);
+            min-height: var(--tap-min);
+            flex: 1;
+            max-width: 240px;
+        }
+        .name-input-row button {
+            padding: 10px 18px;
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            font-weight: 700;
+            cursor: pointer;
+            min-height: var(--tap-min);
+            font-size: 0.9rem;
+        }
+        .results-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 14px;
+        }
+        .btn-retake {
+            padding: 12px 24px;
+            background: #fff;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+            border-radius: 4px;
+            font-weight: 700;
+            cursor: pointer;
+            min-height: var(--tap-min);
+            font-size: 0.9rem;
+        }
+        .btn-home {
+            padding: 12px 24px;
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            font-weight: 700;
+            cursor: pointer;
+            min-height: var(--tap-min);
+            font-size: 0.9rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .btn-retake:hover {
+            background: var(--primary-light);
+        }
+        .btn-home:hover {
+            background: #1345b0;
+        }
+
+        /* ============ RESPONSIVE ============ */
+        @media (max-width: 768px) {
+            .palette-sidebar {
+                display: none !important;
+            }
+            .mobile-toggle-btn {
+                display: block;
+            }
+            .main-layout {
+                flex-direction: column;
+                padding: 8px 8px 80px;
+                gap: 8px;
+            }
+            .question-panel {
+                padding: 12px 10px;
+                border-radius: 4px;
+            }
+            .q-text {
+                font-size: 0.95rem;
+            }
+            .opt-row {
+                padding: 10px 10px;
+                font-size: 0.88rem;
+                min-height: 50px;
+                gap: 8px;
+            }
+            .opt-letter {
+                width: 30px;
+                height: 30px;
+                font-size: 0.8rem;
+            }
+            .btn-nav {
+                padding: 8px 10px;
+                font-size: 0.78rem;
+                min-height: 44px;
+            }
+            .header {
+                padding: 6px 8px;
+                min-height: 46px;
+                gap: 4px;
+            }
+            .candidate-name {
+                font-size: 0.75rem;
+                max-width: 90px;
+            }
+            .avatar-circle {
+                width: 28px;
+                height: 28px;
+                font-size: 0.7rem;
+            }
+            .test-title {
+                font-size: 0.78rem;
+            }
+            .timer-box {
+                font-size: 0.78rem;
+                padding: 5px 8px;
+                min-width: 72px;
+            }
+            .btn-submit-header {
+                font-size: 0.75rem;
+                padding: 6px 10px;
+                min-height: 38px;
+            }
+            .subj-tab {
+                font-size: 0.72rem;
+                padding: 8px 4px;
+                min-height: 42px;
+            }
+            .subject-tabs {
+                top: 46px;
+            }
+            .nav-buttons {
+                gap: 4px;
+            }
+            .mobile-palette-grid {
+                grid-template-columns: repeat(12, 1fr);
+                gap: 4px;
+            }
+            .mobile-palette-grid .palette-btn {
+                min-height: 24px;
+                max-height: 30px;
+                font-size: 0.55rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header {
+                padding: 4px 6px;
+                min-height: 42px;
+                gap: 2px;
+            }
+            .candidate-name {
+                font-size: 0.7rem;
+                max-width: 70px;
+            }
+            .avatar-circle {
+                width: 24px;
+                height: 24px;
+                font-size: 0.65rem;
+            }
+            .test-title {
+                font-size: 0.7rem;
+            }
+            .timer-box {
+                font-size: 0.7rem;
+                padding: 4px 6px;
+                min-width: 64px;
+                letter-spacing: 0.5px;
+            }
+            .btn-submit-header {
+                font-size: 0.7rem;
+                padding: 5px 8px;
+                min-height: 34px;
+            }
+            .subj-tab {
+                font-size: 0.65rem;
+                padding: 6px 3px;
+                min-height: 38px;
+            }
+            .subj-tab .tab-count {
+                font-size: 0.6rem;
+            }
+            .subject-tabs {
+                top: 42px;
+            }
+            .question-panel {
+                padding: 10px 6px;
+            }
+            .q-text {
+                font-size: 0.88rem;
+            }
+            .opt-row {
+                padding: 8px 8px;
+                font-size: 0.82rem;
+                min-height: 46px;
+                gap: 6px;
+            }
+            .opt-letter {
+                width: 26px;
+                height: 26px;
+                font-size: 0.75rem;
+            }
+            .btn-nav {
+                padding: 7px 8px;
+                font-size: 0.72rem;
+                min-height: 40px;
+            }
+            .mobile-palette-grid {
+                grid-template-columns: repeat(10, 1fr);
+                gap: 3px;
+            }
+            .mobile-palette-grid .palette-btn {
+                min-height: 22px;
+                max-height: 26px;
+                font-size: 0.5rem;
+            }
+            .results-container .big-score {
+                font-size: 2.2rem;
+            }
+            .results-container {
+                padding: 14px 10px;
+                margin: 10px 4px;
+            }
+            .subject-table th,
+            .subject-table td {
+                padding: 6px 4px;
+                font-size: 0.7rem;
+            }
+        }
+
+        /* ============ MISC ============ */
+        .hidden {
+            display: none !important;
+        }
+        .no-scroll {
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ============ HEADER ============ -->
+    <header class="header" id="mainHeader">
+        <div class="header-left">
+            <div class="avatar-circle" id="avatarInit">👤</div>
+            <span class="candidate-name" id="headerName">Candidate</span>
+        </div>
+        <div class="header-center">
+            <span class="test-title">COMEDK 2012</span>
+            <span class="timer-box" id="timerBox">03:00:00</span>
+        </div>
+        <div class="header-right">
+            <button class="btn-submit-header" onclick="submitTest()" id="headerSubmitBtn">Submit Test</button>
+        </div>
+    </header>
+
+    <!-- ============ SUBJECT TABS ============ -->
+    <nav class="subject-tabs" id="subjectTabs">
+        <button class="subj-tab active" data-subject="physics" onclick="jumpToSubject('physics')">
+            ⚛ Physics <span class="tab-count" id="tabCountPhysics">(0/60)</span>
+        </button>
+        <button class="subj-tab" data-subject="chemistry" onclick="jumpToSubject('chemistry')">
+            🧪 Chemistry <span class="tab-count" id="tabCountChemistry">(0/60)</span>
+        </button>
+        <button class="subj-tab" data-subject="maths" onclick="jumpToSubject('maths')">
+            📐 Mathematics <span class="tab-count" id="tabCountMaths">(0/60)</span>
+        </button>
+    </nav>
+
+    <!-- ============ MAIN LAYOUT ============ -->
+    <div class="main-layout" id="mainLayout">
+        <!-- Question Panel -->
+        <div class="question-panel" id="questionPanel">
+            <!-- Rendered dynamically -->
+        </div>
+        <!-- Desktop Palette Sidebar -->
+        <aside class="palette-sidebar" id="paletteSidebar">
+            <div class="palette-name" id="paletteName">Candidate</div>
+            <div class="palette-title">Question Palette</div>
+            <div class="palette-grid" id="paletteGridDesktop">
+                <!-- Generated dynamically -->
+            </div>
+            <div class="palette-legend">
+                <span class="legend-item"><span class="legend-dot gray"></span> Not Visited</span>
+                <span class="legend-item"><span class="legend-dot red"></span> Visited</span>
+                <span class="legend-item"><span class="legend-dot green"></span> Answered</span>
+            </div>
+        </aside>
+    </div>
+
+    <!-- ============ MOBILE PALETTE TOGGLE ============ -->
+    <button class="mobile-toggle-btn" id="mobileToggleBtn" onclick="openMobileDrawer()">📋 Questions</button>
+
+    <!-- ============ MOBILE PALETTE OVERLAY ============ -->
+    <div class="mobile-palette-overlay" id="mobileOverlay" onclick="closeMobileDrawer()"></div>
+    <div class="mobile-palette-drawer" id="mobileDrawer">
+        <div class="drawer-handle"></div>
+        <div class="drawer-header">
+            <strong style="font-size:0.9rem;">Question Palette</strong>
+            <button class="drawer-close" onclick="closeMobileDrawer()" aria-label="Close">✕</button>
+        </div>
+        <div class="mobile-palette-grid" id="paletteGridMobile">
+            <!-- Generated dynamically -->
+        </div>
+        <div class="palette-legend" style="margin-top:8px;">
+            <span class="legend-item"><span class="legend-dot gray"></span> Not Visited</span>
+            <span class="legend-item"><span class="legend-dot red"></span> Visited</span>
+            <span class="legend-item"><span class="legend-dot green"></span> Answered</span>
+        </div>
+    </div>
+
+    <!-- ============ RESULTS CONTAINER (hidden initially) ============ -->
+    <div class="results-container hidden" id="resultsContainer"></div>
+
+    <!-- ============ FIREBASE SCRIPT ============ -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBz6qXqOpTqQot1GZtJCIwCXnRYg9Hghn4",
+            authDomain: "comedk-20399.firebaseapp.com",
+            projectId: "comedk-20399",
+            storageBucket: "comedk-20399.firebasestorage.app",
+            messagingSenderId: "111466152803",
+            appId: "1:111466152803:web:4e6ca3c7f131ca0dbcc956"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        window.saveScoreToFirebase = async function(name, testName, score, total, accuracy) {
+            try {
+                await addDoc(collection(db, "leaderboard"), {
+                    name,
+                    testName,
+                    score,
+                    total,
+                    accuracy,
+                    timestamp: serverTimestamp()
+                });
+                console.log("✅ Score saved to Firebase!");
+            } catch (e) {
+                console.error("Firebase error:", e);
+            }
+        };
+        console.log("🔥 Firebase module loaded. saveScoreToFirebase is ready.");
+    </script>
+
+    <script>
+        // ============================================================
+        // ============ QUESTION DATA (PRESERVED EXACTLY) ============
+        // ============================================================
+        const answerKey = {
+            physics: 'c,b,c,b,b,a,a,a,a,c,c,a,b,b,d,b,b,d,b,c,c,a,a,d,b,b,c,d,b,a,d,d,a,a,c,d,c,d,a,c,a,d,c,d,c,a,d,b,c,a,c,d,c,b,a,d,b,c,d,a'
+                .split(','),
+            chemistry: 'a,c,b,a,a,a,b,b,b,b,a,c,a,b,d,a,b,a,d,a,b,c,a,c,a,a,d,b,c,b,b,d,a,c,c,d,a,c,a,a,b,a,b,c,d,d,b,b,c,a,b,b,a,d,c,b,d,a,d'
+                .split(','),
+            maths: 'd,b,d,c,c,b,c,c,b,a,d,a,c,b,a,c,c,a,c,b,c,b,d,a,c,a,d,b,b,a,d,a,c,d,c,b,a,b,c,d,b,c,a,d,c,a,b,c,b,b,c,a,c,b,d,b,c,a,d,b,c,d,c,d,d,d,c,c,d'
+                .split(',')
+        };
+
+        const fullAnswerMap = {};
+        const physAns = answerKey.physics;
+        for (let i = 0; i < 60; i++) fullAnswerMap[i + 1] = physAns[i];
+        const chemAns = answerKey.chemistry;
+        for (let i = 0; i < 60; i++) fullAnswerMap[i + 61] = chemAns[i];
+        const mathAns = answerKey.maths;
+        for (let i = 0; i < 60; i++) fullAnswerMap[i + 121] = mathAns[i];
+
+        const physicsQuestions = [
+            { id: 1,
+                text: 'A helicopter rises vertically with a speed of 100 ms<sup>-1</sup>. If helicopter has length 10 m and horizontal component of earth\'s magnetic field is 5×10<sup>-3</sup> Wb m<sup>-2</sup>, then the induced emf between the tip of nose and tail of helicopter is',
+                options: ['50 V', '0.5 V', '5 V', '25 V'], img: null },
+            { id: 2,
+                text: 'A stone is thrown at an angle θ with the horizontal reaches a maximum height H. Then the time of flight of stone will be',
+                options: ['√(H/g)', '2√(2H/g)', '√(8H/g)', '√(4H/g)'], img: null },
+            { id: 3,
+                text: 'The resistance R<sub>t</sub> of a conductor varies with temperature t as shown in figure. If the variation is represented by R<sub>t</sub> = R<sub>0</sub>(1 + αt + βt²). Then,',
+                options: ['α and β both are negative', 'α is positive but β is negative', 'α and β both are positive',
+                    'α is negative but β is positive'
+                ], img: 'graph_resistance' },
+            { id: 4,
+                text: 'Charge passing through a conductor of cross-section area A = 0.3 m² is given by q = (3t² + 5t + 2) C, where t is in second. What is the value of drift velocity at t = 2 s? (Take n = 2×10²⁵ /m³)',
+                options: ['0.77×10⁻⁵ m/s', '1.77×10⁻⁵ m/s', '2.08×10⁵ m/s', '0.57×10⁵ m/s'], img: null },
+            { id: 5,
+                text: 'What is the magnetic field at the centre of arc in the figure below?',
+                options: ['(μ₀/4π)(2I/r)[√2 + π]', '(μ₀/4π)(2I/r)[√2 + π/4]', '(μ₀/4π)(I/r)[√2 + π]',
+                    '(μ₀/4π)(I/r)[√2 + π/4]'
+                ], img: 'arc_magnetic' },
+            { id: 6,
+                text: 'A black body at 227°C radiates heat at a rate of 7 cal/cm²s. At a temperature of 727°C, the rate of heat radiated in the same units will be',
+                options: ['112', '105', '101', '89'], img: null },
+            { id: 7,
+                text: 'An electric kettle has two heating coils. When one coil is connected, water boils in 10 min. When the other coil is used, water boils in 40 min. If both coils are connected in parallel, the time taken will be',
+                options: ['8 min', '4 min', '25 min', '15 min'], img: null },
+            { id: 8,
+                text: 'The length of a simple pendulum executing SHM is increased by 21%. The percentage increase in the time period is',
+                options: ['10%', '11%', '21%', '42%'], img: null },
+            { id: 9,
+                text: 'A particle executes SHM between x = −A and x = +A. Time taken from 0 to A/2 is T₁ and from A/2 to A is T₂. Then,',
+                options: ['T₁ < T₂', 'T₁ > T₂', 'T₁ = T₂', 'T₁ = 2T₂'], img: null },
+            { id: 10,
+                text: 'A particle executes SHM with amplitude 4 cm. At mean position velocity is 10 cm/s. Distance from mean position when speed becomes 5 cm/s is',
+                options: ['√3 cm', '√5 cm', '2√3 cm', '2√5 cm'], img: null },
+            { id: 11,
+                text: 'A column of air at 88°C and a tuning fork produce 6 beats/s. At 16°C they produce 1 beat/s. Frequency of tuning fork is',
+                options: ['53.9 Hz', '97.7 Hz', '41.5 Hz', '87.7 Hz'], img: null },
+            { id: 12,
+                text: 'The magnetic field due to a straight conductor of uniform cross-section of radius a carrying steady current is represented by',
+                options: ['Graph A (hyperbolic outside, linear inside)', 'Graph B', 'Graph C', 'Graph D'],
+                img: 'mag_field_graph' },
+            { id: 13,
+                text: 'A thermodynamic system is taken through the cycle PQRSP. The net work done by the system is',
+                options: ['6×10⁶ J', '−2×10⁶ J', '−6×10⁶ J', '2×10⁶ J'], img: 'thermo_cycle' },
+            { id: 14,
+                text: 'An EM wave propagates with velocity v = v i. The instantaneous oscillating electric field is along +Y-axis. Direction of oscillating magnetic field is along',
+                options: ['−Y direction', '+Z direction', '−Z direction', '−X direction'], img: null },
+            { id: 15, text: 'Which of the following processes is reversible?',
+                options: ['Transfer of heat by radiation', 'Electrical heating of nichrome wire',
+                    'Transfer of heat by conduction', 'Isothermal compression'
+                ], img: null },
+            { id: 16,
+                text: 'A ray of light is incident at the glass-water interface and emerges parallel to the surface of water. The value of n<sub>g</sub> would be',
+                options: ['(4/3) sin i', '1/sin i', '4/3', '1'], img: 'ray_diagram' },
+            { id: 17, text: 'For what value of m<sub>a</sub> will the total power per cycle be maximum in the modulated wave?',
+                options: ['0', '1', '1/2', 'greater than 1'], img: null },
+            { id: 18,
+                text: 'Young\'s double slit experiment with λ=6000 Å shows 16 fringes in a region. With another light 24 fringes occupy the same region. Then λ is',
+                options: ['6000 Å', '4500 Å', '5000 Å', '4000 Å'], img: null },
+            { id: 19,
+                text: 'An iron block is on a boat floating in a pond. The block is thrown into water. The water level will be',
+                options: ['equal to earlier level', 'less than earlier level', 'more than earlier level',
+                    'depends on block size'
+                ], img: null },
+            { id: 20,
+                text: 'Threshold wavelength is 380 nm. Incident wavelength is 260 nm. Maximum kinetic energy of emitted electrons is [Given E(eV)=1237/λ(nm)]',
+                options: ['15.1 eV', '3.0 eV', '1.5 eV', '4.5 eV'], img: null },
+            { id: 21, text: 'The graph shows behaviour of a wire obeying Hooke\'s law. P and Q represent:',
+                options: ['P=applied force, Q=extension', 'P=extension, Q=applied force',
+                    'P=extension, Q=stored elastic energy', 'P=stored elastic energy, Q=extension'
+                ], img: 'hooke_graph' },
+            { id: 22,
+                text: 'Radiation of wavelength λ is incident on a photocell. Fastest electron has speed v. If wavelength changes to 3λ/4, the speed of fastest electron will be',
+                options: ['v\' > v(4/3)^(1/2)', 'v\' = v', 'v\' < v', 'v\' = v(3/4)^(1/2)'], img: null },
+            { id: 23,
+                text: 'Two wires of same diameter, same material, lengths l and 2l. Force F applied on each. Ratio of work done is',
+                options: ['1:2', '1:4', '2:1', '1:1'], img: null },
+            { id: 24,
+                text: 'A point source of light in photoelectric effect experiment. Which curve best represents variation of photoelectric current i with distance x?',
+                options: ['Curve a', 'Curve b', 'Curve c', 'Curve d (inverse square)'], img: 'pe_curves' },
+            { id: 25,
+                text: 'A body projected vertically upwards with velocity equal to half escape velocity. Maximum height attained (R=radius of earth) is',
+                options: ['R/6', 'R/3', '2R/3', 'R'], img: null },
+            { id: 26,
+                text: 'Binding energy of electron in hydrogen atom is 13.6 eV. Energy required to remove electron from first excited state of Li²⁺ is',
+                options: ['122.4 eV', '30.6 eV', '13.6 eV', '3.4 eV'], img: null },
+            { id: 27,
+                text: 'A satellite in circular orbit of diameter 2R. Rocket fired tangentially increases velocity. Resulting orbit is',
+                options: ['same as before', 'circular with diameter >2R',
+                    'elliptical with minimum distance = R', 'elliptical with maximum distance = R'
+                ], img: null },
+            { id: 28, text: 'Transition from n=4 to n=3 gives UV. IR radiation obtained in transition:',
+                options: ['2→1', '3→2', '1→2', '5→4'], img: null },
+            { id: 29,
+                text: 'Thin uniform circular disc mass M, radius R rotating with ω. Another disc mass M/4 placed co-axially. New angular velocity is',
+                options: ['2ω/3', '4ω/5', '3ω/4', 'ω/3'], img: null },
+            { id: 30,
+                text: 'Nucleus A=240, E<sub>bn</sub>=7.6 MeV breaks into two fragments A=120, E<sub>bn</sub>=8.5 MeV. Released energy is around',
+                options: ['216 MeV', '200 MeV', '100 MeV', 'Cannot be estimated'], img: null },
+            { id: 31,
+                text: 'Rigid body rotates with angular momentum L. If rotational kinetic energy becomes 4 times, angular momentum becomes',
+                options: ['4L', '16L', '√2 L', '2L'], img: null },
+            { id: 32,
+                text: 'Mixture of A₁ (half-life 20s, 40g) and A₂ (half-life 10s, 160g). Amounts become equal after',
+                options: ['60 s', '80 s', '20 s', '40 s'], img: null },
+            { id: 33,
+                text: 'Engine exerts force F=(20i−3j+5k)N and moves with v=(6i+20j−3k) m/s. Power in watt is',
+                options: ['45', '75', '20', '10'], img: null },
+            { id: 34, text: 'Electrical resistance to diffusion current in p-n junction depletion layer is large due to:',
+                options: ['strong electric field', 'large number of charge carriers', 'electrons as charge carriers',
+                    'holes as charge carriers'
+                ], img: null },
+            { id: 35,
+                text: 'A body moves from rest with constant acceleration. Which graph represents variation of kinetic energy K with distance x?',
+                options: ['Straight line through origin', 'Parabola', 'Straight line with positive intercept',
+                    'Hyperbola'
+                ], img: 'ke_graph' },
+            { id: 36,
+                text: 'Angle of dip where horizontal and vertical components of earth\'s magnetic field are equal is',
+                options: ['30°', '90°', '60°', '45°'], img: null },
+            { id: 37,
+                text: 'Two blocks 5kg and 3kg over smooth pulley in elevator accelerating upward. Man finds acceleration of blocks = 9g/32. Acceleration of elevator is',
+                options: ['g/3', 'g/4', 'g/8', 'g/6'], img: null },
+            { id: 38, text: 'Relative permeability of X is slightly less than 1, Y is slightly more than 1. Then:',
+                options: ['X paramagnetic, Y ferromagnetic', 'X diamagnetic, Y ferromagnetic',
+                    'X and Y both paramagnetic', 'X diamagnetic, Y paramagnetic'
+                ], img: null },
+            { id: 39,
+                text: 'Mass 3kg descending supports 2kg via string over pulley. After 5s string breaks. How high will 2kg go? (g=9.8 m/s²)',
+                options: ['4.9 m', '9.8 m', '19.6 m', '2.45 m'], img: null },
+            { id: 40,
+                text: 'Circular coil expands radially in magnetic field, no emf produced. This can be because:',
+                options: ['magnetic field is constant', 'magnetic field not in plane of coil',
+                    'perpendicular component of B decreasing suitably', 'constant perpendicular magnetic field'
+                ], img: null },
+            { id: 41,
+                text: 'For given velocity, projectile has same range R for two angles. If t₁ and t₂ are times of flight, then t₁t₂ equals',
+                options: ['2R/g', 'R/g', '4R/g', 'R/2g'], img: null },
+            { id: 42, text: 'Graphs show variation of I<sub>m</sub> vs ω for four LCR circuits. Maximum quality factor is for:',
+                options: ['Circuit A', 'Circuit B', 'Circuit C', 'Circuit D (sharpest resonance)'], img: 'resonance' },
+            { id: 43, text: 'Particle moves along OX: x=40+12t−t³. Distance travelled before coming to rest:',
+                options: ['24 m', '40 m', '56 m', '16 m'], img: null },
+            { id: 44,
+                text: 'In series LCR AC circuit, voltage across L, C, R each is 20V. Voltage across L-C combination is',
+                options: ['50 V', '50√2 V', '100 V', 'Zero'], img: null },
+            { id: 45,
+                text: 'Girl walks up stationary escalator in t₁. Escalator takes her up in t₂. Time on moving escalator walking is',
+                options: ['(t₁+t₂)/2', 't₂−t₁', 't₁t₂/(t₁+t₂)', 't₁−t₂'], img: null },
+            { id: 46,
+                text: 'YDSE with λ=589.3 nm, screen 100 cm away, 10th bright fringe at 12 mm from central max. Slit separation is',
+                options: ['0.49 mm', '0.6 mm', '0.7 mm', '0.53 mm'], img: null },
+            { id: 47, text: 'Which diagram does NOT represent streamline flow?',
+                options: ['Diagram A', 'Diagram B', 'Diagram C', 'Diagram D (crossing streamlines)'],
+                img: 'streamline' },
+            { id: 48,
+                text: 'Lens of flint glass (n=1.5) immersed in liquid (n=1.25). Focal length:',
+                options: ['increases by factor 1.25', 'increases by factor 2.5', 'increases by factor 1.2',
+                    'decreases by factor 1.2'
+                ], img: null },
+            { id: 49,
+                text: 'Parallel plate capacitor charged to 100×10⁻⁶ C. Loses charge at 2×10⁻⁷ C/s. Displacement current magnitude is',
+                options: ['10⁻⁶ A', '10⁻⁴ A', '2×10⁻⁷ A', '2×10⁻⁷ mC/s'], img: null },
+            { id: 50,
+                text: 'Combination of 3 NOT and 1 AND gates. If A=0, B=1, C=1, output is',
+                options: ['1', 'zero', 'not predictable', 'None'], img: 'logic_gate' },
+            { id: 51, text: 'In given circuit all diodes are ideal. Current through battery is',
+                options: ['2.5 A', '1 A', '3 A', '4 A'], img: 'diode_circuit' },
+            { id: 52,
+                text: 'Q = A³B³/(C√D). Percentage errors: A=2%, B=1%, C=3%, D=4%. Error in Q is',
+                options: ['±8%', '±10%', '±14%', '±12%'], img: null },
+            { id: 53,
+                text: 'YDSE fringe width 1×10⁻⁴ m. Distance doubled, slit separation halved, λ changed 6.4→4.0×10⁻⁷ m. New fringe width:',
+                options: ['0.15×10⁻⁴ m', '1.25×10⁻⁴ m', '2.0×10⁻⁴ m', '2.5×10⁻⁴ m'], img: null },
+            { id: 54, text: 'Which pair does NOT have same dimensional formula?',
+                options: ['Work and Torque', 'Angular momentum and Planck\'s constant', 'Tension and Surface Tension',
+                    'Impulse and Linear Momentum'
+                ], img: null },
+            { id: 55,
+                text: 'YDSE slits 2mm apart, λ₁=12000Å, λ₂=10000Å, screen 2m away. Minimum distance from central bright where bright fringes coincide:',
+                options: ['8 mm', '6 mm', '4 mm', '3 mm'], img: null },
+            { id: 56, text: 'Proton moves distance d in uniform electric field E. Work done and potential energy change:',
+                options: ['Negative, increase', 'Positive, decrease', 'Negative, decrease', 'Positive, increase'],
+                img: 'proton_field' },
+            { id: 57,
+                text: 'Parallel plate capacitor with two dielectric slabs K₁, K₂ each thickness d/2. Capacity is:',
+                options: ['(2ε₀A/d)((K₁+K₂)/K₁K₂)', '(2ε₀A/d)(K₁K₂/(K₁+K₂))', '(2ε₀A/d)(K₁+K₂)',
+                    '(2ε₀A/d)(K₁−K₂)'
+                ], img: null },
+            { id: 58,
+                text: 'Two point charges exert force F in air. Distance r\' for same force in medium of dielectric constant K is',
+                options: ['r', 'r/K', 'r/√K', 'r√K'], img: null },
+            { id: 59, text: 'Eight dipoles of charges ±e each inside a cube. Total electric flux out of cube is:',
+                options: ['8e/ε₀', '16e/ε₀', 'e/ε₀', 'Zero'], img: null },
+            { id: 60,
+                text: 'Black body radiates power P, max energy at λ₀. Temperature changed so max at 3λ₀/4. New power is',
+                options: ['(256/81)P', '(27/64)P', '(64/27)P', '(81/256)P'], img: null },
+        ];
+
+        const chemistryQuestions = [
+            { id: 61,
+                text: 'Entropy change in isothermal reversible expansion of 2 moles ideal gas from 10 dm³ to 100 dm³ at 27°C is',
+                options: ['38.3 J mol⁻¹ K⁻¹', '35.8 J mol⁻¹ K⁻¹', '32.3 J mol⁻¹ K⁻¹', '42.3 J mol⁻¹ K⁻¹'],
+            img: null },
+            { id: 62, text: 'CrCl₃·4H₂O will exist as:',
+                options: ['[Cr(H₂O)₃Cl₃]·H₂O', '[Cr(H₂O)₄Cl₂]Cl', 'Both (a) and (b)', 'None'], img: null },
+            { id: 63, text: 'Which is an allylic halide?',
+                options: ['3-bromo-2-methylpropene', '3-bromobut-1-ene', '3-bromopent-2-ene', '4-bromobut-1-ene'],
+            img: null },
+            { id: 64, text: 'Sign of ΔG is positive at low temperature when:',
+                options: ['ΔH positive, ΔS positive', 'ΔH negative, ΔS negative', 'ΔH negative, ΔS positive',
+                    'ΔH negative, ΔS zero'
+                ], img: null },
+            { id: 65, text: 'MnSO₄ has strongest attraction to magnetic field because:',
+                options: ['Mn²⁺ has 5 unpaired electrons', 'Mn is transition metal', 'SO₄²⁻ is paramagnetic',
+                    'Mn has high atomic number'
+                ], img: null },
+            { id: 66, text: 'Tertiary alkyl halides undergo fast elimination due to:',
+                options: ['steric hindrance', 'electronic effects', 'resonance', 'inductive effect'], img: null },
+            { id: 67, text: 'For H₂O(s) ⇌ H₂O(l) at equilibrium, ΔG=0 implies:',
+                options: ['ΔH=0', 'ΔH=TΔS', 'ΔS=0', 'ΔH=−TΔS'], img: null },
+            { id: 68, text: 'Most stable carbocation among conjugated systems involves:',
+                options: ['CH₂=CH−C⁺H₂', 'CH₂=CH−CH=CH−C⁺H₂ (conjugated)', 'CH₃−C⁺H₂', '(CH₃)₃C⁺'], img: null },
+            { id: 69, text: 'SN2 reaction results in:',
+                options: ['racemization', 'inversion of configuration', 'retention', 'no stereochemical change'],
+            img: null },
+            { id: 70, text: 'Most reactive allotrope of phosphorus is:',
+                options: ['red phosphorus', 'white phosphorus', 'black phosphorus', 'violet phosphorus'], img: null },
+            { id: 71, text: 'B₂ molecule shows paramagnetism due to:',
+                options: ['2 unpaired electrons in π MO', 'unpaired σ electrons', 'diamagnetic nature', 'ionic bonding'],
+            img: null },
+            { id: 72, text: 'H₂SO₅ and H₂S₂O₈ are called peroxy acids because:',
+                options: ['they contain S=O bonds', 'they release O₂ on heating', 'they have peroxy (−O−O−) linkages',
+                    'they are strong acids'
+                ], img: null },
+            { id: 73, text: 'Hybridisation of Xe in XeF₂, XeF₄, XeF₆ respectively:',
+                options: ['sp³d, sp³d², sp³d³', 'sp³, sp², sp', 'sp², sp³, sp³d', 'sp³d², sp³d, sp³'], img: null },
+            { id: 74, text: 'Ziegler-Natta catalyst is represented by:',
+                options: ['TiCl₄ + AlR₃', 'TiCl₄ + AlR₃ (R=alkyl)', 'Pt/Al₂O₃', 'Ni/Raney'], img: null },
+            { id: 75, text: 'Calcination is used for:',
+                options: ['sulphide ores', 'native metals', 'oxide ores only', 'hydrated oxide/carbonate ores'],
+            img: null },
+            { id: 76, text: 'SO₂ has shape and hybridisation:',
+                options: ['sp², bent (119°)', 'sp³, tetrahedral', 'sp, linear', 'sp³d, trigonal bipyramidal'],
+            img: null },
+            { id: 77, text: 'For first order reaction, doubling initial concentration:',
+                options: ['doubles half-life', 'does not affect half-life', 'halves half-life', 'triples rate constant'],
+            img: null },
+            { id: 78, text: 'Coagulation value of NaCl for 100 mL colloidal sol using 5 mmol is:',
+                options: ['50 mmol L⁻¹', '25', '100', '5'], img: null },
+            { id: 79, text: '0.224 cc O₂ at STP liberated by 3.86 A current. Z for O₂ is:',
+                options: ['32/96500', '16/96500', '8/96500', '32/(4×96500)'], img: null },
+            { id: 80, text: 'Correct order of electron affinity:',
+                options: ['N < O < S < Cl', 'Cl < S < O < N', 'O < N < Cl < S', 'S < Cl < N < O'], img: null },
+            { id: 81,
+                text: 'Vapour pressure of pure solvent 0.80 atm, solution 0.60 atm. Mole fraction of solute is:',
+                options: ['0.20', '0.25', '0.75', '0.80'], img: null },
+            { id: 82, text: 'Element with atomic number 117 belongs to:',
+                options: ['alkali metals', 'alkaline earth metals', 'halogens', 'noble gases'], img: null },
+            { id: 83, text: 'Number of octahedral voids per atom in ccp structure is:',
+                options: ['1', '3', '2', '4'], img: null },
+            { id: 84, text: 'Mole fraction of glycine in 0.140 molal aqueous solution is:',
+                options: ['1.4×10⁻¹', '8.6×10⁻¹', '2.51×10⁻³', '9.97×10⁻¹'], img: null },
+            { id: 85, text: 'Correct decreasing order of ionic radius:',
+                options: ['C⁴⁻ > N³⁻ > O²⁻ > F⁻', 'F⁻ > O²⁻ > N³⁻ > C⁴⁻', 'O²⁻ > F⁻ > C⁴⁻ > N³⁻',
+                    'N³⁻ > O²⁻ > F⁻ > C⁴⁻'
+                ], img: null },
+            { id: 86, text: 'Compound with lowest C−H bond dissociation energy:',
+                options: ['Toluene', 'Benzene', 'n-pentane', '2,2-dimethylpropane'], img: null },
+            { id: 87, text: 'Defect that lowers crystal density:',
+                options: ['F-centres', 'Interstitial defect', 'Frenkel defect', 'Schottky defect'], img: null },
+            { id: 88, text: 'Enzyme in cows/buffaloes to digest cellulose:',
+                options: ['Urease', 'Cellulase', 'Silicones', 'Sucrose'], img: null },
+            { id: 89, text: 'Product B in the reaction sequence (ozonolysis of alkyne):',
+                options: ['CH₃COOH', 'CH₃CH₂COOH', 'CH₃OH−CH₂OH (diol)', 'CH₃CHO'], img: 'ozonolysis' },
+            { id: 90, text: 'Aldol condensation is NOT given by:',
+                options: ['C₆H₅CH₂CHO', 'C₆H₅CHO', 'CH₃CHO', 'CH₃COCH₃'], img: null },
+            { id: 91, text: 'Atomic number 17. Number of orbitals with electron pairs in valence shell:',
+                options: ['2', '3', '4', '5'], img: null },
+            { id: 92, text: 'CH≡CH →(O₃/NaOH)→ (X) →(Zn/CH₃COOH)→ (Y). (Y) is:',
+                options: ['CH₃OH', 'CH₃COOH−CH₂COOH', 'CH₃CH₂COOH', 'CH₃OH−CH₂OH'], img: null },
+            { id: 93, text: 'Excess nitrate in drinking water causes:',
+                options: ['methemoglobinemia', 'kidney damage', 'liver damage', 'leucoderma'], img: null },
+            { id: 94, text: 'Which does NOT contain a conjugate system?',
+                options: ['CH₂=CH−COOH', 'CH₂=CHCHO', 'CH₃CH=CH₂', 'CH₂=CH−CH=CH₂'], img: null },
+            { id: 95,
+                text: 'Compound: C 12.8%, H 2.1%, Br 85.1%, MW=187.9. Molecular formula:',
+                options: ['CH₃Br', 'CH₂Br₂', 'C₂H₄Br₂', 'C₂H₃Br₃'], img: null },
+            { id: 96, text: 'Hydrated to maximum extent (most stable carbocation formed):',
+                options: ['cis-CH₃CH=CHCH₃', 'trans-CH₃CH=CHCH₃', 'CH₂=CH₂',
+                    '(CH₃)₂C=CH₂ (3° carbocation)'
+                ], img: null },
+            { id: 97, text: 'Stability order of hydrides of carbon family:',
+                options: ['CH₄ > SiH₄ > GeH₄ > SnH₄ > PbH₄', 'CH₄ < SiH₄ < GeH₄ < SnH₄ < PbH₄',
+                    'CH₄ > SnH₄ > GeH₄ > SiH₄ > PbH₄', 'None'
+                ], img: null },
+            { id: 98, text: 'Total number of optical isomers of given compound (2 chiral centers):',
+                options: ['2', '3', '4', '5'], img: null },
+            { id: 99,
+                text: 'Mixture of NaCl and Na₂CO₃ (12g) heated with dil HCl yields 2.24g CO₂. Mass of NaCl in mixture:',
+                options: ['6.6 g', '5.8 g', '6.8 g', '7.2 g'], img: null },
+            { id: 100, text: 'Water gas is produced by:',
+                options: ['passing steam over red hot coke', 'passing steam+air over red hot coke',
+                    'burning coke in excess air', 'burning coke in limited air'
+                ], img: null },
+            { id: 101, text: '6.0g urea decomposed by 2M NaOH. Volume of 2M NaOH required:',
+                options: ['50 mL', '100 mL', '150 mL', '40 mL'], img: null },
+            { id: 102, text: 'Which metal carbonate decomposes on heating?',
+                options: ['MgCO₃', 'Na₂CO₃', 'K₂CO₃', 'Rb₂CO₃'], img: null },
+            { id: 103, text: 'Decarboxylation will NOT take place by heating:',
+                options: ['methyl malonic acid', 'succinic acid', 'acetoacetic acid', 'all cases'], img: null },
+            { id: 104,
+                text: '2 moles ideal gas expanded isothermally and reversibly from 1L to 10L at 300K. Work done:',
+                options: ['4.98 kJ', '11.47 kJ', '−11.47 kJ', '0 kJ'], img: null },
+            { id: 105, text: 'Base pairs in DNA are held together by:',
+                options: ['ionic bonds', 'H-bonds', 'phosphate groups', 'deoxyribose groups'], img: null },
+            { id: 106, text: 'pH of solution after NaCl(aq) electrolysis will:',
+                options: ['remain constant', 'increase', 'decrease', 'cannot be determined'], img: null },
+            { id: 107, text: 'Heating phenyl-methyl ether with HI produces:',
+                options: ['benzene', 'ethyl chlorides', 'iodobenzene', 'phenol'], img: null },
+            { id: 108, text: 'Equanil is a:',
+                options: ['artificial sweetener', 'tranquiliser', 'antihistamine', 'antifertility drug'], img: null },
+            { id: 109, text: 'C₆H₅CH=CHCHO with NaBH₄ yields:',
+                options: ['C₆H₅CH₂CH₂CH₂OH', 'C₆H₅CH=CHCH₂OH', 'C₆H₅CH₂CH₂CHO', 'C₆H₅CH₂CHOHCH₃'], img: null },
+            { id: 110, text: 'In Ag₂O + H₂O₂ → 2Ag + H₂O + O₂, H₂O₂ acts as:',
+                options: ['reducing agent', 'oxidising agent', 'bleaching agent', 'None'], img: null },
+            { id: 111, text: 'Most unreactive ether to cleavage with HBr:',
+                options: ['C₆H₅OCH₂C₆H₅', 'CH₂=CHCH₂OCH₂CH=CH₂', 'C₆H₅OC₆H₅ (diphenyl ether)',
+                    '(CH₃)₃COC(CH₃)₃'
+                ], img: null },
+            { id: 112, text: 'H₂(g)+Cl₂(g)⇌2HCl(g). Relationship between Kp and Kc:',
+                options: ['Kp>Kc', 'Kp=Kc', 'Kp<Kc', 'None'], img: null },
+            { id: 113, text: 'C−O bond lengths in phenol vs alcohol. Which is true?',
+                options: ['x=y', 'x>y', 'x<y (phenol has double bond character)', 'not predictable'], img: null },
+            { id: 114, text: 'Pyridine is less basic than triethylamine because:',
+                options: ['aromatic character', 'N is sp² hybridised', 'cyclic system', 'lone pair delocalised'],
+            img: null },
+            { id: 115, text: 'Distribution of molecules with velocity - point A represents:',
+                options: ['average velocity', 'most probable velocity', 'root mean square velocity', 'escape velocity'],
+                img: 'maxwell_curve' },
+            { id: 116, text: 'Xenon fluoride acts as fluoride acceptor with:',
+                options: ['RbF', 'CsF', 'Both RbF and CsF', 'None'], img: null },
+            { id: 117, text: 'Ni²⁺ in traces can be tested using:',
+                options: ['sodium nitroprusside', 'dimethyl glyoxime', 'ammonium sulphocyanide',
+                'potassium ferrocyanide'], img: null },
+            { id: 118,
+                text: 'Equal masses of methane and oxygen mixed at 25°C. Fraction of total pressure exerted by oxygen:',
+                options: ['2/3', '1/3 × 273/298', '1/3', '1/2'], img: null },
+            { id: 119, text: 'Least oxidising oxoacid of chlorine:',
+                options: ['HClO', 'HClO₂', 'HClO₃', 'HClO₄'], img: null },
+            { id: 120, text: 'CrO₅ has two peroxy linkages. Oxidation number of Cr in CrO₅ is:',
+                options: ['+10', '−10', '+4', '+6'], img: null },
+        ];
+
+        const mathsQuestions = [
+            { id: 121, text: 'Which function is one-one?',
+                options: ['f(x)=sin x, x∈[−π,π)', 'f(x)=sin x, x∈[−3π/2, π/4]', 'f(x)=cos x, x∈[−π/2, π/2]',
+                    'f(x)=cos x, x∈[π, 3π/2]'
+                ], img: null },
+            { id: 122,
+                text: 'f(x)=(3x+4)/(5x−7), g(x)=(7x+4)/(5x−3). Then fog and gof are:',
+                options: ['fog=I_A, gof=I_A', 'fog=I_A, gof=I_B', 'fog=I_B, gof=I_B', 'fog=I_B, gof=I_A'],
+            img: null },
+            { id: 123,
+                text: 'Binary operations: a∗b=|a−b|, a∘b=a. Which is correct?',
+                options: ['∗ is not commutative', '∘ is associative and commutative', 'a∗(b∘c)≠(a∗b)∘(a∗c)',
+                    '∘ is not distributive over ∗'
+                ], img: null },
+            { id: 124, text: 'If cos(θ+φ)=m cos(θ−φ), then ((1−m)/(1+m)) cot φ equals:',
+                options: ['sin θ', 'sin φ', 'tan θ', 'tan φ'], img: null },
+            { id: 125, text: 'If a cos 2θ + b sin 2θ = c has roots α,β, then tan α + tan β equals:',
+                options: ['2b/(a−c)', '2c/(a+b)', '2b/(a+c)', '2a/(b+c)'], img: null },
+            { id: 126,
+                text: 'General solution of sin x − 3 sin 2x + sin 3x = cos x − 3 cos 2x + cos 3x:',
+                options: ['nπ+π/4', 'nπ/2+π/8', 'nπ+π/8', 'nπ/2+π/4'], img: null },
+            { id: 127, text: 'Value of cos 12°+cos 84°+cos 156°+cos 132°:',
+                options: ['1/2', '1', '−1/2', '1/8'], img: null },
+            { id: 128, text: 'Value of tan⁻¹[2cos(2sin⁻¹(1/2))] is:',
+                options: ['π', 'π/2', 'π/4', 'π/3'], img: null },
+            { id: 129, text: 'sin(sin⁻¹(1/5)+cos⁻¹x)=1, then x is:',
+                options: ['2/5', '1/5', '−1/5', '−1'], img: null },
+            { id: 130, text: 'Greatest and least value of (sin⁻¹x)²+(cos⁻¹x)²:',
+                options: ['5π²/4 and π²/8', 'π/2 and −π/2', 'π²/4 and −π²/4', 'π²/4 and 0'], img: null },
+            { id: 131, text: 'For all n∈N, 3·5²ⁿ⁺¹+2³ⁿ⁺¹ is divisible by:',
+                options: ['19', '17', '23', 'Both 17 and 23'], img: null },
+            { id: 132, text: 'If |z+1|=z+2(1+i), then z is:',
+                options: ['1/2−2i', '1/2+2i', '1−2i', '1+2i'], img: null },
+            { id: 133, text: 'Real α for which (1−i sin α)/(1+2i sin α) is purely real:',
+                options: ['(n+1)π/2', '(2n+1)π/2', 'nπ', 'None'], img: null },
+            { id: 134, text: 'If ((1+i)/(1−i))ˣ=1, then:',
+                options: ['x=2n+1', 'x=4n', 'x=2n', 'x=4n+1'], img: null },
+            { id: 135, text: 'Which is correct for any two complex numbers z₁,z₂?',
+                options: ['|z₁z₂|=|z₁||z₂|', 'arg(z₁z₂)=arg(z₁)·arg(z₂)', '|z₁+z₂|=|z₁|+|z₂|', '|z₁+z₂|≥|z₁|−|z₂|'],
+            img: null },
+            { id: 136, text: 'Convex polygon has 44 diagonals. Number of sides:',
+                options: ['8', '11', '3', '7'], img: null },
+            { id: 137,
+                text: '5-digit number divisible by 3 using digits 0,1,2,3,4,5 without repetition. Total ways:',
+                options: ['216', '600', '240', '3125'], img: null },
+            { id: 138,
+                text: 'Number of words from "ARTICLE" with vowels at even places:',
+                options: ['1440', '144', '7!', '4C4×3C3'], img: null },
+            { id: 139, text: 'Two successive terms in (1+x)²⁴ with coefficient ratio 1:4 are:',
+                options: ['3rd and 4th', '4th and 5th', '5th and 6th', '6th and 7th'], img: null },
+            { id: 140, text: 'Middle term of (1/x + x sin x)¹⁰ = 7/8. Value of x is:',
+                options: ['2nπ+π/6', 'nπ+π/6', 'nπ+(−1)ⁿπ/6', 'nπ+(−1)ⁿπ/3'], img: null },
+            { id: 141, text: 'AP: Sₙ=qn², Sₘ=qm². Then S_q equals:',
+                options: ['q', 'q²', 'q³', 'q⁴'], img: null },
+            { id: 142, text: 'Minimum value of 4ˣ+4¹⁻ˣ, x∈R is:',
+                options: ['2', '4', '1', '0'], img: null },
+            { id: 143, text: 'Line x/a+y/b=1 passes through (2,−3) and (4,−5). (a,b) is:',
+                options: ['(1,1)', '(−1,1)', '(1,−1)', '(−1,−1)'], img: null },
+            { id: 144,
+                text: 'Lines through (1,0) at distance √3/2 from origin:',
+                options: ['√3x+y−√3=0, √3x−y−√3=0', '√3x+y+√3=0, √3x−y+√3=0', 'x+√3y−√3=0, x−√3y−√3=0',
+                    'None'
+                ], img: null },
+            { id: 145, text: 'Foot of perpendicular from (2,3) on y=3x+4 is:',
+                options: ['(−1,1)', '(−1/10, 37/10)', '(1/10, 43/10)', '(−1/5, 17/5)'], img: null },
+            { id: 146,
+                text: 'Circle touching both axes and line 3x−4y+8=0 in third quadrant:',
+                options: ['x²+y²+4x+4y+2=0', 'x²+y²+8x+8y+4=0', 'x²+y²+4x+4y+4=0', 'x²+y²+8x+8y+2=0'],
+            img: null },
+            { id: 147,
+                text: 'One end of diameter of circle x²+y²−4x−6y+11=0 is (3,4). Other end:',
+                options: ['(1,−2)', '(1,2)', '(2,1)', '(1,5)'], img: null },
+            { id: 148, text: 'Focus (0,−3), directrix y=3. Equation of parabola:',
+                options: ['x²=−12y', 'x²=12y', 'y²=−12x', 'y²=12x'], img: null },
+            { id: 149, text: 'y²=4ax passes through (3,2). Latus rectum length:',
+                options: ['2/3', '4/3', '1/3', '3/4'], img: null },
+            { id: 150, text: 'Ellipse x²/a²+y²/b²=1 (a<b), eccentricity e. Then:',
+                options: ['b²=a²(1−e²)', 'a²=b²(1−e²)', 'a²=b²(e²−1)', 'b²=a²(e²−1)'], img: null },
+            { id: 151, text: 'Ellipse axes 6cm and 4cm, described by endless string. String length:',
+                options: ['2√5', '√5', '6+2√5', '2+2√5'], img: null },
+            { id: 152, text: 'Hyperbola: distance between foci=16, e=√2. Equation:',
+                options: ['x²−y²=32', 'x²−y²=16', 'y²−x²=32', 'x²/32−y²/32=1'], img: null },
+            { id: 153, text: 'Value of p for lines to be at right angle:',
+                options: ['70/11', '70/11 (specific)', '35/11', '11/70'], img: null },
+            { id: 154, text: 'Value of f(0) for function to be continuous:',
+                options: ['√a', '−√a', 'a', '−a'], img: null },
+            { id: 155, text: 'f(x+y)=f(x)f(y), f differentiable at 0, f\'(0)=2. Then:',
+                options: ['f\'(x)=f(x)', 'f\'(x)=2f(x)', '2f\'(x)=f(x)', 'None'], img: null },
+            { id: 156, text: 'f(x)=x¹⁰⁰+x⁹⁹+...+x+1. f\'(1) equals:',
+                options: ['5050', '5049', '5051', '50051'], img: null },
+            { id: 157, text: 'f(x)=2²ˣ−1, φ(x)=−2ˣ+2x ln 2. If f\'(x)>φ\'(x), then:',
+                options: ['0<x<1', '0≤x<1', 'x>0', 'x≥0'], img: null },
+            { id: 158, text: 'Derivative of √((x−3)(x²+4)/(3x²+4x+5)):',
+                options: ['(1/2)√(...)[1/(x−3)+2x/(x²+4)−(6x+4)/(3x²+4x+5)]', 'alternative form',
+                    'another form', 'None'
+                ], img: null },
+            { id: 159, text: 'f(x)=cos x·cos 2x·cos 4x·cos 8x·cos 16x. f\'(π/4) is:',
+                options: ['1', '√2', '1/√2', '0'], img: null },
+            { id: 160,
+                text: 'Derivative of e^(sec²x)+3cos⁻¹x is valid in:',
+                options: ['[−1,1]−{0}', '(−1,1)', '(−1,1)−{0}', 'None'], img: null },
+            { id: 161, text: '0<θ<π/2, θ increases twice as fast as its sine. θ is:',
+                options: ['π/2', 'π/3', 'π/6', 'None'], img: null },
+            { id: 162,
+                text: 'Cylinder: dr/dt=3 m/s, dh/dt=−4 m/s. Rate of change of volume at r=4,h=6:',
+                options: ['20π m³/s', '40π m³/s', '60π m³/s', '80π m³/s'], img: null },
+            { id: 163, text: '∫(3eˣ−5e⁻ˣ)/(4eˣ+5e⁻ˣ) dx = ax+b log|4eˣ+5e⁻ˣ|+C. Then:',
+                options: ['a=−1/8,b=−7/8', 'a=1/8,b=7/8', 'a=−1/8,b=7/8', 'a=1/8,b=−7/8'], img: null },
+            { id: 164, text: '∫[f(x)+f(−x)]dx where f(x)=sin²(πx)/(1+π²):',
+                options: ['0', 'x+C', 'x/2−sin(2πx)/(4π)+C', 'x/2−cos(πx)/(2π)+C'], img: null },
+            { id: 165, text: '∫1/√(7−6x−x²) dx equals:',
+                options: ['log|2x+√(...)|+C', '(1/2)log|(x+3)/(x−3)|+C', 'sin⁻¹((x+3)/4)+C', 'None'], img: null },
+            { id: 166, text: '∫eˣ/((1+eˣ)(2+eˣ)) dx equals:',
+                options: ['log|(1+eˣ)/(2+eˣ)|+C', 'log|(2+eˣ)/(1+eˣ)|+C', 'log|eˣ/(1+eˣ)|+C', 'None'], img: null },
+            { id: 167, text: '∫₂ᵉ(1/log x−1/(log x)²)dx = a+b/log 2. Then:',
+                options: ['a=e, b=−2', 'a=e, b=2', 'a=−e, b=2', 'None'], img: null },
+            { id: 168, text: '∫₀ᵃ √x/(√x+√(a−x)) dx equals:',
+                options: ['3a/2', 'a', 'a/2', '2a'], img: null },
+            { id: 169, text: 'Area bounded by y=√x, 2y−x+3=0, X-axis in first quadrant:',
+                options: ['9', '36', '18', '27'], img: null },
+            { id: 170, text: 'y=2e²ˣ−e⁻ˣ is solution of differential equation:',
+                options: ['y\'\'+y\'−2y=0', 'y\'\'−y\'+2y=0', 'y\'\'+2y\'−y=0', 'y\'\'−y\'−2y=0'], img: null },
+            { id: 171, text: 'Particular solution of log(dy/dx)=3x+4y, y(0)=0:',
+                options: ['4e³ˣ+3e⁻⁴ʸ−7=0', '3e³ˣ+4e⁴ʸ+7=0', '4e³ˣ−3e⁴ʸ−7=0', '3e³ˣ+4e⁴ʸ−7=0'], img: null },
+            { id: 172,
+                text: 'Position vectors of A,B,C: 2i−j+k, i−3j−5k, 3i−4j−4k. cos²A equals:',
+                options: ['0', '6/41', '35/41', '1'], img: null },
+            { id: 173, text: 'ABCD parallelogram, AB=2i+4j−5k, AD=i+2j+3k. Unit vector along AC:',
+                options: ['(3i−6j−2k)/3', '(3i+6j+2k)/3', '(3i−6j−3k)/7', '(3i+6j−2k)/7'], img: null },
+            { id: 174, text: 'F(x)F(y)=F(x+y) type functional equation:',
+                options: ['F(xy)', 'F(x)+F(y)', 'F(x+y)', 'F(x−y)'], img: null },
+            { id: 175, text: 'Matrix A satisfies A\'A=I. Values of x,y,z:',
+                options: ['x=±1/√3, y=±1/√6, z=±1/√2', 'x=±1/√2, y=±1/√3, z=±1/√6',
+                    'x=±1/√6, y=±1/√6, z=±1/√2', 'x=±1/√2, y=±1/√6, z=±1/√3'
+                ], img: null },
+            { id: 176,
+                text: 'Determinant condition: applying R₁→R₁+R₃−2R₂ gives a,b,c in:',
+                options: ['GP', 'HP', 'equal', 'AP'], img: null },
+            { id: 177,
+                text: 'P(A)=3/8, P(B)=5/8, P(A∪B)=3/4. P(A/B)·P(A\'/B) equals:',
+                options: ['2/5', '3/8', '3/20', '6/25'], img: null },
+            { id: 178, text: 'Contrapositive of "If 7>5 then 8>6" is:',
+                options: ['If 8>6 then 7>5', 'If 8≤6 then 7>5', 'If 8≤6 then 7≤5', 'If 8>6 then 7≤5'],
+            img: null },
+            { id: 179,
+                text: 'Max and min of Z=3x−4y subject to constraints (feasible region):',
+                options: ['12, 10', '10, 12', '12, does not exist', '5, 12'], img: null },
+            { id: 180, text: 'Solution of |(x−2)/(x−2)|−1≤0 is:',
+                options: ['[0,1]', '[3,4]', '(0,1]∪(3,4)', '(0,1]∪[3,4)'], img: null },
+        ];
+
+        const allQuestions = [...physicsQuestions, ...chemistryQuestions, ...mathsQuestions];
+
+        // ============ SVG DIAGRAMS ============
+        function getSVG(imgId) {
+            const svgs = {
+                'graph_resistance': `<svg width="280" height="180" viewBox="0 0 280 180"><rect width="280" height="180" fill="#fff" rx="8"/><line x1="40" y1="140" x2="260" y2="140" stroke="#333" stroke-width="2"/><line x1="40" y1="140" x2="40" y2="20" stroke="#333" stroke-width="2"/><text x="130" y="165" font-size="12" fill="#333">t (°C)</text><text x="8" y="80" font-size="12" fill="#333" transform="rotate(-90,8,80)">Rₜ</text><path d="M40,120 Q140,130 250,30" fill="none" stroke="#1a73e8" stroke-width="3"/><text x="200" y="50" font-size="11" fill="#555">Rₜ increasing</text></svg>`,
+                'arc_magnetic': `<svg width="300" height="180" viewBox="0 0 300 180"><rect width="300" height="180" fill="#fff" rx="8"/><circle cx="150" cy="100" r="60" fill="none" stroke="#333" stroke-width="2"/><line x1="150" y1="100" x2="192" y2="58" stroke="#333" stroke-width="1.5" stroke-dasharray="4"/><text x="155" y="75" font-size="11" fill="#555">r</text><text x="195" y="55" font-size="10" fill="#555">45°</text><path d="M90,100 A60,60 0 0,1 210,100" fill="none" stroke="#1a73e8" stroke-width="3"/><circle cx="150" cy="100" r="4" fill="#d93025"/><text x="140" y="90" font-size="10" fill="#d93025">O</text></svg>`,
+                'mag_field_graph': `<svg width="280" height="200" viewBox="0 0 280 200"><rect width="280" height="200" fill="#fff" rx="8"/><line x1="30" y1="160" x2="250" y2="160" stroke="#333" stroke-width="2"/><line x1="30" y1="160" x2="30" y2="20" stroke="#333" stroke-width="2"/><text x="120" y="185" font-size="11" fill="#333">r</text><text x="10" y="90" font-size="11" fill="#333" transform="rotate(-90,10,90)">B</text><line x1="30" y1="140" x2="130" y2="30" stroke="#1a73e8" stroke-width="2.5"/><path d="M130,30 Q180,35 240,120" fill="none" stroke="#1a73e8" stroke-width="2.5"/><text x="135" y="25" font-size="10" fill="#555">B∝r</text><text x="200" y="130" font-size="10" fill="#555">B∝1/r</text></svg>`,
+                'thermo_cycle': `<svg width="280" height="200" viewBox="0 0 280 200"><rect width="280" height="200" fill="#fff" rx="8"/><line x1="40" y1="160" x2="240" y2="160" stroke="#333" stroke-width="2"/><line x1="40" y1="160" x2="40" y2="30" stroke="#333" stroke-width="2"/><text x="130" y="185" font-size="11" fill="#333">V</text><text x="15" y="95" font-size="11" fill="#333" transform="rotate(-90,15,95)">p</text><rect x="80" y="50" width="120" height="90" fill="none" stroke="#1a73e8" stroke-width="2.5" rx="2"/><text x="70" y="45" font-size="10" fill="#333">P</text><text x="205" y="45" font-size="10" fill="#333">Q</text><text x="205" y="148" font-size="10" fill="#333">R</text><text x="70" y="148" font-size="10" fill="#333">S</text><circle cx="80" cy="50" r="3" fill="#d93025"/><circle cx="200" cy="50" r="3" fill="#d93025"/><circle cx="200" cy="140" r="3" fill="#d93025"/><circle cx="80" cy="140" r="3" fill="#d93025"/></svg>`,
+                'hooke_graph': `<svg width="260" height="200" viewBox="0 0 260 200"><rect width="260" height="200" fill="#fff" rx="8"/><line x1="30" y1="160" x2="230" y2="160" stroke="#333" stroke-width="2"/><line x1="30" y1="160" x2="30" y2="20" stroke="#333" stroke-width="2"/><text x="110" y="185" font-size="11" fill="#333">P (extension)</text><text x="10" y="95" font-size="11" fill="#333" transform="rotate(-90,10,95)">Q (energy)</text><path d="M40,140 Q140,120 220,30" fill="none" stroke="#1a73e8" stroke-width="3"/><text x="150" y="50" font-size="10" fill="#555">Parabolic</text></svg>`,
+                'ke_graph': `<svg width="260" height="180" viewBox="0 0 260 180"><rect width="260" height="180" fill="#fff" rx="8"/><line x1="30" y1="140" x2="220" y2="140" stroke="#333" stroke-width="2"/><line x1="30" y1="140" x2="30" y2="20" stroke="#333" stroke-width="2"/><text x="110" y="165" font-size="11" fill="#333">x (distance)</text><text x="10" y="85" font-size="11" fill="#333" transform="rotate(-90,10,85)">K (KE)</text><line x1="40" y1="140" x2="200" y2="30" stroke="#1a73e8" stroke-width="3"/><text x="120" y="50" font-size="10" fill="#555">Straight line</text></svg>`,
+                'resonance': `<svg width="300" height="180" viewBox="0 0 300 180"><rect width="300" height="180" fill="#fff" rx="8"/><line x1="30" y1="140" x2="270" y2="140" stroke="#333" stroke-width="2"/><text x="140" y="165" font-size="11" fill="#333">ω</text><text x="10" y="85" font-size="11" fill="#333" transform="rotate(-90,10,85)">Iₘ</text><path d="M40,135 Q100,20 150,25 Q200,20 260,135" fill="none" stroke="#1a73e8" stroke-width="1.5" opacity="0.5"/><path d="M40,135 Q100,60 150,20 Q200,60 260,135" fill="none" stroke="#d93025" stroke-width="2.5" stroke-dasharray="6,3"/><text x="230" y="40" font-size="9" fill="#d93025">Sharpest=D</text></svg>`,
+                'streamline': `<svg width="260" height="140" viewBox="0 0 260 140"><rect width="260" height="140" fill="#fff" rx="8"/><path d="M20,40 Q80,30 140,50 Q200,70 240,60" fill="none" stroke="#1a73e8" stroke-width="2"/><path d="M20,80 Q80,90 140,70 Q200,50 240,70" fill="none" stroke="#1a73e8" stroke-width="2"/><path d="M60,20 Q100,60 80,110" fill="none" stroke="#d93025" stroke-width="2" stroke-dasharray="5,3"/><text x="90" y="130" font-size="10" fill="#d93025">Crossing ✗</text></svg>`,
+                'logic_gate': `<svg width="300" height="160" viewBox="0 0 300 160"><rect width="300" height="160" fill="#fff" rx="8"/><text x="20" y="40" font-size="12" fill="#333">A—NOT—</text><text x="20" y="70" font-size="12" fill="#333">B—NOT—</text><text x="20" y="100" font-size="12" fill="#333">C—NOT—</text><text x="140" y="55" font-size="12" fill="#333">AND</text><text x="200" y="55" font-size="12" fill="#1a73e8">Y=Ā+B̄+C̄</text></svg>`,
+                'diode_circuit': `<svg width="280" height="160" viewBox="0 0 280 160"><rect width="280" height="160" fill="#fff" rx="8"/><text x="30" y="60" font-size="12" fill="#333">20V</text><text x="60" y="60" font-size="12" fill="#333">—D₁(reverse)—5Ω—</text><text x="60" y="90" font-size="12" fill="#1a73e8">—D₂(forward)—3Ω—</text><text x="220" y="75" font-size="12" fill="#555">I=2.5A</text></svg>`,
+                'ray_diagram': `<svg width="280" height="160" viewBox="0 0 280 160"><rect width="280" height="160" fill="#fff" rx="8"/><rect x="60" y="20" width="80" height="100" fill="#d2e3fc" rx="4"/><text x="70" y="75" font-size="10" fill="#333">Glass n_g</text><rect x="140" y="20" width="80" height="100" fill="#e8f5e9" rx="4"/><text x="150" y="75" font-size="10" fill="#333">Water n_w</text><line x1="20" y1="40" x2="100" y2="55" stroke="#d93025" stroke-width="2"/></svg>`,
+                'pe_curves': `<svg width="280" height="160" viewBox="0 0 280 160"><rect width="280" height="160" fill="#fff" rx="8"/><line x1="30" y1="130" x2="250" y2="130" stroke="#333" stroke-width="2"/><text x="130" y="150" font-size="10" fill="#333">x</text><text x="10" y="80" font-size="10" fill="#333">i</text><path d="M50,120 Q100,100 150,90 Q200,82 240,78" fill="none" stroke="#1a73e8" stroke-width="2"/><text x="180" y="70" font-size="9" fill="#555">i∝1/x²</text></svg>`,
+                'proton_field': `<svg width="240" height="140" viewBox="0 0 240 140"><rect width="240" height="140" fill="#fff" rx="8"/><circle cx="60" cy="70" r="10" fill="#1a73e8"/><text x="55" y="75" font-size="8" fill="#fff">p⁺</text><text x="100" y="65" font-size="11" fill="#333">—E→</text><circle cx="180" cy="70" r="10" fill="none" stroke="#d93025" stroke-width="2" stroke-dasharray="4"/></svg>`,
+                'maxwell_curve': `<svg width="260" height="160" viewBox="0 0 260 160"><rect width="260" height="160" fill="#fff" rx="8"/><path d="M30,140 Q100,20 180,40 Q240,100 250,130" fill="none" stroke="#1a73e8" stroke-width="2.5"/><circle cx="130" cy="55" r="4" fill="#d93025"/><text x="120" y="45" font-size="10" fill="#d93025">A (most probable)</text></svg>`,
+                'ozonolysis': `<svg width="260" height="120" viewBox="0 0 260 120"><rect width="260" height="120" fill="#fff" rx="8"/><text x="20" y="40" font-size="11" fill="#333">CH≡CH →(O₃/NaOH)→ (X)</text><text x="20" y="70" font-size="11" fill="#333">(X) →(Zn/CH₃COOH)→ HOCH₂−CH₂OH (Y)</text></svg>`,
+            };
+            return svgs[imgId] || '';
+        }
+
+        // ============================================================
+        // ============ GLOBAL STATE ============
+        // ============================================================
+        let userAnswers = {}; // {questionId: optionIndex}
+        let visitedQuestions = new Set(); // Set of question IDs visited
+        let currentGlobalIndex = 0; // 0-179
+        let testSubmitted = false;
+        let totalSeconds = 180 * 60;
+        let timerInterval = null;
+
+        // ============================================================
+        // ============ HELPER FUNCTIONS ============
+        // ============================================================
+        function getQuestionByIndex(index) {
+            return allQuestions[index];
+        }
+        function getSubjectForIndex(index) {
+            if (index < 60) return 'physics';
+            if (index < 120) return 'chemistry';
+            return 'maths';
+        }
+        function getSubjectName(subject) {
+            return { physics: 'Physics', chemistry: 'Chemistry', maths: 'Mathematics' } [subject];
+        }
+        function getSubjectStartIndex(subject) {
+            if (subject === 'physics') return 0;
+            if (subject === 'chemistry') return 60;
+            return 120;
+        }
+        function getAnsweredCountInRange(start, end) {
+            let count = 0;
+            for (let i = start; i < end; i++) {
+                const qId = allQuestions[i].id;
+                if (userAnswers[qId] !== undefined) count++;
+            }
+            return count;
+        }
+
+        // ============================================================
+        // ============ RENDER QUESTION PANEL ============
+        // ============================================================
+        function renderQuestionPanel() {
+            const panel = document.getElementById('questionPanel');
+            const q = getQuestionByIndex(currentGlobalIndex);
+            const qNum = q.id;
+            const subject = getSubjectForIndex(currentGlobalIndex);
+            const totalInSubject = 60;
+            const subjectStart = getSubjectStartIndex(subject);
+            const qInSubject = currentGlobalIndex - subjectStart + 1;
+
+            // Mark as visited
+            visitedQuestions.add(qNum);
+
+            const selectedIdx = userAnswers[qNum];
+            const letters = ['A', 'B', 'C', 'D'];
+
+            let html = '';
+            // Meta row
+            html += `<div class="q-meta">`;
+            html += `<span class="q-counter">Question ${qNum} of 180</span>`;
+            html +=
+                `<span class="q-subject-badge">${getSubjectName(subject)} — Q${qInSubject}/${totalInSubject}</span>`;
+            html += `</div>`;
+
+            // Question text
+            html += `<div class="q-text">${q.text}</div>`;
+
+            // Image if any
+            if (q.img) {
+                html += `<div class="q-image">${getSVG(q.img)}</div>`;
+            }
+
+            // Options
+            html += `<div class="options-list">`;
+            q.options.forEach((opt, idx) => {
+                const isSelected = selectedIdx === idx;
+                html += `<div class="opt-row${isSelected ? ' selected' : ''}" onclick="selectOption(${qNum}, ${idx})" id="optRow-${qNum}-${idx}">
+              <span class="opt-letter">${letters[idx]}</span>
+              <span class="opt-text">${opt}</span>
+            </div>`;
+            });
+            html += `</div>`;
+
+            // Navigation buttons
+            html += `<div class="nav-buttons">`;
+            html +=
+                `<button class="btn-nav btn-save-next" onclick="saveAndNext()" style="min-width:120px;">🟢 Save &amp; Next</button>`;
+            html +=
+                `<button class="btn-nav btn-clear" onclick="clearResponse()" style="min-width:100px;">🔴 Clear Response</button>`;
+            if (currentGlobalIndex > 0) {
+                html +=
+                    `<button class="btn-nav btn-prev" onclick="goToPrevious()" style="min-width:100px;">⬅ Previous</button>`;
+            }
+            html += `</div>`;
+
+            panel.innerHTML = html;
+
+            // Update palette highlights
+            updatePaletteHighlights();
+            updateSubjectTabs();
+            updateHeaderName();
+        }
+
+        // ============================================================
+        // ============ OPTION SELECTION ============
+        // ============================================================
+        function selectOption(qNum, optIndex) {
+            if (testSubmitted) return;
+            userAnswers[qNum] = optIndex;
+            visitedQuestions.add(qNum);
+            // Update UI for current question
+            const allOptRows = document.querySelectorAll('.opt-row');
+            allOptRows.forEach(row => row.classList.remove('selected'));
+            const selectedRow = document.getElementById('optRow-' + qNum + '-' + optIndex);
+            if (selectedRow) selectedRow.classList.add('selected');
+            // Update all opt-letter backgrounds
+            const letters = ['A', 'B', 'C', 'D'];
+            for (let i = 0; i < 4; i++) {
+                const row = document.getElementById('optRow-' + qNum + '-' + i);
+                if (row) {
+                    const letterSpan = row.querySelector('.opt-letter');
+                    if (letterSpan) {
+                        if (i === optIndex) {
+                            letterSpan.style.background = '#1a56db';
+                            letterSpan.style.color = '#fff';
+                        } else {
+                            letterSpan.style.background = '#e0e0e0';
+                            letterSpan.style.color = '#202124';
+                        }
+                    }
+                }
+            }
+            updatePaletteHighlights();
+            updateSubjectTabs();
+        }
+
+        // ============================================================
+        // ============ NAVIGATION ============
+        // ============================================================
+        function saveAndNext() {
+            if (testSubmitted) return;
+            if (currentGlobalIndex < 179) {
+                currentGlobalIndex++;
+                renderQuestionPanel();
+                document.getElementById('questionPanel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            } else {
+                // At last question, ask if they want to submit
+                if (confirm('You are at the last question. Submit the test?')) {
+                    submitTest();
+                }
+            }
+        }
+        function clearResponse() {
+            if (testSubmitted) return;
+            const q = getQuestionByIndex(currentGlobalIndex);
+            const qNum = q.id;
+            if (userAnswers[qNum] !== undefined) {
+                delete userAnswers[qNum];
+                // Reset UI
+                const allOptRows = document.querySelectorAll('.opt-row');
+                allOptRows.forEach(row => row.classList.remove('selected'));
+                const letters = ['A', 'B', 'C', 'D'];
+                for (let i = 0; i < 4; i++) {
+                    const row = document.getElementById('optRow-' + qNum + '-' + i);
+                    if (row) {
+                        const letterSpan = row.querySelector('.opt-letter');
+                        if (letterSpan) {
+                            letterSpan.style.background = '#e0e0e0';
+                            letterSpan.style.color = '#202124';
+                        }
+                    }
+                }
+                updatePaletteHighlights();
+                updateSubjectTabs();
+            }
+        }
+        function goToPrevious() {
+            if (testSubmitted) return;
+            if (currentGlobalIndex > 0) {
+                currentGlobalIndex--;
+                renderQuestionPanel();
+                document.getElementById('questionPanel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+        function jumpToQuestion(qNum) {
+            if (testSubmitted) return;
+            const idx = qNum - 1;
+            if (idx >= 0 && idx < 180) {
+                currentGlobalIndex = idx;
+                renderQuestionPanel();
+                document.getElementById('questionPanel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+                // Close mobile drawer if open
+                closeMobileDrawer();
+            }
+        }
+        function jumpToSubject(subject) {
+            if (testSubmitted) return;
+            currentGlobalIndex = getSubjectStartIndex(subject);
+            renderQuestionPanel();
+            document.getElementById('questionPanel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            // Update active tab
+            document.querySelectorAll('.subj-tab').forEach(t => t.classList.remove('active'));
+            const tabMap = { physics: 0, chemistry: 1, maths: 2 };
+            const tabBtns = document.querySelectorAll('.subj-tab');
+            if (tabBtns[tabMap[subject]]) tabBtns[tabMap[subject]].classList.add('active');
+            closeMobileDrawer();
+        }
+
+        // ============================================================
+        // ============ PALETTE ============
+        // ============================================================
+        function buildPalette() {
+            const desktopGrid = document.getElementById('paletteGridDesktop');
+            const mobileGrid = document.getElementById('paletteGridMobile');
+            let desktopHTML = '';
+            let mobileHTML = '';
+            for (let qNum = 1; qNum <= 180; qNum++) {
+                desktopHTML +=
+                    `<button class="palette-btn" id="palBtnD-${qNum}" onclick="jumpToQuestion(${qNum})" title="Q${qNum}">${qNum}</button>`;
+                mobileHTML +=
+                    `<button class="palette-btn" id="palBtnM-${qNum}" onclick="jumpToQuestion(${qNum})" title="Q${qNum}">${qNum}</button>`;
+            }
+            desktopGrid.innerHTML = desktopHTML;
+            mobileGrid.innerHTML = mobileHTML;
+            updatePaletteHighlights();
+        }
+        function updatePaletteHighlights() {
+            const currentQNum = getQuestionByIndex(currentGlobalIndex).id;
+            for (let qNum = 1; qNum <= 180; qNum++) {
+                const btnD = document.getElementById('palBtnD-' + qNum);
+                const btnM = document.getElementById('palBtnM-' + qNum);
+                const isAnswered = userAnswers[qNum] !== undefined;
+                const isVisited = visitedQuestions.has(qNum);
+                const isCurrent = qNum === currentQNum;
+                [btnD, btnM].forEach(btn => {
+                    if (!btn) return;
+                    btn.classList.remove('visited-unanswered', 'answered', 'current');
+                    if (isAnswered) btn.classList.add('answered');
+                    else if (isVisited) btn.classList.add('visited-unanswered');
+                    if (isCurrent) btn.classList.add('current');
+                });
+            }
+        }
+        function updateSubjectTabs() {
+            const physCount = getAnsweredCountInRange(0, 60);
+            const chemCount = getAnsweredCountInRange(60, 120);
+            const mathCount = getAnsweredCountInRange(120, 180);
+            document.getElementById('tabCountPhysics').textContent = `(${physCount}/60)`;
+            document.getElementById('tabCountChemistry').textContent = `(${chemCount}/60)`;
+            document.getElementById('tabCountMaths').textContent = `(${mathCount}/60)`;
+            // Update active tab based on current question
+            const subject = getSubjectForIndex(currentGlobalIndex);
+            document.querySelectorAll('.subj-tab').forEach(t => t.classList.remove('active'));
+            const tabMap = { physics: 0, chemistry: 1, maths: 2 };
+            const tabBtns = document.querySelectorAll('.subj-tab');
+            if (tabBtns[tabMap[subject]]) tabBtns[tabMap[subject]].classList.add('active');
+        }
+        function updateHeaderName() {
+            const name = localStorage.getItem('comedk_username') || 'Candidate';
+            document.getElementById('headerName').textContent = name;
+            document.getElementById('paletteName').textContent = name;
+            const initials = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2) || '👤';
+            document.getElementById('avatarInit').textContent = initials;
+        }
+
+        // ============================================================
+        // ============ MOBILE DRAWER ============
+        // ============================================================
+        function openMobileDrawer() {
+            if (testSubmitted) return;
+            document.getElementById('mobileOverlay').classList.add('open');
+            document.getElementById('mobileDrawer').classList.add('open');
+            document.body.classList.add('no-scroll');
+            updatePaletteHighlights();
+        }
+        function closeMobileDrawer() {
+            document.getElementById('mobileOverlay').classList.remove('open');
+            document.getElementById('mobileDrawer').classList.remove('open');
+            document.body.classList.remove('no-scroll');
+        }
+
+        // ============================================================
+        // ============ SUBMIT & RESULTS ============
+        // ============================================================
+        function submitTest() {
+            if (testSubmitted) return;
+            const unanswered = 180 - Object.keys(userAnswers).length;
+            if (unanswered > 0 && !confirm(
+                    `You have ${unanswered} unanswered question(s). Are you sure you want to submit?`)) {
+                return;
+            }
+            if (!confirm('Final confirmation: Submit the test? This action cannot be undone.')) return;
+
+            testSubmitted = true;
+            clearInterval(timerInterval);
+            let score = 0;
+            let correctCount = 0;
+            let wrongCount = 0;
+            const subjectScores = { physics: { correct: 0, wrong: 0, unattempted: 0 },
+                chemistry: { correct: 0, wrong: 0, unattempted: 0 }, maths: { correct: 0, wrong: 0, unattempted: 0 } };
+
+            for (let qNum = 1; qNum <= 180; qNum++) {
+                const subject = qNum <= 60 ? 'physics' : qNum <= 120 ? 'chemistry' : 'maths';
+                if (userAnswers[qNum] !== undefined) {
+                    const userLetter = String.fromCharCode(97 + userAnswers[qNum]);
+                    if (userLetter === fullAnswerMap[qNum]) {
+                        score++;
+                        correctCount++;
+                        subjectScores[subject].correct++;
+                    } else {
+                        wrongCount++;
+                        subjectScores[subject].wrong++;
+                    }
+                } else {
+                    subjectScores[subject].unattempted++;
+                }
+            }
+            const unattemptedCount = 180 - correctCount - wrongCount;
+            const accuracy = score + '/180 (' + Math.round(score / 180 * 100) + '%)';
+
+            // Save to localStorage
+            const bestKey = 'comedk_best_score_2012';
+            const prevBest = parseInt(localStorage.getItem(bestKey) || '0');
+            if (score > prevBest) {
+                localStorage.setItem(bestKey, score);
+            }
+            const attemptedTests = parseInt(localStorage.getItem('comedk_attempted_tests') || '0');
+            localStorage.setItem('comedk_attempted_tests', attemptedTests + 1);
+
+            // Show results
+            showResultsScreen(score, correctCount, wrongCount, unattemptedCount, subjectScores, accuracy);
+
+            // Save to Firebase
+            const name = localStorage.getItem('comedk_username') || 'Anonymous';
+            if (typeof window.saveScoreToFirebase === 'function') {
+                setTimeout(() => {
+                    window.saveScoreToFirebase(name, '2012', score, 180, accuracy);
+                }, 500);
+            } else {
+                console.warn('Firebase not ready yet. Score will not be saved to leaderboard.');
+            }
+
+            // Update header
+            document.getElementById('headerSubmitBtn').textContent = 'Submitted';
+            document.getElementById('headerSubmitBtn').disabled = true;
+            document.getElementById('headerSubmitBtn').style.opacity = '0.6';
+        }
+
+        function showResultsScreen(score, correctCount, wrongCount, unattemptedCount, subjectScores, accuracy) {
+            // Hide main layout
+            document.getElementById('mainLayout').classList.add('hidden');
+            document.getElementById('mobileToggleBtn').classList.add('hidden');
+            document.getElementById('mobileOverlay').classList.remove('open');
+            document.getElementById('mobileDrawer').classList.remove('open');
+            document.body.classList.remove('no-scroll');
+
+            const resultsContainer = document.getElementById('resultsContainer');
+            resultsContainer.classList.remove('hidden');
+
+            const name = localStorage.getItem('comedk_username') || '';
+            const showNamePrompt = !name;
+
+            let html = `<h2>📊 Test Results — COMEDK 2012</h2>`;
+            html += `<div class="big-score">${score} / 180</div>`;
+            html += `<div class="score-sub">Accuracy: ${Math.round(score/180*100)}%</div>`;
+            html += `<div class="results-stats">`;
+            html +=
+                `<span class="stat-chip correct">✅ Correct: ${correctCount}</span>`;
+            html +=
+                `<span class="stat-chip wrong">❌ Incorrect: ${wrongCount}</span>`;
+            html +=
+                `<span class="stat-chip unattempted">⬜ Unattempted: ${unattemptedCount}</span>`;
+            html += `</div>`;
+
+            // Subject-wise table
+            html += `<table class="subject-table">`;
+            html +=
+                `<tr><th>Subject</th><th>Score</th><th>Correct</th><th>Wrong</th><th>Unattempted</th></tr>`;
+            const subjects = ['physics', 'chemistry', 'maths'];
+            const subjectNames = ['⚛ Physics', '🧪 Chemistry', '📐 Mathematics'];
+            subjects.forEach((subj, i) => {
+                const s = subjectScores[subj];
+                html +=
+                    `<tr><td><strong>${subjectNames[i]}</strong></td><td>${s.correct}/60</td><td>${s.correct}</td><td>${s.wrong}</td><td>${s.unattempted}</td></tr>`;
+            });
+            html += `</table>`;
+
+            // Name prompt if not set
+            if (showNamePrompt) {
+                html += `<div style="margin-top:12px;font-weight:600;">Enter your name for the leaderboard:</div>`;
+                html += `<div class="name-input-row">`;
+                html +=
+                    `<input type="text" id="nameInput" placeholder="Your Name" maxlength="40" autocomplete="off">`;
+                html += `<button onclick="saveNameAndRetry()">💾 Save Name</button>`;
+                html += `</div>`;
+            }
+
+            html += `<div class="results-buttons">`;
+            html += `<button class="btn-retake" onclick="retakeTest()">🔄 Retake Test</button>`;
+            html +=
+                `<a href="index.html" class="btn-home">🏠 Back to Home</a>`;
+            html += `</div>`;
+
+            // Firebase status
+            html +=
+                `<p style="font-size:0.75rem;color:#888;margin-top:12px;">Score saved to leaderboard${showNamePrompt ? ' (name required)' : ' as "'+name+'"'}.</p>`;
+
+            resultsContainer.innerHTML = html;
+            resultsContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function saveNameAndRetry() {
+            const nameInput = document.getElementById('nameInput');
+            const name = nameInput.value.trim();
+            if (!name) {
+                alert('Please enter a valid name.');
+                return;
+            }
+            localStorage.setItem('comedk_username', name);
+            updateHeaderName();
+            // Resubmit score with new name
+            const score = parseInt(document.querySelector('.big-score').textContent.split(' ')[0]) || 0;
+            const accuracy = Math.round(score / 180 * 100) + '%';
+            if (typeof window.saveScoreToFirebase === 'function') {
+                window.saveScoreToFirebase(name, '2012', score, 180, score + '/180 (' + accuracy + ')');
+            }
+            // Refresh results screen
+            location.reload();
+        }
+
+        function retakeTest() {
+            userAnswers = {};
+            visitedQuestions = new Set();
+            currentGlobalIndex = 0;
+            testSubmitted = false;
+            totalSeconds = 180 * 60;
+            document.getElementById('resultsContainer').classList.add('hidden');
+            document.getElementById('mainLayout').classList.remove('hidden');
+            document.getElementById('mobileToggleBtn').classList.remove('hidden');
+            document.getElementById('headerSubmitBtn').textContent = 'Submit Test';
+            document.getElementById('headerSubmitBtn').disabled = false;
+            document.getElementById('headerSubmitBtn').style.opacity = '1';
+            const timerBox = document.getElementById('timerBox');
+            timerBox.classList.remove('warning');
+            timerBox.textContent = '03:00:00';
+            clearInterval(timerInterval);
+            startTimer();
+            renderQuestionPanel();
+            buildPalette();
+            updateSubjectTabs();
+            updateHeaderName();
+            document.getElementById('mainLayout').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            // Recalculate answered counts
+        }
+
+        // ============================================================
+        // ============ TIMER ============
+        // ============================================================
+        function formatTime(seconds) {
+            const hrs = Math.floor(seconds / 3600);
+            const mins = Math.floor((seconds % 3600) / 60);
+            const secs = seconds % 60;
+            return String(hrs).padStart(2, '0') + ':' + String(mins).padStart(2, '0') + ':' + String(secs).padStart(2,
+                '0');
+        }
+        function updateTimerDisplay() {
+            const timerBox = document.getElementById('timerBox');
+            timerBox.textContent = formatTime(totalSeconds);
+            if (totalSeconds < 300) {
+                timerBox.classList.add('warning');
+            } else {
+                timerBox.classList.remove('warning');
+            }
+        }
+        function startTimer() {
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                if (totalSeconds <= 0) {
+                    clearInterval(timerInterval);
+                    updateTimerDisplay();
+                    if (!testSubmitted) {
+                        alert('⏰ Time is up! Test will be auto-submitted.');
+                        submitTest();
+                    }
+                    return;
+                }
+                totalSeconds--;
+                updateTimerDisplay();
+            }, 1000);
+        }
+
+        // ============================================================
+        // ============ KEYBOARD SHORTCUTS ============
+        // ============================================================
+        document.addEventListener('keydown', function(e) {
+            if (testSubmitted) return;
+            const key = e.key.toLowerCase();
+            if (['a', 'b', 'c', 'd'].includes(key)) {
+                const idx = key.charCodeAt(0) - 97;
+                const q = getQuestionByIndex(currentGlobalIndex);
+                selectOption(q.id, idx);
+            }
+            if (key === 'arrowright' && !e.ctrlKey && !e.metaKey) {
+                e.preventDefault();
+                saveAndNext();
+            }
+            if (key === 'arrowleft' && !e.ctrlKey && !e.metaKey) {
+                e.preventDefault();
+                goToPrevious();
+            }
+            if (key === 'escape') {
+                closeMobileDrawer();
+            }
+        });
+
+        // ============================================================
+        // ============ INIT ============
+        // ============================================================
+        function init() {
+            updateHeaderName();
+            buildPalette();
+            renderQuestionPanel();
+            updateSubjectTabs();
+            updateTimerDisplay();
+            startTimer();
+            console.log('✅ COMEDK 2012 CBT Loaded!');
+            console.log('📋 180 questions | JEE Main CBT Interface | Firebase Leaderboard Ready');
+            console.log('⌨ Keyboard shortcuts: A/B/C/D to answer, Arrow keys to navigate, Esc to close drawer');
+        }
+
+        // Handle window resize for mobile drawer
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 768) {
+                closeMobileDrawer();
+            }
+        });
+
+        init();
+    </script>
+</body>
+</html>
