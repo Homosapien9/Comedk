@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>COMEDK 2012 - CBT Mock Test</title>
+    <title>COMEDK CM2 - CBT Mock Test</title>
     <style>
         :root {
             --bg: #f5f5f5;
@@ -897,7 +897,7 @@
             <span class="candidate-name" id="headerName">Candidate</span>
         </div>
         <div class="header-center">
-            <span class="test-title">COMEDK 2012</span>
+            <span class="test-title">COMEDK CM2</span>
             <span class="timer-box" id="timerBox">03:00:00</span>
         </div>
         <div class="header-right">
@@ -1869,7 +1869,7 @@
             const accuracy = score + '/180 (' + Math.round(score / 180 * 100) + '%)';
 
             // Save to localStorage
-            const bestKey = 'comedk_best_score_2012';
+            const bestKey = 'comedk_best_score_CM2';
             const prevBest = parseInt(localStorage.getItem(bestKey) || '0');
             if (score > prevBest) {
                 localStorage.setItem(bestKey, score);
@@ -1884,7 +1884,7 @@
             const name = localStorage.getItem('comedk_username') || 'Anonymous';
             if (typeof window.saveScoreToFirebase === 'function') {
                 setTimeout(() => {
-                    window.saveScoreToFirebase(name, '2012', score, 180, accuracy);
+                    window.saveScoreToFirebase(name, 'CM2', score, 180, accuracy);
                 }, 500);
             } else {
                 console.warn('Firebase not ready yet. Score will not be saved to leaderboard.');
@@ -1910,7 +1910,7 @@
             const name = localStorage.getItem('comedk_username') || '';
             const showNamePrompt = !name;
 
-            let html = `<h2>📊 Test Results — COMEDK 2012</h2>`;
+            let html = `<h2>📊 Test Results — COMEDK CM2</h2>`;
             html += `<div class="big-score">${score} / 180</div>`;
             html += `<div class="score-sub">Accuracy: ${Math.round(score/180*100)}%</div>`;
             html += `<div class="results-stats">`;
@@ -1972,7 +1972,7 @@
             const score = parseInt(document.querySelector('.big-score').textContent.split(' ')[0]) || 0;
             const accuracy = Math.round(score / 180 * 100) + '%';
             if (typeof window.saveScoreToFirebase === 'function') {
-                window.saveScoreToFirebase(name, '2012', score, 180, score + '/180 (' + accuracy + ')');
+                window.saveScoreToFirebase(name, 'CM2', score, 180, score + '/180 (' + accuracy + ')');
             }
             // Refresh results screen
             location.reload();
@@ -2073,7 +2073,7 @@
             updateSubjectTabs();
             updateTimerDisplay();
             startTimer();
-            console.log('✅ COMEDK 2012 CBT Loaded!');
+            console.log('✅ COMEDK CM2 CBT Loaded!');
             console.log('📋 180 questions | JEE Main CBT Interface | Firebase Leaderboard Ready');
             console.log('⌨ Keyboard shortcuts: A/B/C/D to answer, Arrow keys to navigate, Esc to close drawer');
         }
