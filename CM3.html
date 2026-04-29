@@ -1,0 +1,2078 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>COMEDK Mock Test 3 - CBT</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #f5f5f5;
+            --card: #ffffff;
+            --text: #1a1a2e;
+            --border: #ddd;
+            --accent: #1a56db;
+            --accent-light: #e8f0fe;
+            --accent-hover: #1647b8;
+            --correct: #16a34a;
+            --wrong: #dc2626;
+            --neutral: #6b7280;
+            --shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+            --radius: 6px;
+            --font: 'Inter', Arial, sans-serif;
+            --header-bg: #1a56db;
+            --header-text: #ffffff;
+            --submit-red: #dc2626;
+            --submit-red-hover: #b91c1c;
+            --visited-gray: #d1d5db;
+            --not-visited: #e5e7eb;
+            --answered-green: #bbf7d0;
+            --visited-red: #fca5a5;
+            --option-hover: #f0f4ff;
+            --selected-bg: #e8f0fe;
+            --selected-border: #1a56db;
+            --timer-box-bg: #1e40af;
+            --timer-warning: #dc2626;
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+            min-height: 100vh;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-user-select: none;
+            user-select: none;
+            overflow-x: hidden;
+        }
+
+        /* ========== HEADER ========== */
+        #header {
+            background: var(--header-bg);
+            color: var(--header-text);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 16px;
+            position: sticky;
+            top: 0;
+            z-index: 200;
+            gap: 8px;
+            flex-wrap: nowrap;
+            min-height: 52px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+        }
+        #header .candidate-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+            min-width: 0;
+        }
+        #header .avatar {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: var(--accent);
+            font-size: 0.85rem;
+            flex-shrink: 0;
+            border: 2px solid #fff;
+        }
+        #header .candidate-name {
+            font-weight: 600;
+            font-size: 0.85rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 120px;
+        }
+        #header .test-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+        #header .test-title {
+            font-weight: 700;
+            font-size: 0.9rem;
+            white-space: nowrap;
+        }
+        #header .timer-box {
+            background: var(--timer-box-bg);
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+            min-width: 80px;
+            text-align: center;
+            transition: background 0.3s;
+        }
+        #header .timer-box.warning {
+            background: var(--timer-warning);
+            animation: pulse 1s infinite;
+        }
+        @keyframes pulse {
+            0%,
+            100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.7;
+            }
+        }
+        #header .btn-submit-header {
+            background: var(--submit-red);
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            white-space: nowrap;
+            flex-shrink: 0;
+            letter-spacing: 0.3px;
+        }
+        #header .btn-submit-header:hover {
+            background: var(--submit-red-hover);
+        }
+
+        /* ========== SUBJECT TABS ========== */
+        #subjectTabs {
+            display: flex;
+            background: #fff;
+            border-bottom: 2px solid #e5e7eb;
+            position: sticky;
+            top: 52px;
+            z-index: 150;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+        #subjectTabs::-webkit-scrollbar {
+            display: none;
+        }
+        #subjectTabs .tab {
+            flex: 1 0 auto;
+            padding: 10px 12px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.82rem;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.15s;
+            white-space: nowrap;
+            color: #374151;
+            min-width: 90px;
+            letter-spacing: 0.2px;
+        }
+        #subjectTabs .tab.active {
+            color: var(--accent);
+            border-bottom-color: var(--accent);
+            background: #f8faff;
+        }
+        #subjectTabs .tab .tab-count {
+            font-weight: 400;
+            font-size: 0.7rem;
+            color: #6b7280;
+            display: block;
+        }
+
+        /* ========== MAIN LAYOUT ========== */
+        .main-container {
+            display: flex;
+            max-width: 1400px;
+            margin: 0 auto;
+            min-height: calc(100vh - 100px);
+            position: relative;
+        }
+        .question-area {
+            flex: 1;
+            padding: 16px 20px;
+            min-width: 0;
+            overflow-y: auto;
+            max-height: calc(100vh - 104px);
+        }
+        .palette-sidebar {
+            width: 260px;
+            background: #fff;
+            border-left: 1px solid var(--border);
+            padding: 14px 10px;
+            position: sticky;
+            top: 100px;
+            height: calc(100vh - 104px);
+            overflow-y: auto;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .palette-sidebar .palette-name {
+            font-weight: 600;
+            font-size: 0.8rem;
+            color: #374151;
+            text-align: center;
+            padding: 4px 0;
+            border-bottom: 1px solid #e5e7eb;
+            margin-bottom: 4px;
+        }
+        .palette-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 3px;
+            justify-content: center;
+        }
+        .palette-btn {
+            width: 30px;
+            height: 30px;
+            border: 1px solid #d1d5db;
+            background: #e5e7eb;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.7rem;
+            font-weight: 500;
+            transition: all 0.12s;
+            color: #374151;
+            padding: 0;
+            text-align: center;
+            line-height: 28px;
+        }
+        .palette-btn:hover {
+            opacity: 0.8;
+        }
+        .palette-btn.visited-unanswered {
+            background: #fca5a5;
+            border-color: #f87171;
+            color: #991b1b;
+        }
+        .palette-btn.answered {
+            background: #bbf7d0;
+            border-color: #86efac;
+            color: #166534;
+            font-weight: 700;
+        }
+        .palette-btn.current {
+            box-shadow: 0 0 0 2px #1a56db;
+            border-color: #1a56db;
+            z-index: 2;
+        }
+        .palette-legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            font-size: 0.65rem;
+            color: #6b7280;
+            margin-top: 4px;
+            justify-content: center;
+        }
+        .palette-legend span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .palette-legend .dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 3px;
+            border: 1px solid #ccc;
+            display: inline-block;
+        }
+        .dot.gray {
+            background: #e5e7eb;
+        }
+        .dot.red {
+            background: #fca5a5;
+        }
+        .dot.green {
+            background: #bbf7d0;
+        }
+
+        /* ========== QUESTION CARD ========== */
+        .question-card {
+            background: var(--card);
+            border-radius: var(--radius);
+            padding: 18px 20px;
+            margin-bottom: 10px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            scroll-margin-top: 110px;
+            display: none;
+        }
+        .question-card.active-card {
+            display: block;
+        }
+        .q-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        .q-num-label {
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: #374151;
+        }
+        .q-subject-badge {
+            font-size: 0.7rem;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-weight: 600;
+            background: #e8f0fe;
+            color: #1a56db;
+        }
+        .q-text {
+            font-weight: 500;
+            margin-bottom: 12px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+        .q-text p {
+            margin: 3px 0;
+        }
+        .svg-diagram {
+            display: block;
+            margin: 6px auto;
+            max-width: 100%;
+            background: #fafafa;
+            border-radius: 4px;
+            border: 1px solid #e5e7eb;
+        }
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-top: 8px;
+        }
+        .option-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 11px 14px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.12s;
+            border: 1px solid #ddd;
+            font-size: 0.9rem;
+            min-height: 48px;
+            background: #fff;
+        }
+        .option-row:hover {
+            background: var(--option-hover);
+            border-color: #b0c4f0;
+        }
+        .option-row.selected {
+            background: var(--selected-bg);
+            border-color: var(--selected-border);
+            font-weight: 500;
+        }
+        .option-row.correct-highlight {
+            background: #dcfce7 !important;
+            border-color: #86efac !important;
+            font-weight: 600;
+        }
+        .option-row.wrong-highlight {
+            background: #fee2e2 !important;
+            border-color: #fca5a5 !important;
+        }
+        .option-letter {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: #f1f5f9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.8rem;
+            flex-shrink: 0;
+            color: #374151;
+            border: 1px solid #ddd;
+        }
+        .option-row.selected .option-letter {
+            background: #1a56db;
+            color: #fff;
+            border-color: #1a56db;
+        }
+        .option-row.correct-highlight .option-letter {
+            background: #16a34a;
+            color: #fff;
+            border-color: #16a34a;
+        }
+        .option-row.wrong-highlight .option-letter {
+            background: #dc2626;
+            color: #fff;
+            border-color: #dc2626;
+        }
+        .result-tag {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            margin-left: 8px;
+        }
+        .result-tag.correct-tag {
+            background: #dcfce7;
+            color: #166534;
+        }
+        .result-tag.wrong-tag {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        .result-tag.unattempted-tag {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        /* ========== NAV BUTTONS ========== */
+        .nav-buttons {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 14px;
+            justify-content: center;
+        }
+        .btn-nav {
+            padding: 10px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.82rem;
+            letter-spacing: 0.2px;
+            transition: all 0.15s;
+            border: 1px solid #d1d5db;
+            min-height: 42px;
+            white-space: nowrap;
+        }
+        .btn-save-next {
+            background: #16a34a;
+            color: #fff;
+            border-color: #16a34a;
+        }
+        .btn-save-next:hover {
+            background: #15803d;
+        }
+        .btn-clear {
+            background: #fff;
+            color: #dc2626;
+            border-color: #dc2626;
+        }
+        .btn-clear:hover {
+            background: #fef2f2;
+        }
+        .btn-prev {
+            background: #fff;
+            color: #374151;
+            border-color: #d1d5db;
+        }
+        .btn-prev:hover {
+            background: #f3f4f6;
+        }
+
+        /* ========== MOBILE PALETTE DRAWER ========== */
+        #mobileOverlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 250;
+        }
+        #mobileDrawer {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            max-height: 70vh;
+            background: #fff;
+            z-index: 260;
+            border-radius: 16px 16px 0 0;
+            overflow-y: auto;
+            padding: 16px 12px;
+            box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+            transform: translateY(0);
+        }
+        #mobileDrawer.hidden-drawer {
+            transform: translateY(100%);
+        }
+        #mobileDrawer .drawer-handle {
+            width: 40px;
+            height: 4px;
+            background: #ccc;
+            border-radius: 2px;
+            margin: 0 auto 10px;
+        }
+        #mobileDrawer .palette-name {
+            font-weight: 600;
+            font-size: 0.8rem;
+            text-align: center;
+            margin-bottom: 8px;
+            color: #374151;
+        }
+        #btnMobilePalette {
+            display: none;
+            position: fixed;
+            bottom: 16px;
+            right: 16px;
+            z-index: 240;
+            background: #1a56db;
+            color: #fff;
+            border: none;
+            border-radius: 24px;
+            padding: 12px 18px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+            letter-spacing: 0.3px;
+            min-height: 48px;
+        }
+
+        /* ========== RESULTS OVERLAY ========== */
+        #resultsOverlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 300;
+            overflow-y: auto;
+            padding: 20px;
+        }
+        #resultsCard {
+            background: #fff;
+            max-width: 600px;
+            margin: 20px auto;
+            border-radius: 10px;
+            padding: 24px 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            border: 1px solid #e5e7eb;
+        }
+        #resultsCard h2 {
+            text-align: center;
+            font-size: 1.3rem;
+            margin-bottom: 6px;
+            color: #1a56db;
+        }
+        #resultsCard .score-big {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #1a56db;
+            margin: 8px 0;
+        }
+        #resultsCard .score-detail {
+            text-align: center;
+            font-size: 0.85rem;
+            color: #6b7280;
+            margin-bottom: 16px;
+        }
+        #resultsCard table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 12px 0;
+            font-size: 0.85rem;
+        }
+        #resultsCard table th,
+        #resultsCard table td {
+            border: 1px solid #e5e7eb;
+            padding: 8px 10px;
+            text-align: center;
+        }
+        #resultsCard table th {
+            background: #f8faff;
+            font-weight: 600;
+            color: #374151;
+        }
+        #resultsCard .name-input-row {
+            display: flex;
+            gap: 8px;
+            margin: 12px 0;
+            flex-wrap: wrap;
+        }
+        #resultsCard .name-input-row input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            font-family: var(--font);
+            min-width: 150px;
+        }
+        #resultsCard .btn-row {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 14px;
+        }
+        #resultsCard .btn-row button {
+            padding: 10px 18px;
+            border-radius: 5px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            border: 1px solid #d1d5db;
+            min-height: 44px;
+        }
+        .btn-retake {
+            background: #1a56db;
+            color: #fff;
+            border-color: #1a56db;
+        }
+        .btn-home {
+            background: #fff;
+            color: #374151;
+            border-color: #d1d5db;
+        }
+
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 768px) {
+            #header {
+                padding: 6px 10px;
+                gap: 4px;
+                min-height: 46px;
+            }
+            #header .candidate-name {
+                font-size: 0.7rem;
+                max-width: 70px;
+            }
+            #header .avatar {
+                width: 28px;
+                height: 28px;
+                font-size: 0.7rem;
+            }
+            #header .test-title {
+                font-size: 0.7rem;
+            }
+            #header .timer-box {
+                font-size: 0.75rem;
+                padding: 5px 8px;
+                min-width: 65px;
+            }
+            #header .btn-submit-header {
+                font-size: 0.7rem;
+                padding: 6px 10px;
+            }
+            #subjectTabs {
+                top: 46px;
+            }
+            #subjectTabs .tab {
+                font-size: 0.7rem;
+                padding: 8px 8px;
+                min-width: 70px;
+            }
+            #subjectTabs .tab .tab-count {
+                font-size: 0.6rem;
+            }
+            .palette-sidebar {
+                display: none;
+            }
+            .question-area {
+                padding: 10px 8px;
+                max-height: calc(100vh - 96px);
+            }
+            .question-card {
+                padding: 12px 10px;
+            }
+            .q-text {
+                font-size: 0.88rem;
+            }
+            .option-row {
+                padding: 10px 10px;
+                font-size: 0.82rem;
+                min-height: 48px;
+            }
+            .option-letter {
+                width: 26px;
+                height: 26px;
+                font-size: 0.7rem;
+            }
+            .btn-nav {
+                font-size: 0.72rem;
+                padding: 8px 10px;
+                min-height: 40px;
+            }
+            #btnMobilePalette {
+                display: block;
+            }
+            #mobileDrawer {
+                display: block;
+            }
+            #mobileOverlay {
+                display: block;
+            }
+            .main-container {
+                min-height: calc(100vh - 96px);
+            }
+            .q-header {
+                font-size: 0.78rem;
+            }
+            .q-subject-badge {
+                font-size: 0.65rem;
+                padding: 2px 8px;
+            }
+            .nav-buttons {
+                gap: 5px;
+            }
+        }
+        @media (max-width: 480px) {
+            #header {
+                padding: 4px 6px;
+                gap: 2px;
+                min-height: 42px;
+            }
+            #header .candidate-name {
+                font-size: 0.65rem;
+                max-width: 50px;
+            }
+            #header .avatar {
+                width: 24px;
+                height: 24px;
+                font-size: 0.6rem;
+            }
+            #header .test-title {
+                font-size: 0.65rem;
+            }
+            #header .timer-box {
+                font-size: 0.7rem;
+                padding: 4px 6px;
+                min-width: 55px;
+            }
+            #header .btn-submit-header {
+                font-size: 0.65rem;
+                padding: 5px 8px;
+            }
+            #subjectTabs {
+                top: 42px;
+            }
+            #subjectTabs .tab {
+                font-size: 0.65rem;
+                padding: 6px 5px;
+                min-width: 60px;
+                letter-spacing: 0;
+            }
+            #subjectTabs .tab .tab-count {
+                font-size: 0.55rem;
+            }
+            .question-area {
+                padding: 6px 4px;
+                max-height: calc(100vh - 88px);
+            }
+            .question-card {
+                padding: 10px 8px;
+                border-radius: 4px;
+            }
+            .q-text {
+                font-size: 0.82rem;
+            }
+            .option-row {
+                padding: 8px 8px;
+                font-size: 0.78rem;
+                min-height: 44px;
+                gap: 6px;
+            }
+            .option-letter {
+                width: 24px;
+                height: 24px;
+                font-size: 0.65rem;
+            }
+            .btn-nav {
+                font-size: 0.68rem;
+                padding: 7px 8px;
+                min-height: 38px;
+            }
+            .nav-buttons {
+                gap: 4px;
+            }
+            #btnMobilePalette {
+                bottom: 10px;
+                right: 10px;
+                font-size: 0.75rem;
+                padding: 10px 14px;
+                border-radius: 20px;
+            }
+            .palette-btn {
+                width: 26px;
+                height: 26px;
+                font-size: 0.6rem;
+                line-height: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ========== HEADER ========== -->
+    <header id="header">
+        <div class="candidate-info">
+            <div class="avatar" id="headerAvatar">👤</div>
+            <span class="candidate-name" id="headerName">Candidate</span>
+        </div>
+        <div class="test-info">
+            <span class="test-title">COMEDK Mock Test 3</span>
+            <span class="timer-box" id="timerBox">03:00:00</span>
+        </div>
+        <button class="btn-submit-header" onclick="submitTest()" title="Submit Test">Submit</button>
+    </header>
+
+    <!-- ========== SUBJECT TABS ========== -->
+    <nav id="subjectTabs">
+        <div class="tab active" data-sec="physics" onclick="switchTab('physics')">📐 Physics<span class="tab-count" id="tabCountPhysics">(0/60)</span></div>
+        <div class="tab" data-sec="chemistry" onclick="switchTab('chemistry')">⚗️ Chemistry<span class="tab-count" id="tabCountChemistry">(0/60)</span></div>
+        <div class="tab" data-sec="maths" onclick="switchTab('maths')">📊 Maths<span class="tab-count" id="tabCountMaths">(0/60)</span></div>
+    </nav>
+
+    <!-- ========== MAIN LAYOUT ========== -->
+    <div class="main-container">
+        <!-- Question Area -->
+        <div class="question-area" id="questionArea"></div>
+
+        <!-- Desktop Palette -->
+        <aside class="palette-sidebar" id="paletteSidebar">
+            <div class="palette-name" id="paletteName">👤 Candidate</div>
+            <div class="palette-grid" id="paletteGrid"></div>
+            <div class="palette-legend">
+                <span><span class="dot gray"></span> Not Visited</span>
+                <span><span class="dot red"></span> Not Answered</span>
+                <span><span class="dot green"></span> Answered</span>
+            </div>
+        </aside>
+    </div>
+
+    <!-- ========== MOBILE PALETTE DRAWER ========== -->
+    <div id="mobileOverlay" onclick="closeMobileDrawer()"></div>
+    <div id="mobileDrawer" class="hidden-drawer">
+        <div class="drawer-handle"></div>
+        <div class="palette-name" id="mobilePaletteName">👤 Candidate</div>
+        <div class="palette-grid" id="mobilePaletteGrid"></div>
+        <div class="palette-legend">
+            <span><span class="dot gray"></span> Not Visited</span>
+            <span><span class="dot red"></span> Not Answered</span>
+            <span><span class="dot green"></span> Answered</span>
+        </div>
+    </div>
+    <button id="btnMobilePalette" onclick="openMobileDrawer()">📋 Questions</button>
+
+    <!-- ========== RESULTS OVERLAY ========== -->
+    <div id="resultsOverlay">
+        <div id="resultsCard"></div>
+    </div>
+
+    <script>
+        // ==================== ANSWER KEY ====================
+        const answerKey = {
+            1: 'd',
+            2: 'a',
+            3: 'b',
+            4: 'b',
+            5: 'a',
+            6: 'c',
+            7: 'c',
+            8: 'a',
+            9: 'a',
+            10: 'c',
+            11: 'b',
+            12: 'd',
+            13: 'c',
+            14: 'a',
+            15: 'c',
+            16: 'a',
+            17: 'b',
+            18: 'd',
+            19: 'b',
+            20: 'c',
+            21: 'c',
+            22: 'a',
+            23: 'b',
+            24: 'd',
+            25: 'c',
+            26: 'a',
+            27: 'c',
+            28: 'b',
+            29: 'c',
+            30: 'c',
+            31: 'c',
+            32: 'c',
+            33: 'a',
+            34: 'b',
+            35: 'b',
+            36: 'a',
+            37: 'c',
+            38: 'b',
+            39: 'd',
+            40: 'b',
+            41: 'b',
+            42: 'd',
+            43: 'a',
+            44: 'a',
+            45: 'c',
+            46: 'b',
+            47: 'b',
+            48: 'a',
+            49: 'b',
+            50: 'c',
+            51: 'b',
+            52: 'd',
+            53: 'd',
+            54: 'b',
+            55: 'c',
+            56: 'd',
+            57: 'd',
+            58: 'a',
+            59: 'a',
+            60: 'c',
+            61: 'd',
+            62: 'd',
+            63: 'c',
+            64: 'd',
+            65: 'c',
+            66: 'b',
+            67: 'd',
+            68: 'c',
+            69: 'b',
+            70: 'd',
+            71: 'c',
+            72: 'b',
+            73: 'b',
+            74: 'b',
+            75: 'b',
+            76: 'd',
+            77: 'a',
+            78: 'd',
+            79: 'b',
+            80: 'd',
+            81: 'b',
+            82: 'a',
+            83: 'b',
+            84: 'a',
+            85: 'b',
+            86: 'a',
+            87: 'd',
+            88: 'c',
+            89: 'd',
+            90: 'd',
+            91: 'd',
+            92: 'c',
+            93: 'b',
+            94: 'b',
+            95: 'b',
+            96: 'd',
+            97: 'a',
+            98: 'd',
+            99: 'c',
+            100: 'c',
+            101: 'd',
+            102: 'c',
+            103: 'b',
+            104: 'a',
+            105: 'b',
+            106: 'c',
+            107: 'c',
+            108: 'd',
+            109: 'd',
+            110: 'a',
+            111: 'a',
+            112: 'c',
+            113: 'b',
+            114: 'b',
+            115: 'b',
+            116: 'c',
+            117: 'd',
+            118: 'c',
+            119: 'd',
+            120: 'd',
+            121: 'd',
+            122: 'b',
+            123: 'c',
+            124: 'b',
+            125: 'a',
+            126: 'c',
+            127: 'a',
+            128: 'c',
+            129: 'c',
+            130: 'c',
+            131: 'a',
+            132: 'a',
+            133: 'a',
+            134: 'b',
+            135: 'b',
+            136: 'd',
+            137: 'd',
+            138: 'c',
+            139: 'c',
+            140: 'd',
+            141: 'b',
+            142: 'd',
+            143: 'd',
+            144: 'b',
+            145: 'c',
+            146: 'd',
+            147: 'a',
+            148: 'c',
+            149: 'b',
+            150: 'd',
+            151: 'd',
+            152: 'a',
+            153: 'c',
+            154: 'a',
+            155: 'b',
+            156: 'b',
+            157: 'd',
+            158: 'b',
+            159: 'c',
+            160: 'b',
+            161: 'b',
+            162: 'd',
+            163: 'd',
+            164: 'b',
+            165: 'c',
+            166: 'd',
+            167: 'c',
+            168: 'c',
+            169: 'a',
+            170: 'b',
+            171: 'a',
+            172: 'c',
+            173: 'a',
+            174: 'b',
+            175: 'a',
+            176: 'c',
+            177: 'c',
+            178: 'c',
+            179: 'b',
+            180: 'b'
+        };
+
+        const totalQuestions = 180;
+        let userAnswers = {};
+        let visitedQuestions = new Set();
+        let submitted = false;
+        let timerInterval;
+        let totalSeconds = 3 * 60 * 60;
+        let currentQuestionId = 1;
+
+        // ==================== USERNAME ====================
+        function getUsername() {
+            return localStorage.getItem('comedk_username') || '';
+        }
+
+        function setUsername(name) {
+            localStorage.setItem('comedk_username', name);
+        }
+
+        function updateHeaderName() {
+            const name = getUsername();
+            const displayName = name || 'Candidate';
+            document.getElementById('headerName').textContent = displayName;
+            document.getElementById('paletteName').textContent = '👤 ' + displayName;
+            document.getElementById('mobilePaletteName').textContent = '👤 ' + displayName;
+            const initials = name ? name.charAt(0).toUpperCase() : '?';
+            document.getElementById('headerAvatar').textContent = initials;
+        }
+
+        // ==================== TIMER ====================
+        function updateTimer() {
+            if (totalSeconds < 0) totalSeconds = 0;
+            const hrs = Math.floor(totalSeconds / 3600);
+            const mins = Math.floor((totalSeconds % 3600) / 60);
+            const secs = totalSeconds % 60;
+            const timerBox = document.getElementById('timerBox');
+            timerBox.textContent =
+                String(hrs).padStart(2, '0') + ':' + String(mins).padStart(2, '0') + ':' + String(secs).padStart(2, '0');
+            if (totalSeconds <= 300) {
+                timerBox.classList.add('warning');
+            } else {
+                timerBox.classList.remove('warning');
+            }
+            if (totalSeconds <= 0) {
+                clearInterval(timerInterval);
+                alert('⏰ Time is up! Your test will be submitted automatically.');
+                submitTest();
+            }
+            totalSeconds--;
+        }
+        timerInterval = setInterval(updateTimer, 1000);
+
+        // ==================== QUESTION DATA ====================
+        function getSVG(imgName) {
+            const svgs = {
+                'shm_graph': `<svg class="svg-diagram" width="300" height="160" viewBox="0 0 300 160"><rect width="300" height="160" fill="#fff" rx="6"/><line x1="30" y1="80" x2="280" y2="80" stroke="#333" stroke-width="1.5"/><line x1="30" y1="20" x2="30" y2="140" stroke="#333" stroke-width="1.5"/><path d="M30 80 Q90 20 150 80 Q210 140 270 80" fill="none" stroke="#2563eb" stroke-width="2"/><text x="145" y="95" font-size="11" fill="#333">T/4</text><text x="200" y="95" font-size="11" fill="#333">T/2</text><text x="255" y="95" font-size="11" fill="#333">3T/4</text><text x="275" y="75" font-size="11" fill="#333">T</text><text x="15" y="25" font-size="11" fill="#333">+A</text><text x="15" y="135" font-size="11" fill="#333">−A</text></svg>`,
+                'blocks_ab': `<svg class="svg-diagram" width="200" height="100" viewBox="0 0 200 100"><rect x="40" y="20" width="120" height="30" rx="4" fill="#dbeafe" stroke="#2563eb" stroke-width="1.5"/><text x="70" y="40" font-size="11" fill="#1e293b">A (4kg)</text><rect x="40" y="50" width="120" height="35" rx="4" fill="#fef3c7" stroke="#d97706" stroke-width="1.5"/><text x="70" y="72" font-size="11" fill="#1e293b">B (8kg)</text><line x1="40" y1="88" x2="180" y2="88" stroke="#666" stroke-width="2"/><text x="85" y="98" font-size="9" fill="#666">Smooth table</text></svg>`,
+                'xt_graph': `<svg class="svg-diagram" width="250" height="140" viewBox="0 0 250 140"><rect width="250" height="140" fill="#fff" rx="6"/><line x1="25" y1="115" x2="230" y2="115" stroke="#333" stroke-width="1.5"/><line x1="25" y1="15" x2="25" y2="115" stroke="#333" stroke-width="1.5"/><path d="M25 115 Q80 110 130 60 Q180 20 225 5" fill="none" stroke="#2563eb" stroke-width="2"/><text x="230" y="118" font-size="10" fill="#333">t</text><text x="8" y="12" font-size="10" fill="#333">x</text></svg>`,
+                'photoelectric_graph': `<svg class="svg-diagram" width="280" height="150" viewBox="0 0 280 150"><rect width="280" height="150" fill="#fff" rx="6"/><line x1="30" y1="120" x2="260" y2="120" stroke="#333" stroke-width="1.5"/><line x1="30" y1="10" x2="30" y2="120" stroke="#333" stroke-width="1.5"/><path d="M30 115 L80 115 L90 100 L150 100 L160 85 L220 85 L230 70 L260 70" fill="none" stroke="#2563eb" stroke-width="1.5"/><text x="140" y="135" font-size="9" fill="#333">X (Collector potential)</text><text x="5" y="65" font-size="9" fill="#333" transform="rotate(-90,5,65)">Y (Photocurrent)</text></svg>`,
+                'block_incline': `<svg class="svg-diagram" width="200" height="120" viewBox="0 0 200 120"><polygon points="20,100 180,100 180,40" fill="#f0f0f0" stroke="#666" stroke-width="1.5"/><rect x="90" y="45" width="40" height="25" rx="3" fill="#dbeafe" stroke="#2563eb" stroke-width="1.5" transform="rotate(-20,110,57)"/><text x="95" y="62" font-size="9" fill="#1e293b">m</text><line x1="60" y1="30" x2="60" y2="100" stroke="#999" stroke-dasharray="4"/><text x="35" y="55" font-size="9" fill="#666">θ</text></svg>`,
+                'ke_graph': `<svg class="svg-diagram" width="200" height="130" viewBox="0 0 200 130"><rect width="200" height="130" fill="#fff" rx="6"/><line x1="25" y1="110" x2="185" y2="110" stroke="#333" stroke-width="1.5"/><line x1="25" y1="15" x2="25" y2="110" stroke="#333" stroke-width="1.5"/><line x1="80" y1="25" x2="170" y2="105" stroke="#2563eb" stroke-width="2"/><text x="188" y="113" font-size="9" fill="#333">h</text><text x="8" y="12" font-size="9" fill="#333">KE</text></svg>`,
+                'pn_junction': `<svg class="svg-diagram" width="250" height="120" viewBox="0 0 250 120"><rect width="250" height="120" fill="#fff" rx="6"/><rect x="50" y="30" width="70" height="50" fill="#fee2e2" stroke="#dc2626" stroke-width="1.5"/><text x="65" y="58" font-size="10" fill="#991b1b">p-side</text><rect x="120" y="30" width="70" height="50" fill="#dbeafe" stroke="#2563eb" stroke-width="1.5"/><text x="135" y="58" font-size="10" fill="#1d4ed8">n-side</text><line x1="50" y1="50" x2="190" y2="50" stroke="#333" stroke-width="1"/><text x="90" y="95" font-size="9" fill="#666">Potential: n-side positive</text></svg>`,
+                'logic_gate': `<svg class="svg-diagram" width="200" height="100" viewBox="0 0 200 100"><path d="M50 30 L120 30 L140 50 L120 70 L50 70 Z" fill="#fef3c7" stroke="#d97706" stroke-width="1.5"/><text x="80" y="53" font-size="11" fill="#333">OR</text><text x="20" y="25" font-size="9">A</text><text x="20" y="75" font-size="9">B</text><text x="160" y="53" font-size="9">C</text></svg>`,
+                'vt_graph': `<svg class="svg-diagram" width="220" height="130" viewBox="0 0 220 130"><rect width="220" height="130" fill="#fff" rx="6"/><line x1="30" y1="110" x2="200" y2="110" stroke="#333" stroke-width="1.5"/><line x1="30" y1="15" x2="30" y2="110" stroke="#333" stroke-width="1.5"/><line x1="30" y1="100" x2="190" y2="30" stroke="#2563eb" stroke-width="1.5"/><text x="160" y="25" font-size="9" fill="#2563eb">p₁</text><line x1="30" y1="105" x2="130" y2="30" stroke="#dc2626" stroke-width="1.5"/><text x="100" y="25" font-size="9" fill="#dc2626">p₂</text><text x="203" y="113" font-size="9" fill="#333">T</text><text x="13" y="12" font-size="9" fill="#333">V</text></svg>`,
+                'gate_combo': `<svg class="svg-diagram" width="250" height="100" viewBox="0 0 250 100"><circle cx="60" cy="35" r="18" fill="#fef3c7" stroke="#d97706" stroke-width="1"/><text x="52" y="39" font-size="9">NAND</text><circle cx="130" cy="35" r="18" fill="#fef3c7" stroke="#d97706" stroke-width="1"/><text x="122" y="39" font-size="9">NAND</text><text x="180" y="39" font-size="11" fill="#333">→ OR</text></svg>`,
+                'blackbody': `<svg class="svg-diagram" width="250" height="130" viewBox="0 0 250 130"><rect width="250" height="130" fill="#fff" rx="6"/><line x1="30" y1="110" x2="230" y2="110" stroke="#333" stroke-width="1.5"/><line x1="30" y1="15" x2="30" y2="110" stroke="#333" stroke-width="1.5"/><path d="M30 105 Q80 105 120 60 Q150 30 200 108" fill="none" stroke="#2563eb" stroke-width="1.5"/><text x="50" y="100" font-size="8" fill="#2563eb">27°C</text><path d="M30 105 Q60 100 100 40 Q130 15 180 107" fill="none" stroke="#dc2626" stroke-width="1.5"/><text x="90" y="90" font-size="8" fill="#dc2626">327°C</text></svg>`,
+                'chem_reaction68': `<svg class="svg-diagram" width="200" height="60" viewBox="0 0 200 60"><text x="10" y="25" font-size="10" fill="#333">R−X →(KCN)→ A</text><text x="10" y="45" font-size="9" fill="#666">(nucleophilic substitution)</text></svg>`,
+                'nitration': `<svg class="svg-diagram" width="180" height="80" viewBox="0 0 180 80"><polygon points="60,10 20,40 40,70 80,70 100,40" fill="none" stroke="#333" stroke-width="1.5"/><text x="50" y="45" font-size="9" fill="#333">OH</text><text x="55" y="60" font-size="9" fill="#333">CH₃</text><text x="120" y="40" font-size="11" fill="#2563eb">+ HNO₃</text></svg>`,
+                'antipyretic': `<svg class="svg-diagram" width="180" height="80" viewBox="0 0 180 80"><polygon points="60,10 20,40 40,70 80,70 100,40" fill="none" stroke="#333" stroke-width="1.5"/><text x="45" y="45" font-size="8" fill="#333">COOH</text><text x="50" y="58" font-size="8" fill="#333">OCOCH₃</text><text x="120" y="40" font-size="10" fill="#2563eb">Aspirin</text></svg>`,
+                'iupac101': `<svg class="svg-diagram" width="220" height="60" viewBox="0 0 220 60"><text x="10" y="25" font-size="10" fill="#333">CH₃−CH=C(CH₃)−CH(Br)−CH₃</text><text x="30" y="50" font-size="9" fill="#666">4-bromo-3-methylpent-2-ene</text></svg>`,
+                'mechanism105': `<svg class="svg-diagram" width="200" height="70" viewBox="0 0 200 70"><text x="10" y="25" font-size="9" fill="#333">Tetrahedral intermediate</text><text x="10" y="45" font-size="8" fill="#666">(Structure II is incorrect)</text></svg>`,
+                'isomers106': `<svg class="svg-diagram" width="200" height="60" viewBox="0 0 200 60"><text x="10" y="20" font-size="9" fill="#333">cis/trans isomers</text><text x="10" y="40" font-size="9" fill="#666">Restricted rotation around C=C</text></svg>`,
+                'parabola_mirror': `<svg class="svg-diagram" width="220" height="120" viewBox="0 0 220 120"><path d="M30 110 Q110 10 190 110" fill="none" stroke="#2563eb" stroke-width="2"/><circle cx="110" cy="60" r="3" fill="#dc2626"/><text x="100" y="50" font-size="8" fill="#dc2626">F</text><text x="115" y="115" font-size="9" fill="#333">A</text><text x="195" y="115" font-size="9" fill="#333">B</text><text x="95" y="105" font-size="8" fill="#666">5cm</text></svg>`,
+            };
+            return svgs[imgName] || '';
+        }
+
+        function getAllQuestions() {
+            const q = [];
+            // ---------- PHYSICS (1-60) ----------
+            q.push({ id: 1, sec: 'physics',
+                text: 'The displacement-time graph of a particle executing SHM is shown in figure. Which of the following statements is false?',
+                img: 'shm_graph', opts: ['a. The acceleration is maximum at t = T',
+                    'b. The force is zero at t = 3T/4',
+                    'c. The potential energy equals the total oscillation energy at t = T/2', 'd. None of the above'
+                ] });
+            q.push({ id: 2, sec: 'physics',
+                text: 'The flux linked with a coil at any instant t is given by φ = 10t² − 50t + 250. Then, induced emf at t = 3 is',
+                opts: ['a. −10 V', 'b. 10 V', 'c. 190 V', 'd. −190 V'] });
+            q.push({ id: 3, sec: 'physics',
+                text: 'The fringe width in a Young\'s double slit interference pattern is 3.2×10⁻⁴ m when red light of wavelength 5600 Å is used. How much will it change, if blue light of wavelength 4200 Å is used?',
+                opts: ['a. 8×10⁻⁴ m', 'b. 0.8×10⁻⁴ m', 'c. 4.2×10⁻⁴ m', 'd. 0.45×10⁻⁴ m'] });
+            q.push({ id: 4, sec: 'physics',
+                text: 'A vehicle needs an engine of 7500 W to keep it moving with a constant velocity of 20 m/s on a horizontal surface. The force resisting the motion is',
+                opts: ['a. 375 dyne', 'b. 375 N', 'c. 150000 dyne', 'd. 150000 N'] });
+            q.push({ id: 5, sec: 'physics',
+                text: 'The cell has an emf of 2V and internal resistance 0.1Ω. It is connected to a resistance of 3.9Ω. The voltage across the cell will be',
+                opts: ['a. 1.95 V', 'b. 1.5 V', 'c. 2 V', 'd. 1.8 V'] });
+            q.push({ id: 6, sec: 'physics',
+                text: 'In Young\'s double slit experiment, the slit width and the distance of slits from the screen both are doubled. The fringe width will',
+                opts: ['a. increase', 'b. decrease', 'c. remain unchanged', 'd. None of the above'] });
+            q.push({ id: 7, sec: 'physics',
+                text: 'The counting rate observed from a radioactive source at t=0 was 1600 counts and at t=8s, it was 100 counts. The counting rate observed at t=6s was',
+                opts: ['a. 400', 'b. 300', 'c. 200', 'd. 150'] });
+            q.push({ id: 8, sec: 'physics',
+                text: 'Two discs of the same material and thickness have radii 0.2m and 0.6m. Their moment of inertia about their axes will be in the ratio',
+                opts: ['a. 1:81', 'b. 1:27', 'c. 1:91', 'd. 1:3'] });
+            q.push({ id: 9, sec: 'physics',
+                text: 'A solenoid of length 0.5m has radius 1cm and 500 turns. It carries 5A current. What is the magnetic field inside the solenoid?',
+                opts: ['a. 6.28×10⁻³ T', 'b. 6.28×10³ T', 'c. 6.28×10⁻⁵ T', 'd. 6.28×10⁵ T'] });
+            q.push({ id: 10, sec: 'physics',
+                text: 'For H¹, H², He⁴⁺, Li⁸²⁺ (all one electron), electron transition n=2→1. If wavelengths are λ₁,λ₂,λ₃,λ₄ respectively, which is correct?',
+                opts: ['a. 4λ₁=2λ₂=2λ₃=λ₄', 'b. λ₁=2λ₂=2λ₃=λ₄', 'c. λ₁=λ₂=4λ₃=9λ₄',
+                    'd. λ₁=2λ₂=3λ₃=4λ₄'
+                ] });
+            q.push({ id: 11, sec: 'physics',
+                text: 'A 4kg block A is placed on top of 8kg block B on a smooth table. A just slips on B when 12N is applied on A. The maximum horizontal force F on B to make both move together is',
+                img: 'blocks_ab', opts: ['a. 12 N', 'b. 24 N', 'c. 36 N', 'd. 48 N'] });
+            q.push({ id: 12, sec: 'physics',
+                text: 'A solid cylinder has mass M, length L, and radius R. The moment of inertia about a generator is',
+                opts: ['a. M(L²/12 + R²/4)', 'b. M(L²/12 + R²/2)', 'c. ½MR²', 'd. (3/2)MR²'] });
+            q.push({ id: 13, sec: 'physics',
+                text: 'In a mixture of H-He⁺ gas, H atoms and He⁺ ions are excited to their first excited states. H atoms transfer total excitation energy to He⁺ ions. The quantum number n finally populated in He⁺ is',
+                opts: ['a. 2', 'b. 3', 'c. 4', 'd. 5'] });
+            q.push({ id: 14, sec: 'physics',
+                text: 'The displacement (x)-time (t) graph of a particle is shown. Which is correct?', img: 'xt_graph',
+                opts: ['a. Particle starts with zero velocity and variable acceleration',
+                    'b. Particle starts with non-zero velocity and variable acceleration',
+                    'c. Particle starts with zero velocity and uniform acceleration',
+                    'd. Particle starts with non-zero velocity and uniform acceleration'
+                ] });
+            q.push({ id: 15, sec: 'physics',
+                text: 'A student plots a graph for photoelectric effect at various frequencies. Identify X, Y, Z.',
+                img: 'photoelectric_graph',
+                opts: ['a. X→Photoelectric current; Y→Retarding potential; Z→Stopping potential',
+                    'b. X→Retarding plate potential; Y→Photocurrent; Z→Stopping potential',
+                    'c. X→Collector plate potential; Y→Photocurrent; Z→Saturation current',
+                    'd. X→Retarding plate potential; Y→Photocurrent; Z→Saturation current'
+                ] });
+            q.push({ id: 16, sec: 'physics',
+                text: 'A block of mass m is on an inclined plane of a lift moving down with acceleration 2 m/s². What should be the coefficient of friction for constant velocity relative to lift?',
+                img: 'block_incline', opts: ['a. μ=1/√3', 'b. μ=0.4', 'c. μ=0.8', 'd. μ=√3/2'] });
+            q.push({ id: 17, sec: 'physics',
+                text: 'Magnetic susceptibility of a rod material is 499. Permeability of vacuum is 4π×10⁻⁷ H/m. Absolute permeability is',
+                opts: ['a. π×10⁻⁴', 'b. 2π×10⁻⁴', 'c. 3π×10⁻⁴', 'd. 4π×10⁻⁴'] });
+            q.push({ id: 18, sec: 'physics',
+                text: 'Two drops of same radius fall through air at 5 cm/s. If they coalesce to form one drop, the terminal velocity is',
+                opts: ['a. 2.5 cm/s', 'b. 10 cm/s', 'c. 5√2 cm/s', 'd. 5×4¹/³ cm/s'] });
+            q.push({ id: 19, sec: 'physics',
+                text: 'Two projectiles A and B are thrown with velocities v and v/2. B is at 45°. If ranges are same, the inclination of A is',
+                opts: ['a. sin⁻¹(1/4)', 'b. ½sin⁻¹(1/4)', 'c. 2sin⁻¹(1/4)', 'd. ½sin⁻¹(1/8)'] });
+            q.push({ id: 20, sec: 'physics',
+                text: 'A metallic surface is irradiated by light of frequency ν₁ with stopping potential V₁. For frequency ν₂, the stopping potential will be',
+                opts: ['a. V₁+h/e(ν₁+ν₂)', 'b. V₁−h/e(ν₁−ν₂)', 'c. V₁+e/h(ν₂−ν₁)', 'd. V₁−h/e(ν₁+ν₂)'] });
+            q.push({ id: 21, sec: 'physics',
+                text: 'Work done when n smaller equal spherical drops combine to form a bigger drop is proportional to',
+                opts: ['a. (n⁻²/³−1)', 'b. (n⁻¹/³−1)', 'c. (n¹/³−1)', 'd. (n⁴/³−1)'] });
+            q.push({ id: 22, sec: 'physics',
+                text: 'A ball is thrown up at an angle θ to horizontal. The kinetic energy KE varies with height h as which graph?',
+                img: 'ke_graph',
+                opts: ['a. Linear decreasing', 'b. Parabolic', 'c. Constant', 'd. Linear increasing'] });
+            q.push({ id: 23, sec: 'physics',
+                text: 'Temperature of a wire (L=1m, A=1cm²) increased from 0°C to 100°C. If not allowed to expand, force required is (α=10⁻⁵/°C, Y=10¹¹ N/m²)',
+                opts: ['a. 10³ N', 'b. 10⁴ N', 'c. 10⁵ N', 'd. 10⁹ N'] });
+            q.push({ id: 24, sec: 'physics',
+                text: 'An ideal gas at 27°C is compressed adiabatically to 8/27 of original volume. Rise in temperature (γ=5/3) is',
+                opts: ['a. 475°C', 'b. 150°C', 'c. 275°C', 'd. 402°C'] });
+            q.push({ id: 25, sec: 'physics',
+                text: 'Which graph shows potential difference between p-side and n-side of a p-n junction in equilibrium?',
+                img: 'pn_junction', opts: ['a. Graph A', 'b. Graph B', 'c. Graph C', 'd. Graph D'] });
+            q.push({ id: 26, sec: 'physics',
+                text: 'The figure shows a logic circuit with inputs A, B and output C. Based on waveforms, the logic gate is',
+                img: 'logic_gate', opts: ['a. OR gate', 'b. NOR gate', 'c. AND gate', 'd. NAND gate'] });
+            q.push({ id: 27, sec: 'physics',
+                text: 'Magnetic field at centre of circular current-carrying conductor of radius r is Bc. Field on axis at distance r from centre is Ba. Bc:Ba is',
+                opts: ['a. 1:√2', 'b. 1:2√2', 'c. 2√2:1', 'd. √2:1'] });
+            q.push({ id: 28, sec: 'physics',
+                text: 'Mark the correct statement regarding work done by internal forces and friction.',
+                opts: ['a. Total work done by internal forces on a system is always zero.',
+                    'b. Total work done by internal forces on a system may sometimes be zero.',
+                    'c. Total work done by friction can never be zero.', 'd. Total work done by friction is always zero.'
+                ] });
+            q.push({ id: 29, sec: 'physics',
+                text: 'At what depth below the surface of earth is g the same as at a height of 5 km?',
+                opts: ['a. 5 km', 'b. 2.5 km', 'c. 10 km', 'd. 6 km'] });
+            q.push({ id: 30, sec: 'physics',
+                text: 'If temperature of a metallic wire increases keeping constant electric field, then current density will',
+                opts: ['a. increase', 'b. decrease', 'c. remain same', 'd. None of these'] });
+            q.push({ id: 31, sec: 'physics',
+                text: 'A second pendulum is moved to moon where g is 1/6 of earth. The length on moon would be',
+                opts: ['a. 6 times', 'b. 12 times', 'c. 1/6 times', 'd. 1/12 times'] });
+            q.push({ id: 32, sec: 'physics',
+                text: 'Two satellites S₁ and S₂ move in same orbit. Mass of S₁ is 4 times S₂. Which is true?',
+                opts: ['a. Time period of S₁ is 4 times S₂', 'b. Potential energies are equal',
+                    'c. S₁ and S₂ move with same speed', 'd. Kinetic energies are equal'
+                ] });
+            q.push({ id: 33, sec: 'physics',
+                text: 'For two charges q₁ and q₂, force in air is F. Force in medium of permittivity ε will be',
+                opts: ['a. (ε₀/ε)F', 'b. (ε/ε₀)F', 'c. εε₀F', 'd. F/(ε₀ε)'] });
+            q.push({ id: 34, sec: 'physics',
+                text: 'A boat has speed 5 km/h in still water, crosses a river of width 1 km along shortest path in 15 min. River velocity is',
+                opts: ['a. 1 km/h', 'b. 3 km/h', 'c. 4 km/h', 'd. √41 km/h'] });
+            q.push({ id: 35, sec: 'physics',
+                text: 'A sphere encloses an electric dipole with charges ±3×10⁻⁶ C. Total electric flux across sphere is',
+                opts: ['a. −3×10⁻⁶ N·m²/C', 'b. Zero', 'c. 3×10⁶ N·m²/C', 'd. 6×10⁻⁶ N·m²/C'] });
+            q.push({ id: 36, sec: 'physics',
+                text: 'Volume vs temperature graphs for a given mass of ideal gas at two pressures. What can be inferred about p₁ and p₂?',
+                img: 'vt_graph', opts: ['a. p₁>p₂', 'b. p₁=p₂', 'c. p₁<p₂', 'd. Data insufficient'] });
+            q.push({ id: 37, sec: 'physics',
+                text: 'Ratio of speed of sound in nitrogen gas to helium gas at 300K is',
+                opts: ['a. √5/3', 'b. √3/5', 'c. √3/5', 'd. 5/3'] });
+            q.push({ id: 38, sec: 'physics',
+                text: 'For a uniform electric field E along X-axis, equipotential surfaces are planes',
+                opts: ['a. perpendicular to Z-axis', 'b. parallel to YZ-plane', 'c. perpendicular to YZ-plane',
+                    'd. perpendicular to Y-axis'
+                ] });
+            q.push({ id: 39, sec: 'physics',
+                text: 'Two sources A and B produce 350 Hz waves in phase. Amplitudes at P are 0.3mm and 0.4mm. If AP−BP=25cm and v=350m/s, resultant amplitude is',
+                opts: ['a. 0.7 mm', 'b. 0.1 mm', 'c. 0.2 mm', 'd. 0.5 mm'] });
+            q.push({ id: 40, sec: 'physics',
+                text: 'A student measured length of a rod as 3.50 cm. Which instrument did he use?',
+                opts: ['a. A meter scale', 'b. Vernier caliper (10VSD=9MSD, 10div/cm)',
+                    'c. Screw gauge (100 div, pitch 1mm)', 'd. Screw gauge (50 div, pitch 1mm)'
+                ] });
+            q.push({ id: 41, sec: 'physics',
+                text: 'A gang capacitor has 9 interlocking plates, distance 0.885cm, overlapping area 5cm². Capacity is',
+                opts: ['a. 1.06 pF', 'b. 4 pF', 'c. 6.36 pF', 'd. 12.72 pF'] });
+            q.push({ id: 42, sec: 'physics',
+                text: 'Wall has layers A(10cm) and B(20cm). k_A=3k_B. Temperature difference across wall is 35°C. Difference across A is',
+                opts: ['a. 20°C', 'b. 10°C', 'c. 15°C', 'd. 5°C'] });
+            q.push({ id: 43, sec: 'physics',
+                text: 'Resistance measurement has 3% error in current and 3% in voltage. Error in resistance is',
+                opts: ['a. 6%', 'b. zero', 'c. 1%', 'd. 3%'] });
+            q.push({ id: 44, sec: 'physics',
+                text: 'Two 1μF capacitors at 10V are connected with opposite polarity plates together. After contact,',
+                opts: ['a. charge on each is zero', 'b. charge on each is same but non-zero',
+                    'c. charge on each is different but non-zero', 'd. None of the above'
+                ] });
+            q.push({ id: 45, sec: 'physics',
+                text: 'Equation of progressive wave: y=0.2cosπ(0.04t+0.02x−π/6) (cm, s). Minimum distance for phase difference π/2 is',
+                opts: ['a. 4 cm', 'b. 8 cm', 'c. 25 cm', 'd. 12.5 cm'] });
+            q.push({ id: 46, sec: 'physics',
+                text: 'Prism angle A, one face silvered. Light at incidence 2A returns along same path. Refractive index μ is',
+                opts: ['a. 2sinA', 'b. 2cosA', 'c. ½cosA', 'd. tanA'] });
+            q.push({ id: 47, sec: 'physics',
+                text: 'EM wave max frequency 300kHz, critical frequency 100kHz, height 150km. Skip distance is',
+                opts: ['a. 624 km', 'b. 849 km', 'c. 636 km', 'd. 942 km'] });
+            q.push({ id: 48, sec: 'physics',
+                text: 'Microwave oven heats food containing water most efficiently when',
+                opts: ['a. frequency matches resonant frequency of water molecules',
+                    'b. frequency has no relation to natural frequency', 'c. microwaves are heat waves',
+                    'd. infrared waves produce heating'
+                ] });
+            q.push({ id: 49, sec: 'physics',
+                text: 'Telescope: objective f=60cm, eyepiece f=5cm, object subtends 2° at objective. Angular width of image is',
+                opts: ['a. 10°', 'b. 24°', 'c. 50°', 'd. (1/6)°'] });
+            q.push({ id: 50, sec: 'physics', text: 'The combination of gates shown produces', img: 'gate_combo',
+                opts: ['a. NOR gate', 'b. OR gate', 'c. AND gate', 'd. XOR gate'] });
+            q.push({ id: 51, sec: 'physics',
+                text: 'Electric field oscillates with amplitude 18 V/m. Magnitude of oscillating magnetic field is',
+                opts: ['a. 4×10⁻⁶ T', 'b. 6×10⁻⁸ T', 'c. 9×10⁻⁹ T', 'd. 11×10⁻¹¹ T'] });
+            q.push({ id: 52, sec: 'physics', text: 'Black body spectrum at 27°C and 327°C. A₁ and A₂ are areas under curves. A₂/A₁ is',
+                img: 'blackbody', opts: ['a. 1:16', 'b. 4:1', 'c. 2:1', 'd. 16:1'] });
+            q.push({ id: 53, sec: 'physics',
+                text: 'One mole ideal gas at T K does 6R J work adiabatically (γ=5/3). Final temperature is',
+                opts: ['a. (T+2.4)K', 'b. (T−2.4)K', 'c. (T+4)K', 'd. (T−4)K'] });
+            q.push({ id: 54, sec: 'physics', text: 'AC circuit with R, C, L in series. Current is maximum when',
+                opts: ['a. R=L=C', 'b. ωL=1/(ωC)', 'c. ω²=LC', 'd. ω=RLC'] });
+            q.push({ id: 55, sec: 'physics',
+                text: 'Modulation index in AM if audio signal amplitude is half of carrier amplitude is',
+                opts: ['a. 1', 'b. 0', 'c. 0.5', 'd. greater than 1'] });
+            q.push({ id: 56, sec: 'physics', text: 'Temperature of a wire is doubled. Young\'s modulus will',
+                opts: ['a. double', 'b. become four times', 'c. remain same', 'd. decrease'] });
+            q.push({ id: 57, sec: 'physics',
+                text: 'AC ammeter reads 3A for DC and 4A for AC. Reading when both flow simultaneously is',
+                opts: ['a. 3A', 'b. 4A', 'c. 7A', 'd. 5A'] });
+            q.push({ id: 58, sec: 'physics', text: 'Displacement along X-axis: √x = t+1. Velocity of body',
+                opts: ['a. increases with time', 'b. decreases with time', 'c. independent of time', 'd. None'] });
+            q.push({ id: 59, sec: 'physics',
+                text: 'True dip angle is 45°. Dip circle rotated 45° out of magnetic meridian. Apparent dip is',
+                opts: ['a. tan⁻¹(√2)', 'b. tan⁻¹(1/√2)', 'c. tan⁻¹(2)', 'd. tan⁻¹(1/2)'] });
+            q.push({ id: 60, sec: 'physics',
+                text: 'Change in magnetic flux induces emf V in a closed loop. Work done in taking charge q once along the loop is',
+                opts: ['a. qV', 'b. Zero', 'c. 2qV', 'd. qV/2'] });
+            // ---------- CHEMISTRY (61-120) ----------
+            q.push({ id: 61, sec: 'chemistry', text: 'Hydrolysis of sucrose: Kc=2×10¹³ at 300K. ΔG° at 300K is',
+                opts: ['a. 3.52×10⁵ J/mol', 'b. 5.12×10⁵ J/mol', 'c. 7.64×10⁴ J/mol',
+                'd. −7.64×10⁴ J/mol'] });
+            q.push({ id: 62, sec: 'chemistry',
+                text: 'Temperature at which 10% (w/V) glucose solution exhibits osmotic pressure of 16.4 atm (R=0.082) is',
+                opts: ['a. 200 K', 'b. 180 K', 'c. 90 K', 'd. 360 K'] });
+            q.push({ id: 63, sec: 'chemistry',
+                text: '1.1 mol A + 2.2 mol B in 1L flask, A+2B⇌2C+D. At equilibrium 0.2 mol C formed. Kc is',
+                opts: ['a. 0.002', 'b. 0.004', 'c. 0.001', 'd. 0.003'] });
+            q.push({ id: 64, sec: 'chemistry',
+                text: 'At 300K, pure A has 150mmHg and B has 100mmHg vapour pressure. In equimolar mixture, mole fraction of B in vapour is',
+                opts: ['a. 0.6', 'b. 0.5', 'c. 0.8', 'd. 0.4'] });
+            q.push({ id: 65, sec: 'chemistry', text: 'Dihydrogen is obtained as byproduct in manufacture of',
+                opts: ['a. NaOH and bromine by electrolysis', 'b. KOH and bromine by electrolysis',
+                    'c. NaOH and chlorine by electrolysis', 'd. KOH and chlorine by electrolysis'
+                ] });
+            q.push({ id: 66, sec: 'chemistry', text: 'R−CONH₂ →(i)LiAlH₄ product is',
+                opts: ['a. RNH₂', 'b. RCH₂NH₂', 'c. RCH₂CH₂NH₂', 'd. RCN'] });
+            q.push({ id: 67, sec: 'chemistry', text: 'When carbon monoxide reacts with water, product obtained is',
+                opts: ['a. carbonic acid', 'b. carbon dioxide', 'c. hydrogen', 'd. Both (b) and (c)'] });
+            q.push({ id: 68, sec: 'chemistry', text: 'What is A in the reaction sequence?',
+                img: 'chem_reaction68', opts: ['a. Option a', 'b. Option b', 'c. Option c', 'd. Option d'] });
+            q.push({ id: 69, sec: 'chemistry', text: 'Radius of second Bohr orbit in terms of a₀ for Li²⁺ is',
+                opts: ['a. 2a₀/3', 'b. 4a₀/3', 'c. 4a₀/9', 'd. 2a₀/9'] });
+            q.push({ id: 70, sec: 'chemistry', text: 'Major product(s) of mononitration of 3-methylphenol?',
+                img: 'nitration', opts: ['a. Option a', 'b. Option b', 'c. Option c', 'd. Option d'] });
+            q.push({ id: 71, sec: 'chemistry',
+                text: 'Which compound does NOT contain all carbon atoms in same hybridisation state?',
+                opts: ['a. H−C≡C−C≡C−H', 'b. HC≡CH', 'c. CH₂=C=CH₂', 'd. CH₂=CH−CH=CH₂'] });
+            q.push({ id: 72, sec: 'chemistry', text: 'On ozonolysis, which compound gives 5-keto-2-methylhexanal?',
+                opts: ['a. Option a', 'b. Option b', 'c. Option c', 'd. Option d'] });
+            q.push({ id: 73, sec: 'chemistry',
+                text: 'If Z is compressibility factor, van der Waals equation at low pressure is',
+                opts: ['a. Z=1+RT/(pb)', 'b. Z=1−a/(VRT)', 'c. Z=1−pb/(RT)', 'd. Z=1+pb/(RT)'] });
+            q.push({ id: 74, sec: 'chemistry', text: 'Receptors are selective because they bind to',
+                opts: ['a. all chemical messengers', 'b. a particular chemical messenger', 'c. cell membrane',
+                    'd. All of the above'
+                ] });
+            q.push({ id: 75, sec: 'chemistry',
+                text: 'Change in energy if 500 cal heat added and system does 350 cal work on surroundings is',
+                opts: ['a. −150 cal', 'b. +150 cal', 'c. +850 cal', 'd. −850 cal'] });
+            q.push({ id: 76, sec: 'chemistry',
+                text: '10⁻⁴ dm³ water in 1.0 dm³ flask at 300K. Vapour pressure of H₂O=3170 Pa. Moles in vapour phase?',
+                opts: ['a. 5.56×10⁻³ mol', 'b. 1.53×10⁻² mol', 'c. 4.46×10⁻² mol', 'd. 1.27×10⁻³ mol'] });
+            q.push({ id: 77, sec: 'chemistry',
+                text: 'Solid density 9×10³ kg/m³, fcc crystal, edge 200√2 pm. Molar mass is (NA=6×10²³)',
+                opts: ['a. 0.03050 kg/mol', 'b. 0.4320 kg/mol', 'c. 0.0432 kg/mol', 'd. 0.0216 kg/mol'] });
+            q.push({ id: 78, sec: 'chemistry',
+                text: 'Which compounds synthesized by Kolbe and Berthelot respectively from inorganic sources?',
+                opts: ['a. Ethane, methane', 'b. Methane, ethane', 'c. Methane, acetic acid',
+                    'd. Acetic acid, methane'
+                ] });
+            q.push({ id: 79, sec: 'chemistry',
+                text: 'At low pressure, fraction of surface covered during adsorption follows',
+                opts: ['a. zero order kinetics', 'b. first order kinetics', 'c. second order kinetics',
+                    'd. fractional order kinetics'
+                ] });
+            q.push({ id: 80, sec: 'chemistry', text: 'Which pair of ions are isoelectronic and isostructural?',
+                opts: ['a. CO₃²⁻, SO₃²⁻', 'b. ClO₃⁻, CO₃²⁻', 'c. SO₃²⁻, NO₃⁻', 'd. ClO₃⁻, SO₃²⁻'] });
+            q.push({ id: 81, sec: 'chemistry',
+                text: 'E°cell=1.1V for Daniell cell. Which expression is correct at equilibrium?',
+                opts: ['a. 1.1=Kc', 'b. (2.303RT/2F)logKc=1.1', 'c. logKc=3.4/0.059', 'd. logKc=1.1'] });
+            q.push({ id: 82, sec: 'chemistry',
+                text: 'Silica is added to copper pyrites in reverberatory furnace because',
+                opts: ['a. removes FeO as slag', 'b. reacts with Cu₂O to form slag', 'c. reduces Cu₂O to Cu',
+                    'd. helps separate Cu from Fe'
+                ] });
+            q.push({ id: 83, sec: 'chemistry',
+                text: 'Magnesium reacts with acids producing hydrogen. Mg undergoes',
+                opts: ['a. reduction', 'b. oxidation', 'c. redox reaction', 'd. simple dissolution'] });
+            q.push({ id: 84, sec: 'chemistry',
+                text: 'Intermolecular distance between adjacent Cu atoms in solid copper is 256pm. Metallic radius is',
+                opts: ['a. 128 pm', 'b. 12.87 Å', 'c. 74 pm', 'd. 74 Å'] });
+            q.push({ id: 85, sec: 'chemistry',
+                text: '6.3g NaHCO₃ + 15.0g CH₃COOH solution, residue weighs 18.0g. Mass of CO₂ released is',
+                opts: ['a. 4.5g', 'b. 3.3g', 'c. 2.6g', 'd. 2.8g'] });
+            q.push({ id: 86, sec: 'chemistry', text: 'Lyophobic colloids are not stable because',
+                opts: ['a. they coagulate by heating or adding electrolytes',
+                    'b. they coagulate by freezing or adding electrolytes',
+                    'c. they do not coagulate by freezing', 'd. they do not coagulate by heating'
+                ] });
+            q.push({ id: 87, sec: 'chemistry',
+                text: '8g NaOH dissolved in 18g H₂O. Mole fraction and molality are',
+                opts: ['a. 0.2, 11.11', 'b. 0.167, 22.20', 'c. 0.2, 22.20', 'd. 0.167, 11.11'] });
+            q.push({ id: 88, sec: 'chemistry',
+                text: 'C₃H₈O₃ with two primary and one secondary alcoholic groups. IUPAC name is',
+                opts: ['a. propane-1,2-diol', 'b. propane-1,3-diol', 'c. propane-1,2,3-triol',
+                    'd. 2-methylethane-1-ol'
+                ] });
+            q.push({ id: 89, sec: 'chemistry', text: 'Which alkyl halide has maximum density?',
+                opts: ['a. C₃H₇I', 'b. C₂H₅I', 'c. CH₃Br', 'd. CH₃I'] });
+            q.push({ id: 90, sec: 'chemistry', text: 'Which types of elements show variable valency?',
+                opts: ['a. Transition elements', 'b. s-block elements', 'c. Actinoids', 'd. Both (a) and (c)'] });
+            q.push({ id: 91, sec: 'chemistry', text: 'According to MOT, which is true for Li₂⁺ and Li₂⁻?',
+                opts: ['a. Both unstable', 'b. Li₂⁺ unstable, Li₂⁻ stable', 'c. Both stable',
+                    'd. Li₂⁺ stable, Li₂⁻ unstable'
+                ] });
+            q.push({ id: 92, sec: 'chemistry', text: 'Select the strongest acid:',
+                opts: ['a. FCH₂CH₂CH₂OH', 'b. CH₃CH₂CH(F)CH₂OH', 'c. CH₃CH₂CF₂CH₂OH',
+                    'd. CH₃CH(F)CH₂CH₂OH'
+                ] });
+            q.push({ id: 93, sec: 'chemistry', text: 'Which compound possesses antipyretic properties?',
+                img: 'antipyretic',
+                opts: ['a. Option a', 'b. Aspirin (o-acetyl salicylic acid)', 'c. Option c', 'd. Option d'] });
+            q.push({ id: 94, sec: 'chemistry',
+                text: 'Deviation of O−O bond length in ozone from normal bond length is because',
+                opts: ['a. single bond increases, double bond decreases',
+                    'b. single bond decreases, double bond increases', 'c. single bond increases, double bond same',
+                    'd. single bond same, double bond increases'
+                ] });
+            q.push({ id: 95, sec: 'chemistry', text: 'Cubic solid: B at corners, A at body centre. Formula is',
+                opts: ['a. AB₂', 'b. AB', 'c. A₂B', 'd. None'] });
+            q.push({ id: 96, sec: 'chemistry', text: 'Melting of ice',
+                opts: ['a. is phase transformation', 'b. takes place at constant pressure and temperature',
+                    'c. takes place at 373K', 'd. Both (a) and (b)'
+                ] });
+            q.push({ id: 97, sec: 'chemistry', text: 's-block elements: as we go down the group, reactivity',
+                opts: ['a. increases', 'b. decreases', 'c. remains same', 'd. None'] });
+            q.push({ id: 98, sec: 'chemistry', text: 'Alkali metals dissolve in liquid ammonia producing',
+                opts: ['a. deep blue solution', 'b. conducting solution', 'c. red solution', 'd. Both (a) and (b)'] });
+            q.push({ id: 99, sec: 'chemistry',
+                text: 'On passing vapours of phenol over heated zinc dust, it gets reduced to',
+                opts: ['a. toluene', 'b. aniline', 'c. benzene', 'd. phenol'] });
+            q.push({ id: 100, sec: 'chemistry',
+                text: 'Standard enthalpy of formation of NH₃(g) is −81.9 kJ/mol. Heat to decompose 26g NH₃ is',
+                opts: ['a. 122.9 kJ', 'b. 143.8 kJ', 'c. 164.7 kJ', 'd. 105.6 kJ'] });
+            q.push({ id: 101, sec: 'chemistry', text: 'IUPAC name of the compound:', img: 'iupac101',
+                opts: ['a. 3-bromo-3-methyl-1,2-dimethylprop-1-ene', 'b. 3-bromo-1,2-dimethylbut-1-ene',
+                    'c. 2-bromo-3-methylpent-3-ene', 'd. 4-bromo-3-methylpent-2-ene'
+                ] });
+            q.push({ id: 102, sec: 'chemistry',
+                text: 'Alcohol that gives best yield of dialkyl ether with trace H₂SO₄ is',
+                opts: ['a. Pentan-2-ol', 'b. 2-methylbutan-2-ol', 'c. Pentan-1-ol', 'd. Propen-2-ol'] });
+            q.push({ id: 103, sec: 'chemistry', text: 'Compounds where C-atoms form a closed chain are termed',
+                opts: ['a. aliphatic hydrocarbons', 'b. cycloalkanes', 'c. alkanes', 'd. alkenes'] });
+            q.push({ id: 104, sec: 'chemistry',
+                text: 'Reaction: C=O →(H₂NNH₂)→ C=N−NH₂ →(KOH/ethylene glycol)→ CH₂. This is known as',
+                opts: ['a. Wolff-Kishner reduction', 'b. Clemmensen reduction', 'c. Both', 'd. None'] });
+            q.push({ id: 105, sec: 'chemistry', text: 'Consider the mechanism. Which structure is incorrect?',
+                img: 'mechanism105', opts: ['a. I', 'b. II', 'c. III', 'd. IV'] });
+            q.push({ id: 106, sec: 'chemistry', text: 'Consider the isomers shown. Type of isomerism is',
+                img: 'isomers106',
+                opts: ['a. chain isomers', 'b. functional isomers', 'c. geometrical isomers', 'd. positional isomers'] });
+            q.push({ id: 107, sec: 'chemistry',
+                text: 'Stability of halides of group 16 elements decreases in order',
+                opts: ['a. Br⁻>I⁻>Cl⁻>F⁻', 'b. F⁻>I⁻>Cl⁻>Br⁻', 'c. F⁻>Cl⁻>Br⁻>I⁻', 'd. I⁻>Cl⁻>Br⁻>F⁻'] });
+            q.push({ id: 108, sec: 'chemistry',
+                text: 'In automobile engine at high temperature, N₂ and O₂ combine to yield',
+                opts: ['a. NO', 'b. NO₂', 'c. HNO₃', 'd. Both (a) and (b)'] });
+            q.push({ id: 109, sec: 'chemistry',
+                text: 'Rate constant of A→B is 0.6×10⁻³ mol/L/s. If [A]=5M, [B] after 20 min is',
+                opts: ['a. 1.08 M', 'b. 3.60 M', 'c. 0.36 M', 'd. 0.72 M'] });
+            q.push({ id: 110, sec: 'chemistry', text: 'First noble gas compound obtained was',
+                opts: ['a. Xe⁺PtF₆⁻', 'b. XeF₄', 'c. XeF₂', 'd. XeOF₄'] });
+            q.push({ id: 111, sec: 'chemistry',
+                text: 'Filling of 4f before 5d results in regular decrease in atomic radii called',
+                opts: ['a. lanthanoid contraction', 'b. shielding effect', 'c. actinoid contraction', 'd. None'] });
+            q.push({ id: 112, sec: 'chemistry', text: 'In which compound is oxidation state of phosphorus +3?',
+                opts: ['a. Orthophosphoric acid', 'b. Pyrophosphoric acid', 'c. Orthophosphorus acid',
+                    'd. Cyclometaphosphoric acid'
+                ] });
+            q.push({ id: 113, sec: 'chemistry',
+                text: 'Which is named dibromidobis(ethylenediamine)chromium(III) bromide?',
+                opts: ['a. [Cr(en)₃]Br₃', 'b. [Cr(en)₂Br₂]Br', 'c. [Cr(en)Br₄]⁻', 'd. [Cr(en)₂Br₂]Br'] });
+            q.push({ id: 114, sec: 'chemistry', text: 'Increasing order of acidic strength: HCl, HBr, HI, HF',
+                opts: ['a. HI<HBr<HCl<HF', 'b. HF<HCl<HBr<HI', 'c. HCl<HBr<HI<HF', 'd. HBr<HI<HF<HCl'] });
+            q.push({ id: 115, sec: 'chemistry', text: 'Which amino acid is NOT optically active?',
+                opts: ['a. Lysine', 'b. Glycine', 'c. Leucine', 'd. Glutamine'] });
+            q.push({ id: 116, sec: 'chemistry', text: 'Teflon is manufactured by heating',
+                opts: ['a. tetrafluoroethane', 'b. tetrafluoromethylene', 'c. tetrafluoroethene',
+                    'd. tetrafluoromethane'
+                ] });
+            q.push({ id: 117, sec: 'chemistry', text: 'Acidified potassium dichromate oxidises',
+                opts: ['a. iodides to iodine', 'b. sulphides to sulphur', 'c. tin(IV) to tin(II)',
+                    'd. Both (a) and (b)'
+                ] });
+            q.push({ id: 118, sec: 'chemistry',
+                text: 'If 1mL water has 20 drops, number of molecules in a drop of water is',
+                opts: ['a. 6.023×10²³', 'b. 1.376×10²⁶', 'c. 1.62×10²¹', 'd. 4.346×10²⁰'] });
+            q.push({ id: 119, sec: 'chemistry',
+                text: 'Primary and secondary valencies of Cr in dichlorodioxalatochromium(III) are',
+                opts: ['a. 3 and 4', 'b. 4 and 3', 'c. 6 and 3', 'd. 3 and 6'] });
+            q.push({ id: 120, sec: 'chemistry', text: 'Correct order of ionic radii of Ce³⁺, Pm³⁺, Gd³⁺, Dy³⁺ is',
+                opts: ['a. Ce<Gd<Pm<Dy', 'b. Ce<Pm<Gd<Dy', 'c. Dy<Gd<Pm<Ce', 'd. Pm<Ce<Dy<Gd'] });
+            // ---------- MATHEMATICS (121-180) ----------
+            q.push({ id: 121, sec: 'maths', text: 'f:R→R defined by f(x)=x/(x²+1) ∀x∈R is',
+                opts: ['a. one-one', 'b. onto', 'c. both one-one and onto', 'd. neither one-one nor onto'] });
+            q.push({ id: 122, sec: 'maths',
+                text: 'f:R−{−4/3}→R, f(x)=4x/(3x+4). Inverse g:range f→R−{−4/3} is',
+                opts: ['a. g(y)=3y/(3−4y)', 'b. g(y)=4y/(4−3y)', 'c. g(y)=4y/(3−4y)', 'd. g(y)=3y/(4−3y)'] });
+            q.push({ id: 123, sec: 'maths', text: 'f:R→R defined as f(x)=10x+7. g:R→R such that fog=gof=I_R is',
+                opts: ['a. (y+7)/10', 'b. (7−y)/10', 'c. (y−7)/10', 'd. 10y−7'] });
+            q.push({ id: 124, sec: 'maths', text: 'If tanα=1/7 and tanβ=1/3, then cos2α equals',
+                opts: ['a. sin2β', 'b. sin4β', 'c. sin3β', 'd. cos2β'] });
+            q.push({ id: 125, sec: 'maths', text: 'If m sinθ = n sin(θ+2α), then tan(θ+α)cotα equals',
+                opts: ['a. (m+n)/(m−n)', 'b. (m−n)/(m+n)', 'c. (m+n)/(mn)', 'd. (m−n)/(2m)'] });
+            q.push({ id: 126, sec: 'maths', text: 'If 2sin²θ=3cosθ, 0≤θ≤2π, then value of θ is/are',
+                opts: ['a. π/3', 'b. 6π/6', 'c. π/3, 5π/3', 'd. π/3, 5π/6, 2π/3'] });
+            q.push({ id: 127, sec: 'maths', text: 'If x=secφ−tanφ and y=cosecφ+cotφ, then xy+x−y+1 equals',
+                opts: ['a. 0', 'b. 1', 'c. 2', 'd. 3'] });
+            q.push({ id: 128, sec: 'maths', text: 'Principal value of cos⁻¹(1/2)−2sin⁻¹(−1/2) is',
+                opts: ['a. π/3', 'b. −π/3', 'c. 2π/3', 'd. π/6'] });
+            q.push({ id: 129, sec: 'maths',
+                text: 'Value of tan⁻¹(−1/√3)+cot⁻¹(1/√3)+tan⁻¹(sin(−π/2)) is',
+                opts: ['a. π/6', 'b. π/12', 'c. π/12', 'd. π/3'] });
+            q.push({ id: 130, sec: 'maths',
+                text: 'Simplest form of tan⁻¹[(a cosx−b sinx)/(b cosx+a sinx)], if (a/b)tanx>−1 is',
+                opts: ['a. tan⁻¹(a/b)', 'b. tan⁻¹(a/b)+x', 'c. tan⁻¹(a/b)−x', 'd. −x'] });
+            q.push({ id: 131, sec: 'maths',
+                text: 'If xⁿ−1 is divisible by x−k, the least positive integral value of k is',
+                opts: ['a. 1', 'b. 2', 'c. 3', 'd. 4'] });
+            q.push({ id: 132, sec: 'maths', text: 'Solve |z|=z+1+2i',
+                opts: ['a. z=3/2−2i', 'b. z=3−2i', 'c. z=3/2+2i', 'd. z=3+2i'] });
+            q.push({ id: 133, sec: 'maths', text: 'If (z−1)/(z+1) is purely imaginary (z≠−1), then |z| equals',
+                opts: ['a. 1', 'b. 2', 'c. 3', 'd. 4'] });
+            q.push({ id: 134, sec: 'maths',
+                text: 'Point (2−i) is rotated about origin through π/2 clockwise. New position is',
+                opts: ['a. 1+2i', 'b. −1−2i', 'c. 2+i', 'd. −1+2i'] });
+            q.push({ id: 135, sec: 'maths', text: 'For positive integer n, value of (1−i)ⁿ(1−1/i)ⁿ is',
+                opts: ['a. 2', 'b. 2ⁿ', 'c. 3ⁿ', 'd. (−1)ⁿ'] });
+            q.push({ id: 136, sec: 'maths',
+                text: 'Number of integers >7000 formed with digits 3,5,7,8,9 (no repetition) is',
+                opts: ['a. 72', 'b. 120', 'c. 182', 'd. 192'] });
+            q.push({ id: 137, sec: 'maths',
+                text: 'Number of 5-digit telephone numbers with at least one digit repeated is',
+                opts: ['a. 90000', 'b. 10000', 'c. 30240', 'd. 69760'] });
+            q.push({ id: 138, sec: 'maths',
+                text: 'Words from INTERMEDIATE such that no two vowels come together:',
+                opts: ['a. 15120', 'b. 13120', 'c. 151200', 'd. 131200'] });
+            q.push({ id: 139, sec: 'maths',
+                text: 'Total terms in expansion of (x+a)¹⁰⁰+(x−a)¹⁰⁰ after simplification is',
+                opts: ['a. 50', 'b. 202', 'c. 51', 'd. None'] });
+            q.push({ id: 140, sec: 'maths',
+                text: 'Coefficient of xⁿ in (1+x)²ⁿ and (1+x)²ⁿ⁻¹ are in ratio',
+                opts: ['a. 1:2', 'b. 1:3', 'c. 3:1', 'd. 2:1'] });
+            q.push({ id: 141, sec: 'maths', text: 'S₂n=3Sn for an AP. Then S₃n:Sn equals',
+                opts: ['a. 4', 'b. 6', 'c. 8', 'd. 10'] });
+            q.push({ id: 142, sec: 'maths', text: 'Series 2+3+6+11+18+... t₅₀ is',
+                opts: ['a. 49²−1', 'b. 49²', 'c. 50²+1', 'd. 49²+2'] });
+            q.push({ id: 143, sec: 'maths',
+                text: 'Line through (2,2) perpendicular to 3x+y=3. Its y-intercept is',
+                opts: ['a. 1/3', 'b. 2/3', 'c. 1', 'd. 4/3'] });
+            q.push({ id: 144, sec: 'maths',
+                text: 'Ratio in which 3x+4y+2=0 divides distance between 3x+4y+5=0 and 3x+4y−5=0 is',
+                opts: ['a. 1:2', 'b. 3:7', 'c. 2:3', 'd. 2:5'] });
+            q.push({ id: 145, sec: 'maths',
+                text: 'One vertex of equilateral triangle with centroid at origin and one side x+y−2=0 is',
+                opts: ['a. (−1,−1)', 'b. (2,2)', 'c. (−2,−2)', 'd. (2,−2)'] });
+            q.push({ id: 146, sec: 'maths', text: 'If y=√3x+k touches circle x²+y²=16, then k is',
+                opts: ['a. ±2', 'b. ±3', 'c. ±4', 'd. ±5'] });
+            q.push({ id: 147, sec: 'maths',
+                text: 'Circle concentric with x²+y²−6x+12y+15=0 and double area is',
+                opts: ['a. x²+y²−6x+12y−15=0', 'b. x²+y²−6x+12y+15=0', 'c. x²+y²+6x−12y+15=0',
+                    'd. x²+y²+6x−12y−15=0'
+                ] });
+            q.push({ id: 148, sec: 'maths',
+                text: 'Focus of parabolic mirror is 5cm from vertex. Mirror is 45cm deep. Distance AB is',
+                img: 'parabola_mirror', opts: ['a. 20 cm', 'b. 40 cm', 'c. 60 cm', 'd. 80 cm'] });
+            q.push({ id: 149, sec: 'maths',
+                text: 'Equation of lines joining vertex of y²=6x to points with abscissa 24 is',
+                opts: ['a. y±2x=0', 'b. 2y±x=0', 'c. x±y=0', 'd. None'] });
+            q.push({ id: 150, sec: 'maths',
+                text: 'If eccentricity of ellipse is 1/√2, its latus rectum equals its',
+                opts: ['a. minor axis', 'b. semi-minor axis', 'c. major axis', 'd. semi-major axis'] });
+            q.push({ id: 151, sec: 'maths',
+                text: 'Distance between focus and directrix of ellipse is 8, e=1/2. Length of minor axis is',
+                opts: ['a. 3', 'b. 4√2', 'c. 6', 'd. None'] });
+            q.push({ id: 152, sec: 'maths',
+                text: 'Hyperbola: conjugate axis=5, distance between foci=13. Equation is',
+                opts: ['a. 25x²−144y²=900', 'b. 144x²−25y²=900', 'c. 144x²+25y²=900',
+                'd. 25x²+144y²=900'] });
+            q.push({ id: 153, sec: 'maths',
+                text: 'Locus of intersection of √3x−y−4√3k=0 and √3kx+ky−4√3=0 for different k is',
+                opts: ['a. circle', 'b. parabola', 'c. hyperbola', 'd. ellipse'] });
+            q.push({ id: 154, sec: 'maths',
+                text: 'Plane through intersection of 3x−y+2z−4=0 and x+y+z−2=0 and through (2,2,1) is',
+                opts: ['a. 7x−5y+4z−8=0', 'b. 11x−y+8z−8=0', 'c. 11x−y+8z−12=0', 'd. 7x−5y+4z−12=0'] });
+            q.push({ id: 155, sec: 'maths', text: 'If function is continuous in [0,π], values of (a,b) are',
+                opts: ['a. I and II', 'b. II and IV', 'c. III and IV', 'd. None'] });
+            q.push({ id: 156, sec: 'maths',
+                text: 'f:(−1,1)→R differentiable, f(0)=−1, f\'(0)=1. g(x)=[f(2f(x)+2)]². g\'(0) is',
+                opts: ['a. 4', 'b. −4', 'c. 0', 'd. −2'] });
+            q.push({ id: 157, sec: 'maths', text: 'If y=log₂[log₂(x)], then dy/dx is',
+                opts: ['a. 1/(x ln x)', 'b. 1/(x ln2 ln x)', 'c. ln2/(x ln x)', 'd. 1/(x ln2 ln x)'] });
+            q.push({ id: 158, sec: 'maths', text: 'f(x)=(1+x)(1+x²)(1+x⁴)(1+x⁸). f\'(1) is',
+                opts: ['a. 130', 'b. 120', 'c. 110', 'd. None'] });
+            q.push({ id: 159, sec: 'maths', text: 'f(x)=1+nx+n(n−1)x²/2!+... +xⁿ. f\'\'(1) equals',
+                opts: ['a. n(n−1)2ⁿ⁻¹', 'b. (n−1)2ⁿ⁻¹', 'c. n(n−1)2ⁿ⁻²', 'd. n(n−1)2ⁿ'] });
+            q.push({ id: 160, sec: 'maths', text: 'y=log(1+x)−2x/(2+x) is increasing throughout',
+                opts: ['a. x<−1', 'b. x>−1', 'c. x=−1', 'd. x>2'] });
+            q.push({ id: 161, sec: 'maths', text: 'f(x)=(e²ˣ−1)/(e²ˣ+1) is',
+                opts: ['a. decreasing', 'b. increasing', 'c. Both', 'd. None'] });
+            q.push({ id: 162, sec: 'maths',
+                text: 'Distance between origin and normal to y=e²ˣ+x² at x=0 is',
+                opts: ['a. 2', 'b. √3/2', 'c. √5/2', 'd. 2/√5'] });
+            q.push({ id: 163, sec: 'maths', text: 'Sum of two numbers is 24, product maximum. One number is',
+                opts: ['a. 23', 'b. 20', 'c. 18', 'd. 12'] });
+            q.push({ id: 164, sec: 'maths', text: '∫eˣ(1+x)/cos²(eˣx)dx equals',
+                opts: ['a. −cot(eˣ)+C', 'b. tan(xeˣ)+C', 'c. tan(eˣ)+C', 'd. cot(eˣ)+C'] });
+            q.push({ id: 165, sec: 'maths', text: '∫(x²−1)/(x⁴+x²+1)dx equals',
+                opts: ['a. ½log|(x²+x+1)/(x²−x+1)|+C', 'b. 2log|(x²+x+1)/(x²−x+1)|+C',
+                    'c. ½log|(x²−x+1)/(x²+x+1)|+C', 'd. None'
+                ] });
+            q.push({ id: 166, sec: 'maths',
+                text: '∫(2x²+3)/[(x²−1)(x²+4)]dx = a log|(x−1)/(x+1)|+b tan⁻¹(x/2)+C. a,b are',
+                opts: ['a. 1,−1', 'b. −1,1', 'c. 1/2,−1/2', 'd. 1/2,1/2'] });
+            q.push({ id: 167, sec: 'maths', text: '∫₀²/³ dx/(4+9x²) equals',
+                opts: ['a. π/6', 'b. π/12', 'c. π/24', 'd. π/4'] });
+            q.push({ id: 168, sec: 'maths', text: '∫₋π/₂^π/²(x³+xcosx+tan⁵x+1)dx equals',
+                opts: ['a. 0', 'b. 2', 'c. π', 'd. 1'] });
+            q.push({ id: 169, sec: 'maths', text: '∫x³/√(1−x⁸)dx equals',
+                opts: ['a. ¼sin⁻¹(x⁴)+C', 'b. 4sin⁻¹(x⁴)+C', 'c. ¼sin⁻¹(x²)+C', 'd. 4sin⁻¹(x²)+C'] });
+            q.push({ id: 170, sec: 'maths', text: 'Area enclosed by y=x, x=e, y=1/x and positive X-axis is',
+                opts: ['a. 1 sq unit', 'b. 3/2 sq units', 'c. 5/2 sq units', 'd. 1/2 sq unit'] });
+            q.push({ id: 171, sec: 'maths', text: 'DE by eliminating a,b from xy=aeˣ+be⁻ˣ is',
+                opts: ['a. x d²y/dx²+2dy/dx−xy=0', 'b. d²y/dx²+2y dy/dx−xy=0', 'c. x d²y/dx²+2dy/dx+xy=0',
+                    'd. d²y/dx²+dy/dx−2y=0'
+                ] });
+            q.push({ id: 172, sec: 'maths', text: 'Solution of cos y dy/dx = eˣ+sin y+x²e^(sin y) is',
+                opts: ['a. eˣ+e^(−sin y)+x³/3=C', 'b. eˣ−e^(−sin y)+x³/3=C', 'c. eˣ+e^(−sin y)+x³/3=C',
+                    'd. eˣ−e^(sin y)+x³/3=C'
+                ] });
+            q.push({ id: 173, sec: 'maths',
+                text: 'Ratio in which i+2j+3k divides join of −2i+3j+5k and 7i−k is',
+                opts: ['a. 1:2', 'b. 1:4', 'c. 2:3', 'd. 3:4'] });
+            q.push({ id: 174, sec: 'maths',
+                text: 'Position vectors: OA=2i+2j+k, OB=2i+4j+4k. Length of internal bisector of ∠BOA is',
+                opts: ['a. √136/2', 'b. √136/3', 'c. √136/4', 'd. √136/5'] });
+            q.push({ id: 175, sec: 'maths', text: 'A is sum of symmetric B and skew-symmetric C. B equals',
+                opts: ['a. (A+A\')/2', 'b. (A−A\')/2', 'c. A/2', 'd. A\''] });
+            q.push({ id: 176, sec: 'maths', text: 'If Δ and Δ₁ are given determinants, then',
+                opts: ['a. Δ₁=Δ', 'b. Δ₁=−Δ', 'c. Δ₁+Δ=0', 'd. Δ₁=2Δ'] });
+            q.push({ id: 177, sec: 'maths', text: 'If |A²|=25 for given matrix, then |a| equals',
+                opts: ['a. 5²', 'b. 1', 'c. 1/5', 'd. 5'] });
+            q.push({ id: 178, sec: 'maths', text: 'P(A/B)=p, P(A)=p, P(B)=1/3, P(A∪B)=5/9. Then p equals',
+                opts: ['a. 1/2', 'b. 2/3', 'c. 1/3', 'd. 2/5'] });
+            q.push({ id: 179, sec: 'maths', text: 'Negation of "Plants take in CO₂ and give out O₂" is',
+                opts: ['a. Plants do not take in CO₂ and do not give out O₂',
+                    'b. Plants do not take in CO₂ or do not give out O₂',
+                    'c. Plants take in CO₂ and do not give out O₂', 'd. Plants take in CO₂ or do not give out O₂'
+                ] });
+            q.push({ id: 180, sec: 'maths',
+                text: 'LPP: 200 resistors, 120 transistors, 150 capacitors. Type A needs 20,10,10; Type B needs 10,20,30. Which constraint does NOT hold?',
+                opts: ['a. 2x+y≤20', 'b. x+2y≥12', 'c. x+3y≤15', 'd. All hold'] });
+            return q;
+        }
+
+        const allQuestions = getAllQuestions();
+
+        // ==================== RENDER QUESTION AREA ====================
+        function renderQuestionCards() {
+            const area = document.getElementById('questionArea');
+            let html = '';
+            allQuestions.forEach(q => {
+                const svg = q.img ? getSVG(q.img) : '';
+                const optLabels = ['A', 'B', 'C', 'D'];
+                const optVals = ['a', 'b', 'c', 'd'];
+                const optionsHTML = q.opts.map((opt, i) => {
+                    const displayText = opt.replace(/^[a-d]\.\s*/, '');
+                    return `<div class="option-row" data-q="${q.id}" data-val="${optVals[i]}" onclick="selectOption(${q.id},'${optVals[i]}')">
+                        <span class="option-letter">${optLabels[i]}</span>
+                        <span>${displayText}</span>
+                    </div>`;
+                }).join('');
+                html += `
+                <div class="question-card" id="qcard${q.id}" data-sec="${q.sec}">
+                    <div class="q-header">
+                        <span class="q-num-label">Question ${q.id} of 180</span>
+                        <span class="q-subject-badge">${q.sec.charAt(0).toUpperCase()+q.sec.slice(1)}</span>
+                    </div>
+                    <div class="q-text">${q.text}</div>
+                    ${svg}
+                    <div class="options">${optionsHTML}</div>
+                    <div id="resultTag${q.id}" style="margin-top:6px;"></div>
+                </div>`;
+            });
+            area.innerHTML = html;
+        }
+
+        function showQuestion(qId) {
+            document.querySelectorAll('.question-card').forEach(c => c.classList.remove('active-card'));
+            const card = document.getElementById('qcard' + qId);
+            if (card) {
+                card.classList.add('active-card');
+                visitedQuestions.add(qId);
+                currentQuestionId = qId;
+                updateOptionHighlights();
+                updatePalette();
+                updateSubjectTabs();
+                card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+
+        function selectOption(qId, val) {
+            if (submitted) return;
+            userAnswers[qId] = val;
+            visitedQuestions.add(qId);
+            updateOptionHighlights();
+            updatePalette();
+            updateSubjectTabs();
+        }
+
+        function updateOptionHighlights() {
+            document.querySelectorAll('.option-row').forEach(row => {
+                row.classList.remove('selected', 'correct-highlight', 'wrong-highlight');
+            });
+            for (const [qId, val] of Object.entries(userAnswers)) {
+                const row = document.querySelector(`.option-row[data-q="${qId}"][data-val="${val}"]`);
+                if (row) row.classList.add('selected');
+            }
+        }
+
+        // ==================== NAVIGATION ====================
+        function saveAndNext() {
+            if (submitted) return;
+            if (currentQuestionId < totalQuestions) {
+                showQuestion(currentQuestionId + 1);
+            } else {
+                alert('You are at the last question.');
+            }
+        }
+
+        function clearResponse() {
+            if (submitted) return;
+            const qId = currentQuestionId;
+            if (userAnswers[qId]) {
+                delete userAnswers[qId];
+                updateOptionHighlights();
+                updatePalette();
+                updateSubjectTabs();
+                const tagEl = document.getElementById('resultTag' + qId);
+                if (tagEl) tagEl.innerHTML = '';
+            }
+        }
+
+        function goToPrevious() {
+            if (submitted) return;
+            if (currentQuestionId > 1) {
+                showQuestion(currentQuestionId - 1);
+            } else {
+                alert('You are at the first question.');
+            }
+        }
+
+        // ==================== PALETTE ====================
+        function updatePalette() {
+            const gridHTML = buildPaletteGrid();
+            document.getElementById('paletteGrid').innerHTML = gridHTML;
+            document.getElementById('mobilePaletteGrid').innerHTML = gridHTML;
+        }
+
+        function buildPaletteGrid() {
+            return allQuestions.map(q => {
+                let cls = '';
+                if (q.id === currentQuestionId) cls += ' current';
+                if (userAnswers[q.id]) {
+                    cls += ' answered';
+                } else if (visitedQuestions.has(q.id)) {
+                    cls += ' visited-unanswered';
+                }
+                return `<button class="palette-btn ${cls.trim()}" onclick="showQuestion(${q.id});closeMobileDrawer();" title="Q${q.id}">${q.id}</button>`;
+            }).join('');
+        }
+
+        function updateSubjectTabs() {
+            const counts = { physics: 0, chemistry: 0, maths: 0 };
+            for (const [qId, val] of Object.entries(userAnswers)) {
+                const q = allQuestions.find(q => q.id === parseInt(qId));
+                if (q && counts[q.sec] !== undefined) counts[q.sec]++;
+            }
+            document.getElementById('tabCountPhysics').textContent = `(${counts.physics}/60)`;
+            document.getElementById('tabCountChemistry').textContent = `(${counts.chemistry}/60)`;
+            document.getElementById('tabCountMaths').textContent = `(${counts.maths}/60)`;
+        }
+
+        function switchTab(sec) {
+            document.querySelectorAll('#subjectTabs .tab').forEach(t => t.classList.remove('active'));
+            const tab = document.querySelector(`#subjectTabs .tab[data-sec="${sec}"]`);
+            if (tab) tab.classList.add('active');
+            const firstQ = allQuestions.find(q => q.sec === sec);
+            if (firstQ) showQuestion(firstQ.id);
+            closeMobileDrawer();
+        }
+
+        // ==================== MOBILE DRAWER ====================
+        function openMobileDrawer() {
+            document.getElementById('mobileDrawer').classList.remove('hidden-drawer');
+            document.getElementById('mobileOverlay').style.display = 'block';
+            updatePalette();
+        }
+
+        function closeMobileDrawer() {
+            document.getElementById('mobileDrawer').classList.add('hidden-drawer');
+            document.getElementById('mobileOverlay').style.display = 'none';
+        }
+
+        // ==================== SUBMIT & RESULTS ====================
+        function submitTest() {
+            if (submitted) {
+                showResults();
+                return;
+            }
+            if (!confirm('Are you sure you want to submit the test? This action cannot be undone.')) return;
+            submitted = true;
+            clearInterval(timerInterval);
+            const name = getUsername();
+            if (!name) {
+                const inputName = prompt('Please enter your name for the leaderboard:');
+                if (inputName && inputName.trim()) {
+                    setUsername(inputName.trim());
+                    updateHeaderName();
+                }
+            }
+            // Mark all unanswered visited questions
+            allQuestions.forEach(q => {
+                if (!visitedQuestions.has(q.id) && !userAnswers[q.id]) {
+                    // keep as not visited
+                }
+            });
+            updatePalette();
+            updateSubjectTabs();
+            showResults();
+        }
+
+        function showResults() {
+            let correctCount = 0;
+            let attemptedCount = 0;
+            const subjectStats = { physics: { correct: 0, wrong: 0, unattempted: 0, total: 60 },
+                chemistry: { correct: 0, wrong: 0, unattempted: 0, total: 60 }, maths: { correct: 0, wrong: 0,
+                    unattempted: 0, total: 60 } };
+
+            allQuestions.forEach(q => {
+                const userAns = userAnswers[q.id];
+                const correctAns = answerKey[q.id];
+                const card = document.getElementById('qcard' + q.id);
+                const tagEl = document.getElementById('resultTag' + q.id);
+
+                if (userAns) {
+                    attemptedCount++;
+                    if (userAns === correctAns) {
+                        correctCount++;
+                        subjectStats[q.sec].correct++;
+                        if (tagEl) tagEl.innerHTML =
+                            '<span class="result-tag correct-tag">✓ Correct</span>';
+                    } else {
+                        subjectStats[q.sec].wrong++;
+                        if (tagEl) tagEl.innerHTML =
+                            `<span class="result-tag wrong-tag">✗ Your: ${userAns.toUpperCase()} | Correct: ${correctAns.toUpperCase()}</span>`;
+                    }
+                } else {
+                    subjectStats[q.sec].unattempted++;
+                    if (tagEl) tagEl.innerHTML =
+                        `<span class="result-tag unattempted-tag">Not Attempted | Ans: ${correctAns.toUpperCase()}</span>`;
+                }
+
+                if (card) {
+                    const correctRow = card.querySelector(`.option-row[data-val="${correctAns}"]`);
+                    if (correctRow) correctRow.classList.add('correct-highlight');
+                    if (userAns && userAns !== correctAns) {
+                        const wrongRow = card.querySelector(`.option-row[data-val="${userAns}"]`);
+                        if (wrongRow) wrongRow.classList.add('wrong-highlight');
+                    }
+                }
+            });
+
+            const accuracy = attemptedCount > 0 ? Math.round(correctCount / attemptedCount * 100) : 0;
+            const totalScore = correctCount;
+
+            // Save to localStorage
+            const testResults = {
+                testName: 'Mock Test 3',
+                score: totalScore,
+                total: totalQuestions,
+                accuracy: accuracy,
+                date: new Date().toISOString(),
+                subjectStats: subjectStats,
+                correct: correctCount,
+                wrong: attemptedCount - correctCount,
+                unattempted: totalQuestions - attemptedCount
+            };
+            const allResults = JSON.parse(localStorage.getItem('comedk_test_results') || '[]');
+            allResults.push(testResults);
+            localStorage.setItem('comedk_test_results', JSON.stringify(allResults));
+            const bestScore = JSON.parse(localStorage.getItem('comedk_best_score') || '{"score":0}');
+            if (totalScore > bestScore.score) {
+                localStorage.setItem('comedk_best_score', JSON.stringify({ score: totalScore, testName: 'Mock Test 3',
+                    accuracy: accuracy }));
+            }
+
+            // Firebase
+            const username = getUsername() || 'Anonymous';
+            if (typeof window.saveScoreToFirebase === 'function') {
+                window.saveScoreToFirebase(username, 'Mock Test 3', totalScore, totalQuestions, accuracy);
+            }
+
+            // Build results HTML
+            const resultsCard = document.getElementById('resultsCard');
+            resultsCard.innerHTML = `
+                <h2>📝 Test Results</h2>
+                <div class="score-big">${totalScore} / ${totalQuestions}</div>
+                <div class="score-detail">
+                    Correct: <strong>${correctCount}</strong> | Incorrect: <strong>${attemptedCount - correctCount}</strong> | Unattempted: <strong>${totalQuestions - attemptedCount}</strong> | Accuracy: <strong>${accuracy}%</strong>
+                </div>
+                <table>
+                    <thead>
+                        <tr><th>Subject</th><th>Score</th><th>Correct</th><th>Wrong</th><th>Unattempted</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>📐 Physics</td><td>${subjectStats.physics.correct}/60</td><td>${subjectStats.physics.correct}</td><td>${subjectStats.physics.wrong}</td><td>${subjectStats.physics.unattempted}</td></tr>
+                        <tr><td>⚗️ Chemistry</td><td>${subjectStats.chemistry.correct}/60</td><td>${subjectStats.chemistry.correct}</td><td>${subjectStats.chemistry.wrong}</td><td>${subjectStats.chemistry.unattempted}</td></tr>
+                        <tr><td>📊 Maths</td><td>${subjectStats.maths.correct}/60</td><td>${subjectStats.maths.correct}</td><td>${subjectStats.maths.wrong}</td><td>${subjectStats.maths.unattempted}</td></tr>
+                    </tbody>
+                </table>
+                <div class="name-input-row" id="nameInputRow" style="display:${getUsername()?'none':'flex'};">
+                    <input type="text" id="nameInput" placeholder="Enter your name for leaderboard" value="${getUsername()}">
+                    <button onclick="saveNameFromResults()" style="background:#1a56db;color:#fff;border:none;padding:10px 14px;border-radius:5px;cursor:pointer;font-weight:600;">Save</button>
+                </div>
+                <div class="btn-row">
+                    <button class="btn-retake" onclick="retakeTest()">🔄 Retake Test</button>
+                    <button class="btn-home" onclick="goHome()">🏠 Back to Home</button>
+                </div>
+            `;
+            document.getElementById('resultsOverlay').style.display = 'block';
+            document.getElementById('resultsOverlay').scrollIntoView({ behavior: 'smooth' });
+            updatePalette();
+        }
+
+        function saveNameFromResults() {
+            const input = document.getElementById('nameInput');
+            if (input && input.value.trim()) {
+                setUsername(input.value.trim());
+                updateHeaderName();
+                document.getElementById('nameInputRow').style.display = 'none';
+                alert('Name saved!');
+            }
+        }
+
+        function retakeTest() {
+            document.getElementById('resultsOverlay').style.display = 'none';
+            submitted = false;
+            userAnswers = {};
+            visitedQuestions = new Set();
+            totalSeconds = 3 * 60 * 60;
+            clearInterval(timerInterval);
+            timerInterval = setInterval(updateTimer, 1000);
+            document.getElementById('timerBox').textContent = '03:00:00';
+            document.getElementById('timerBox').classList.remove('warning');
+            currentQuestionId = 1;
+            document.querySelectorAll('.question-card').forEach(c => {
+                c.classList.remove('active-card');
+                const qId = parseInt(c.id.replace('qcard', ''));
+                const tagEl = document.getElementById('resultTag' + qId);
+                if (tagEl) tagEl.innerHTML = '';
+                c.querySelectorAll('.option-row').forEach(r => r.classList.remove('correct-highlight',
+                    'wrong-highlight', 'selected'));
+            });
+            updateOptionHighlights();
+            updatePalette();
+            updateSubjectTabs();
+            switchTab('physics');
+            showQuestion(1);
+            document.getElementById('questionArea').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function goHome() {
+            window.location.href = 'index.html';
+        }
+
+        // ==================== INIT ====================
+        function init() {
+            updateHeaderName();
+            renderQuestionCards();
+            showQuestion(1);
+            updatePalette();
+            updateSubjectTabs();
+            switchTab('physics');
+            // Add nav buttons to each question card
+            document.querySelectorAll('.question-card').forEach(card => {
+                const navHTML = `
+                <div class="nav-buttons">
+                    <button class="btn-nav btn-save-next" onclick="saveAndNext()">🟢 Save & Next</button>
+                    <button class="btn-nav btn-clear" onclick="clearResponse()">🔴 Clear Response</button>
+                    <button class="btn-nav btn-prev" onclick="goToPrevious()">⬅ Previous</button>
+                </div>`;
+                card.insertAdjacentHTML('beforeend', navHTML);
+            });
+        }
+
+        init();
+        updateTimer();
+    </script>
+
+    <!-- ==================== FIREBASE LEADERBOARD ==================== -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBz6qXqOpTqQot1GZtJCIwCXnRYg9Hghn4",
+            authDomain: "comedk-20399.firebaseapp.com",
+            projectId: "comedk-20399",
+            storageBucket: "comedk-20399.firebasestorage.app",
+            messagingSenderId: "111466152803",
+            appId: "1:111466152803:web:4e6ca3c7f131ca0dbcc956"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        window.saveScoreToFirebase = async function(name, testName, score, total, accuracy) {
+            try {
+                await addDoc(collection(db, "leaderboard"), {
+                    name,
+                    testName,
+                    score,
+                    total,
+                    accuracy,
+                    timestamp: serverTimestamp()
+                });
+                console.log("Score saved to Firebase!");
+            } catch (e) {
+                console.error("Firebase error:", e);
+            }
+        };
+    </script>
+</body>
+</html>
