@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>COMEDK 2012 - Mock Test</title>
+    <title>COMEDK 2025-s2 - Mock Test</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -795,7 +795,7 @@
             <span class="user-name" id="headerUserName">Candidate</span>
         </div>
         <div class="header-center">
-            <div class="test-title">COMEDK 2012</div>
+            <div class="test-title">COMEDK 2025-s2</div>
             <div class="timer-box" id="timerBox">03:00:00</div>
         </div>
         <div class="header-right">
@@ -859,7 +859,7 @@
     <!-- RESULTS -->
     <div class="results-container" id="resultsContainer">
         <div class="results-title">Test Completed!</div>
-        <div class="results-subtitle">COMEDK 2012 - Your Results</div>
+        <div class="results-subtitle">COMEDK 2025-s2 - Your Results</div>
         <div class="results-score" id="resultsScore">0 / 180</div>
         <div class="results-stats">
             <div class="stat-card"><div class="stat-value correct" id="correctCount">0</div><div class="stat-label">Correct</div></div>
@@ -882,7 +882,7 @@
 
     <script>
         // ============ QUESTION DATA ============
-        // All 180 questions extracted from the COMEDK 2012 PDF
+        // All 180 questions extracted from the COMEDK 2025-s2 PDF
         const allQuestions = {
             physics: [
                 { id: 1, text: 'A circular coil of area \\(2\\sqrt{2}\\,\\text{cm}^2\\) and resistance \\(2\\,\\Omega\\) is arranged vertically in the east-west direction. A uniform magnetic field \\(0.2\\,\\text{T}\\) is set up across the plane in the north to east direction. Now the magnetic field is removed at a steady rate in \\(0.4\\,\\text{s}\\). What is the current developed in the coil?',
@@ -1729,21 +1729,21 @@
             document.getElementById('subjectTableBody').innerHTML = tableHtml;
 
             // Auto-save to localStorage
-            const testKey = 'comedk_2012_best';
+            const testKey = 'comedk_2025-s2_best';
             const prevBest = parseInt(localStorage.getItem(testKey) || '0');
             if (totalScore > prevBest) {
                 localStorage.setItem(testKey, totalScore);
             }
             const takenTests = JSON.parse(localStorage.getItem('comedk_taken_tests') || '[]');
-            if (!takenTests.includes('2012')) {
-                takenTests.push('2012');
+            if (!takenTests.includes('2025-s2')) {
+                takenTests.push('2025-s2');
                 localStorage.setItem('comedk_taken_tests', JSON.stringify(takenTests));
             }
 
             // Firebase save
             const savedName = localStorage.getItem('comedk_username');
             if (savedName && window.saveScoreToFirebase) {
-                window.saveScoreToFirebase(savedName, '2012', totalScore, TOTAL_QUESTIONS, accuracy);
+                window.saveScoreToFirebase(savedName, '2025-s2', totalScore, TOTAL_QUESTIONS, accuracy);
             } else if (!savedName) {
                 nameInputRow.style.display = 'flex';
             }
@@ -1766,7 +1766,7 @@
                 100).toFixed(1) : '0.0';
 
             if (window.saveScoreToFirebase) {
-                window.saveScoreToFirebase(name, '2012', totalScore, TOTAL_QUESTIONS, accuracy);
+                window.saveScoreToFirebase(name, '2025-s2', totalScore, TOTAL_QUESTIONS, accuracy);
             }
         }
 
