@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>COMEDK 2025 S3 – Mock Test</title>
+  <style>
+    :root {
+      --primary: #1a56db;
+      --primary-light: #e8f0fe;
+      --danger: #dc2626;
+      --success: #16a34a;
+      --bg: #f5f5f5;
+      --white: #ffffff;
+      --border: #ddd;
+      --text: #1f2937;
+      --text-light: #6b7280;
+      --radius: 6px;
+      --shadow: 0 1px 3px rgba(0,0,0,0.1);
+      --header-height: 56px;
+      --tabs-height: 44px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+    .header {
+      position: sticky; top: 0; z-index: 100;
+      background: var(--primary); color: white;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 12px; height: var(--header-height);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.15); gap: 8px;
+    }
+    .header-left { display: flex; align-items: center; gap: 8px; min-width:0; flex-shrink:1; }
+    .avatar {
+      width: 32px; height: 32px; border-radius: 50%; background: white; color: var(--primary);
+      display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; flex-shrink:0;
+    }
+    .candidate-name { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 120px; }
+    .header-center { display: flex; align-items: center; gap: 8px; flex-shrink:0; }
+    .test-title { font-size: 14px; font-weight: 700; white-space: nowrap; }
+    .timer-box {
+      background: #1e40af; padding: 6px 10px; border-radius: 4px; font-weight: 700; font-size: 14px;
+      letter-spacing: 0.5px; white-space: nowrap; transition: background 0.5s;
+    }
+    .timer-box.warning { background: var(--danger); animation: pulse 0.8s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.7} }
+    .submit-btn {
+      background: var(--danger); color: white; border: none; padding: 8px 16px; border-radius: 4px;
+      font-weight: 700; cursor: pointer; font-size: 13px; white-space: nowrap; min-height: 36px; flex-shrink:0;
+    }
+    .submit-btn:hover { background: #b91c1c; }
+    .subject-tabs {
+      position: sticky; top: var(--header-height); z-index: 99; background: var(--white);
+      display: flex; border-bottom: 1px solid var(--border); height: var(--tabs-height); box-shadow: var(--shadow);
+    }
+    .subject-tab {
+      flex: 1; text-align: center; padding: 10px 4px; font-weight: 600; font-size: 12px; cursor: pointer;
+      border: none; background: var(--white); color: var(--text-light); border-bottom: 3px solid transparent;
+      transition: all 0.15s; white-space: nowrap; min-height: 44px;
+      display: flex; align-items: center; justify-content: center; gap: 3px;
+    }
+    .subject-tab.active { color: var(--primary); border-bottom-color: var(--primary); }
+    .subject-tab .tab-count { font-size: 10px; color: var(--text-light); }
+    .subject-tab.active .tab-count { color: var(--primary); }
+    .main-container {
+      display: flex; max-width: 1300px; margin: 0 auto; padding: 8px; gap: 8px;
+      min-height: calc(100vh - var(--header-height) - var(--tabs-height) - 16px);
+    }
+    .question-panel {
+      flex: 1 1 75%; background: var(--white); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 16px; box-shadow: var(--shadow); min-width: 0;
+    }
+    .q-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; flex-wrap: wrap; gap: 8px; }
+    .q-number { font-weight: 700; font-size: 15px; }
+    .q-subject-badge { padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: 700; }
+    .q-text { font-size: 16px; line-height: 1.6; margin-bottom: 16px; word-wrap: break-word; }
+    .options-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
+    .option-row {
+      display: flex; align-items: center; gap: 10px; padding: 12px 14px; border: 2px solid var(--border);
+      border-radius: var(--radius); cursor: pointer; font-size: 15px; min-height: 52px; transition: all 0.15s;
+      background: var(--white);
+    }
+    .option-row:hover { border-color: #93c5fd; background: #f8faff; }
+    .option-row.selected { border-color: var(--primary); background: var(--primary-light); font-weight: 600; }
+    .option-letter { width: 32px; height: 32px; border-radius: 50%; background: #e5e7eb; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; flex-shrink: 0; }
+    .option-row.selected .option-letter { background: var(--primary); color: white; }
+    .option-text { flex: 1; word-wrap: break-word; }
+    .action-buttons { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+    .btn {
+      padding: 10px 16px; border-radius: var(--radius); font-weight: 600; cursor: pointer; border: 1px solid var(--border);
+      font-size: 13px; min-height: 48px; transition: all 0.15s; white-space: nowrap;
+    }
+    .btn-save-next { background: #16a34a; color: white; border-color: #16a34a; }
+    .btn-save-next:hover { background: #15803d; }
+    .btn-clear { background: white; color: var(--danger); border-color: var(--danger); }
+    .btn-clear:hover { background: #fef2f2; }
+    .btn-prev { background: white; color: var(--text); border-color: var(--border); }
+    .btn-prev:hover { background: #f9fafb; }
+    .palette-sidebar {
+      flex: 0 0 280px; background: var(--white); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 12px; box-shadow: var(--shadow); display: flex; flex-direction: column;
+      max-height: calc(100vh - var(--header-height) - var(--tabs-height) - 32px);
+      position: sticky; top: calc(var(--header-height) + var(--tabs-height) + 8px); overflow-y: auto;
+    }
+    .palette-title { font-weight: 700; font-size: 14px; margin-bottom: 8px; }
+    .palette-name { font-size: 12px; color: var(--text-light); margin-bottom: 10px; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
+    .palette-grid { display: grid; grid-template-columns: repeat(10, 1fr); gap: 4px; margin-bottom: 12px; }
+    .palette-btn {
+      width: 100%; aspect-ratio: 1; border: 1px solid #d1d5db; border-radius: 3px; font-size: 10px; font-weight: 600;
+      cursor: pointer; background: #e5e7eb; color: #6b7280; min-width: 22px; min-height: 22px; transition: all 0.1s; padding: 0;
+    }
+    .palette-btn.visited { background: #fca5a5; border-color: #ef4444; color: #991b1b; }
+    .palette-btn.answered { background: #86efac; border-color: #22c55e; color: #166534; }
+    .palette-btn.active { border: 2px solid #1a56db; box-shadow: 0 0 0 1px #1a56db; }
+    .legend { display: flex; flex-direction: column; gap: 4px; font-size: 11px; }
+    .legend-item { display: flex; align-items: center; gap: 6px; }
+    .legend-dot { width: 14px; height: 14px; border-radius: 3px; flex-shrink: 0; }
+    .legend-dot.not-visited { background: #e5e7eb; border: 1px solid #d1d5db; }
+    .legend-dot.visited { background: #fca5a5; border: 1px solid #ef4444; }
+    .legend-dot.answered { background: #86efac; border: 1px solid #22c55e; }
+    .mobile-palette-btn {
+      display: none; position: fixed; bottom: 16px; right: 16px; z-index: 200;
+      background: var(--primary); color: white; border: none; border-radius: 50px;
+      padding: 12px 20px; font-weight: 700; font-size: 14px; cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3); min-height: 48px;
+    }
+    .mobile-drawer {
+      display: none; position: fixed; bottom: 0; left: 0; right: 0; z-index: 300;
+      background: var(--white); border-top: 1px solid var(--border); border-radius: 16px 16px 0 0;
+      padding: 16px; max-height: 70vh; overflow-y: auto; box-shadow: 0 -4px 20px rgba(0,0,0,0.15);
+      transform: translateY(100%); transition: transform 0.3s ease;
+    }
+    .mobile-drawer.open { transform: translateY(0); }
+    .drawer-handle { width: 40px; height: 4px; background: #ccc; border-radius: 2px; margin: 0 auto 12px; }
+    .drawer-overlay { display: none; position: fixed; inset: 0; z-index: 299; background: rgba(0,0,0,0.4); }
+    .drawer-overlay.open { display: block; }
+    .results-screen {
+      display: none; max-width: 700px; margin: 20px auto; background: var(--white);
+      border: 1px solid var(--border); border-radius: 12px; padding: 24px; box-shadow: var(--shadow); text-align: center;
+    }
+    .results-screen.active { display: block; }
+    .results-score { font-size: 48px; font-weight: 700; color: var(--primary); }
+    .results-total { font-size: 18px; color: var(--text-light); }
+    .results-stats { display: flex; justify-content: center; gap: 24px; margin: 16px 0; flex-wrap: wrap; }
+    .stat-box { text-align: center; padding: 12px 16px; border-radius: 8px; border: 1px solid var(--border); min-width: 80px; }
+    .stat-box .stat-num { font-size: 24px; font-weight: 700; }
+    .stat-box.correct { color: #16a34a; }
+    .stat-box.incorrect { color: #dc2626; }
+    .stat-box.unattempted { color: #6b7280; }
+    .results-table { width: 100%; border-collapse: collapse; margin: 16px 0; }
+    .results-table th, .results-table td { border: 1px solid var(--border); padding: 8px 10px; font-size: 13px; text-align: center; }
+    .results-table th { background: #f9fafb; font-weight: 700; }
+    .name-input-row { display: flex; gap: 8px; justify-content: center; margin: 12px 0; flex-wrap: wrap; }
+    .name-input { padding: 10px 14px; border: 1px solid var(--border); border-radius: var(--radius); font-size: 15px; min-width: 200px; }
+    .retake-btn, .home-btn { padding: 10px 20px; border-radius: var(--radius); font-weight: 600; cursor: pointer; font-size: 14px; min-height: 48px; margin: 4px; }
+    .retake-btn { background: var(--primary); color: white; border: none; }
+    .home-btn { background: white; color: var(--text); border: 1px solid var(--border); }
+
+    @media (max-width: 768px) {
+      .palette-sidebar { display: none; }
+      .mobile-palette-btn { display: block; }
+      .mobile-drawer { display: block; }
+      .main-container { flex-direction: column; padding: 4px; gap: 4px; padding-bottom: 70px; }
+      .question-panel { padding: 12px; }
+      .q-text { font-size: 15px; }
+      .option-row { font-size: 14px; padding: 10px 12px; min-height: 52px; }
+      .btn { font-size: 12px; padding: 8px 12px; min-height: 48px; }
+      .header { padding: 0 8px; }
+      .test-title { font-size: 12px; }
+      .timer-box { font-size: 12px; padding: 4px 8px; }
+      .submit-btn { font-size: 11px; padding: 6px 10px; }
+      .candidate-name { font-size: 11px; max-width: 80px; }
+      .subject-tab { font-size: 10px; padding: 8px 2px; }
+      .action-buttons { gap: 4px; }
+      .btn { flex: 1; min-width: 0; text-align: center; padding: 10px 6px; }
+    }
+    @media (max-width: 480px) {
+      .header { height: 48px; }
+      .test-title { font-size: 11px; }
+      .timer-box { font-size: 11px; padding: 4px 6px; }
+      .submit-btn { font-size: 10px; padding: 5px 8px; }
+      .subject-tabs { height: 38px; }
+      .subject-tab { font-size: 9px; padding: 6px 1px; }
+      .q-text { font-size: 14px; }
+      .option-row { font-size: 13px; min-height: 48px; padding: 8px 10px; }
+      .btn { font-size: 11px; min-height: 44px; padding: 8px 4px; }
+      .palette-grid { grid-template-columns: repeat(8, 1fr); gap: 2px; }
+      .palette-btn { font-size: 8px; min-width: 18px; min-height: 18px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="header" id="header">
+    <div class="header-left">
+      <div class="avatar" id="avatar">👤</div>
+      <span class="candidate-name" id="headerName">Candidate</span>
+    </div>
+    <div class="header-center">
+      <span class="test-title">COMEDK 2025 S3</span>
+      <span class="timer-box" id="timerBox">03:00:00</span>
+    </div>
+    <button class="submit-btn" onclick="submitTest()">Submit Test</button>
+  </header>
+
+  <div class="subject-tabs" id="subjectTabs">
+    <button class="subject-tab active" onclick="jumpToSubject('math')" id="tab-math">📐 Math <span class="tab-count" id="count-math">(0/60)</span></button>
+    <button class="subject-tab" onclick="jumpToSubject('chemistry')" id="tab-chemistry">🧪 Chemistry <span class="tab-count" id="count-chemistry">(0/60)</span></button>
+    <button class="subject-tab" onclick="jumpToSubject('physics')" id="tab-physics">⚛ Physics <span class="tab-count" id="count-physics">(0/60)</span></button>
+  </div>
+
+  <div class="main-container" id="mainContainer">
+    <div class="question-panel" id="questionPanel">
+      <div class="q-header">
+        <span class="q-number" id="qNumber">Question 1 of 180</span>
+        <span class="q-subject-badge" id="qSubjectBadge">Math</span>
+      </div>
+      <div class="q-text" id="qText"></div>
+      <div class="options-list" id="optionsList"></div>
+      <div class="action-buttons">
+        <button class="btn btn-save-next" onclick="saveAndNext()">🟢 Save & Next</button>
+        <button class="btn btn-clear" onclick="clearResponse()">🔴 Clear Response</button>
+        <button class="btn btn-prev" onclick="prevQuestion()">⬅ Previous</button>
+      </div>
+    </div>
+    <div class="palette-sidebar" id="paletteSidebar">
+      <div class="palette-title">Question Palette</div>
+      <div class="palette-name" id="paletteName">Candidate</div>
+      <div class="palette-grid" id="paletteGrid"></div>
+      <div class="legend">
+        <div class="legend-item"><span class="legend-dot not-visited"></span> Not Visited</div>
+        <div class="legend-item"><span class="legend-dot visited"></span> Visited, Not Answered</div>
+        <div class="legend-item"><span class="legend-dot answered"></span> Answered</div>
+      </div>
+    </div>
+  </div>
+
+  <button class="mobile-palette-btn" id="mobilePaletteBtn" onclick="openMobileDrawer()">📋 Questions</button>
+  <div class="drawer-overlay" id="drawerOverlay" onclick="closeMobileDrawer()"></div>
+  <div class="mobile-drawer" id="mobileDrawer">
+    <div class="drawer-handle"></div>
+    <div class="palette-title">Question Palette</div>
+    <div class="palette-grid" id="mobilePaletteGrid"></div>
+    <div class="legend">
+      <div class="legend-item"><span class="legend-dot not-visited"></span> Not Visited</div>
+      <div class="legend-item"><span class="legend-dot visited"></span> Visited, Not Answered</div>
+      <div class="legend-item"><span class="legend-dot answered"></span> Answered</div>
+    </div>
+  </div>
+
+  <div class="results-screen" id="resultsScreen">
+    <h2>Test Completed!</h2>
+    <div class="results-score" id="resultsScore">0</div>
+    <div class="results-total">out of 180</div>
+    <div class="results-stats">
+      <div class="stat-box correct"><div class="stat-num" id="statCorrect">0</div>Correct</div>
+      <div class="stat-box incorrect"><div class="stat-num" id="statIncorrect">0</div>Incorrect</div>
+      <div class="stat-box unattempted"><div class="stat-num" id="statUnattempted">0</div>Unattempted</div>
+    </div>
+    <div style="font-size:14px;margin:4px 0;">Accuracy: <strong id="resultsAccuracy">0%</strong></div>
+    <div class="name-input-row" id="nameInputRow">
+      <input class="name-input" id="nameInput" placeholder="Enter your name" maxlength="50">
+      <button class="retake-btn" onclick="saveNameAndSubmit()">Save & Submit to Leaderboard</button>
+    </div>
+    <table class="results-table">
+      <thead><tr><th>Subject</th><th>Score</th><th>Correct</th><th>Wrong</th><th>Unattempted</th></tr></thead>
+      <tbody id="resultsTableBody"></tbody>
+    </table>
+    <div>
+      <button class="retake-btn" onclick="retakeTest()">Retake Test</button>
+      <button class="home-btn" onclick="window.location.href='index.html'">🏠 Back to Home</button>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBz6qXqOpTqQot1GZtJCIwCXnRYg9Hghn4",
+      authDomain: "comedk-20399.firebaseapp.com",
+      projectId: "comedk-20399",
+      storageBucket: "comedk-20399.firebasestorage.app",
+      messagingSenderId: "111466152803",
+      appId: "1:111466152803:web:4e6ca3c7f131ca0dbcc956"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    window.saveScoreToFirebase = async function(name, testName, score, total, accuracy) {
+      try {
+        await addDoc(collection(db, "leaderboard"), {
+          name, testName, score, total, accuracy,
+          timestamp: serverTimestamp()
+        });
+        console.log("✅ Score saved to Firebase!");
+      } catch (e) {
+        console.error("Firebase error:", e);
+      }
+    };
+  </script>
+
+  <script>
+    // ---------- 180 QUESTIONS (Math 1-60, Chemistry 61-120, Physics 121-180) ----------
+    const allQuestions = [];
+    function q(id, subject, text, options, answer) {
+      allQuestions.push({ id, subject, text, options, answer });
+    }
+
+    // Math (0..59)
+    q(0,'math','A function f from natural numbers to integers: f(n)=(n-1)/2 (odd), f(n)=-n/2 (even) is:',['A. neither one-one nor onto','B. one-one but not onto','C. onto but not one-one','D. one-one and onto'],'D');
+    q(1,'math','(sin²20°+cos⁴20°)/(sin⁴20°+cos²20°) =',['A. 0','B. 2','C. 1','D. 1/2'],'C');
+    q(2,'math','∫ sin2x/((1+sinx)(2+sinx)) dx = a log|1+sinx| - b log|2+sinx| + c. Then a,b:',['A. a=-2,b=4','B. a=2,b=4','C. a=-2,b=-4','D. a=2,b=-4'],'C');
+    q(3,'math','Solution of 3x-7<5+x and 11-5x≤1:',['A. [2,6)','B. (2,6]','C. (2,6)','D. [2,6]'],'A');
+    q(4,'math','Matrix A from purchases: |adj A| =',['A. 9','B. -9','C. -1','D. 1'],'D');
+    q(5,'math','Area of triangle by vertex of x²=λy and latus rectum ends is 18. λ=',['A. 24','B. 12','C. 6','D. 18'],'B');
+    q(6,'math','X=[[1,0],[0,1]], Y=[[0,1],[-1,0]], B=[[cosθ,sinθ],[-sinθ,cosθ]] equals:',['A. -Xcosθ+Ysinθ','B. Xsinθ+Ycosθ','C. Xcosθ-Ysinθ','D. Xcosθ+Ysinθ'],'D');
+    q(7,'math','Two numbers from 1-9, sum even → prob both odd:',['A. 4/9','B. 5/8','C. 1/6','D. 2/3'],'B');
+    q(8,'math','SD of 0..9 is k; SD of 10..19 is:',['A. k+4','B. k+10','C. k','D. k+8'],'C');
+    q(9,'math','A=[[a,b],[b,a]], (AI)²=[[α,β],[β,α]]. Then:',['A. α=a²+b²,β=2ab','B. α=2ab,β=a²+b²','C. α=a²+b²,β=ab','D. α=a²+b²,β=a²-b²'],'A');
+    q(10,'math','f(x)=x√(4ax-x²), a>0. f\'(x) at x=2a is:',['A. Does not exist','B. Zero','C. Decreasing','D. Increasing'],'D');
+    q(11,'math','Angle 45°, one slope 1/4. Other slope:',['A. 5/4','B. 5/3','C. 4/5','D. 3/5'],'B');
+    q(12,'math','Z=80x+120y; x+3y≤30,3x+4y≤60. Corner point P:',['A. (0,15)','B. (20,0)','C. (6,12)','D. (30,0)'],'B');
+    q(13,'math','sinx+sin²x=1 → cos⁸x+2cos⁶x+cos⁴x =',['A. 0','B. 1','C. -1','D. 2'],'B');
+    q(14,'math','∫₀¹ x(1-x)⁹⁹ dx =',['A. 1/10010','B. 1/1010','C. -1/10100','D. 1/10100'],'D');
+    q(15,'math','det(A)=7 for 3×3. det(cofactor matrix)=',['A. 7','B. 49','C. 14','D. 343'],'B');
+    q(16,'math','f(x)={ax+1,x≤3; bx+3,x>3} continuous → relation:',['A. 3b=3a+2','B. 3a=b+2','C. 3a=3b+2','D. a=3b-2'],'C');
+    q(17,'math','f(x)=μ sinx+⅓ sin3x, f\'(π/3)=0 → μ=',['A. 0','B. -1','C. 1','D. 2'],'D');
+    q(18,'math','Man walks from 41.6m tower, eye 1.6m, speed 2m/s, distance 30m. dθ/dt:',['A. -4/125 rad/s','B. 4/625 rad/s','C. -2/125 rad/s','D. 1/625 rad/s'],'A');
+    q(19,'math','sin⁻¹(x-1)+cos⁻¹(x-3)+tan⁻¹(x/(2-x²))=cos⁻¹k+π → k=',['A. 0','B. -1/√2','C. 1','D. 1/√2'],'D');
+    q(20,'math','z=(√3/2+i/2)⁵+(√3/2-i/2)⁵ →',['A. Re>0,Im<0','B. Im=0','C. Re=0','D. Re>0,Im>0'],'B');
+    q(21,'math','x cosy dy = (xeˣ logx + eˣ)dx → solution:',['A. siny - eˣ logx = c','B. siny = eˣ logx + c','C. siny = eˣ + logx + c','D. siny = eˣ/x + c'],'B');
+    q(22,'math','Area bounded by y=cosx between -π/2 and π:',['A. 3','B. 4','C. 1','D. 2'],'A');
+    q(23,'math','Quadratic f(1)=19, max 20 at x=2 → f(x)=',['A. x²-4x+16','B. -x²+5x+16','C. x²+4x+16','D. -x²+4x+16'],'D');
+    q(24,'math','P(Ā)=0.3,P(B)=0.4,P(A∩B̄)=0.5 → P(B|A∪B̄)=',['A. 0.33','B. 0.7','C. 0.8','D. 0.25'],'D');
+    q(25,'math','lim(x→1)(x⁴-1)/(x-1)=lim(x→k)(x³-k³)/(x²-k²) → k=',['A. 3/4','B. 4/3','C. 8','D. 8/3'],'D');
+    q(26,'math','∫(eˣ logₑ6)eˣ dx = φ(x)+c. φ(x)=',['A. 6ˣeˣ','B. eˣ/log(6e)','C. 6ˣ/(1+logₑ6)','D. (6e)ˣ/(1+logₑ6)'],'D');
+    q(27,'math','dy/dx=(y+1)/(x-1), y(1)=2. Number of solutions:',['A. two','B. one','C. zero','D. infinite'],'C');
+    q(28,'math','lim(x→0)(∛(1+x)-∛(1-x))/x =',['A. 1','B. 0','C. 2/3','D. 1/3'],'C');
+    q(29,'math','GP even terms: sum all = 5×sum odd positions → r=',['A. 4','B. 3','C. 6','D. 2'],'A');
+    q(30,'math','df/dx=2f, f(0)=e³ → f(x)=',['A. 2x+3','B. log(2x+3)','C. e^(2x+3)','D. x²/2'],'C');
+    q(31,'math','Game: win ₹1000 (p=1/3), lose ₹200, max 3 throws. Expected gain:',['A. 2200/9 loss','B. 3800/9 gain','C. 2200/9 gain','D. 3800/9 loss'],'B');
+    q(32,'math','DEFINITE: two vowels together, other two together but separate. Words:',['A. 720','B. 1680','C. 1440','D. 2880'],'C');
+    q(33,'math','R={(1,1),(2,2),(3,3)} on {1,2,3} is:',['A. symmetric only','B. equivalence relation','C. transitive only','D. reflexive only'],'B');
+    q(34,'math','Diagonal of square increases 0.1 cm/s. dA/dt when side=15/√2 cm:',['A. 3 cm²/s','B. 0.15 cm²/s','C. 1.5 cm²/s','D. 3√2 cm²/s'],'C');
+    q(35,'math','Proper subsets of first = 119 + subsets of second. m-n=',['A. 4','B. 6','C. 8','D. 1'],'A');
+    q(36,'math','n means between a,2b and 2a,b. mth means equal → a:b=',['A. m:(n-m+1)','B. n:(n-m+1)','C. (n-m+1):m','D. (n-m+1):n'],'A');
+    q(37,'math','∫₋₂² |x-3|/(x-3) dx =',['A. -4','B. -2','C. 0','D. 2'],'A');
+    q(38,'math','x=a[cost+½log(tan²(t/2))], y=a sint. dy/dx=',['A. a²cos³t/sint','B. tant','C. a tant sect','D. sec²t'],'B');
+    q(39,'math','Area under y=√(a²-x²) from 0 to a is 4. a=',['A. 16/√π','B. 4/π','C. 2/√π','D. 4/√π'],'D');
+    q(40,'math','y=logx/x³ increasing for:',['A. 0<x<e^(1/3)','B. x>e^(1/3)','C. x<2','D. x<e^(1/3)'],'A');
+    q(41,'math','P={5m}, Q={5^m}, m∈N. Then:',['A. P=Q','B. P⊂Q','C. Q⊂P','D. P∪Q=N'],'C');
+    q(42,'math','Image of P(3,5,3) in line x/1=(y-1)/2=(z-2)/3 is (a,b,c). a+b+c=',['A. -17','B. -7','C. 3','D. 7'],'D');
+    q(43,'math','a⃗·b⃗=|a⃗×b⃗| → angle =',['A. π/4','B. π','C. π/3','D. π/2'],'A');
+    q(44,'math','Numbers 100-1000 with at least one digit 6:',['A. 243','B. 251','C. 252','D. 258'],'C');
+    q(45,'math','For vector p⃗, 2(|p×î|²+|p×ĵ|²+|p×k̂|²)=',['A. 4|p|²','B. 2|p|²','C. 4|p|','D. 2|p|'],'A');
+    q(46,'math','∫_{π/6}^{π/3} 1/(1+√tanx) dx =',['A. π/3','B. π/6','C. π/12','D. π/2'],'C');
+    q(47,'math','A=[[4,λ,-3],[0,2,5],[1,1,3]]. A⁻¹ exists if:',['A. λ=2','B. λ=0','C. λ≠2','D. λ≠-2'],'D');
+    q(48,'math','tan(cos⁻¹(√2/2)-π/2) =',['A. -1','B. 1/√2','C. 1','D. -1/√2'],'A');
+    q(49,'math','(3x+14y+7)+k(5x+7y+6)=0 ⟂ x-axis → k=',['A. -2','B. 2','C. -3/5','D. 1/3'],'A');
+    q(50,'math','Line intercept sum=5, passes (-3,4). Eqn:',['A. 2x-y+10=0','B. 2x+3y=6','C. 3x+2y=6','D. x+4y=13'],'B');
+    q(51,'math','Foci of ellipse x²/16+y²/b²=1 and hyperbola x²/144-y²/81=1/25 coincide. b²=',['A. 5','B. 9','C. 1','D. 7'],'D');
+    q(52,'math','Line through origin, direction angles 2π/3,π/4,π/3:',['A. x=y/√2=z','B. x/(-1)=y/(-√2)=z','C. x=y/(-√2)=z','D. x=y/(-√2)=-z'],'D');
+    q(53,'math','Intersection of (x-1)/2=(y+1)/3=(z-1)/4 and (x-3)/1=(y-k)/2=z/1. k=',['A. 13/2','B. -13/2','C. 7/2','D. 9/2'],'D');
+    q(54,'math','cos²x dy/dx + y = tanx, y(0)=1 → y(π/4)=',['A. 2','B. 2/e','C. e','D. 1'],'B');
+    q(55,'math','tanα=1/7, sinβ=1/√10, 0<α,β<π/2 → 2β=',['A. π/8-α','B. π/4-α','C. 3π/8-α/2','D. 3π/4-α'],'B');
+    q(56,'math','Die twice: P(4,5,6 first AND 1,2,3,4 second)=',['A. 5/6','B. 3/4','C. 2/3','D. 1/3'],'D');
+    q(57,'math','y=x+eˣ → d²x/dy² =',['A. eˣ','B. -eˣ/(1+eˣ)²','C. -eˣ/(1+eˣ)³','D. -1/(1+eˣ)³'],'C');
+    q(58,'math','An aqueous solution of electrolyte A₃B (0.5625g in 750ml, 80% ionized, Kb=0.52). Boiling point:',['A. 374.33K','B. 371.68K','C. 373.18K','D. 377.2K'],'A');
+    q(59,'math','Arrange complex ions by magnetic moment: [Fe(H₂O)₆]²⁺, [Fe(CN)₆]⁴⁻, [Fe(CN)₆]³⁻, [FeF₆]³⁻',['A. D<A<B<C','B. B<C<A<D','C. D<C<B<A','D. A<D<C<B'],'B');
+
+    // Chemistry (60..119)
+    q(60,'chemistry','Temperature 300→310K, rate constant +12%. Activation energy:',['A. 163.9 kJ/mol','B. 85.69 kJ/mol','C. 192.17 kJ/mol','D. 8.76 kJ/mol'],'D');
+    q(61,'chemistry','First electron gain enthalpy of O is -141 kJ/mol. Second is:',['A. positive value','B. less negative','C. maximum negative','D. same as first'],'A');
+    q(62,'chemistry','2 mol ideal gas expands into vacuum to double volume. Work done:',['A. 2 J','B. 0 J','C. 1.5 J','D. 10 J'],'B');
+    q(63,'chemistry','Reaction order: 3 wrt W, 1 wrt X. Both tripled → rate ×:',['A. 81','B. 27','C. 51','D. 15'],'A');
+    q(64,'chemistry','Correct statement:',['A. Fructose is invert sugar','B. Leucine & Tryptophan essential','C. Curdling not denaturation','D. Amylose branched'],'B');
+    q(65,'chemistry','Cell: 4Br⁻+O₂+4H⁺→2Br₂+2H₂O, E°=0.16V. Kc (reverse):',['A. 2.012×10⁻¹⁰','B. 8.47×10⁻⁹','C. 1.422×10⁻¹¹','D. 7.031×10⁻¹⁰'],'C');
+    q(66,'chemistry','Bond angles decreasing: BF₃, NH₃, PF₃, XeF₂',['A. NH₃>PF₃>XeF₂>BF₃','B. XeF₂>BF₃>NH₃>PF₃','C. BF₃>NH₃>XeF₂>PF₃','D. PF₃>BF₃>NH₃>XeF₂'],'B');
+    q(67,'chemistry','Assertion: NaCl electrolysis gives Cl₂ at anode. Reason: O₂ overpotential.',['A. Both incorrect','B. Both correct','C. Assertion correct, Reason incorrect','D. Assertion incorrect, Reason correct'],'B');
+    q(68,'chemistry','Osmotic pressure π=1.013 bar, volume V ml, solute mass WB, molar mass MB. WB=',['A. πMBV/(760×RT×1000)','B. πMBV×1000/(76RT)','C. πMBV/RT','D. πMBV/(1000RT)'],'D');
+    q(69,'chemistry','N₂:O₂=4:1, KH N₂=76.48, O₂=34.86 kbar. Mole fraction ratio in water:',['A. 3:1','B. 2:1','C. 1:1','D. 1:4'],'B');
+    q(70,'chemistry','Coefficients for two redox equations:',['A. a=3,b=8,c=6,d=6','B. a=5,b=6,c=3,d=8','C. a=2,b=8,c=4,d=4','D. a=2,b=6,c=6,d=5'],'B');
+    q(71,'chemistry','PH₃ decomposition, first order. 3/4 in 75.76s. Fraction after 2 min:',['A. 0.354','B. 0.111','C. 0.954','D. 0.898'],'B');
+    q(72,'chemistry','Disproportionation example:',['A. 2H₂O₂→2H₂O+O₂','B. 2KMnO₄→K₂MnO₄+MnO₂+O₂','C. 2MnO₄⁻+10I⁻→...','D. 2NaI+Cl₂→...'],'A');
+    q(73,'chemistry','Alkane C₈H₁₈ giving single monochloride:',['A. 2,2,4-trimethylpentane','B. 2,4-dimethylhexane','C. 2,2,3,3-tetramethylbutane','D. 3,4-dimethylhexane'],'C');
+    q(74,'chemistry','A+B⇌2C, initial 1.0,1.5,0.5 M, eq [C]=1.0. Kc=x/15. x=',['A. 32','B. 22','C. 18','D. 16'],'D');
+    q(75,'chemistry','Reactivity of halogens with alkanes:',['A. F₂>Cl₂>Br₂>I₂','B. F₂>Br₂>Cl₂>I₂','C. Cl₂>F₂>Br₂>I₂','D. I₂>Br₂>Cl₂>F₂'],'A');
+    q(76,'chemistry','Match reactions with products (diazonium etc.):',['A. A=R,B=S,C=P,D=Q','B. A=S,B=R,C=P,D=Q','C. A=R,B=Q,C=S,D=P','D. A=S,B=R,C=Q,D=P'],'D');
+    q(77,'chemistry','Grams of Br₂ reacting with 5g pentene:',['A. 22.4 g','B. 8.4 g','C. 11.4 g','D. 54.2 g'],'C');
+    q(78,'chemistry','Assertion: Insulin protein, Glycylalanine not. Reason: <100 residues can be protein.',['A. Assertion correct, Reason incorrect','B. Both incorrect','C. Both correct','D. Assertion incorrect, Reason correct'],'C');
+    q(79,'chemistry','Metal/ion matching (reactivity, f⁷, colorless, diamagnetic):',['A. Cu,Dy²⁺,Sm³⁺,Ho','B. Zn,Ce²⁺,Gd³⁺,Sm','C. Fe,Pr²⁺,Tm³⁺,Ce','D. Ca,Eu²⁺,Lu³⁺,Yb'],'D');
+    q(80,'chemistry','Reductive ozonolysis giving ketones only:',['A. 1,2-butadiene','B. 1,4-cyclohexadiene','C. But-2-ene','D. 2,3-dimethylbut-2-ene'],'D');
+    q(81,'chemistry','Oxidation number of K in K₂O, K₂O₂, KO₂:',['A. +1,+2,+4','B. +1,+2,+1','C. +1,+1,+1','D. +2,+1,+1'],'C');
+    q(82,'chemistry','Cell: 2M+O₂+4H⁺→2M²⁺+2H₂O, E°=1.67V. [M²⁺]=10⁻³, pO₂=0.1, E=1.57 → pH=',['A. 3.49','B. 2.95','C. 5.24','D. 12.01'],'B');
+    q(83,'chemistry','Major product: (CH₃)₂CHCH₂Cl + (CH₃)₃CO⁻, heat →',['A. substitution','B. substitution','C. 2-methylpropene','D. rearrangement'],'C');
+    q(84,'chemistry','Conductivity cell: 0.1M KCl R=80Ω, σ=1.29; unknown 0.025M R=92Ω. Λm =',['A. 220.6','B. 0.2206','C. 448','D. 0.449'],'C');
+    q(85,'chemistry','Compound X (C₈H₁₁N) optically active, isocyanide +, alcohol with HNO₂:',['A. 2-Ethylaniline','B. 1-Phenylethanamine','C. 3,4-Dimethylaniline','D. 2,4-Dimethylaniline'],'B');
+    q(86,'chemistry','Correct statement:',['A. Methylamine>Dimethylamine>Trimethylamine>Aniline','B. Primary amines stronger H-bonding','C. Diazonium+Aniline→C₆H₅-N=N-NH-C₆H₅','D. Primary amine+CHCl₃/KOH→Nitrile'],'B');
+    q(87,'chemistry','Cr(Z=24): electrons with l=1 and l=2:',['A. 5 and 16','B. 12 and 5','C. 12 and 8','D. 12 and 16'],'B');
+    q(88,'chemistry','Ratio of difference in radii of 3rd & 4th orbits He⁺ : Li²⁺:',['A. 2:3','B. 3:1','C. 1:3','D. 3:2'],'D');
+    q(89,'chemistry','Fe₂O₃(s)+3CO(g)⇌2Fe(l)+3CO₂(g). Which will NOT disturb equilibrium?',['A. Remove CO₂','B. Add CO','C. Remove CO','D. Add Fe₂O₃'],'D');
+    q(90,'chemistry','Electronic configuration of element Z=78:',['A. [Xe]4f¹⁴5d⁹6s¹','B. [Kr]4f¹⁴5d⁸6s²','C. [Xe]4f¹⁴5d¹⁰','D. [Kr]4f¹⁴5d¹⁰'],'A');
+    q(91,'chemistry','Final product [Y] from p-nitrotoluene + CrO₂Cl₂ then acetophenone/OH⁻:',['A,B,C,D structures','A','B','C','D'],'D');
+    q(92,'chemistry','Incorrect statement:',['A. Cresols less acidic','B. Ethanol nucleophile when O-H broken','C. Hydration: oxonium then carbocation','D. Ethanol+H₂SO₄ 413K forms oxonium'],'C');
+    q(93,'chemistry','Match: Cr₂O₇²⁻, FeCr₂O₄, CrO₃, CrO',['A. A=R,B=S,C=P,D=Q','B. A=S,B=R,C=P,D=Q','C. A=R,B=Q,C=S,D=P','D. A=S,B=R,C=Q,D=P'],'D');
+    q(94,'chemistry','Electrons symmetrically distributed in t₂g and eg:',['A. [CoF₆]³⁻','B. [Mn(CN)₆]⁴⁻','C. [Cr(NH₃)₆]³⁺','D. [FeCl₆]³⁻'],'D');
+    q(95,'chemistry','Incorrect electrochemical reactions:',['A. C&D','B. A&C','C. B&D','D. A&B'],'D');
+    q(96,'chemistry','Correct statement:',['A. Zero order [A] vs t horizontal','B. First order 3/4 completion = 2 half-lives','C. Second order rate ×27 when conc tripled','D. Molecularity always > order'],'B');
+    q(97,'chemistry','Propyne + CH₃MgBr → X (dry ether). X is:',['A. But-2-yne','B. Propane','C. Methane','D. But-2-ene'],'C');
+    q(98,'chemistry','Match IUPAC names with structures:',['A. A=R,B=P,C=S,D=Q','B. A=S,B=R,C=Q,D=P','C. A=Q,B=P,C=S,D=R','D. A=S,B=R,C=P,D=Q'],'A');
+    q(99,'chemistry','X (C₆H₁₂O₂) + dil H₂SO₄ → alcohol B + acid C. B + Jones → C. C + P₂O₅ → anhydride. X:',['A. C₂H₅COO(CH₂)₂CH₃','B. CH₃COO(CH₂)₃CH₃','C. CH₃COOCH₂CH(CH₃)₂','D. CH₃COOC(CH₃)₃'],'A');
+    q(100,'chemistry','Limestone decomposition: ΔH°=+179.1, ΔS°=+160.2. Spontaneous above:',['A. 1018K','B. 1200K','C. 1028K','D. 1118K'],'D');
+    q(101,'chemistry','Mole fraction solute=0.5 in 1560g benzene (MM=78). Molality:',['A. 12.8','B. 10.3','C. 3.25','D. 16.9'],'A');
+    q(102,'chemistry','Match coordination compounds with uses:',['A. A=iv,B=i,C=iii','B. A=i,B=iii,C=iv','C. A=v,B=iv,C=ii','D. A=iii,B=ii,C=i'],'C');
+    q(103,'chemistry','CH₃-CH=CH₂ + HBr → CH₃-CHBr-CH₃. Reaction type:',['A. Electrophilic addition','B. Free radical substitution','C. Nucleophilic addition','D. Free radical addition'],'A');
+    q(104,'chemistry','Identify X,Y,Z in reaction sequence:',['A,B,C,D options','A','B','C','D'],'B');
+    q(105,'chemistry','Water soluble vitamin:',['A. Vitamin C','B. Vitamin E','C. Vitamin A','D. Vitamin D'],'A');
+    q(106,'chemistry','Vapor pressure: 1mol X+1mol Y=1000mm; +2mol X→1200mm. P°x, P°y:',['A. 1400,600','B. 1700,400','C. 1200,480','D. 1000,500'],'A');
+    q(107,'chemistry','Maximum polarity/dipole moment among nitroanilines:',['A. nitrobenzene','B. o-nitroaniline','C. m-nitroaniline','D. p-nitroaniline'],'D');
+    q(108,'chemistry','X→Y, rates: [X]=4×10⁻³→4.8×10⁻⁴; [X]=2×10⁻³→1.2×10⁻⁴. Order wrt X:',['A. 2','B. 3','C. 1.5','D. 1'],'A');
+    q(109,'chemistry','Carbonyl NOT formed by alkyne hydration (dil H₂SO₄/Hg²⁺):',['A. Acetone','B. Butanone','C. Butanal','D. Ethanal'],'C');
+    q(110,'chemistry','Incorrect statement:',['A. Staggered-eclipsed ΔE=12.55 kJ/mol','B. Staggered more stable','C. Eclipsed H···H=2.29Å','D. 90° rotation staggered→eclipsed'],'D');
+    q(111,'chemistry','[X]+Cu/573K→[Y]; [Y]+CH₃MgBr then H₂O/H⁺→tert-butyl alcohol. [X]:',['A. Propan-1-ol','B. Butan-1-ol','C. Propan-2-ol','D. Butan-2-ol'],'C');
+    q(112,'chemistry','Propan-1-ol+SOCl₂→[X]; [X]+HC≡CNa→[Y]; [Y]+H₂SO₄/HgSO₄,330K→[Z]. Z:',['A. Pentan-2-ol','B. Pent-2-ene','C. Pentanal','D. Pentan-2-one'],'D');
+    q(113,'chemistry','Assertion: Primary & secondary amides + Br₂/NaOH → amines (stepping down). Reason: alkyl migration.',['A. Assertion correct, Reason incorrect','B. Both incorrect','C. Both correct','D. Assertion incorrect, Reason correct'],'D');
+    q(114,'chemistry','Enthalpies of combustion: H₂=-286, C=-394, C₂H₆=-1560. ΔHf° ethane:',['A. -97.0','B. -86.0','C. -92.0','D. -78.0'],'B');
+    q(115,'chemistry','Most stable free radical:',['A. (C₆H₅)₂ĊH','B. ĊH₃','C. (CH₃)₃Ċ','D. CH₂=ĊH'],'A');
+    q(116,'chemistry','Match intermediates (Reimer-Tiemann, dehydration):',['A,B,C,D options','A','B','C','D'],'B');
+    q(117,'chemistry','Increasing covalent character: CaF₂, CaCl₂, CaBr₂, CaI₂:',['A. CaF₂<CaI₂<CaBr₂<CaCl₂','B. CaF₂<CaCl₂<CaI₂<CaBr₂','C. CaCl₂<CaF₂<CaBr₂<CaI₂','D. CaF₂<CaCl₂<CaBr₂<CaI₂'],'D');
+    q(118,'chemistry','Coordination compounds: electroplating, Cu removal, water hardness:',['A. iv,i,iii','B. i,iii,iv','C. v,iv,ii','D. iii,ii,i'],'C');
+    q(119,'chemistry','Electrophilic addition example: alkene + HBr',['A. Electrophilic addition'],'A');
+
+    // Physics (120..179)
+    q(120,'physics','Interference intensity ratio 9:1. (Imax+Imin)/(Imax-Imin)=α/β. α,β:',['A. 5,3','B. 3,1','C. 1,9','D. 9,1'],'A');
+    q(121,'physics','Mass numbers ratio 5:2, diameters 2:6. Nuclear density ratio:',['A. 1:1','B. 2:5','C. 10:12','D. 6:5'],'A');
+    q(122,'physics','Correct in Bohr model:',['A. continuous spectra','B. quantised angular momentum','C. same spectrum Ne⁺ & H','D. same Ne⁺ & He⁺'],'B');
+    q(123,'physics','Zener Vz=20V, RL=5kΩ, RS=10kΩ, VS=100V. Zener current (mA):',['A. 8','B. 6','C. 4','D. 5'],'C');
+    q(124,'physics','Unit of universal gravitational constant:',['A. Nm²kg²','B. Nm⁻²kg⁻²','C. Nm⁻²kg²','D. Nm²kg⁻²'],'D');
+    q(125,'physics','Telescope tube=36cm, magnification=8. f₀, fₑ:',['A. 28,7','B. 28,4','C. 32,4','D. 4,32'],'C');
+    q(126,'physics','Coil 250 turns, 20×15cm², 60 rps, B=2×10⁻²T. Peak emf:',['A. 36π V','B. 30π V','C. 18π V','D. 12π V'],'C');
+    q(127,'physics','Parallel light → diverging (f=20) → converging (f=15) at 10cm. Final image:',['A. Virtual, 30cm right','B. Virtual, 40cm right','C. Real, 30cm right','D. Real, 40cm right'],'C');
+    q(128,'physics','Degrees of freedom of 2cm³ N₂ at NTP:',['A. N/44800','B. N/4480','C. N/2240','D. N/22400'],'C');
+    q(129,'physics','Pendulum bob 4g, 20μC, E=1000V/m horizontal. Equilibrium angle:',['A. tan⁻¹(1/2)','B. 60°','C. 30°','D. tan⁻¹2'],'A');
+    q(130,'physics','Charges Q, -q, 2q at right isosceles triangle. q for zero energy:',['A. Q[1/(2√2)-1]','B. Q[1-1/(2√2)]','C. Q[1+1/(2√2)]','D. Q[(2√2+1)/2]'],'B');
+    q(131,'physics','Minimum energy for H in ground to emit Paschen series:',['A. 13.6 eV','B. 12.75 eV','C. 10.75 eV','D. 1.5 eV'],'B');
+    q(132,'physics','Object midway f-2f of biconvex, immersed in water. New image:',['A. Magnified virtual erect same side','B. Magnified real inverted same side','C. Diminished real inverted f-2f','D. Magnified real inverted beyond 2f'],'A');
+    q(133,'physics','Transformer 2200V/220V, 2000 turns, 2A primary, 80% eff. Output current:',['A. 32A','B. 8A','C. 16A','D. 4A'],'C');
+    q(134,'physics','Same dimensional formula [M¹L⁻¹T⁻²]:',['A. Thrust & Strain','B. Moment & Thrust','C. Stress & Pressure','D. Work & Thrust'],'C');
+    q(135,'physics','Stopping potential at λ=15V, at 4λ=3V. Ratio λ₀:λ:',['A. 1:16','B. 1:15','C. 16:1','D. 15:1'],'C');
+    q(136,'physics','Wire (A,Y) suspending mass m, SHM period T. Length L=',['A. TY²A/(4π²m)','B. T²YA/(4πm²)','C. TY²A/(4πm²)','D. T²YA/(4π²m)'],'D');
+    q(137,'physics','Flywheel 1800→2400 rpm in 10s, constant torque. Revolutions:',['A. 350','B. 900','C. 700','D. 2100'],'A');
+    q(138,'physics','Bar magnet at 45° to B=400×10⁻⁴T, torque=0.024. Solenoid 500 turns, area 10⁻⁴m², same moment. Current:',['A. 2√2 A','B. 5√2 A','C. 12√2 A','D. 4√2 A'],'C');
+    q(139,'physics','Sun-Earth distance doubled. Year duration:',['A. 2√2 T','B. T/2','C. √2 T','D. T/√2'],'A');
+    q(140,'physics','RMS velocity at 327°C same as O₂ at 27°C. Molar mass gas:',['A. 32','B. 64','C. 96','D. 128'],'B');
+    q(141,'physics','Centre of mass:',['A. unchanged in translatory motion','B. depends on coordinate choice','C. independent of shape/size','D. depends on mass distribution'],'D');
+    q(142,'physics','Particle 3g, 60μC, E=10⁵ N/C, moves 2cm. KE=m×10⁻²J. m=',['A. 12','B. 6','C. 5','D. 4'],'A');
+    q(143,'physics','Capacitor network (C1=3,C2=6,C3=3,C4=4 μF), 100V. Energy in 6μF:',['A. 1.2 mJ','B. 12 mJ','C. 2.2 mJ','D. 4.2 mJ'],'A');
+    q(144,'physics','Body 10kg up 30° incline, a=2, μ=√3/6. Force:',['A. 1.95 N','B. 9.5 N','C. 19 N','D. 95 N'],'D');
+    q(145,'physics','Galvanometer 50Ω shunted by 10Ω, total 2A. Shunt current:',['A. 3/5 A','B. 2/5 A','C. 5/6 A','D. 5/3 A'],'D');
+    q(146,'physics','Power across 16Ω is 2W. Power across 4Ω:',['A. 2.38 W','B. 0.64 W','C. 1.28 W','D. 4.28 W'],'C');
+    q(147,'physics','Graph for uniform acceleration:',['A. constant v','B. constant displacement','C. linear displacement','D. linear v increase'],'D');
+    q(148,'physics','Susceptibility 799, H=2000 A/m. Permeability:',['A. 4.2π×10⁻⁷','B. 3.2π×10⁻⁴','C. 2.4π×10⁻⁵','D. 80π×10⁻⁷'],'B');
+    q(149,'physics','Gas expands 6×: isothermal vs adiabatic (γ=1.4). Correct:',['A. P_adiabatic > 1.4× P_isothermal','B. T_adiabatic < T_isothermal/1.4','C. Pressure same','D. P_adiabatic < P_isothermal'],'D');
+    q(150,'physics','Net resistance between A and B:',['A. 8R/3','B. 8R/5','C. R','D. 5R/3'],'A');
+    q(151,'physics','Single slit λ=800nm, first minimum θ=45°. Slit width:',['A. 1.13 μm','B. 1.23 μm','C. 2.13 μm','D. 1.3 μm'],'A');
+    q(152,'physics','EM wave f=40MHz, B=2×10⁻⁸T. E field:',['A. 16 V/m','B. 6 V/m','C. 8 V/m','D. 18 V/m'],'B');
+    q(153,'physics','Series LCR R=44Ω, L=2H, C=25μF, 220V resonance. Avg power:',['A. 2.1 kW','B. 4.2 kW','C. 1.1 kW','D. 0.12 kW'],'C');
+    q(154,'physics','Momentum tripled → KE increase %:',['A. 300%','B. 900%','C. 200%','D. 800%'],'D');
+    q(155,'physics','Half-wave rectifier peak 33V. DC output:',['A. 3.5 V','B. 2.9 V','C. 10.5 V','D. 12.5 V'],'C');
+    q(156,'physics','Ra-200 (BE/nucleon=5.6) → Cd-112+Hs-108 (BE/nucleon=8.0). Energy released:',['A. 598 MeV','B. 176 MeV','C. 640 MeV','D. 475 MeV'],'C');
+    q(157,'physics','Same wire 2 loops vs 3 loops, same current. B ratio X:Y at centre:',['A. 1/4','B. 1/9','C. 9/4','D. 4/9'],'D');
+    q(158,'physics','Fundamental open L₁ = 3rd harmonic closed L₂. L₁/L₂:',['A. 3/1','B. 1/3','C. 2/3','D. 3/2'],'C');
+    q(159,'physics','Nuclear force is:',['A. long range','B. weakest','C. non-central','D. depends on charge'],'C');
+    q(160,'physics','Wire 250g, 2.5m, 4A suspended by B. B=',['A. 0.145 T','B. 0.245 T','C. 0.625 T','D. 2.245 T'],'B');
+    q(161,'physics','Correct statement:',['A. Shear modulus ideal liquid infinite','B. Rubber more elastic than steel','C. Bulk modulus perfect rigid infinite','D. Bulk modulus ideal liquid zero'],'C');
+    q(162,'physics','Pure L=0.02H, v=200sin(250t). i(t)=',['A. 40sin(250t-π/2)','B. 40sin(250t+π/2)','C. 40sin(250t+π)','D. 40cos(250t+π/2)'],'A');
+    q(163,'physics','Capillary radius 3.6×10⁻⁴m, σ=7.2×10⁻². Tube lowered 12→2cm above water. Contact angle:',['A. 45°','B. 30°','C. 15°','D. 60°'],'D');
+    q(164,'physics','Point on ring (R=2cm) rolls half revolution. Displacement angle:',['A. tan⁻¹(2/(3π))','B. tan⁻¹(2/π)','C. tan⁻¹(2π/3)','D. cot⁻¹(2/π)'],'B');
+    q(165,'physics','I=3/√2 sin(200πt), V=3/√2 sin(200πt+π/6). Avg power:',['A. √3/8','B. 6√3/8','C. 8√2/9','D. 9√3/8'],'D');
+    q(166,'physics','Velocity-mass graph for constant linear momentum:',['A. hyperbolic decrease','B. linear decrease','C. quarter circle','D. linear increase'],'A');
+    q(167,'physics','Graph V vs I of cell for ε, r:',['A. 2','B. 1','C. 4','D. 3'],'B');
+    q(168,'physics','YDSE: 7th dark in medium at 4th bright in air. μ=',['A. 1.654','B. 1.389','C. 1.875','D. 1.768'],'C');
+    q(169,'physics','¹⁰B₅ bombarded by neutrons → ⁷Li₃. Emitted particle:',['A. Alpha','B. Neutrons','C. Gamma','D. Beta'],'A');
+    q(170,'physics','Heating element 120Ω at 20°C, α=1.6×10⁻⁴, R=160Ω. Temperature:',['A. 1203°C','B. 2083°C','C. 2310°C','D. 2013°C'],'B');
+    q(171,'physics','KE vs frequency intercept depends on:',['A. nature of metal','B. intensity','C. both','D. constant for all metals'],'A');
+    q(172,'physics','Plano-convex (n=1.5,R=4) + plano-concave (n=1.3,R=4). Focal length:',['A. 5 cm','B. 50 cm','C. 2 cm','D. 20 cm'],'D');
+    q(173,'physics','Two rods same length, ΔT=30°C, k₁:k₂=1:4, A₁=8×10⁻². A₂=',['A. 2×10⁻² m²','B. 4×10⁻⁴','C. 2×10⁻⁴','D. 4×10⁻²'],'A');
+    q(174,'physics','Current loop right isosceles triangle in B along XY. F_YZ=√2F. F_XZ=',['A. -√2F','B. F','C. +2√2F','D. -F'],'A');
+    q(175,'physics','4μF charged 24V, parallel with uncharged 6μF. Final voltage:',['A. 6.9V','B. 8.2V','C. 9.6V','D. 7.4V'],'C');
+    q(176,'physics','Conducting sphere d=0.2m, σ=70μC/m². Electric flux:',['A. 9.9×10⁵ NC⁻¹m²','B. 9.9×10⁶','C. 8.9×10⁵','D. 8.9×10⁶'],'A');
+    q(177,'physics','Intrinsic: n_i=p_i=4×10⁸ m⁻³, after doping p=8×10¹⁰. New n:',['A. 4×10⁸','B. 2×10⁸','C. 2×10⁶','D. 4×10¹⁰'],'C');
+    q(178,'physics','Dipoles: p₁=3.9×10⁻³⁰, E₁=16×10⁴; p₂=5.2×10⁻³⁰, E₂=4×10⁴. Max torque ratio:',['A. 12:1','B. 9:1','C. 1:9','D. 3:1'],'D');
+    q(179,'physics','Last question placeholder: Physics total 60',['A','B','C','D'],'A');
+
+    // Ensure exactly 180 questions
+    console.assert(allQuestions.length === 180, 'Expected 180 questions, got ' + allQuestions.length);
+
+    // ---------- APP STATE ----------
+    const TOTAL_QUESTIONS = 180;
+    let currentIndex = 0;
+    let userAnswers = new Array(TOTAL_QUESTIONS).fill(null);
+    let visitedQuestions = new Array(TOTAL_QUESTIONS).fill(false);
+    let testSubmitted = false;
+    let timerInterval;
+    let totalSeconds = 3 * 60 * 60;
+    let timerRunning = true;
+
+    // DOM refs
+    const qNumber = document.getElementById('qNumber');
+    const qSubjectBadge = document.getElementById('qSubjectBadge');
+    const qText = document.getElementById('qText');
+    const optionsList = document.getElementById('optionsList');
+    const paletteGrid = document.getElementById('paletteGrid');
+    const mobilePaletteGrid = document.getElementById('mobilePaletteGrid');
+    const timerBox = document.getElementById('timerBox');
+    const headerName = document.getElementById('headerName');
+    const paletteName = document.getElementById('paletteName');
+    const avatar = document.getElementById('avatar');
+    const resultsScreen = document.getElementById('resultsScreen');
+    const mainContainer = document.getElementById('mainContainer');
+    const questionPanel = document.getElementById('questionPanel');
+    const mobileDrawer = document.getElementById('mobileDrawer');
+    const drawerOverlay = document.getElementById('drawerOverlay');
+    const nameInputRow = document.getElementById('nameInputRow');
+    const subjectFirstIndex = { math:0, chemistry:60, physics:120 };
+
+    function init() {
+      const savedName = localStorage.getItem('comedk_username');
+      if (savedName) {
+        headerName.textContent = savedName;
+        paletteName.textContent = savedName;
+        avatar.textContent = savedName.charAt(0).toUpperCase();
+        document.getElementById('nameInput').value = savedName;
+        nameInputRow.style.display = 'none';
+      } else {
+        headerName.textContent = 'Candidate';
+        paletteName.textContent = 'Candidate';
+        avatar.textContent = '👤';
+        nameInputRow.style.display = 'flex';
+      }
+      buildPalette();
+      renderQuestion();
+      updateAllCounts();
+      startTimer();
+    }
+
+    function startTimer() {
+      updateTimerDisplay();
+      timerInterval = setInterval(() => {
+        if (!timerRunning) return;
+        totalSeconds--;
+        updateTimerDisplay();
+        if (totalSeconds <= 300) timerBox.classList.add('warning');
+        if (totalSeconds <= 0) {
+          clearInterval(timerInterval);
+          timerRunning = false;
+          submitTest();
+        }
+      }, 1000);
+    }
+
+    function updateTimerDisplay() {
+      const h = Math.floor(totalSeconds / 3600);
+      const m = Math.floor((totalSeconds % 3600) / 60);
+      const s = totalSeconds % 60;
+      timerBox.textContent = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    }
+
+    function renderQuestion() {
+      const q = allQuestions[currentIndex];
+      qNumber.textContent = `Question ${currentIndex+1} of ${TOTAL_QUESTIONS}`;
+      const subj = q.subject.charAt(0).toUpperCase() + q.subject.slice(1);
+      qSubjectBadge.textContent = subj;
+      qSubjectBadge.style.background = q.subject==='math'?'#e8f0fe':q.subject==='chemistry'?'#fef3c7':'#fce7f3';
+      qSubjectBadge.style.color = q.subject==='math'?'#1a56db':q.subject==='chemistry'?'#b45309':'#be185d';
+      qText.innerHTML = q.text;
+      optionsList.innerHTML = '';
+      const letters = ['A','B','C','D'];
+      q.options.forEach((opt,i) => {
+        const row = document.createElement('div');
+        row.className = 'option-row' + (userAnswers[currentIndex]===letters[i] ? ' selected' : '');
+        row.innerHTML = `<span class="option-letter">${letters[i]}</span><span class="option-text">${opt}</span>`;
+        row.onclick = () => selectOption(letters[i]);
+        optionsList.appendChild(row);
+      });
+      visitedQuestions[currentIndex] = true;
+      updatePalette();
+      updateAllCounts();
+      updateSubjectTabs();
+      if (window.innerWidth <= 768) questionPanel.scrollIntoView({behavior:'smooth'});
+    }
+
+    function selectOption(letter) {
+      if (testSubmitted) return;
+      userAnswers[currentIndex] = letter;
+      renderQuestion();
+    }
+
+    function saveAndNext() {
+      if (testSubmitted) return;
+      if (currentIndex < TOTAL_QUESTIONS-1) { currentIndex++; renderQuestion(); }
+    }
+
+    function clearResponse() {
+      if (testSubmitted) return;
+      userAnswers[currentIndex] = null;
+      renderQuestion();
+    }
+
+    function prevQuestion() {
+      if (testSubmitted) return;
+      if (currentIndex > 0) { currentIndex--; renderQuestion(); }
+    }
+
+    function jumpToQuestion(index) {
+      if (testSubmitted || index < 0 || index >= TOTAL_QUESTIONS) return;
+      currentIndex = index;
+      renderQuestion();
+      closeMobileDrawer();
+      if (window.innerWidth <= 768) questionPanel.scrollIntoView({behavior:'smooth'});
+    }
+
+    function jumpToSubject(subject) {
+      if (testSubmitted) return;
+      currentIndex = subjectFirstIndex[subject];
+      renderQuestion();
+      updateSubjectTabs();
+      if (window.innerWidth <= 768) questionPanel.scrollIntoView({behavior:'smooth'});
+    }
+
+    function updateSubjectTabs() {
+      const q = allQuestions[currentIndex];
+      document.querySelectorAll('.subject-tab').forEach(t => t.classList.remove('active'));
+      document.getElementById('tab-'+q.subject)?.classList.add('active');
+    }
+
+    function updateAllCounts() {
+      const counts = { math:0, chemistry:0, physics:0 };
+      for (let i=0; i<TOTAL_QUESTIONS; i++) {
+        if (userAnswers[i] !== null) counts[allQuestions[i].subject]++;
+      }
+      document.getElementById('count-math').textContent = `(${counts.math}/60)`;
+      document.getElementById('count-chemistry').textContent = `(${counts.chemistry}/60)`;
+      document.getElementById('count-physics').textContent = `(${counts.physics}/60)`;
+    }
+
+    function buildPalette() {
+      paletteGrid.innerHTML = '';
+      mobilePaletteGrid.innerHTML = '';
+      for (let i=0; i<TOTAL_QUESTIONS; i++) {
+        const btn = document.createElement('button');
+        btn.className = 'palette-btn';
+        btn.textContent = i+1;
+        btn.onclick = () => jumpToQuestion(i);
+        paletteGrid.appendChild(btn);
+
+        const btnM = document.createElement('button');
+        btnM.className = 'palette-btn';
+        btnM.textContent = i+1;
+        btnM.onclick = () => jumpToQuestion(i);
+        mobilePaletteGrid.appendChild(btnM);
+      }
+      updatePalette();
+    }
+
+    function updatePalette() {
+      const btns = paletteGrid.querySelectorAll('.palette-btn');
+      const btnsM = mobilePaletteGrid.querySelectorAll('.palette-btn');
+      for (let i=0; i<TOTAL_QUESTIONS; i++) {
+        const update = (btn) => {
+          btn.classList.remove('visited','answered','active');
+          if (userAnswers[i] !== null) btn.classList.add('answered');
+          else if (visitedQuestions[i]) btn.classList.add('visited');
+          if (i === currentIndex) btn.classList.add('active');
+        };
+        if (btns[i]) update(btns[i]);
+        if (btnsM[i]) update(btnsM[i]);
+      }
+    }
+
+    function openMobileDrawer() {
+      mobileDrawer.classList.add('open');
+      drawerOverlay.classList.add('open');
+    }
+    function closeMobileDrawer() {
+      mobileDrawer.classList.remove('open');
+      drawerOverlay.classList.remove('open');
+    }
+
+    window.submitTest = function() {
+      if (testSubmitted) return;
+      testSubmitted = true;
+      timerRunning = false;
+      clearInterval(timerInterval);
+
+      let correct=0, incorrect=0, unattempted=0;
+      const subRes = { math:{c:0,w:0,u:0}, chemistry:{c:0,w:0,u:0}, physics:{c:0,w:0,u:0} };
+      for (let i=0; i<TOTAL_QUESTIONS; i++) {
+        const q = allQuestions[i];
+        if (userAnswers[i] === null) {
+          unattempted++;
+          subRes[q.subject].u++;
+        } else if (userAnswers[i] === q.answer) {
+          correct++;
+          subRes[q.subject].c++;
+        } else {
+          incorrect++;
+          subRes[q.subject].w++;
+        }
+      }
+      const totalScore = correct;
+      const accuracy = (correct+incorrect) > 0 ? Math.round((correct/(correct+incorrect))*100) : 0;
+
+      mainContainer.style.display = 'none';
+      document.getElementById('subjectTabs').style.display = 'none';
+      document.getElementById('mobilePaletteBtn').style.display = 'none';
+      questionPanel.style.display = 'none';
+      document.getElementById('paletteSidebar').style.display = 'none';
+
+      resultsScreen.classList.add('active');
+      document.getElementById('resultsScore').textContent = totalScore;
+      document.getElementById('statCorrect').textContent = correct;
+      document.getElementById('statIncorrect').textContent = incorrect;
+      document.getElementById('statUnattempted').textContent = unattempted;
+      document.getElementById('resultsAccuracy').textContent = accuracy+'%';
+
+      const tbody = document.getElementById('resultsTableBody');
+      tbody.innerHTML = '';
+      const names = {math:'Math',chemistry:'Chemistry',physics:'Physics'};
+      for (let s of ['math','chemistry','physics']) {
+        const d = subRes[s];
+        tbody.innerHTML += `<tr><td><strong>${names[s]}</strong></td><td>${d.c}/60</td><td style="color:#16a34a">${d.c}</td><td style="color:#dc2626">${d.w}</td><td>${d.u}</td></tr>`;
+      }
+
+      const testName = 'COMEDK 2025 S3';
+      const savedName = localStorage.getItem('comedk_username');
+      if (savedName) {
+        document.getElementById('nameInput').value = savedName;
+        nameInputRow.style.display = 'none';
+      } else {
+        nameInputRow.style.display = 'flex';
+      }
+
+      const storedBest = localStorage.getItem('comedk_best_score_'+testName);
+      if (!storedBest || totalScore > parseInt(storedBest)) {
+        localStorage.setItem('comedk_best_score_'+testName, totalScore);
+      }
+      const attempted = JSON.parse(localStorage.getItem('comedk_attempted_tests')||'[]');
+      if (!attempted.includes(testName)) {
+        attempted.push(testName);
+        localStorage.setItem('comedk_attempted_tests', JSON.stringify(attempted));
+      }
+
+      const fireName = savedName || 'Anonymous';
+      if (typeof window.saveScoreToFirebase === 'function') {
+        window.saveScoreToFirebase(fireName, testName, totalScore, TOTAL_QUESTIONS, accuracy);
+      }
+      window.scrollTo({top:0, behavior:'smooth'});
+    };
+
+    window.saveNameAndSubmit = function() {
+      const name = document.getElementById('nameInput').value.trim();
+      if (!name) return alert('Please enter your name.');
+      localStorage.setItem('comedk_username', name);
+      headerName.textContent = name;
+      paletteName.textContent = name;
+      avatar.textContent = name.charAt(0).toUpperCase();
+      nameInputRow.style.display = 'none';
+      const totalScore = parseInt(document.getElementById('resultsScore').textContent);
+      const accuracy = parseInt(document.getElementById('resultsAccuracy').textContent);
+      if (typeof window.saveScoreToFirebase === 'function') {
+        window.saveScoreToFirebase(name, 'COMEDK 2025 S3', totalScore, TOTAL_QUESTIONS, accuracy);
+      }
+      alert('Score submitted to leaderboard!');
+    };
+
+    window.retakeTest = function() {
+      userAnswers = new Array(TOTAL_QUESTIONS).fill(null);
+      visitedQuestions = new Array(TOTAL_QUESTIONS).fill(false);
+      currentIndex = 0;
+      testSubmitted = false;
+      totalSeconds = 3 * 60 * 60;
+      timerRunning = true;
+      timerBox.classList.remove('warning');
+      updateTimerDisplay();
+      resultsScreen.classList.remove('active');
+      mainContainer.style.display = 'flex';
+      document.getElementById('subjectTabs').style.display = 'flex';
+      document.getElementById('mobilePaletteBtn').style.display = '';
+      questionPanel.style.display = '';
+      if (window.innerWidth > 768) document.getElementById('paletteSidebar').style.display = 'flex';
+      document.querySelectorAll('.subject-tab').forEach(t=>t.classList.remove('active'));
+      document.getElementById('tab-math').classList.add('active');
+      buildPalette();
+      renderQuestion();
+      updateAllCounts();
+      clearInterval(timerInterval);
+      startTimer();
+      window.scrollTo({top:0, behavior:'smooth'});
+    };
+
+    document.addEventListener('keydown', (e) => {
+      if (testSubmitted) return;
+      const key = e.key.toUpperCase();
+      if (['A','B','C','D'].includes(key)) selectOption(key);
+      else if (key === 'ARROWRIGHT' || key === 'N') { e.preventDefault(); saveAndNext(); }
+      else if (key === 'ARROWLEFT' || key === 'P') { e.preventDefault(); prevQuestion(); }
+      else if (key === 'C' && !e.ctrlKey && !e.metaKey) clearResponse();
+    });
+
+    window.addEventListener('resize', () => {
+      const palette = document.getElementById('paletteSidebar');
+      if (window.innerWidth <= 768) {
+        palette.style.display = 'none';
+        document.getElementById('mobilePaletteBtn').style.display = 'block';
+      } else {
+        palette.style.display = 'flex';
+        document.getElementById('mobilePaletteBtn').style.display = 'none';
+        closeMobileDrawer();
+      }
+    });
+
+    init();
+  </script>
+</body>
+</html>

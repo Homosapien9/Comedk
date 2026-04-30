@@ -1,0 +1,1865 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>COMEDK 2025 - Mock Test</title>
+    <style>
+        :root {
+            --primary: #1a56db;
+            --primary-light: #e8f0fe;
+            --danger: #dc2626;
+            --success: #16a34a;
+            --warning: #f59e0b;
+            --border: #ddd;
+            --bg: #f5f5f5;
+            --card: #fff;
+            --text: #1f2937;
+            --text-secondary: #6b7280;
+            --radius: 6px;
+            --shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f0f0f0;
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        /* ── HEADER ─────────────────────── */
+        #header {
+            background: var(--primary);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 16px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            flex-wrap: wrap;
+            gap: 8px;
+            min-height: 52px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+        }
+        #header .left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+        #header .avatar {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-weight: bold;
+            font-size: 14px;
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+        #header .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        #header .cname {
+            font-size: 14px;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 140px;
+        }
+        #header .center {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-shrink: 0;
+        }
+        #header .test-title {
+            font-size: 15px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+        #timer-box {
+            background: #0d47a1;
+            padding: 6px 14px;
+            border-radius: var(--radius);
+            font-weight: 700;
+            font-size: 16px;
+            letter-spacing: 1px;
+            white-space: nowrap;
+            transition: background 0.3s;
+            min-width: 90px;
+            text-align: center;
+        }
+        #timer-box.warning {
+            background: var(--danger);
+            animation: pulse 0.8s infinite;
+        }
+        @keyframes pulse {
+            0%,
+            100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.7;
+            }
+        }
+        #btn-submit-top {
+            background: var(--danger);
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: var(--radius);
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 14px;
+            white-space: nowrap;
+            min-height: 40px;
+            flex-shrink: 0;
+        }
+        #btn-submit-top:hover {
+            background: #b91c1c;
+        }
+
+        /* ── SUBJECT TABS ──────────────── */
+        #subject-tabs {
+            display: flex;
+            background: #fff;
+            border-bottom: 2px solid var(--border);
+            position: sticky;
+            top: 52px;
+            z-index: 99;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            gap: 0;
+        }
+        #subject-tabs button {
+            flex: 1 1 auto;
+            padding: 11px 8px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            white-space: nowrap;
+            min-height: 44px;
+            border-bottom: 3px solid transparent;
+            transition: all 0.15s;
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        #subject-tabs button.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+        #subject-tabs button .count {
+            font-weight: 400;
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+        #subject-tabs button.active .count {
+            color: var(--primary);
+        }
+
+        /* ── MAIN LAYOUT ────────────────── */
+        #main-container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+        #question-panel {
+            flex: 1 1 72%;
+            padding: 16px;
+            overflow-y: auto;
+            background: #fff;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            -webkit-overflow-scrolling: touch;
+        }
+        #palette-sidebar {
+            width: 280px;
+            flex-shrink: 0;
+            background: #fafafa;
+            border-left: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            padding: 12px;
+        }
+        #palette-sidebar .palette-name {
+            font-weight: 600;
+            font-size: 13px;
+            margin-bottom: 8px;
+            text-align: center;
+            color: var(--text);
+        }
+        #palette-grid {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 3px;
+            margin-bottom: 10px;
+        }
+        #palette-grid button {
+            aspect-ratio: 1;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            font-size: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            background: #e5e7eb;
+            color: #555;
+            min-width: 22px;
+            min-height: 22px;
+            padding: 0;
+            transition: all 0.1s;
+            font-family: Arial, sans-serif;
+        }
+        #palette-grid button.visited {
+            background: #fca5a5;
+            color: #7f1d1d;
+            border-color: #ef4444;
+        }
+        #palette-grid button.answered {
+            background: #86efac;
+            color: #14532d;
+            border-color: #22c55e;
+        }
+        #palette-grid button.current {
+            box-shadow: 0 0 0 2px var(--primary);
+            border-color: var(--primary);
+            z-index: 1;
+        }
+        .palette-legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            font-size: 11px;
+            margin-top: 4px;
+        }
+        .palette-legend span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .legend-dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 3px;
+            border: 1px solid #bbb;
+            flex-shrink: 0;
+        }
+        .legend-dot.gray {
+            background: #e5e7eb;
+        }
+        .legend-dot.red {
+            background: #fca5a5;
+        }
+        .legend-dot.green {
+            background: #86efac;
+        }
+
+        /* ── QUESTION AREA ──────────────── */
+        #q-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        #q-header .q-num {
+            font-weight: 700;
+            font-size: 15px;
+        }
+        #q-header .subject-badge {
+            background: var(--primary-light);
+            color: var(--primary);
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        #q-text {
+            font-size: 16px;
+            line-height: 1.6;
+            padding: 8px 0;
+            word-break: break-word;
+            min-height: 40px;
+        }
+        #options-area {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        #options-area button.opt-btn {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 12px 14px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            background: #fff;
+            cursor: pointer;
+            text-align: left;
+            font-size: 15px;
+            line-height: 1.4;
+            min-height: 52px;
+            transition: all 0.12s;
+            font-family: Arial, sans-serif;
+            color: var(--text);
+            word-break: break-word;
+            -webkit-tap-highlight-color: transparent;
+        }
+        #options-area button.opt-btn:hover {
+            border-color: var(--primary);
+        }
+        #options-area button.opt-btn.selected {
+            background: var(--primary-light);
+            border-color: var(--primary);
+            font-weight: 600;
+        }
+        #options-area button.opt-btn .opt-label {
+            font-weight: 700;
+            flex-shrink: 0;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+        }
+        #options-area button.opt-btn.selected .opt-label {
+            background: var(--primary);
+            color: #fff;
+        }
+        #action-buttons {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 8px;
+        }
+        #action-buttons button {
+            padding: 10px 16px;
+            border-radius: var(--radius);
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 13px;
+            border: 1px solid #ccc;
+            min-height: 44px;
+            font-family: Arial, sans-serif;
+            white-space: nowrap;
+            flex: 1 1 auto;
+            min-width: 90px;
+        }
+        #btn-save-next {
+            background: #16a34a;
+            color: #fff;
+            border-color: #16a34a;
+        }
+        #btn-clear {
+            background: #fff;
+            color: var(--danger);
+            border-color: var(--danger);
+        }
+        #btn-prev {
+            background: #fff;
+            color: var(--text);
+            border-color: #ccc;
+        }
+
+        /* ── RESULTS ────────────────────── */
+        #results-screen {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            padding: 24px 16px;
+            background: #fff;
+            flex: 1;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        #results-screen .result-card {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 24px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: var(--shadow);
+        }
+        #results-screen h2 {
+            text-align: center;
+            margin-bottom: 16px;
+            color: var(--primary);
+        }
+        #results-screen .big-score {
+            text-align: center;
+            font-size: 48px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        #results-screen .summary-row {
+            display: flex;
+            justify-content: space-around;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin: 12px 0;
+            text-align: center;
+        }
+        #results-screen table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 12px 0;
+            font-size: 14px;
+        }
+        #results-screen th,
+        #results-screen td {
+            border: 1px solid var(--border);
+            padding: 8px;
+            text-align: center;
+        }
+        #results-screen th {
+            background: #f9fafb;
+            font-weight: 600;
+        }
+        #results-screen .btn-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 16px;
+        }
+        #results-screen .btn-row button {
+            padding: 10px 20px;
+            border-radius: var(--radius);
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            min-height: 44px;
+            font-family: Arial, sans-serif;
+        }
+        #name-input-area {
+            margin: 12px 0;
+            text-align: center;
+        }
+        #name-input-area input {
+            padding: 8px 12px;
+            font-size: 14px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            min-height: 40px;
+            font-family: Arial, sans-serif;
+        }
+
+        /* ── MOBILE PALETTE DRAWER ──────── */
+        #mobile-palette-btn {
+            display: none;
+            position: fixed;
+            bottom: 12px;
+            right: 12px;
+            z-index: 200;
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            border-radius: 50px;
+            padding: 12px 18px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+            min-height: 48px;
+            font-family: Arial, sans-serif;
+        }
+        #mobile-palette-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 190;
+            background: rgba(0, 0, 0, 0.5);
+        }
+        #mobile-palette-drawer {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 195;
+            background: #fafafa;
+            border-radius: 16px 16px 0 0;
+            padding: 16px;
+            max-height: 70vh;
+            overflow-y: auto;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.2);
+            -webkit-overflow-scrolling: touch;
+        }
+        #mobile-palette-drawer .drawer-handle {
+            width: 40px;
+            height: 4px;
+            background: #ccc;
+            border-radius: 2px;
+            margin: 0 auto 12px;
+        }
+        #mobile-palette-drawer .palette-name {
+            font-weight: 600;
+            font-size: 13px;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+        #mobile-palette-grid {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 4px;
+        }
+        #mobile-palette-grid button {
+            aspect-ratio: 1;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            font-size: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            background: #e5e7eb;
+            color: #555;
+            min-width: 28px;
+            min-height: 28px;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+        #mobile-palette-grid button.visited {
+            background: #fca5a5;
+            color: #7f1d1d;
+            border-color: #ef4444;
+        }
+        #mobile-palette-grid button.answered {
+            background: #86efac;
+            color: #14532d;
+            border-color: #22c55e;
+        }
+        #mobile-palette-grid button.current {
+            box-shadow: 0 0 0 2px var(--primary);
+            border-color: var(--primary);
+            z-index: 1;
+        }
+
+        /* ── RESPONSIVE ─────────────────── */
+        @media (max-width: 768px) {
+            #palette-sidebar {
+                display: none;
+            }
+            #mobile-palette-btn {
+                display: block;
+            }
+            #mobile-palette-overlay {
+                display: none;
+            }
+            #mobile-palette-drawer {
+                display: none;
+            }
+            #mobile-palette-overlay.open,
+            #mobile-palette-drawer.open {
+                display: block;
+            }
+            #question-panel {
+                padding: 10px;
+                flex: 1 1 100%;
+            }
+            #header {
+                padding: 6px 10px;
+                gap: 4px;
+            }
+            #header .cname {
+                max-width: 100px;
+                font-size: 12px;
+            }
+            #header .test-title {
+                font-size: 13px;
+            }
+            #timer-box {
+                font-size: 14px;
+                padding: 4px 10px;
+                min-width: 70px;
+            }
+            #btn-submit-top {
+                font-size: 12px;
+                padding: 6px 10px;
+                min-height: 34px;
+            }
+            #subject-tabs button {
+                font-size: 11px;
+                padding: 8px 4px;
+                min-height: 40px;
+            }
+            #q-text {
+                font-size: 15px;
+            }
+            #options-area button.opt-btn {
+                font-size: 14px;
+                padding: 10px 10px;
+                min-height: 48px;
+            }
+            #action-buttons button {
+                font-size: 12px;
+                padding: 8px 10px;
+                min-height: 40px;
+            }
+        }
+        @media (max-width: 480px) {
+            #header {
+                padding: 4px 6px;
+                gap: 2px;
+                min-height: 44px;
+            }
+            #header .cname {
+                max-width: 80px;
+                font-size: 11px;
+            }
+            #header .avatar {
+                width: 26px;
+                height: 26px;
+                font-size: 11px;
+            }
+            #header .test-title {
+                font-size: 11px;
+            }
+            #timer-box {
+                font-size: 12px;
+                padding: 3px 8px;
+                min-width: 60px;
+                letter-spacing: 0.5px;
+            }
+            #btn-submit-top {
+                font-size: 11px;
+                padding: 5px 8px;
+                min-height: 30px;
+            }
+            #subject-tabs button {
+                font-size: 10px;
+                padding: 6px 2px;
+                min-height: 36px;
+            }
+            #q-text {
+                font-size: 14px;
+            }
+            #options-area button.opt-btn {
+                font-size: 13px;
+                padding: 8px 8px;
+                min-height: 44px;
+                gap: 6px;
+            }
+            #options-area button.opt-btn .opt-label {
+                width: 24px;
+                height: 24px;
+                font-size: 11px;
+            }
+            #action-buttons button {
+                font-size: 11px;
+                padding: 6px 8px;
+                min-height: 36px;
+            }
+            #question-panel {
+                padding: 6px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ── HEADER ─────────────────────── -->
+    <div id="header">
+        <div class="left">
+            <div class="avatar" id="avatar-circle">?</div>
+            <span class="cname" id="header-name">Candidate</span>
+        </div>
+        <div class="center">
+            <span class="test-title">COMEDK 2025</span>
+            <div id="timer-box">03:00:00</div>
+        </div>
+        <button id="btn-submit-top" onclick="submitTest()">Submit Test</button>
+    </div>
+
+    <!-- ── SUBJECT TABS ──────────────── -->
+    <div id="subject-tabs">
+        <button id="tab-physics" class="active" onclick="jumpToSubject('physics')">Physics <span class="count" id="cnt-physics">(0/60)</span></button>
+        <button id="tab-chemistry" onclick="jumpToSubject('chemistry')">Chemistry <span class="count" id="cnt-chemistry">(0/60)</span></button>
+        <button id="tab-mathematics" onclick="jumpToSubject('mathematics')">Mathematics <span class="count" id="cnt-mathematics">(0/60)</span></button>
+    </div>
+
+    <!-- ── MAIN AREA ──────────────────── -->
+    <div id="main-container">
+        <!-- QUESTION PANEL -->
+        <div id="question-panel">
+            <div id="q-header">
+                <span class="q-num" id="q-num-label">Question 1 of 180</span>
+                <span class="subject-badge" id="subject-badge">Physics</span>
+            </div>
+            <div id="q-text">Loading...</div>
+            <div id="options-area"></div>
+            <div id="action-buttons">
+                <button id="btn-save-next" onclick="saveAndNext()">🟢 Save & Next</button>
+                <button id="btn-clear" onclick="clearResponse()">🔴 Clear Response</button>
+                <button id="btn-prev" onclick="goToPrevious()">⬅ Previous</button>
+            </div>
+        </div>
+
+        <!-- DESKTOP PALETTE -->
+        <div id="palette-sidebar">
+            <div class="palette-name" id="palette-name-display">Candidate</div>
+            <div id="palette-grid"></div>
+            <div class="palette-legend">
+                <span><span class="legend-dot gray"></span> Not Visited</span>
+                <span><span class="legend-dot red"></span> Visited</span>
+                <span><span class="legend-dot green"></span> Answered</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── RESULTS SCREEN ─────────────── -->
+    <div id="results-screen">
+        <div class="result-card" id="result-card-content"></div>
+    </div>
+
+    <!-- ── MOBILE PALETTE ─────────────── -->
+    <button id="mobile-palette-btn" onclick="openMobilePalette()">📋 Questions</button>
+    <div id="mobile-palette-overlay" onclick="closeMobilePalette()"></div>
+    <div id="mobile-palette-drawer">
+        <div class="drawer-handle"></div>
+        <div class="palette-name" id="mobile-palette-name-display">Candidate</div>
+        <div id="mobile-palette-grid"></div>
+        <div class="palette-legend" style="margin-top:8px;">
+            <span><span class="legend-dot gray"></span> Not Visited</span>
+            <span><span class="legend-dot red"></span> Visited</span>
+            <span><span class="legend-dot green"></span> Answered</span>
+        </div>
+        <button onclick="closeMobilePalette()" style="width:100%;margin-top:10px;padding:10px;border-radius:6px;border:1px solid #ccc;background:#fff;font-weight:600;cursor:pointer;min-height:44px;font-family:Arial,sans-serif;">Close</button>
+    </div>
+
+    <!-- ── SCRIPTS ────────────────────── -->
+    <script>
+        // ────── QUESTION DATA ──────
+        // Each question: { id, subject, text, options:['A','B','C','D'], answer:0-3 }
+        // Subjects: physics (0-59), chemistry (60-119), mathematics (120-179)
+
+        const questions = [];
+
+        // ── PHYSICS (Q1-Q60, IDs 0-59) ──
+        const physicsQs = [
+            { id: 0, subject: 'physics', text: 'According to Bohr\'s theory of hydrogen atom, the speed of the electron, its energy and radius of its orbit vary with the principal quantum number <i>n</i>, respectively as',
+                options: ['1/n, n², 1/n²', '1/n, 1/n², n²', 'n, 1/n², n²', '1/n², 1/n, n²'], answer: 1 },
+            { id: 1, subject: 'physics',
+                text: 'A particle of mass <i>M</i> at rest decays into masses <i>m₁</i> and <i>m₂</i> with non-zero velocities. The ratio of de Broglie wavelengths λ₁ and λ₂ of the particles is',
+                options: ['m₂/m₁', '√m₁/√m₂', 'm₁/m₂', '1:1'], answer: 3 },
+            { id: 2, subject: 'physics',
+                text: 'The nuclear forces<br>a. are central forces, independent of the spin of the nucleons.<br>b. have a short-range dominant over a distance of about a few fermi<br>c. are stronger being hundred times stronger than that of electromagnetic forces.<br>d. are independent of the nuclear charge.<br>Which of the above is not true?',
+                options: ['c', 'a', 'b', 'd'], answer: 1 },
+            { id: 3, subject: 'physics',
+                text: 'Two light rays A and B travel from a medium into air at angles of incidence 15° and 42° respectively. In the medium, light travels 3 cm in 0.2 ns. Will there be total internal reflection? If so, which ray?',
+                options: ['No', 'Yes, A', 'Yes, B', 'Yes, Both A and B'], answer: 2 },
+            { id: 4, subject: 'physics',
+                text: 'An electric field E = 3x²i NC⁻¹ exists in a certain region of space. The potential difference between the origin and at x = 4m, V₀ − V₄ is',
+                options: ['-20 V', '-40 V', '-64 V', '64 V'], answer: 3 },
+            { id: 5, subject: 'physics',
+                text: 'A current loop consists of two identical semicircular parts each of radius 2R, one lying in the x-y plane and the other in x-z plane. If the current in the loop is I, the resultant magnetic field due to two semicircular parts at their common centre is',
+                options: ['μ₀I/4R', '4μ₀I/√2R', 'μ₀I/√2R', 'μ₀I/(4√2R)'], answer: 3 },
+            { id: 6, subject: 'physics', text: 'Which of the following is not a characteristic of diamagnetism?',
+                options: [
+                    'The material moves from a region of strong magnetic field to weak magnetic field.',
+                    'The origin of diamagnetism is the spin of electrons.',
+                    'Their magnetic susceptibility is small and negative.',
+                    'Diamagnetic materials are repelled by bar magnets.'
+                ], answer: 1 },
+            { id: 7, subject: 'physics',
+                text: 'An ideal inductor is connected across a capacitor. Oscillations of energy K are set up in the circuit. The capacitor plates are slowly drawn apart such that the frequency of oscillations is quadrupled. The work done in the process is',
+                options: ['15K', '13K', 'zero', '2K'], answer: 0 },
+            { id: 8, subject: 'physics',
+                text: 'A symmetric double convex lens is cut into two equal parts by a plane perpendicular to the principal axis. If the power of the original lens is 4D, the difference between the powers of the original lens and the cut lens is',
+                options: ['zero', '3D', '1D', '2D'], answer: 3 },
+            { id: 9, subject: 'physics',
+                text: 'Three identical conducting balls A, B and C, each of mass m, are thrown upward at an angle Θ to the horizontal with an initial speed v in a region of space that has a uniform electric field E downward along with the gravitational field g. A is positively charged, B is uncharged and C is negatively charged. Rank the ranges R of these three balls in increasing order.',
+                options: ['R_A < R_B < R_C', 'R_B < R_C < R_A', 'R_A = R_B < R_C', 'R_C < R_B < R_A'],
+                answer: 0 },
+            { id: 10, subject: 'physics',
+                text: 'In a single slit Fraunhofer diffraction pattern obtained at normal incidence, at the angular position of the second diffraction minimum the phase difference (in radian) between the waves from the opposite edges of the slit is',
+                options: ['π', 'zero', '2π', 'π/2'], answer: 2 },
+            { id: 11, subject: 'physics',
+                text: 'The magnetic flux φ through a stationary loop of wire having a resistance R varies with time as φ = 4t² + 3t. The average emf and total charge flowing in the loop in the time interval t = 0 to t = τ respectively are',
+                options: ['τ+3, (4τ²+3τ)/R', '3τ+4, (4τ²+3τ)/R', '4τ+3, (4τ+3)/R', '4τ+3, (4τ²+3τ)/R'],
+                answer: 3 },
+            { id: 12, subject: 'physics',
+                text: 'A stone is dropped from a height h. It hits the ground with a certain momentum p. If the same stone is dropped from a different height h\' such that percentage change in momentum is 41.4%, then the height from which the stone is dropped is h\' = xh, where x is:',
+                options: ['4', '2', '6', '3'], answer: 1 },
+            { id: 13, subject: 'physics',
+                text: 'Point charges -3Q, -q, 2q and 2Q are placed, one at each corner of a square. The relation between Q and q for which the potential at the centre of the square is zero is',
+                options: ['Q = 1/q', 'Q = -q', 'Q = -1/q', 'Q = q'], answer: 3 },
+            { id: 14, subject: 'physics',
+                text: 'If R and L denote resistance and inductance of a material, then the dimension of LR will be:',
+                options: ['M²L⁴T⁻⁵A⁻⁴', 'MLTA⁻¹', 'M⁰L⁰T⁰A⁰', 'M⁻¹L⁴TA⁻³'], answer: 0 },
+            { id: 15, subject: 'physics',
+                text: 'A student measures the terminal potential difference V of a cell (emf ε and internal resistance r) as a function of current I flowing through it, and draws V versus I graph. The slope and intercept of the graph respectively are',
+                options: ['-r, -ε', '-r, ε', 'r, -ε', 'r, ε'], answer: 1 },
+            { id: 16, subject: 'physics',
+                text: 'A galvanometer of resistance 50Ω is connected to a battery of 4 V along with a resistance of 3950Ω in series. A full-scale deflection of 30 divisions is obtained in the galvanometer. In order to reduce this deflection to 10 divisions, the resistance in series should be equal to:',
+                options: ['8950 ohm', '11950 ohm', '7000 ohm', '6000 ohm'], answer: 1 },
+            { id: 17, subject: 'physics',
+                text: 'Two capacitors C₁ and C₂ are charged to 100 V and 120 V respectively. It is found that upon connecting them together in parallel, the potential on each one of them is zero. Therefore',
+                options: ['C₁ + 3C₂ = 0', '5C₁ = 3C₂', '5C₁ + 6C₂ = 0', '5C₁ = 6C₂'], answer: 3 },
+            { id: 18, subject: 'physics',
+                text: 'Two very long, straight, parallel wires carry steady currents I and 2I respectively. The distance between the wires is d. At a certain instant of time, a point charge q is at a point equidistant from the two wires, in the plane of the wires. Its instantaneous velocity is v perpendicular to this plane. The magnitude of the force due to the magnetic field acting on the charge at this instant is',
+                options: ['μ₀Iqv/(πd)', 'zero', '2μ₀Iqv/(πd)', 'μ₀Iqv/(2πd)'], answer: 1 },
+            { id: 19, subject: 'physics',
+                text: 'A wooden block floats in water with 3/5 of its volume submerged. When the same block floats half-submerged in water and half in another liquid, the relative density of the liquid is:',
+                options: ['1/3', '1/6', '1', '1/5'], answer: 3 },
+            { id: 20, subject: 'physics',
+                text: 'A particle starts from rest and moves along the x-axis with a velocity that varies as v = √(100 + 4x) ms⁻¹. The acceleration of the particle is:',
+                options: ['25 ms⁻²', '5 ms⁻²', '4 ms⁻²', '2 ms⁻²'], answer: 3 },
+            { id: 21, subject: 'physics',
+                text: 'One surface of a lens is convex and the other is concave. If the radii of curvatures are R and r respectively, the lens will be convex if',
+                options: ['R > r', 'R < r', 'R = 1/r', 'R = r'], answer: 1 },
+            { id: 22, subject: 'physics',
+                text: 'Emission of electrons from a metal plate illuminated with monochromatic electromagnetic radiation will always take place provided',
+                options: [
+                    'The plate is positively charged',
+                    'The plate is negatively charged',
+                    'The radiation is sufficiently intense',
+                    'The work function of the plate is less than the energy of a single photon and the plate is uncharged'
+                ], answer: 3 },
+            { id: 23, subject: 'physics',
+                text: 'A charged particle is released from rest in a region of space in which steady and uniform electric and magnetic fields are parallel to each other. The particle will move in a',
+                options: ['Helix', 'Straight line', 'Cycloid', 'Circle'], answer: 1 },
+            { id: 24, subject: 'physics',
+                text: 'If E is the amplitude of the electric field of the waves starting from the slits in a double slit experiment and θ is the phase difference between the waves reaching a point on the screen, the ratio of the amplitude of the resultant electric field at that point on the screen to the amplitude at one of the slits is',
+                options: ['cos(θ)', '2cos(θ)', 'cos(θ/2)', '2cos(θ/2)'], answer: 3 },
+            { id: 25, subject: 'physics',
+                text: 'Two coherent waves of intensities I₁ and I₂ pass through a region at the same time in the same direction. The sum of maximum to minimum intensities is',
+                options: ['(I₁+I₂)', '2(I₁+I₂)', '2(√I₁+√I₂)²', '(I₁+I₂)²'], answer: 1 },
+            { id: 26, subject: 'physics',
+                text: 'A Si and a Ge diode has identical physical dimensions. The band gap in Si is larger than that in Ge. On applying identical reverse bias across these diodes,',
+                options: [
+                    'The reverse current in Ge is lesser than that in Si.',
+                    'The relative magnitudes of reverse currents cannot be determined from the given data.',
+                    'The reverse current is identical in both cases.',
+                    'The reverse current in Ge is larger than that in Si.'
+                ], answer: 3 },
+            { id: 27, subject: 'physics',
+                text: 'A convex lens forms a real image of an object with magnification m₁. The lens is moved towards the object to obtain another real image of magnification m₂. The image distance is increased by x. The focal length of the lens is',
+                options: ['(m₂/m₁)x', '(m₁/m₂)x', 'x/(m₂-m₁)', 'x(m₂-m₁)'], answer: 2 },
+            { id: 28, subject: 'physics',
+                text: 'For the charge configuration shown (field lines diagram), which of the following is not true?',
+                options: ['q₁/q₂ = 1', '|q₁| = |q₂|', '|q₁| > |q₂|', 'q₁ and q₂ are negative'], answer: 2 },
+            { id: 29, subject: 'physics',
+                text: 'A bomb of mass 20 kg at rest explodes into two pieces of masses 12 kg and 8 kg. If the velocity of 8 kg mass is 6 ms⁻¹, then the kinetic energy of the other mass is:',
+                options: ['144 J', '64 J', '86 J', '96 J'], answer: 3 },
+            { id: 30, subject: 'physics',
+                text: 'Two identical conducting balls having positive charges q₁ and q₂ are separated by a distance r. If they are made to touch each other and then separated to the same distance, the force between them will be',
+                options: ['Same as before', 'zero', 'Less than before', 'More than before'], answer: 3 },
+            { id: 31, subject: 'physics',
+                text: 'Two simple harmonic motions are represented by equations y₁ = 0.5sin[200πt + π/3] and y₂ = 0.5cos(200πt). The phase difference of the velocity of particle 1 with respect to the velocity of particle 2 is:',
+                options: ['π/2', 'π/6', '-π/6', '-π/2'], answer: 2 },
+            { id: 32, subject: 'physics',
+                text: 'Two identical conductors of lengths 1 and 3 respectively are maintained at the same temperature. They are given potential differences in the ratio 1:3. The ratio of their drift velocities is',
+                options: ['1:9', '9:1', '1:1', '1:3'], answer: 2 },
+            { id: 33, subject: 'physics',
+                text: 'If voltage across a bulb rated 220 V, 50 W drops by 5% of its rated value, the percentage of the rated value by which the power would decrease is',
+                options: ['10%', '2.5%', '15%', '5%'], answer: 0 },
+            { id: 34, subject: 'physics',
+                text: 'A vertical spring of spring constant 24 Nm⁻¹ is fixed on a table. A ball of mass 0.5 kg at a height 2 m above the free upper end of the spring falls vertically on the spring so that the spring is compressed by a distance of 50 cm. The net work done in the process is:',
+                options: ['6.5 J', '10.5 J', '12.5 J', '9.5 J'], answer: 3 },
+            { id: 35, subject: 'physics',
+                text: 'The resistance of a wire is 5 ohm at 25°C and 7 ohm at 100°C. The resistance of the wire at 0°C is',
+                options: ['13/3 ohm', '5/3 ohm', '2/3 ohm', '0.1 ohm'], answer: 0 },
+            { id: 36, subject: 'physics',
+                text: 'A sonometer string vibrates with a frequency of 400 Hz. When the length of the string is halved and the tension is altered, it begins to vibrate with a frequency of 200 Hz. The ratio of the new tension to the original tension in the string is:',
+                options: ['4:1', '16:1', '1:4', '1:16'], answer: 3 },
+            { id: 37, subject: 'physics',
+                text: 'In an experiment to measure the density of the material of a sphere, an error of 2% occurred while measuring the radius of a sphere and an error of 3% occurred while measuring the mass of the sphere. What is the maximum percentage error in the measurement of density?',
+                options: ['8', '6', '7', '9'], answer: 3 },
+            { id: 38, subject: 'physics',
+                text: 'The radius of earth is R and acceleration due to gravity on its surface is g. The height at which the acceleration due to gravity becomes g/8 is:',
+                options: ['2R', '(2√2 - 1)R', '√2 R', '2√2 R'], answer: 1 },
+            { id: 39, subject: 'physics',
+                text: 'A block of metal A is connected in series with another block of metal B such that the two metal blocks have the same area of cross sections. The thermal conductivity of metal A is K and the free end of metal A is at 80°C. The temperature of the interface is 60°C and the free end of metal B is at 20°C. Assuming the two metals have the same thickness, the conductivity of metal B is:',
+                options: ['2K', '4K', 'K/2', 'K/4'], answer: 2 },
+            { id: 40, subject: 'physics', text: 'The mean energy per molecule for a diatomic gas is:',
+                options: ['(5/2)K_B T', '(3/2)K_B T', '(3/2N)K_B T', '(5/2N)K_B T'], answer: 0 },
+            { id: 41, subject: 'physics',
+                text: 'An LCR series ac circuit is at resonance with 10 V each across L, C and R. If the resistance is halved, the respective voltage across R, C and L are',
+                options: ['5V, 10V, 10V', '10V, 5V, 5V', '5V, 5V, 5V', '10V, 20V, 20V'], answer: 3 },
+            { id: 42, subject: 'physics', text: 'Which of the following is true of the Balmer series of the hydrogen spectrum?',
+                options: [
+                    'The entire series falls in the ultraviolet region',
+                    'The entire series falls in the infrared region',
+                    'The series is in the visible region',
+                    'The series is partly in the visible region and partly in the infrared region'
+                ], answer: 2 },
+            { id: 43, subject: 'physics',
+                text: 'If the binding energy per nucleon in ³Li⁷ and ₂He⁴ nuclei are respectively 5.60 MeV and 7.06 MeV, then energy of reaction p + ³Li⁷ → ₂₂He⁴ is',
+                options: ['12.28 MeV', '13.28 MeV', '28.28 MeV', '17.28 MeV'], answer: 3 },
+            { id: 44, subject: 'physics',
+                text: 'From a circular disc of radius 2R, a smaller circular disc is cut with radius of the larger disc as its diameter. The centre of the hole is at a distance of R from the centre of the original disc. The distance of the centre of mass of the remaining portion from the centre is:',
+                options: ['R/3', 'R/4', 'R/6', 'R/2'], answer: 0 },
+            { id: 45, subject: 'physics',
+                text: 'The ratio of specific heat capacities at constant pressure to that at constant volume for a given mass of a gas is 5/2. If the percentage increase in volume of the gas while undergoing an adiabatic change is 3/2%, then the percentage decrease in pressure will be:',
+                options: ['15/4', '3/5', '4/15', '3'], answer: 0 },
+            { id: 46, subject: 'physics',
+                text: 'A planet is 121 times heavier than moon and has a diameter 9 times that of moon. If the escape velocity on the planet is v, then the escape velocity on the moon will be:',
+                options: ['11v/3', '33v/8', '8v/33', '3v/11'], answer: 3 },
+            { id: 47, subject: 'physics',
+                text: 'The electrical conductivity of a semiconductor increases when electromagnetic radiation of wavelength shorter than 1.24 μm is incident on it. The band gap (in eV) for the semiconductor is',
+                options: ['1 eV', '1.1 eV', '2.48 eV', '0.7 eV'], answer: 0 },
+            { id: 48, subject: 'physics',
+                text: 'In a nuclear fusion reaction, two nuclei A and B fuse to produce a nucleus C, releasing an amount of energy ΔE in the process. If the mass defects of the three nuclei are ΔM_A, ΔM_B and ΔM_C respectively, then which of the following relations is true?',
+                options: [
+                    'ΔM_A + ΔM_B = ΔM_C + ΔE/c²',
+                    'ΔM_A - ΔM_B = ΔM_C + ΔE/c²',
+                    'ΔM_A - ΔM_B = ΔM_C - ΔE/c²',
+                    'ΔM_A + ΔM_B = ΔM_C - ΔE/c²'
+                ], answer: 3 },
+            { id: 49, subject: 'physics',
+                text: 'In the energy band diagram of a material shown, open circles and filled circles denote holes and electrons respectively. The material is a',
+                options: ['metal', 'insulator', 'n-type semiconductor', 'p-type semiconductor'], answer: 3 },
+            { id: 50, subject: 'physics',
+                text: 'A particle moves towards west with a velocity of 10 ms⁻¹. After 10s its direction changes towards south and it moves with the same velocity. The average acceleration of the particle is:',
+                options: ['√2 ms⁻² NE', '(1/√2) ms⁻² SE', '2 ms⁻² NE', '√2 ms⁻² SE'], answer: 3 },
+            { id: 51, subject: 'physics',
+                text: 'The electric and magnetic fields associated with an electromagnetic wave propagating along +z axis, can be represented by',
+                options: ['E = E₀i, B = B₀j', 'E = E₀i, B = B₀k', 'E = E₀k, B = B₀j', 'E = E₀j, B = B₀k'],
+                answer: 0 },
+            { id: 52, subject: 'physics',
+                text: 'A bar magnet is oscillating in the earth\'s magnetic field with a period T. When the length of the bar magnet is doubled and its mass is quadrupled, the time period is T₁. The ratio of T₁ to T is',
+                options: ['1:2', '4:1', '2:1', '1:4'], answer: 2 },
+            { id: 53, subject: 'physics',
+                text: 'A cylindrical tank 0.5 m in radius rests on a platform 1.5 m high. Initially the tank is filled with water to a height of 2.5 m. A small plug whose area is 10⁻⁴ m² is removed from an orifice located on the side of the tank at the bottom. The speed with which the water strikes the ground is: [Assume g = 10 ms⁻²]',
+                options: ['7.07 ms⁻¹', '5.1 ms⁻¹', '5.47 ms⁻¹', '7.62 ms⁻¹'], answer: 2 },
+            { id: 54, subject: 'physics',
+                text: 'A long solenoid has 400 turns. When a current of 100 A is passed through it, the resulting magnetic flux linked with each turn of the solenoid is 4 mWb. The self-inductance of the solenoid is',
+                options: ['1.6 mH', '16 mH', '16 H', '0.16 mH'], answer: 1 },
+            { id: 55, subject: 'physics', text: 'Which of the following is not true for a perfect conductor?',
+                options: [
+                    'Electric field inside a conductor is zero',
+                    'The electric field just outside a conductor is always perpendicular to the surface.',
+                    'The surface of a conductor is an equipotential surface.',
+                    'The charge carried by a conductor is always uniformly distributed over the surface of the conductor irrespective of the shape of the conductor.'
+                ], answer: 3 },
+            { id: 56, subject: 'physics',
+                text: 'Young\'s modulus of the material of wires X and Y are in the ratio 4:1 and the areas of cross sections of the wires X and Y are in the ratio 2:1. If the same amount of load is applied to both the wires, the ratio of elongation produced in the wires X and Y will be: (Assume length of the wires X and Y initially are the same)',
+                options: ['1:8', '1:1', '8:1', '1:2'], answer: 0 },
+            { id: 57, subject: 'physics',
+                text: 'A force of -F i acts at the origin of the coordinate system. The torque about the point (0,1,-1) is:',
+                options: ['F(j+k)', '-F(j+k)', 'F(i+k)', '-F(i+j)'], answer: 1 },
+            { id: 58, subject: 'physics',
+                text: 'A sample of an ideal gas is taken through the cyclic process ABCA as shown in figure. It absorbs 60 J of heat during the part AB and rejects 80 J of heat during CA. There is no heat exchanged during the process BC. A work of 40 J is done on the gas during the part BC. If the internal energy of the gas at A is 1450 J, then the work done by the gas during the part CA is:',
+                options: ['10 J', '20 J', '40 J', '30 J'], answer: 1 },
+            { id: 59, subject: 'physics',
+                text: 'A block floats in water with 3/5 of its volume submerged. When floating half in water and half in another liquid (same block), the relative density of that liquid is:',
+                options: ['1/3', '1/6', '1', '1/5'], answer: 3 },
+        ];
+
+        // ── CHEMISTRY (Q1-Q60, IDs 60-119) ──
+        const chemistryQs = [
+            { id: 60, subject: 'chemistry',
+                text: 'What volume of 0.2M CH₃COOH needs to be added to 100 ml of 0.4M CH₃COONa solution to prepare a buffer of pH equal to 4.91? (pKa of CH₃COOH is 4.76)',
+                options: ['282.6 ml', '213.65 ml', '101.41 ml', '141.54 ml'], answer: 3 },
+            { id: 61, subject: 'chemistry',
+                text: 'Identify the final product [Z] formed when Chlorobenzene undergoes the given series of reactions: Chlorobenzene + CH₃Cl/anhyd.AlCl₃ → [W] → Cl₂/UV → [X] → alc.KCN → [Y] → excess dil.HCl → [Z]',
+                options: ['p-Chlorophenylacetic acid', 'p-Chlorobenzoic acid', 'p-Chlorobenzyl chloride',
+                'p-Chlorotoluene'], answer: 0 },
+            { id: 62, subject: 'chemistry',
+                text: 'Two volatile liquids X and Y form an ideal solution at 298 K and have vapour pressures equal to 100 mm and 200 mm of Hg respectively in their pure state. The mole fraction of X in the solution is 0.4 and the mole fraction of Y in the vapour phase is a/20. Calculate the value of a.',
+                options: ['25', '15', '10', '5'], answer: 1 },
+            { id: 63, subject: 'chemistry',
+                text: '0.4 g of Propane burns completely at 300 K in a bomb calorimeter. The temperature of the calorimeter and surrounding water rises by 0.4°C. If the heat capacity of the calorimeter and contents is 24 kJ K⁻¹ what is the Enthalpy for the reaction? (Assume that propane gas shows ideal behaviour).',
+                options: ['-1006.9 kJ', '-1063.5 kJ', '-2084.6 kJ', '-1902.8 kJ'], answer: 1 },
+            { id: 64, subject: 'chemistry', text: 'Match the metals with their characteristic properties.',
+                options: ['A=Q B=R C=S D=P', 'A=R B=Q C=S D=P', 'A=R B=Q C=P D=S', 'A=S B=R C=Q D=P'],
+                answer: 0 },
+            { id: 65, subject: 'chemistry', text: 'Choose the correct statement.',
+                options: [
+                    'Calcium and Magnesium metals are manufactured by electrolysis of aqueous solutions of their salts',
+                    'The oxo-anion ClO₃⁻ does not undergo disproportionation reaction',
+                    'Nitride ion N³⁻ cannot act as an oxidising agent',
+                    'In alkaline medium the reduction of MnO₄⁻ ion involves gain of 5 electrons'
+                ], answer: 2 },
+            { id: 66, subject: 'chemistry',
+                text: 'An aqueous solution of CrCl₃·6H₂O (Molar mass = 266.5 g/mol) containing 2.665 g of the solute after processing, when treated with excess of AgNO₃ gave 2.87 g of AgCl (Molar mass of AgCl = 143.5 g/mol). Choose the correct formula of the compound which give these results.',
+                options: ['[Cr(H₂O)₄Cl₂]Cl·2H₂O', '[Cr(H₂O)₃Cl₃]·3H₂O', '[Cr(H₂O)₅Cl]Cl₂·H₂O',
+                '[Cr(H₂O)₆]Cl₃'], answer: 2 },
+            { id: 67, subject: 'chemistry',
+                text: 'In which one of the following pairs does the stability of the monovalent ion increase with respect to the molecule, while the magnetic character remains the same for both?',
+                options: ['C₂/C₂⁺', 'O₂/O₂⁺', 'B₂/B₂⁺', 'N₂/N₂⁺'], answer: 1 },
+            { id: 68, subject: 'chemistry',
+                text: 'When 9.2×10⁻³ kg of formic acid is added to 600 ml of water the freezing point of water is depressed. If 30% of Formic acid undergoes dissociation what would be the freezing point of the solution? (Kf of H₂O is 1.86 K kg/mol; MM of formic acid: 46 amu)',
+                options: ['273.9 K', '272.2 K', '270.1 K', '270.8 K'], answer: 1 },
+            { id: 69, subject: 'chemistry',
+                text: 'An organic compound [X] (molecular formula C₅H₁₁NO) when reacted with Br₂/aq.NaOH yielded [Y] which reacts with CHCl₃ and Ethanolic KOH to produce a foul smelling compound. Compound [Y] also reacts with HONO to produce Butan-1-ol with liberation of N₂(g). Identify [X].',
+                options: ['CH₃-(CH₂)₃-CONH₂', 'CH₃-(CH₂)₂-CO-CH₂-NH₂', 'CH₃-CH₂-CO-(CH₂)₂-NH₂',
+                    'CH₃-(CH₂)₂-CH(NH₂)-CHO'
+                ], answer: 0 },
+            { id: 70, subject: 'chemistry', text: 'Choose the correct statement.',
+                options: [
+                    'Ionic compounds of Sc³⁺ and Cu⁺ are coloured because of d-d electronic transitions',
+                    'The order in which the paramagnetic nature of the 4 cations Cr²⁺, Mn²⁺, V²⁺ and Fe²⁺ vary is V²⁺ < Cr²⁺ = Mn²⁺ < Fe²⁺',
+                    'As the oxidation number of the transition element increases, the ionic nature decreases and the oxides show acidic nature predominantly',
+                    'The metal Cobalt has the electronic configuration [Ar]3d⁵ in the +3 oxidation state'
+                ], answer: 2 },
+            { id: 71, subject: 'chemistry',
+                text: 'Assertion: The rate constant (k) for a chemical reaction gets nearly doubled for a 10° rise in temperature. Reason: The number of bimolecular collisions between reactant molecules increase with increase in temperature.',
+                options: ['A is correct but R is wrong.',
+                    'Both A and R are correct but R is not the correct explanation of A.',
+                    'Both A and R are correct and R is the correct explanation of A.', 'A is wrong but R is correct.'
+                ], answer: 1 },
+            { id: 72, subject: 'chemistry',
+                text: 'Which one of the following is a true statement with reference to reaction between 2-Bromo-2-methylpropane and aqueous KOH?',
+                options: [
+                    'The rate of reaction depends on the concentration of the haloalkane and the nucleophile OH⁻',
+                    'The reaction occurs at a fast rate since the substrate is a tertiary alkyl halide and follows SN1 mechanism.',
+                    'The reaction is not favoured by the presence of polar protic solvent.',
+                    'The reaction occurs at a slow rate since it follows SN2 mechanism.'
+                ], answer: 1 },
+            { id: 73, subject: 'chemistry',
+                text: 'Which of the following haloalkanes will give more than one isomeric product, on being heated with alc. KOH?',
+                options: ['1-Chloro-2-methylbutane', '1-Chloropentane', '2-Chloro-3,3-dimethylpentane',
+                '2-Chlorobutane'], answer: 3 },
+            { id: 74, subject: 'chemistry',
+                text: 'Which one of the following coordination compounds will exhibit both geometrical and optical isomerism?',
+                options: ['[Cr(ox)₃]³⁻', '[Co(en)₂Cl₂]⁺', '[Co(CN)₆]³⁻', '[Co(NO₃)₃(NH₃)₃]'], answer: 1 },
+            { id: 75, subject: 'chemistry',
+                text: 'The concentration and percentage purity of Oxalic acid can be determined by titration with KMnO₄ in presence of dil. H₂SO₄. Instead of dil. H₂SO₄, dil HCl cannot be used because',
+                options: [
+                    'HCl can also reduce MnO₄⁻ to Mn²⁺',
+                    'HCl can also provide H⁺ ions in addition to H⁺ ions from Oxalic acid.',
+                    'HCl can also oxidise Oxalic acid to CO₂ and H₂O',
+                    'Oxalic acid oxidises HCl to Cl₂.'
+                ], answer: 0 },
+            { id: 76, subject: 'chemistry',
+                text: 'What is the final product [Z] formed when Phenol undergoes Zn-dust distillation → [X] → conc.HNO₃ → [Y] → Br₂/FeBr₃ (cold & dark) → [Z]?',
+                options: ['4-Bromonitrobenzene', '2-Bromonitrobenzene', '2,4,6-tribromonitrobenzene',
+                '3-Bromonitrobenzene'], answer: 3 },
+            { id: 77, subject: 'chemistry',
+                text: 'A non-volatile solute A weighing 60 g when dissolved in 212 g of the solvent Xylene reduces its vapour pressure to 60%. What is the Molar mass of A in g/mol? [MM of xylene = 106 g/mol]',
+                options: ['56', '126', '60', '45'], answer: 3 },
+            { id: 78, subject: 'chemistry',
+                text: 'Assertion: Compound [X] reacts with Hydrazine in presence of KOH/Glycol to form the product [Y]. Reason: Reduction reaction occurs and Carbonyl group is reduced to Methylene group.',
+                options: [
+                    'Both A and R are correct but R is not the correct explanation of A.',
+                    'Both A and R are correct and R is the correct explanation of A.',
+                    'A is wrong but R is correct.', 'A is correct but R is wrong.'
+                ], answer: 1 },
+            { id: 79, subject: 'chemistry',
+                text: 'For a 1.0 molal solution containing the non-volatile solute Urea, the elevation in boiling point is 2.0 K while the depression in freezing point is 4.0 K. If the ratio Kb/Kf = 1/X, what is the value of X?',
+                options: ['1/2', '1/4', '2/3', '3/2'], answer: 2 },
+            { id: 80, subject: 'chemistry', text: 'Identify the correct statement.',
+                options: [
+                    'The central atoms in both CH₄ and SF₄ are in a state of sp³ hybridisation',
+                    'The resultant dipole moment of NF₃ is greater than that of NH₃',
+                    'The C-O bond length in CO₂ molecule is 110 pm because of the Inductive effect (+I) of oxygen',
+                    'A molecule of the type AB₅E where the central atom has 5 bond pairs and 1 lone pair has a square pyramid geometry'
+                ], answer: 3 },
+            { id: 81, subject: 'chemistry', text: 'Choose the incorrect statement.',
+                options: [
+                    'The hormone Glucocorticoid controls the level of excretion of water and salts by the kidney.',
+                    'Vitamins A and K are fat soluble and are stored in the liver of human beings.',
+                    'Denaturation of protein is due to loss of both the secondary and tertiary structures of the protein.',
+                    'Complete hydrolysis of RNA gives Nitrogen containing bases, a pentose sugar and phosphoric acid.'
+                ], answer: 0 },
+            { id: 82, subject: 'chemistry',
+                text: 'Solubility product of the sparingly soluble salt AgBrO₃ in aqueous medium is 9.3×10⁻¹⁰. Calculate the mass in gram of AgBrO₃ present in 100 ml of its saturated solution. (Molar mass of AgBrO₃ is 236 g/mol)',
+                options: ['3.0495×10⁻⁴', '4.962×10⁻⁴', '6.248×10⁻⁵', '7.198×10⁻⁴'], answer: 3 },
+            { id: 83, subject: 'chemistry',
+                text: 'What is the reduction potential of a half-cell consisting of a Pt electrode dipped in 2.2M Fe²⁺ and 0.04M Fe³⁺ solution where the reaction taking place is conversion of Fe³⁺ ions to Fe²⁺? E⁰(Fe³⁺/Fe²⁺) = 0.771 V',
+                options: ['0.598 V', '0.723 V', '0.668 V', '0.719 V'], answer: 2 },
+            { id: 84, subject: 'chemistry',
+                text: 'Both reactions (i) and (ii) give the same compound X as the major product. Identify X. (i) 3-Methylbut-1-ene + HCl → X (ii) Neopentyl alcohol + HCl (anh. ZnCl₂) → X',
+                options: ['(CH₃)₂-CH-CHCl-CH₃', '(CH₃)₂-CCl-CH₂-CH₃', 'CH₃-CH₂-CH(CH₃)-CH₂Cl',
+                    '(CH₃)₂-CH-CH₂-CH₂Cl'
+                ], answer: 1 },
+            { id: 85, subject: 'chemistry',
+                text: 'Two chemical reactions of the same order have equal Frequency factor value. Their Activation energies differ by 26.8 kJ/mol. At 300 K if k₂ = xk₁ find the value of x.',
+                options: ['4.631×10⁴', '1.143×10³', '2.286×10³', '4.665'], answer: 0 },
+            { id: 86, subject: 'chemistry',
+                text: 'Arrange the following compounds in the decreasing order of the molar conductivities of their aqueous solutions: A=[Co(NH₃)₅Cl]Cl₂, B=[Co(NH₃)₃Cl₃], C=[Co(NH₃)₄Cl₂]Cl, D=[Co(NH₃)₆]Cl₃',
+                options: ['B>C>A>D', 'D>A>C>B', 'B>A>C>D', 'A>B>D>C'], answer: 1 },
+            { id: 87, subject: 'chemistry',
+                text: 'From the given covalent compounds (A to F) identify the pair of molecules which have: (i) Two lone pairs of electrons on the central atom. (ii) One lone pair of electrons on the central atom. A=SO₂, B=ClF₃, C=BF₃, D=BrF₅, E=XeF₄, F=SF₆',
+                options: ['(i) A&F (ii) A&E', '(i) D&F (ii) C&D', '(i) B&E (ii) A&D', '(i) C&A (ii) B&C'],
+            answer: 2 },
+            { id: 88, subject: 'chemistry',
+                text: 'A current of 2.5 amperes is passed through 800 ml of 0.48 M solution of CuSO₄ for 1.0 hour with a current efficiency of 80%. If the volume of the solution remains unchanged, what is the final molarity of the solution?',
+                options: ['0.386', '0.315', '0.433', '0.298'], answer: 2 },
+            { id: 89, subject: 'chemistry',
+                text: 'A certain orbital having 2 angular nodes and no radial nodes is:',
+                options: ['3d', '3s', '3p', '2p'], answer: 0 },
+            { id: 90, subject: 'chemistry',
+                text: 'An organic compound [X] reacts with H₂/Pd-BaSO₄ to give compound [Y] which reduces Tollen\'s reagent and undergoes Cannizzaro\'s reaction. On rigorous oxidation of [Y] in presence of KMnO₄/H⁺ Phthalic acid is the product obtained. What is [X]?',
+                options: ['Benzoyl chloride', 'o-Methylbenzoyl chloride', 'p-Methylbenzoyl chloride',
+                'm-Methylbenzoyl chloride'], answer: 1 },
+            { id: 91, subject: 'chemistry',
+                text: 'Arrange the following free radicals in the increasing order of their stability: A=(CH₃)₂CH·, B=(CH₃)₃C·, C=CH₂=CH-CH₂·, D=C₆H₅-CH₂·',
+                options: ['A<B<D<C', 'C<D<B<A', 'C<B<D<A', 'A<B<C<D'], answer: 3 },
+            { id: 92, subject: 'chemistry',
+                text: 'If X is a haloalkane with a single Chlorine atom per molecule and the percentage of Cl is 55, what would be the number of Cl atoms present in 0.1 g of the haloalkane? Atomic mass of Cl = 35.5 g/mol',
+                options: ['6.022×10²²', '1.2044×10²¹', '9.328×10²⁰', '9.329×10²³'], answer: 2 },
+            { id: 93, subject: 'chemistry',
+                text: 'For a reaction X₂(l) + Y₂(g) ⇌ 2XY(g), the ΔH⁰ and ΔS⁰ are +29.3 kJ/mol and 104.1 J K⁻¹ mol⁻¹ respectively at 298 K. Find the free energy change in kJ/mol.',
+                options: ['0.6', '2.04', '5.2', '-1.72'], answer: 3 },
+            { id: 94, subject: 'chemistry',
+                text: 'Which one of the following reactions does not give the correct combination of reactants and the major products formed in the reaction?',
+                options: [
+                    'CH₃-CO-CH₃ + NH₂-NH-CO-NH₂ → (CH₃)₂C=N-NH-CO-NH₂',
+                    'CH₃CHO + 2C₂H₅OH (dry HCl) → CH₃-CH(OC₂H₅)₂',
+                    'CH₃-CH=CH-CH₂-CH₂-CN →(DIBAL-H)→ CH₃-(CH₂)₄-CHO',
+                    'C₆H₅-CO-CH₃ + I₂ + Na₂CO₃ (Heat) → CHI₃ + C₆H₅COO⁻'
+                ], answer: 2 },
+            { id: 95, subject: 'chemistry',
+                text: 'Match the coordination compounds with their hybridisation and magnetic moment. A=Ni(CO)₄, B=[Ni(CN)₄]²⁻, C=[NiCl₄]²⁻, D=[MnBr₄]²⁻',
+                options: ['A=R B=S C=Q D=P', 'A=S B=R C=P D=Q', 'A=S B=P C=R D=Q', 'A=Q B=P C=S D=R'],
+                answer: 0 },
+            { id: 96, subject: 'chemistry',
+                text: 'The EMF of the cell Al/Al³⁺(0.01M)||Fe²⁺(0.02M)/Fe is 1.209 V. The EMF of the cell can be increased by',
+                options: [
+                    'increasing the concentration of Al³⁺ and Fe²⁺',
+                    'increasing the concentration of Al³⁺',
+                    'increasing the concentration of Fe²⁺',
+                    'decreasing the concentration of Al³⁺ and Fe²⁺'
+                ], answer: 2 },
+            { id: 97, subject: 'chemistry',
+                text: 'An unsaturated hydrocarbon [A] undergoes the following series of reactions. With alkaline KMnO₄ at 298K → diketone [B]; Ozonolysis → two identical carbonyl fragments; Na/liquid NH₃ → trans alkene; Strong alkaline KMnO₄/383K → 2 moles of acetic acid; Ammoniacal AgNO₃ → no reaction. Identify [A].',
+                options: ['Propyne', 'But-2-yne', 'But-1-yne', 'But-2-ene'], answer: 1 },
+            { id: 98, subject: 'chemistry',
+                text: 'Identify the compound which gives an optically active haloalkane on reaction with H₂/Ni on heating.',
+                options: ['Option A', 'Option B', 'Option C', 'Option D'], answer: 1 },
+            { id: 99, subject: 'chemistry',
+                text: 'For a given reaction of the type (3/5)X(aq) → (1/2)Y(aq) + Z(g), the correct expression for the rate of disappearance of X with reference to Y is',
+                options: ['-d[X]/dt = +(6/5)d[Y]/dt', '-d[X]/dt = +(5/6)d[Y]/dt', '-d[X]/dt = +(3/10)d[Y]/dt',
+                    '-d[X]/dt = d[Y]^(1/2)/dt'
+                ], answer: 0 },
+            { id: 100, subject: 'chemistry', text: 'Which one of the following statements is correct?',
+                options: [
+                    'The major product formed when 2-Methylpropene reacts with dilute H₂SO₄ is tert. butyl alcohol.',
+                    'The Electrophilic addition to an unsymmetrical alkene always occurs through the formation of a more stable Carbonion intermediate.',
+                    'Between the two alkenes (i) (CH₃)₂-C=CH-CH₃ and (ii) C₆H₅-CH=CH-CH₂-CH₃, compound (i) will show geometrical isomerism',
+                    'Greater the number of alkyl groups attached to the double bonded Carbon atoms, the less stable is the alkene.'
+                ], answer: 0 },
+            { id: 101, subject: 'chemistry',
+                text: 'Given that the standard enthalpy of combustion of C(s) and CS₂(l) are -393.3 and -1108.76 kJ/mol respectively and the standard enthalpy of formation of CS₂ is 128.02 kJ/mol. What is ΔHf⁰ of SO₂?',
+                options: ['-510.6 kJ/mol', '-293.72 kJ/mol', '-321.2 kJ/mol', '-587 kJ/mol'], answer: 1 },
+            { id: 102, subject: 'chemistry', text: 'Choose the correct statement.',
+                options: [
+                    'A solution formed by adding Carbon disulphide to Acetone forms a maximum boiling azeotrope.',
+                    'Hypotonic solution is more concentrated with respect to the other solution separated by a semi permeable membrane',
+                    'For a solvent, Kb = (R×M₁×Tb²)/(1000×ΔHvap)',
+                    'A 1.0 molal solution of Glucose in water is more concentrated than 1.0 M glucose solution in the same solvent.'
+                ], answer: 2 },
+            { id: 103, subject: 'chemistry',
+                text: 'Benzene diazonium chloride when warmed with water gives a compound, whose Sodium salt when reacted with Allyl bromide gives compound [X]. Identify [X].',
+                options: ['C₆H₅-CH-(CH₃)₂', 'C₆H₅-O-CH₂-CH=CH₂', 'C₆H₅-O-CH₂-CH₂-CH₃',
+                'C₆H₅-CH₂-CH₂-CH₃'], answer: 1 },
+            { id: 104, subject: 'chemistry',
+                text: 'Arrange the following in the decreasing order of their pKa values. A=p-Aminophenol, B=p-Nitrophenol, C=p-Methoxyphenol, D=p-Chlorophenol',
+                options: ['A>C>D>B', 'B>D>C>A', 'D>C>A>B', 'C>A>B>D'], answer: 0 },
+            { id: 105, subject: 'chemistry',
+                text: 'Cyclohexanol undergoes a series of reactions: C₆H₁₁OH + CrO₃ → (i) + C₆H₅MgI → (ii) + dil.HCl → (iii) + Conc.H₃PO₄ → (iv). Identify compound (iv).',
+                options: ['Phenylcyclohexene', 'Cyclohexylbenzene', 'Biphenyl', 'Phenylcyclohexane'],
+            answer: 0 },
+            { id: 106, subject: 'chemistry', text: 'Match the structures with their correct IUPAC names.',
+                options: ['A=Q B=P C=S D=R', 'A=R B=S C=Q D=P', 'A=S B=R C=Q D=P', 'A=S B=R C=P D=Q'],
+                answer: 1 },
+            { id: 107, subject: 'chemistry',
+                text: 'Identify [X], the final product formed when 2 moles of Ethanal undergoes: (i) dil.NaOH (ii) Heat (iii) NaBH₄ (iv) Cr₂O₇²⁻/H⁺ → [X]',
+                options: ['But-3-enoic acid', 'But-2-enoic acid', 'Propanoic acid', 'Ethanoic acid'], answer: 1 },
+            { id: 108, subject: 'chemistry',
+                text: 'Assertion: Maltose, a disaccharide, is a reducing sugar and is obtained by the partial hydrolysis of starch in presence of the enzyme diastase. Reason: Hydrolysis of one mole of Maltose gives one mole each of α-D-Glucose and β-D-Fructose.',
+                options: ['A is wrong but R is correct.',
+                    'Both A and R are correct but R is not the correct explanation of A.',
+                    'A is correct but R is wrong.', 'Both A and R are correct and R is the correct explanation of A.'
+                ], answer: 2 },
+            { id: 109, subject: 'chemistry',
+                text: 'Which one of the following options represents the decreasing order of oxidation number of the central atom in: Cr₂O₇²⁻, CrO₂⁻, MnO₄⁻, BrO₃⁻',
+                options: [
+                    'CrO₂⁻ > BrO₃⁻ > Cr₂O₇²⁻ > MnO₄⁻',
+                    'MnO₄⁻ > CrO₂⁻ > Cr₂O₇²⁻ > BrO₃⁻',
+                    'BrO₃⁻ > CrO₂⁻ > MnO₄⁻ > Cr₂O₇²⁻',
+                    'MnO₄⁻ > Cr₂O₇²⁻ > BrO₃⁻ > CrO₂⁻'
+                ], answer: 3 },
+            { id: 110, subject: 'chemistry',
+                text: 'What is the spin only magnetic moment of the metal ion in P and the oxidation number of Sulphur in the oxidised product Z? (Pyrolusite MnO₂ fused with KOH/KNO₃ → K₂MnO₄(P); then reaction with thiosulfate in neutral medium → Z)',
+                options: ['μ=0, Ox.no.=+4', 'μ=5.00 BM, Ox.no.=0', 'μ=5.92 BM, Ox.no.=+2',
+                'μ=1.732 BM, Ox.no.=+6'], answer: 3 },
+            { id: 111, subject: 'chemistry',
+                text: 'The conductivity of 0.01 M solution of CH₃COOH at 298 K is 1.65×10⁻⁴ S cm⁻¹. What is the pKa value of the acid if λ⁰(H⁺) and λ⁰(CH₃COO⁻) are 349.1 S cm² mol⁻¹ and 40.9 S cm² mol⁻¹ respectively?',
+                options: ['4.73', '1.87', '3.47', '2.95'], answer: 0 },
+            { id: 112, subject: 'chemistry',
+                text: 'Assertion: 2-aminoethanoic acid and p-aminobenzenesulphonic acid can exist as Zwitter ions while p-aminobenzoic acid cannot. Reason: When the acid group is a relatively strong proton donor and the -NH₂ group is sufficiently basic it can accept a H⁺ ion from the acid group to form the dipolar ion.',
+                options: [
+                    'Both A and R are correct and R is the correct explanation of A.',
+                    'A is correct but R is wrong.', 'A is wrong but R is correct.',
+                    'Both A and R are correct but R is not the correct explanation of A.'
+                ], answer: 0 },
+            { id: 113, subject: 'chemistry',
+                text: 'X → 2Y is a first order reaction where 1.0 mol/L of the reactant yields 0.4 mol/L of Y in 200 minutes. Calculate the half-life period of the reaction in minutes.',
+                options: ['151.24', '203.69', '620.96', '271.34'], answer: 2 },
+            { id: 114, subject: 'chemistry',
+                text: 'Match the reactions of Glucose with the major product formed. A=C₆H₁₂O₆+HI(Heat), B=C₆H₁₂O₆+Br₂(aq), C=C₆H₁₂O₆+Conc.HNO₃, D=C₆H₁₂O₆+2[Ag(NH₃)₂]OH',
+                options: ['A=S B=R C=Q D=P', 'A=P B=S C=Q D=R', 'A=R B=P C=S D=Q', 'A=Q B=S C=P D=R'],
+                answer: 3 },
+            { id: 115, subject: 'chemistry',
+                text: 'A certain gas absorbs photon of wavelength 4.0×10⁻⁷ m and emits radiation at two wavelengths. If one of the emissions occurs at 7.5×10⁻⁷ m, what is the wavelength at which the second emission occurs?',
+                options: ['650 nm', '857 nm', '700 nm', '680 nm'], answer: 1 },
+            { id: 116, subject: 'chemistry',
+                text: 'The following results were obtained during study of the reaction 2NO(g) + Cl₂(g) → 2NOCl(g). Determine the value of [X] in mol/L.',
+                options: ['[X]=0.8', '[X]=0.3', '[X]=0.4', '[X]=0.5'], answer: 3 },
+            { id: 117, subject: 'chemistry',
+                text: 'Assertion: The decreasing order of the acidic character of the following is B>D>A>C. Reason: Fluorine has larger -I effect than Cl and Br.',
+                options: ['A is correct but R is wrong.',
+                    'Both A and R are correct and R is the correct explanation of A.',
+                    'A is wrong but R is correct.', 'Both A and R are correct but R is not the correct explanation of A.'
+                ], answer: 3 },
+            { id: 118, subject: 'chemistry',
+                text: 'Match: A=Lanthanoid with low 3rd IE, B=f-block [Rn]6d²7s², C=3d M³⁺(aq) colourless, D=3d highest ΔH(atomisation)',
+                options: ['A=Q B=R C=S D=P', 'A=R B=Q C=S D=P', 'A=R B=Q C=P D=S', 'A=S B=R C=Q D=P'],
+                answer: 0 },
+            { id: 119, subject: 'chemistry', text: 'Choose the correct statement about ionic/molecular properties.',
+                options: [
+                    'Ca and Mg manufactured by electrolysis of aqueous solutions',
+                    'ClO₃⁻ does not disproportionate',
+                    'N³⁻ cannot act as oxidising agent',
+                    'MnO₄⁻ reduction in alkaline medium gains 5 electrons'
+                ], answer: 2 },
+        ];
+
+        // ── MATHEMATICS (Q1-Q60, IDs 120-179) ──
+        const mathQs = [
+            { id: 120, subject: 'mathematics',
+                text: 'The solution of (x + log y)dy + ydx = 0 when y(0) = 1 is',
+                options: ['y(x-1+log y)+1=0', 'xy+y log y+1=0', 'xy=y log y-y-1', 'y(x+1+log y)-1=0'],
+            answer: 0 },
+            { id: 121, subject: 'mathematics',
+                text: 'The order of the differential equation d/dx[(dy/dx)³] = 0 is',
+                options: ['not defined', '1', '2', '3'], answer: 2 },
+            { id: 122, subject: 'mathematics',
+                text: 'Find the value of lim(h→0) [(a+h)² sin(a+h) - a² sin a]/h',
+                options: ['-a² sin a', '0', '1', 'a² cos a + 2a sin a'], answer: 3 },
+            { id: 123, subject: 'mathematics',
+                text: '0.2 + 0.22 + 0.222 + ... up to n terms is equal to',
+                options: [
+                    '2/9 - (2/81)(1-10⁻ⁿ)',
+                    '(2/9)[n - (1/9)(1-10⁻ⁿ)]',
+                    '(2/9)(1-10⁻ⁿ)',
+                    '(n/9)(1-10⁻ⁿ)'
+                ], answer: 1 },
+            { id: 124, subject: 'mathematics',
+                text: 'The solution set of the system of inequalities 5-4x ≤ -7 or 5-4x ≥ 7, x∈R is',
+                options: ['(-∞,-1/2)∩[3,∞)', '(-∞,-1/2)∪(3,∞)', '(-∞,-1/2]∩(3,∞)', '(-∞,-1/2]∪[3,∞)'],
+                answer: 3 },
+            { id: 125, subject: 'mathematics', text: 'sin⁻¹[sin(7π/5)] is the principal value of',
+                options: ['-2π/5', 'tan⁻¹[tan(7π/5)]', 'cos⁻¹[cos(7π/5)]', 'sec⁻¹[sec(7π/5)]'], answer: 0 },
+            { id: 126, subject: 'mathematics',
+                text: 'The digits of a three-digit number taken in order are in geometric progression. If one is added to the middle digit, they form an arithmetic progression. If 594 is subtracted from the number, then a new number with the same digits in reverse order is formed. The original number is divisible by',
+                options: ['19', '11', '421', '4'], answer: 2 },
+            { id: 127, subject: 'mathematics',
+                text: 'The least value of a such that the function x²+ax+1 is increasing on [1,2] is',
+                options: ['4', '2', '-2', '1'], answer: 2 },
+            { id: 128, subject: 'mathematics',
+                text: 'Three fair dice are thrown. What is the probability of getting a total of 15 given that they exhibit three different numbers that are in arithmetic progression?',
+                options: ['1/8', '1/6', '1/4', '1/2'], answer: 1 },
+            { id: 129, subject: 'mathematics',
+                text: 'The variance of 25 observations is 8. If each observation is multiplied by 3, then the new variance of the resulting observations is',
+                options: ['8', '8/9', '24', '72'], answer: 3 },
+            { id: 130, subject: 'mathematics',
+                text: 'P is a point on the line joining the points (3,5,-1) and (6,3,-2). If y coordinate of point P is 2, then x coordinate will be',
+                options: ['-5', '3/2', '15/2', '9/2'], answer: 2 },
+            { id: 131, subject: 'mathematics',
+                text: 'If a,b,c are three vectors such that a≠0 and a×b=2(a×c), |a|=|c|=1, |b|=4 and |b×c|=√15. If b-2c=λa then λ² equals:',
+                options: ['-4', '16', '1', '4'], answer: 1 },
+            { id: 132, subject: 'mathematics',
+                text: 'The general solution of the differential equation (x-y)dy = (x+y)dx is',
+                options: [
+                    'tan⁻¹(y/x) = c√(x²+y²)',
+                    'tan⁻¹(y/x) = x²+y²+c',
+                    'e^(tan⁻¹(y/x)) = c√(x²+y²)/x',
+                    'e^(tan⁻¹(y/x)) = c√(x²+y²)'
+                ], answer: 3 },
+            { id: 133, subject: 'mathematics',
+                text: 'A line L₁ passes through the points (h,k), (1,2) and (-3,4). The points (4,3) and (h,k) lie on the line L₂. Given L₁⊥L₂ then (k-h) equals to',
+                options: ['2', '1/2', '-2', '0'], answer: 2 },
+            { id: 134, subject: 'mathematics',
+                text: 'Let M be the set of all 2×2 matrices with entries from the set R of real numbers. Then the function f: M→R defined by f(A)=|A| for every A∈M is',
+                options: ['neither one-one nor onto', 'one-one but not onto', 'onto but not one-one',
+                'one-one and onto'], answer: 2 },
+            { id: 135, subject: 'mathematics',
+                text: 'The sum of three numbers is 6. Twice the third number, when added to the first number gives 7. On adding the sum of the second and third numbers to thrice the first number, we get 12. The above situation can be represented in matrix form as AX=B. Then |adj A| is equal to',
+                options: ['-4', '4', '-64', '16'], answer: 3 },
+            { id: 136, subject: 'mathematics', text: '∫ dx/√(9+8x-x²) = φ(x) + c. Then φ(x) =',
+                options: ['(1/5)sin⁻¹((x-4)/5)', 'sin⁻¹((x-4)/5)', '(1/10)log|(4-x)/(4+x)|',
+                'log|(4-x)/(4+x)|'], answer: 1 },
+            { id: 137, subject: 'mathematics',
+                text: 'A person writes four letters and addresses four envelopes. If the letters are placed in the envelopes at random, then the probability that not all letters are placed in the right envelope is',
+                options: ['15/24', '11/24', '23/24', '1/24'], answer: 2 },
+            { id: 138, subject: 'mathematics', text: '∫ tan²(5 - x/2)dx =',
+                options: ['-(1/2)tan(5-x/2)-x+c', '-2tan(5-x/2)+c', 'tan(5-x/2)+c', '-2tan(5-x/2)-x+c'],
+            answer: 3 },
+            { id: 139, subject: 'mathematics', text: 'If f(x) = ((3+x)/(1+x))^(2+3x), then f\'(0) =',
+                options: ['12+log 3', '-12+3log 3', '-4/3+3log 3', '-12+27log 3'], answer: 3 },
+            { id: 140, subject: 'mathematics', text: 'If A(t) = [[cos t, sin t],[-sin t, cos t]] then the product of A(t) and A(-t) is',
+                options: ['Identity matrix', 'A²(t)', 'Null matrix', 'A²(-t)'], answer: 0 },
+            { id: 141, subject: 'mathematics',
+                text: 'If [some matrix condition], then the result is:',
+                options: ['[[0,1],[1,0]]', '[[1,1],[0,0]]', '[[0,0],[0,0]]', 'Null matrix'], answer: 2 },
+            { id: 142, subject: 'mathematics',
+                text: 'Equation of a circle whose area is 154 sq units and having 2x-3y+12=0 and x+4y-5=0 as diameters is',
+                options: [
+                    'x²+y²+6x-4y+36=0',
+                    'x²-y²+6x-4y-36=0',
+                    'x²+y²-6x+4y-36=0',
+                    'x²+y²+6x-4y-36=0'
+                ], answer: 3 },
+            { id: 143, subject: 'mathematics', text: 'If y = √(x/a) + √(a/x) then 2xy·dy/dx is equal to',
+                options: ['x+a/x', '(x²+a²)/(ax)', 'x/a - a/x', 'a/x - x/a'], answer: 2 },
+            { id: 144, subject: 'mathematics',
+                text: 'If A is a 3×3 matrix and B = 8A, then (8A)⁻¹ is equal to',
+                options: ['8B', '(1/8)B', '(1/64)B', 'B'], answer: 2 },
+            { id: 145, subject: 'mathematics',
+                text: 'Distance of the point (-2,3) from the line 12x-5y-2=0 is 41/k. Then the value of k is',
+                options: ['√134', '√13', '13', '1'], answer: 2 },
+            { id: 146, subject: 'mathematics',
+                text: 'If sin A + sin B = -21/65, cos A + cos B = -27/65 and π < A-B < 3π, then cos((A-B)/2) =',
+                options: ['3/√130', '65', '-65', '-3/√130'], answer: 3 },
+            { id: 147, subject: 'mathematics',
+                text: 'If A = [[0,1,-2],[-1,0,3],[2,-3,0]] then A⁻¹',
+                options: ['equal to -(1/12)(adj A)', 'equal to -12', 'equal to (1/12)(adj A)', 'doesn\'t exist'],
+                answer: 3 },
+            { id: 148, subject: 'mathematics',
+                text: 'Area of the region bounded by the curve y = sin(x/2) between -4π and 0 is',
+                options: ['4 sq units', '8 sq units', '6 sq units', '1 sq units'], answer: 1 },
+            { id: 149, subject: 'mathematics', text: '∫ log x² dx =',
+                options: ['log x² + x + c', 'x log x² - 1 + c', 'x log x² + x + c', 'x log x² - 2x + c'],
+            answer: 3 },
+            { id: 150, subject: 'mathematics',
+                text: 'The value of λ for which the angle between lines r=i+j+k+p(2i+j+2k) and r=(1+q)i+(1+qλ)j+(1+q)k is π/2',
+                options: ['-4', '2', '-2', '4'], answer: 0 },
+            { id: 151, subject: 'mathematics', text: '1/(2sin 10°) - 2sin 70° is',
+                options: ['0', '2', '-3/2', '1'], answer: 3 },
+            { id: 152, subject: 'mathematics',
+                text: 'If two vertices of a triangle are (3,-2) and (-2,3) and its orthocentre is (-6,1). Then the difference between ordinate and abscissa of the third vertex of the triangle is',
+                options: ['2', '5.5', '-5', '7'], answer: 3 },
+            { id: 153, subject: 'mathematics',
+                text: 'The area bounded by the parabola y²=36x and its latus rectum is',
+                options: ['216 sq units', '108 sq units', '27 sq units', '54 sq units'], answer: 0 },
+            { id: 154, subject: 'mathematics',
+                text: 'If n(A)=3 and n(B)=7 and A⊆B then the number of elements in A∩B is equal to',
+                options: ['7', '10', '0', '3'], answer: 3 },
+            { id: 155, subject: 'mathematics', text: '∫₀^π e^(cos x)/(e^(cos x) + e^(-cos x)) dx is equal to',
+                options: ['π', '2π', 'π/4', 'π/2'], answer: 3 },
+            { id: 156, subject: 'mathematics',
+                text: 'The range of x for which the equation sin⁻¹(2x/(1+x²)) = 2tan⁻¹x holds true is',
+                options: ['|x|≤1', '∀x∈R', 'x≥0', '|x|≥1'], answer: 0 },
+            { id: 157, subject: 'mathematics',
+                text: 'A spherical snowball is melting such that its volume is decreasing at the rate of 1 cm³/min. The rate at which the diameter is decreasing when the diameter is 10 cm is',
+                options: ['11/(75π) cm/min', '1/(50π) cm/min', '2/(75π) cm/min', '2 cm/min'], answer: 1 },
+            { id: 158, subject: 'mathematics',
+                text: 'For a given Linear Programming problem, z=3x+2y subject to 4x+3y≤60, x≥3, y≤2x, y≥0. P is one corner point. Coordinate of P is',
+                options: ['(3,6)', '(0,20)', '(0,0)', '(12,6)'], answer: 0 },
+            { id: 159, subject: 'mathematics',
+                text: 'The curve ax³+bx²+cx+d has a point of minima at x=1, then',
+                options: ['3a+b<0', '3a+b>0', '3a+b=0', 'a+3b>0'], answer: 1 },
+            { id: 160, subject: 'mathematics',
+                text: 'If tan x° tan 2° tan 3° ... tan 88° tan y° = 1 then cot(x+y) =',
+                options: ['0', '1', '1/2', 'Undefined'], answer: 0 },
+            { id: 161, subject: 'mathematics',
+                text: 'Vasant and Jothi play a game with a coin. Vasant stakes ₹1 and throws the coin four times. If four heads, gets stake+₹3. If three consecutive heads, gets stake+₹2. If two consecutive heads, gets stake+₹1. Else Jothi takes stake. Find expectation of Vasant\'s gain.',
+                options: ['-5/8', '0', '1', '5/8'], answer: 1 },
+            { id: 162, subject: 'mathematics',
+                text: 'The solution of the differential equation dy/dx + y log y cot x = 0 is',
+                options: ['cos x log y = c', 'log y = c sin x', 'sin x log y = c', 'y sin x = c'], answer: 2 },
+            { id: 163, subject: 'mathematics',
+                text: 'A shopkeeper sells three varieties of fruit juice. He has a large number of bottles of same size of each variety. The number of different ways of displaying all three varieties on a shelf with 5 places in a row and each display must have at least one bottle of each variety is',
+                options: ['150', '120', '60', '90'], answer: 0 },
+            { id: 164, subject: 'mathematics', text: 'The value of lim(x→0) ((1-x)ⁿ - 1)/x =',
+                options: ['n', '0', '-n', '1'], answer: 2 },
+            { id: 165, subject: 'mathematics',
+                text: 'If f(x) = (1-xᵐ)/(1-x) for x≠1 and f(1)=2m-1, and the function is discontinuous at x=1, then',
+                options: ['m=1', 'm≠1/2', 'm=1/2', 'm≠1'], answer: 3 },
+            { id: 166, subject: 'mathematics',
+                text: '∫ dx/((x+2)(x²+1)) = p log|x+2| + q log|x²+1| + r tan⁻¹x + c. Then p+q+r =',
+                options: ['2/5', '1/2', '7/10', '0.16'], answer: 1 },
+            { id: 167, subject: 'mathematics',
+                text: 'Let R be a relation on natural numbers defined by x+2y=8, x,y∈N. The domain of R is',
+                options: ['{2,4,6,8}', '{2,4,6}', '{2,4,8}', '{1,2,3}'], answer: 1 },
+            { id: 168, subject: 'mathematics',
+                text: 'Oil from a conical funnel is dripping at the rate of 5 cm³/s. If the radius and height of the funnel are 10 cm and 20 cm respectively, then the rate at which the oil level drops when it is 5 cm from the top is',
+                options: ['8/(45π) cm/s', '-2π/45 cm/s', '-4π/45 cm/s', '-4/(45π) cm/s'], answer: 3 },
+            { id: 169, subject: 'mathematics',
+                text: 'If the third and fourth terms in the expansion (2x + 1/8)¹⁰ are equal, then the value of x is',
+                options: ['1/8', '2/7', '1/6', '8/3'], answer: 2 },
+            { id: 170, subject: 'mathematics', text: 'Identify the correct statement',
+                options: [
+                    'A∪A\' = ∅', 'A-B = A\'∩B', '(A∪B)\' = A\'∪B\'', 'A⊆B ⇒ B\'⊆A\''
+                ], answer: 3 },
+            { id: 171, subject: 'mathematics', text: 'If (x-1)/(3+i) + (y-1)/(3-i) = i then (y,x) =',
+                options: ['(-6,-4)', '(-4,-6)', '(6,-4)', '(-4,6)'], answer: 2 },
+            { id: 172, subject: 'mathematics',
+                text: 'A line L₁ passing through point A(4i+2j+2k) is parallel to vector b=2i+3j+6k. The length of the perpendicular drawn from point P(i+2j+3k) to L₁ is',
+                options: ['0', '√15', '2√3', '√10'], answer: 3 },
+            { id: 173, subject: 'mathematics',
+                text: 'If the distance between the foci is equal to the length of the latus rectum, then the eccentricity of the ellipse is',
+                options: ['(√5+1)/2', '(1-√5)/2', '(√5-1)/2', '(1+√5)/2'], answer: 2 },
+            { id: 174, subject: 'mathematics',
+                text: 'In an entrance test, there are multiple choice questions with four possible answers each. The probability that a student knows the answer is 90%. If he gets the correct answer, the probability that he was guessing is',
+                options: ['36/37', '1/9', '1/37', '37/40'], answer: 2 },
+            { id: 175, subject: 'mathematics',
+                text: 'The magnitude of the projection of the vector -i+2j-k on the z-axis is',
+                options: ['2', '1/√6', '1', '-1/√6'], answer: 2 },
+            { id: 176, subject: 'mathematics',
+                text: 'A solid S is made from a cylinder surmounted by a hemisphere on top. Radius of both = x cm. Height of cylinder = (20-4x) cm. Volume V = (1/3)πy. Find maximum value of y.',
+                options: ['480', '360', '320', '160'], answer: 2 },
+            { id: 177, subject: 'mathematics', text: '(8A)⁻¹ where A⁻¹ = (1/8)B gives:',
+                options: ['8B', 'B', '(1/64)B', 'B'], answer: 2 },
+            { id: 178, subject: 'mathematics',
+                text: 'For a 3×3 matrix A, if det(A)=4 then |adj A| =',
+                options: ['-4', '4', '-64', '16'], answer: 3 },
+            { id: 179, subject: 'mathematics',
+                text: 'Area bounded by y=sin(x/2) from -4π to 0 is:',
+                options: ['4', '8', '6', '1'], answer: 1 },
+        ];
+
+        // Combine all questions
+        questions.push(...physicsQs, ...chemistryQs, ...mathQs);
+
+        // Subject ranges
+        const subjectRanges = {
+            physics: { start: 0, end: 59, name: 'Physics', tabId: 'tab-physics', cntId: 'cnt-physics' },
+            chemistry: { start: 60, end: 119, name: 'Chemistry', tabId: 'tab-chemistry', cntId: 'cnt-chemistry' },
+            mathematics: { start: 120, end: 179, name: 'Mathematics', tabId: 'tab-mathematics',
+            cntId: 'cnt-mathematics' },
+        };
+
+        // ── STATE ──
+        const TOTAL_Q = 180;
+        const TOTAL_TIME = 3 * 60 * 60; // 3 hours in seconds
+        let currentIndex = 0;
+        let userAnswers = new Array(TOTAL_Q).fill(null); // null=unanswered, 0-3=option index
+        let visited = new Array(TOTAL_Q).fill(false);
+        let timeRemaining = TOTAL_TIME;
+        let timerInterval = null;
+        let testSubmitted = false;
+
+        // ── DOM REFS ──
+        const $qText = document.getElementById('q-text');
+        const $optionsArea = document.getElementById('options-area');
+        const $qNumLabel = document.getElementById('q-num-label');
+        const $subjectBadge = document.getElementById('subject-badge');
+        const $timerBox = document.getElementById('timer-box');
+        const $paletteGrid = document.getElementById('palette-grid');
+        const $mobilePaletteGrid = document.getElementById('mobile-palette-grid');
+        const $resultsScreen = document.getElementById('results-screen');
+        const $resultCard = document.getElementById('result-card-content');
+        const $questionPanel = document.getElementById('question-panel');
+        const $mainContainer = document.getElementById('main-container');
+        const $paletteSidebar = document.getElementById('palette-sidebar');
+        const $headerName = document.getElementById('header-name');
+        const $avatarCircle = document.getElementById('avatar-circle');
+        const $paletteNameDisplay = document.getElementById('palette-name-display');
+        const $mobilePaletteNameDisplay = document.getElementById('mobile-palette-name-display');
+
+        // ── INIT ──
+        function init() {
+            const savedName = localStorage.getItem('comedk_username');
+            if (savedName) {
+                $headerName.textContent = savedName;
+                $avatarCircle.textContent = savedName.charAt(0).toUpperCase();
+                $paletteNameDisplay.textContent = savedName;
+                $mobilePaletteNameDisplay.textContent = savedName;
+            }
+            renderQuestion();
+            renderPalette();
+            updateSubjectCounts();
+            startTimer();
+            updateTabHighlight();
+        }
+
+        function getCurrentSubject() {
+            return questions[currentIndex].subject;
+        }
+
+        function updateTabHighlight() {
+            const subj = getCurrentSubject();
+            document.querySelectorAll('#subject-tabs button').forEach(b => b.classList.remove('active'));
+            if (subjectRanges[subj]) {
+                document.getElementById(subjectRanges[subj].tabId).classList.add('active');
+            }
+        }
+
+        function jumpToSubject(subj) {
+            if (subjectRanges[subj]) {
+                currentIndex = subjectRanges[subj].start;
+                renderQuestion();
+                renderPalette();
+                updateTabHighlight();
+                document.getElementById('question-panel').scrollTop = 0;
+            }
+        }
+
+        function renderQuestion() {
+            if (testSubmitted) return;
+            const q = questions[currentIndex];
+            visited[currentIndex] = true;
+            $qNumLabel.textContent = `Question ${currentIndex+1} of ${TOTAL_Q}`;
+            $subjectBadge.textContent = q.subject.charAt(0).toUpperCase() + q.subject.slice(1);
+            $qText.innerHTML = q.text;
+            $optionsArea.innerHTML = '';
+            const labels = ['A', 'B', 'C', 'D'];
+            q.options.forEach((opt, i) => {
+                const btn = document.createElement('button');
+                btn.className = 'opt-btn';
+                if (userAnswers[currentIndex] === i) btn.classList.add('selected');
+                btn.innerHTML = `<span class="opt-label">${labels[i]}</span><span>${opt}</span>`;
+                btn.addEventListener('click', () => selectOption(i));
+                btn.style.minHeight = '52px';
+                $optionsArea.appendChild(btn);
+            });
+            updateTabHighlight();
+            renderPalette();
+            updateSubjectCounts();
+        }
+
+        function selectOption(index) {
+            if (testSubmitted) return;
+            userAnswers[currentIndex] = index;
+            renderQuestion();
+        }
+
+        function saveAndNext() {
+            if (testSubmitted) return;
+            visited[currentIndex] = true;
+            if (currentIndex < TOTAL_Q - 1) {
+                currentIndex++;
+                renderQuestion();
+                document.getElementById('question-panel').scrollTop = 0;
+            } else {
+                renderQuestion();
+            }
+        }
+
+        function clearResponse() {
+            if (testSubmitted) return;
+            userAnswers[currentIndex] = null;
+            renderQuestion();
+        }
+
+        function goToPrevious() {
+            if (testSubmitted) return;
+            if (currentIndex > 0) {
+                currentIndex--;
+                renderQuestion();
+                document.getElementById('question-panel').scrollTop = 0;
+            }
+        }
+
+        function goToQuestion(idx) {
+            if (testSubmitted) return;
+            if (idx >= 0 && idx < TOTAL_Q) {
+                currentIndex = idx;
+                renderQuestion();
+                document.getElementById('question-panel').scrollTop = 0;
+                closeMobilePalette();
+            }
+        }
+
+        function renderPalette() {
+            // Desktop
+            $paletteGrid.innerHTML = '';
+            for (let i = 0; i < TOTAL_Q; i++) {
+                const btn = document.createElement('button');
+                btn.textContent = i + 1;
+                btn.title = `Q${i+1}: ${questions[i].subject}`;
+                if (userAnswers[i] !== null) btn.classList.add('answered');
+                else if (visited[i]) btn.classList.add('visited');
+                if (i === currentIndex) btn.classList.add('current');
+                btn.addEventListener('click', () => goToQuestion(i));
+                btn.style.minHeight = '24px';
+                btn.style.minWidth = '24px';
+                $paletteGrid.appendChild(btn);
+            }
+            // Mobile
+            $mobilePaletteGrid.innerHTML = '';
+            for (let i = 0; i < TOTAL_Q; i++) {
+                const btn = document.createElement('button');
+                btn.textContent = i + 1;
+                if (userAnswers[i] !== null) btn.classList.add('answered');
+                else if (visited[i]) btn.classList.add('visited');
+                if (i === currentIndex) btn.classList.add('current');
+                btn.addEventListener('click', () => goToQuestion(i));
+                btn.style.minHeight = '28px';
+                btn.style.minWidth = '28px';
+                $mobilePaletteGrid.appendChild(btn);
+            }
+        }
+
+        function updateSubjectCounts() {
+            for (const [subj, range] of Object.entries(subjectRanges)) {
+                let answered = 0;
+                for (let i = range.start; i <= range.end; i++) {
+                    if (userAnswers[i] !== null) answered++;
+                }
+                const total = range.end - range.start + 1;
+                document.getElementById(range.cntId).textContent = `(${answered}/${total})`;
+            }
+        }
+
+        function startTimer() {
+            updateTimerDisplay();
+            timerInterval = setInterval(() => {
+                timeRemaining--;
+                updateTimerDisplay();
+                if (timeRemaining <= 0) {
+                    clearInterval(timerInterval);
+                    submitTest();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const h = Math.floor(timeRemaining / 3600);
+            const m = Math.floor((timeRemaining % 3600) / 60);
+            const s = timeRemaining % 60;
+            $timerBox.textContent =
+                String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0') + ':' + String(s).padStart(2,
+                '0');
+            if (timeRemaining < 300) {
+                $timerBox.classList.add('warning');
+            } else {
+                $timerBox.classList.remove('warning');
+            }
+        }
+
+        function submitTest() {
+            if (testSubmitted) return;
+            testSubmitted = true;
+            clearInterval(timerInterval);
+            document.getElementById('question-panel').style.display = 'none';
+            document.getElementById('palette-sidebar').style.display = 'none';
+            document.getElementById('main-container').style.display = 'none';
+            document.getElementById('mobile-palette-btn').style.display = 'none';
+            $resultsScreen.style.display = 'flex';
+
+            // Calculate scores
+            let correct = 0;
+            let incorrect = 0;
+            let unattempted = 0;
+            const subjectStats = { physics: { corr: 0, wrong: 0, unatt: 0 }, chemistry: { corr: 0, wrong: 0,
+                    unatt: 0 },
+                mathematics: { corr: 0, wrong: 0, unatt: 0 } };
+
+            for (let i = 0; i < TOTAL_Q; i++) {
+                const q = questions[i];
+                const subj = q.subject;
+                if (userAnswers[i] === null) {
+                    unattempted++;
+                    subjectStats[subj].unatt++;
+                } else if (userAnswers[i] === q.answer) {
+                    correct++;
+                    subjectStats[subj].corr++;
+                } else {
+                    incorrect++;
+                    subjectStats[subj].wrong++;
+                }
+            }
+            const score = correct; // 1 mark per correct, no negative marking shown
+            const accuracy = TOTAL_Q > 0 ? ((correct / TOTAL_Q) * 100).toFixed(1) : 0;
+
+            // Build results
+            let html = `<h2>Test Results</h2>`;
+            html += `<div class="big-score">${score} / ${TOTAL_Q}</div>`;
+            html +=
+                `<div class="summary-row"><span>✅ Correct: <b>${correct}</b></span><span>❌ Incorrect: <b>${incorrect}</b></span><span>⬜ Unattempted: <b>${unattempted}</b></span></div>`;
+            html += `<div class="summary-row"><span>Accuracy: <b>${accuracy}%</b></span></div>`;
+            html += `<table><thead><tr><th>Subject</th><th>Score</th><th>Correct</th><th>Wrong</th><th>Unattempted</th></tr></thead><tbody>`;
+            for (const [subj, stats] of Object.entries(subjectStats)) {
+                const subjName = subj.charAt(0).toUpperCase() + subj.slice(1);
+                html +=
+                    `<tr><td>${subjName}</td><td>${stats.corr}</td><td>${stats.corr}</td><td>${stats.wrong}</td><td>${stats.unatt}</td></tr>`;
+            }
+            html += `</tbody></table>`;
+
+            // Name input
+            const savedName = localStorage.getItem('comedk_username') || '';
+            html += `<div id="name-input-area"><label>Your Name: </label><input type="text" id="result-name-input" value="${savedName}" placeholder="Enter your name" style="min-height:40px;"></div>`;
+            html += `<div class="btn-row">`;
+            html +=
+                `<button onclick="retakeTest()" style="background:#1a56db;color:#fff;border-color:#1a56db;">Retake Test</button>`;
+            html +=
+                `<button onclick="goHome()" style="background:#fff;color:#1a56db;border-color:#1a56db;">🏠 Back to Home</button>`;
+            html += `</div>`;
+            $resultCard.innerHTML = html;
+
+            // Auto-save to Firebase
+            const nameToSave = savedName || 'Anonymous';
+            const testName = 'COMEDK 2025';
+            if (typeof window.saveScoreToFirebase === 'function') {
+                window.saveScoreToFirebase(nameToSave, testName, score, TOTAL_Q, accuracy);
+            }
+
+            // Save to localStorage
+            const storedTests = JSON.parse(localStorage.getItem('comedk_completed_tests') || '{}');
+            storedTests['2025'] = { score, total: TOTAL_Q, accuracy, date: new Date().toISOString() };
+            localStorage.setItem('comedk_completed_tests', JSON.stringify(storedTests));
+            const bestScores = JSON.parse(localStorage.getItem('comedk_best_scores') || '{}');
+            if (!bestScores['2025'] || score > bestScores['2025'].score) {
+                bestScores['2025'] = { score, total: TOTAL_Q, accuracy, date: new Date().toISOString() };
+                localStorage.setItem('comedk_best_scores', JSON.stringify(bestScores));
+            }
+
+            // Update name if changed
+            const nameInput = document.getElementById('result-name-input');
+            if (nameInput) {
+                nameInput.addEventListener('change', function() {
+                    localStorage.setItem('comedk_username', this.value || 'Anonymous');
+                    if (typeof window.saveScoreToFirebase === 'function') {
+                        window.saveScoreToFirebase(this.value || 'Anonymous', testName, score, TOTAL_Q,
+                            accuracy);
+                    }
+                });
+            }
+        }
+
+        function retakeTest() {
+            const nameInput = document.getElementById('result-name-input');
+            if (nameInput && nameInput.value.trim()) {
+                localStorage.setItem('comedk_username', nameInput.value.trim());
+            }
+            userAnswers = new Array(TOTAL_Q).fill(null);
+            visited = new Array(TOTAL_Q).fill(false);
+            timeRemaining = TOTAL_TIME;
+            testSubmitted = false;
+            currentIndex = 0;
+            $resultsScreen.style.display = 'none';
+            document.getElementById('question-panel').style.display = 'flex';
+            document.getElementById('palette-sidebar').style.display = 'flex';
+            document.getElementById('main-container').style.display = 'flex';
+            document.getElementById('mobile-palette-btn').style.display = '';
+            $timerBox.classList.remove('warning');
+            updateTimerDisplay();
+            renderQuestion();
+            renderPalette();
+            updateSubjectCounts();
+            updateTabHighlight();
+            startTimer();
+            document.getElementById('question-panel').scrollTop = 0;
+            window.scrollTo(0, 0);
+        }
+
+        function goHome() {
+            const nameInput = document.getElementById('result-name-input');
+            if (nameInput && nameInput.value.trim()) {
+                localStorage.setItem('comedk_username', nameInput.value.trim());
+            }
+            window.location.href = 'index.html';
+        }
+
+        function openMobilePalette() {
+            document.getElementById('mobile-palette-overlay').classList.add('open');
+            document.getElementById('mobile-palette-drawer').classList.add('open');
+            renderPalette();
+        }
+
+        function closeMobilePalette() {
+            document.getElementById('mobile-palette-overlay').classList.remove('open');
+            document.getElementById('mobile-palette-drawer').classList.remove('open');
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (testSubmitted) return;
+            const key = e.key.toLowerCase();
+            if (key === 'a' || key === '1') selectOption(0);
+            if (key === 'b' || key === '2') selectOption(1);
+            if (key === 'c' || key === '3') selectOption(2);
+            if (key === 'd' || key === '4') selectOption(3);
+            if (key === 'arrowright' || key === 'n') { e.preventDefault();
+                saveAndNext(); }
+            if (key === 'arrowleft' || key === 'p') { e.preventDefault();
+                goToPrevious(); }
+            if (key === 'escape') clearResponse();
+        });
+
+        // Initialize
+        init();
+
+        // Handle window resize for mobile palette button visibility
+        function handleResize() {
+            const mb = document.getElementById('mobile-palette-btn');
+            if (window.innerWidth <= 768) {
+                mb.style.display = 'block';
+                document.getElementById('palette-sidebar').style.display = 'none';
+            } else {
+                mb.style.display = 'none';
+                document.getElementById('palette-sidebar').style.display = 'flex';
+                closeMobilePalette();
+            }
+        }
+        window.addEventListener('resize', handleResize);
+        handleResize();
+    </script>
+
+    <!-- ── FIREBASE LEADERBOARD ──────── -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, serverTimestamp } from
+        "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBz6qXqOpTqQot1GZtJCIwCXnRYg9Hghn4",
+            authDomain: "comedk-20399.firebaseapp.com",
+            projectId: "comedk-20399",
+            storageBucket: "comedk-20399.firebasestorage.app",
+            messagingSenderId: "111466152803",
+            appId: "1:111466152803:web:4e6ca3c7f131ca0dbcc956"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        window.saveScoreToFirebase = async function(name, testName, score, total, accuracy) {
+            try {
+                await addDoc(collection(db, "leaderboard"), {
+                    name,
+                    testName,
+                    score,
+                    total,
+                    accuracy,
+                    timestamp: serverTimestamp()
+                });
+                console.log("Score saved to Firebase!");
+            } catch (e) {
+                console.error("Firebase error:", e);
+            }
+        };
+    </script>
+
+</body>
+</html>
