@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>COMEDK 2023 Evening Shift — Mock Test</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,sans-serif;background:#f5f5f5;color:#222;font-size:15px}
+
+/* ===== HEADER ===== */
+#header{
+  position:sticky;top:0;z-index:100;
+  background:#1a56db;color:#fff;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 16px;height:56px;gap:8px;
+}
+#header-left{display:flex;align-items:center;gap:10px;min-width:0;flex:1}
+.candidate-photo{
+  width:38px;height:38px;border-radius:50%;
+  background:#fff;display:flex;align-items:center;justify-content:center;
+  font-size:18px;flex-shrink:0;
+}
+#candidate-name-display{font-size:13px;font-weight:bold;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:120px}
+#header-center{display:flex;flex-direction:column;align-items:center;flex-shrink:0}
+#test-title{font-size:13px;font-weight:bold}
+#timer-box{
+  background:#fff;color:#1a56db;
+  padding:3px 10px;border-radius:4px;
+  font-size:14px;font-weight:bold;letter-spacing:1px;margin-top:2px;
+  transition:background 0.3s,color 0.3s;
+}
+#timer-box.urgent{background:#dc2626;color:#fff}
+#header-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
+#submit-btn{
+  background:#dc2626;color:#fff;border:none;
+  padding:8px 14px;border-radius:4px;font-size:13px;font-weight:bold;cursor:pointer;
+  min-height:36px;
+}
+#submit-btn:hover{background:#b91c1c}
+
+/* ===== SUBJECT TABS ===== */
+#subject-tabs{
+  display:flex;background:#fff;border-bottom:2px solid #e5e7eb;
+  position:sticky;top:56px;z-index:99;overflow-x:auto;
+}
+.tab{
+  flex:1;min-width:0;
+  padding:10px 8px;text-align:center;cursor:pointer;
+  font-size:13px;font-weight:bold;color:#555;border-bottom:3px solid transparent;
+  transition:color 0.2s,border-color 0.2s;white-space:nowrap;
+}
+.tab.active{color:#1a56db;border-bottom-color:#1a56db}
+.tab:hover{color:#1a56db}
+
+/* ===== MAIN LAYOUT ===== */
+#main{display:flex;height:calc(100vh - 100px);overflow:hidden}
+
+/* ===== QUESTION PANEL ===== */
+#question-panel{
+  flex:1;overflow-y:auto;padding:16px;
+  display:flex;flex-direction:column;gap:12px;
+}
+#q-header{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+#q-label{font-weight:bold;color:#444;font-size:14px}
+.subject-badge{
+  background:#e8f0fe;color:#1a56db;
+  padding:2px 10px;border-radius:20px;font-size:12px;font-weight:bold;
+}
+#q-text{
+  background:#fff;border:1px solid #ddd;border-radius:6px;
+  padding:16px;font-size:16px;line-height:1.7;min-height:80px;
+}
+#options-list{display:flex;flex-direction:column;gap:10px}
+.opt{
+  display:flex;align-items:center;gap:12px;
+  background:#fff;border:1px solid #ddd;border-radius:6px;
+  padding:12px 16px;cursor:pointer;font-size:15px;
+  min-height:52px;transition:background 0.15s,border-color 0.15s;
+  text-align:left;width:100%;
+}
+.opt:hover{background:#f0f4ff;border-color:#93c5fd}
+.opt.selected{background:#e8f0fe;border-color:#1a56db}
+.opt-key{
+  width:28px;height:28px;border-radius:50%;
+  background:#e5e7eb;display:flex;align-items:center;justify-content:center;
+  font-weight:bold;font-size:13px;flex-shrink:0;
+}
+.opt.selected .opt-key{background:#1a56db;color:#fff}
+#q-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:4px}
+.action-btn{
+  padding:10px 18px;border:none;border-radius:4px;
+  font-size:14px;font-weight:bold;cursor:pointer;min-height:44px;
+  display:flex;align-items:center;gap:6px;
+}
+#btn-save-next{background:#1a56db;color:#fff}
+#btn-save-next:hover{background:#1e40af}
+#btn-clear{background:#fef3c7;color:#92400e;border:1px solid #fbbf24}
+#btn-clear:hover{background:#fde68a}
+#btn-prev{background:#e5e7eb;color:#374151}
+#btn-prev:hover{background:#d1d5db}
+
+/* ===== PALETTE ===== */
+#palette-panel{
+  width:240px;background:#fff;border-left:1px solid #ddd;
+  overflow-y:auto;padding:12px;flex-shrink:0;
+}
+#palette-candidate{font-size:13px;font-weight:bold;color:#374151;margin-bottom:8px;word-break:break-all}
+#palette-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;margin-bottom:12px}
+.pal-btn{
+  width:36px;height:36px;border:1px solid #9ca3af;border-radius:4px;
+  font-size:12px;font-weight:bold;cursor:pointer;background:#9ca3af;color:#fff;
+  display:flex;align-items:center;justify-content:center;transition:background 0.1s;
+}
+.pal-btn.visited{background:#dc2626;border-color:#dc2626}
+.pal-btn.answered{background:#16a34a;border-color:#16a34a}
+.pal-btn.current{outline:3px solid #f59e0b;outline-offset:1px}
+#palette-legend{display:flex;flex-direction:column;gap:5px;font-size:12px}
+.leg{display:flex;align-items:center;gap:6px}
+.leg-dot{width:14px;height:14px;border-radius:3px;flex-shrink:0}
+.leg-gray{background:#9ca3af}
+.leg-red{background:#dc2626}
+.leg-green{background:#16a34a}
+
+/* ===== MOBILE PALETTE DRAWER ===== */
+#palette-trigger{
+  display:none;
+  position:fixed;bottom:0;left:0;right:0;
+  background:#1a56db;color:#fff;border:none;
+  padding:14px;font-size:15px;font-weight:bold;cursor:pointer;
+  z-index:200;text-align:center;
+}
+#palette-overlay{
+  display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:300;
+}
+#palette-drawer{
+  display:none;position:fixed;bottom:0;left:0;right:0;
+  background:#fff;border-radius:16px 16px 0 0;z-index:400;
+  max-height:70vh;overflow-y:auto;padding:16px;
+}
+#drawer-close{
+  width:100%;background:#e5e7eb;border:none;padding:10px;border-radius:6px;
+  font-size:14px;font-weight:bold;cursor:pointer;margin-bottom:10px;
+}
+#drawer-grid{display:grid;grid-template-columns:repeat(9,1fr);gap:5px;margin-bottom:12px}
+.pal-btn-d{
+  width:32px;height:32px;border:1px solid #9ca3af;border-radius:4px;
+  font-size:11px;font-weight:bold;cursor:pointer;background:#9ca3af;color:#fff;
+  display:flex;align-items:center;justify-content:center;
+}
+.pal-btn-d.visited{background:#dc2626;border-color:#dc2626}
+.pal-btn-d.answered{background:#16a34a;border-color:#16a34a}
+.pal-btn-d.current{outline:3px solid #f59e0b;outline-offset:1px}
+
+/* ===== RESULTS ===== */
+#results-screen{
+  display:none;max-width:700px;margin:24px auto;padding:16px;
+}
+#results-card{background:#fff;border:1px solid #ddd;border-radius:8px;padding:24px}
+#results-card h2{text-align:center;color:#1a56db;font-size:22px;margin-bottom:16px}
+#score-display{
+  text-align:center;padding:16px;background:#e8f0fe;border-radius:8px;margin-bottom:16px;
+}
+#score-display .score-big{font-size:48px;font-weight:bold;color:#1a56db}
+#score-display .score-sub{font-size:15px;color:#555}
+#counts-row{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+.count-box{
+  flex:1;min-width:80px;padding:12px;border-radius:8px;text-align:center;
+  border:1px solid #ddd;
+}
+.count-box .num{font-size:28px;font-weight:bold}
+.count-box .lbl{font-size:12px;color:#666}
+.count-correct{border-color:#16a34a;background:#f0fdf4}
+.count-correct .num{color:#16a34a}
+.count-wrong{border-color:#dc2626;background:#fef2f2}
+.count-wrong .num{color:#dc2626}
+.count-unattempted{border-color:#9ca3af;background:#f9fafb}
+.count-unattempted .num{color:#6b7280}
+#subject-table{width:100%;border-collapse:collapse;margin-bottom:20px;font-size:14px}
+#subject-table th{background:#1a56db;color:#fff;padding:8px;text-align:left}
+#subject-table td{padding:8px;border:1px solid #ddd}
+#subject-table tr:nth-child(even){background:#f9fafb}
+#result-actions{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+.res-btn{
+  padding:12px 24px;border-radius:6px;border:none;font-size:15px;
+  font-weight:bold;cursor:pointer;min-height:48px;
+}
+#btn-retake{background:#1a56db;color:#fff}
+#btn-home{background:#e5e7eb;color:#374151}
+#name-prompt{
+  display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);
+  z-index:500;align-items:center;justify-content:center;
+}
+#name-prompt.show{display:flex}
+#name-dialog{
+  background:#fff;padding:28px;border-radius:10px;max-width:360px;width:90%;
+}
+#name-dialog h3{margin-bottom:12px;color:#1a56db}
+#name-dialog p{margin-bottom:16px;color:#555;font-size:14px}
+#name-input{
+  width:100%;padding:10px;border:1px solid #ddd;border-radius:6px;
+  font-size:15px;margin-bottom:12px;
+}
+#name-submit{
+  width:100%;padding:12px;background:#1a56db;color:#fff;border:none;
+  border-radius:6px;font-size:15px;font-weight:bold;cursor:pointer;
+}
+#firebase-status{font-size:12px;color:#16a34a;margin-top:8px;text-align:center}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:768px){
+  #palette-panel{display:none}
+  #palette-trigger{display:block}
+  #main{height:calc(100vh - 108px)}
+  #q-text{font-size:15px}
+  #candidate-name-display{display:none}
+  .tab{font-size:11px;padding:8px 4px}
+}
+@media(max-width:480px){
+  #header{padding:0 8px;height:52px}
+  .candidate-photo{width:32px;height:32px;font-size:15px}
+  #test-title{font-size:11px}
+  #timer-box{font-size:12px;padding:2px 8px}
+  #submit-btn{padding:6px 10px;font-size:12px}
+  #q-text{font-size:14px;padding:12px}
+  .opt{padding:10px 12px;font-size:14px}
+  .action-btn{padding:9px 12px;font-size:13px}
+  #subject-tabs{top:52px}
+  #main{height:calc(100vh - 104px)}
+}
+@media(min-width:769px){
+  #palette-overlay,#palette-drawer{display:none!important}
+}
+</style>
+</head>
+<body>
+
+<!-- Name Prompt -->
+<div id="name-prompt">
+  <div id="name-dialog">
+    <h3>Welcome!</h3>
+    <p>Enter your name to begin the test. Your score will be saved to the leaderboard.</p>
+    <input id="name-input" type="text" placeholder="Your name" maxlength="40">
+    <button id="name-submit">Start Test</button>
+  </div>
+</div>
+
+<!-- Header -->
+<div id="header">
+  <div id="header-left">
+    <div class="candidate-photo">👤</div>
+    <div id="candidate-name-display">Candidate</div>
+  </div>
+  <div id="header-center">
+    <div id="test-title">COMEDK 2023 Evening Shift</div>
+    <div id="timer-box">03:00:00</div>
+  </div>
+  <div id="header-right">
+    <button id="submit-btn">Submit Test</button>
+  </div>
+</div>
+
+<!-- Subject Tabs -->
+<div id="subject-tabs">
+  <div class="tab" data-subject="Physics" onclick="jumpToSubject('Physics')">Physics <span id="tab-count-Physics"></span></div>
+  <div class="tab" data-subject="Chemistry" onclick="jumpToSubject('Chemistry')">Chemistry <span id="tab-count-Chemistry"></span></div>
+  <div class="tab active" data-subject="Mathematics" onclick="jumpToSubject('Mathematics')">Mathematics <span id="tab-count-Mathematics"></span></div>
+</div>
+
+<!-- Test Area -->
+<div id="main">
+  <div id="question-panel">
+    <div id="q-header">
+      <span id="q-label">Question 1 of 179</span>
+      <span class="subject-badge" id="q-subject-badge">Mathematics</span>
+    </div>
+    <div id="q-text"></div>
+    <div id="options-list"></div>
+    <div id="q-actions">
+      <button class="action-btn" id="btn-prev" onclick="navigate(-1)">◀ Previous</button>
+      <button class="action-btn" id="btn-clear" onclick="clearResponse()">🔴 Clear Response</button>
+      <button class="action-btn" id="btn-save-next" onclick="saveAndNext()">🟢 Save &amp; Next</button>
+    </div>
+  </div>
+  <div id="palette-panel">
+    <div id="palette-candidate"></div>
+    <div id="palette-grid"></div>
+    <div id="palette-legend">
+      <div class="leg"><div class="leg-dot leg-gray"></div>Not Visited</div>
+      <div class="leg"><div class="leg-dot leg-red"></div>Visited, Not Answered</div>
+      <div class="leg"><div class="leg-dot leg-green"></div>Answered</div>
+    </div>
+  </div>
+</div>
+
+<!-- Results -->
+<div id="results-screen">
+  <div id="results-card">
+    <h2>📋 COMEDK 2023 — Test Results</h2>
+    <div id="score-display">
+      <div class="score-big" id="res-score">0</div>
+      <div class="score-sub" id="res-score-sub">out of 179</div>
+    </div>
+    <div id="counts-row">
+      <div class="count-box count-correct"><div class="num" id="res-correct">0</div><div class="lbl">Correct</div></div>
+      <div class="count-box count-wrong"><div class="num" id="res-wrong">0</div><div class="lbl">Incorrect</div></div>
+      <div class="count-box count-unattempted"><div class="num" id="res-unattempted">0</div><div class="lbl">Unattempted</div></div>
+    </div>
+    <table id="subject-table">
+      <thead><tr><th>Subject</th><th>Score</th><th>Correct</th><th>Wrong</th><th>Unattempted</th></tr></thead>
+      <tbody id="res-subject-rows"></tbody>
+    </table>
+    <div id="firebase-status"></div>
+    <div id="result-actions">
+      <button class="res-btn" id="btn-retake" onclick="retakeTest()">🔄 Retake Test</button>
+      <button class="res-btn" id="btn-home" onclick="location.href='index.html'">🏠 Back to Home</button>
+    </div>
+  </div>
+</div>
+
+<!-- Mobile palette trigger -->
+<button id="palette-trigger" onclick="openDrawer()">📋 Questions</button>
+<div id="palette-overlay" onclick="closeDrawer()"></div>
+<div id="palette-drawer">
+  <button id="drawer-close" onclick="closeDrawer()">✕ Close</button>
+  <div id="palette-legend-d" style="display:flex;gap:12px;font-size:11px;margin-bottom:8px">
+    <span><span style="display:inline-block;width:10px;height:10px;background:#9ca3af;border-radius:2px"></span> Not Visited</span>
+    <span><span style="display:inline-block;width:10px;height:10px;background:#dc2626;border-radius:2px"></span> Visited</span>
+    <span><span style="display:inline-block;width:10px;height:10px;background:#16a34a;border-radius:2px"></span> Answered</span>
+  </div>
+  <div id="drawer-grid"></div>
+</div>
+
+<script>
+const QUESTIONS = [
+{num:1,subject:"Mathematics",text:`The particular solution of e dx = 2x + 1 given that y = 1 when x = 0 is dy`,options:{A:`y = (x + 1/2) log |2x + 1| − x + 1`,B:`y = (x + 1) log |2x + 1| − x + 1`,C:`y = (x + 1/2) log |2x + 1| − (1/2)x + 1`,D:`y = (x − 1/2) log |2x + 1| − x − 1`},answer:"A"},
+{num:2,subject:"Mathematics",text:`If A = [[1, 2],[0, 1]], P = [[cosθ, sinθ],[−sinθ, cosθ]], Q = PᵀAP, then PQ²⁰¹⁴Pᵀ =`,options:{A:`[[1, 2·2014],[0, 1]]`,B:`[[1, 4028],[0, 1]]`,C:`(Pᵀ)²⁰¹³ A²⁰¹⁴ P²⁰¹³`,D:`Pᵀ A²⁰¹⁴ P`},answer:"B"},
+{num:3,subject:"Mathematics",text:`A and B are invertible matrices of the same order such that |(AB)⁻¹| = 1/8. If |A| = 2 then |B| is`,options:{A:`6`,B:`16`,C:`4`,D:`1/16`},answer:"D"},
+{num:4,subject:"Mathematics",text:`The centre of the circle passing through (0, 0) and (1, 0) and touching the circle x² + y² = 9 is`,options:{A:`(1/2, 1/2)`,B:`(1/2, 3/2)`,C:`(1/2, −√2)`,D:`(3/2, 1/2)`},answer:"C"},
+{num:5,subject:"Mathematics",text:`If the direction ratios of two lines are given by 3lm − 4ln + mn = 0 and l + 2m + 3n = 0, then the angle between the lines is`,options:{A:`π/4`,B:`π/6`,C:`π/3`,D:`π/2`},answer:"D"},
+{num:6,subject:"Mathematics",text:`Which of the following is a singleton set?`,options:{A:`{x : x² = 4, x ∈ R}`,B:`{x : |x| < 4, x ∈ N}`,C:`{x : |x| < −4, x ∈ N}`,D:`{x : x² = 4, x ∈ N}`},answer:"D"},
+{num:7,subject:"Mathematics",text:`If the conjugate of (x + iy)(1 − 2i) be 1 + i, then`,options:{A:`x = 1/5`,B:`y = 3/5`,C:`x − iy = (1+2i)/(1−i)`,D:`x + iy = (1−2i)/(1−i)`},answer:"D"},
+{num:8,subject:"Mathematics",text:`If the length of the major axis of an ellipse is 3 times the length of the minor axis, then its eccentricity is`,options:{A:`1/√2`,B:`(2√2)/3`,C:`√2/3`,D:`1/√3`},answer:"B"},
+{num:9,subject:"Mathematics",text:`A die is thrown twice and the sum of numbers appearing is observed to be 8. What is the conditional probability that the number 5 has appeared at least once?`,options:{A:`5/36`,B:`2/5`,C:`1/18`,D:`1/3`},answer:"B"},
+{num:10,subject:"Mathematics",text:`∫ xˣ(1 + log x)dx is equal to`,options:{A:`x log x + c`,B:`xˣ + c`,C:`xˣ log x + c`,D:`xˣ⁻¹ + c`},answer:"B"},
+{num:11,subject:"Mathematics",text:`The minimum value of Z = 3x + 5y, subject to the constraints x + y ≥ 2, x + 3y ≥ 3, x, y ≥ 0 is`,options:{A:`6`,B:`8`,C:`9`,D:`7`},answer:"D"},
+{num:12,subject:"Mathematics",text:`lim(x→0) (aˣ − bˣ)/x is equal to`,options:{A:`log(ab)`,B:`log b`,C:`log(a/b)`,D:`log a`},answer:"C"},
+{num:13,subject:"Mathematics",text:`The coordinates of the vertices of the triangle are A(−2, 3, 6), B(−4, 4, 9) and C(0, 5, 8). The direction cosines of the median BE are`,options:{A:`⟨3/4, 0, −2/4⟩`,B:`⟨−3/√13, 0, −2/√13⟩`,C:`⟨1, 0, −2/3⟩`,D:`⟨3/√13, 0, −2/√13⟩`},answer:"D"},
+{num:14,subject:"Mathematics",text:`How many factors of 2⁵ × 3⁶ × 5² are perfect squares?`,options:{A:`16`,B:`24`,C:`12`,D:`22`},answer:"B"},
+{num:15,subject:"Mathematics",text:`The general solution of the differential equation (1 + y²)dx = (tan⁻¹y − x)dy`,options:{A:`x = tan⁻¹y − 1 + ce^(tan⁻¹y)`,B:`x = tan⁻¹y − 1 + ce^(−tan⁻¹y)`,C:`x = tan⁻¹y + ce^(tan⁻¹y)`,D:`x = c tan⁻¹y + e^(−tan⁻¹y)`},answer:"B"},
+{num:16,subject:"Mathematics",text:`The function f(x) = x²/2 + 2/x has a local minimum at`,options:{A:`x = 2`,B:`x = −2`,C:`x = 0`,D:`x = 1`},answer:"A"},
+{num:17,subject:"Mathematics",text:`The scalar components of a unit vector which is perpendicular to each of the vectors î + 2ĵ − k̂ and 3î − ĵ + 2k̂ are`,options:{A:`−3/√83, −5/√83, 7/√83`,B:`−3, −5, 7`,C:`3/√83, −5/√83, −7/√83`,D:`3, −5, −7`},answer:"C"},
+{num:18,subject:"Mathematics",text:`A candidate is required to answer 7 questions out of 12 questions divided into two groups each containing 6 questions. He is not permitted to attempt more than 5 questions from either group. The number of ways in which he can choose the 7 questions is`,options:{A:`1272`,B:`780`,C:`640`,D:`820`},answer:"B"},
+{num:19,subject:"Mathematics",text:`∫ √(cosec x − 1) dx =`,options:{A:`log|sin x + √(sin²x + sin x)| + c`,B:`log|sin x + 1 + 2√(sin²x + sin x)| + c`,C:`log|sin x + 1/2 + √(sin²x + sin x)| + c`,D:`log|sin x + 1/2 + √(sin²x + 1/2 + sin x)| + c`},answer:"C"},
+{num:20,subject:"Mathematics",text:`∫₀² |x² + 2x − 3| dx is equal to`,options:{A:`3`,B:`6`,C:`2`,D:`4`},answer:"D"},
+{num:21,subject:"Mathematics",text:`Bag A contains 3 white and 2 red balls. Bag B contains only 1 white ball. A fair coin is tossed. If head appears then 1 ball is drawn at random from bag A and put into bag B. If tail appears then 2 balls are drawn at random from bag A and put into bag B. Now one ball is drawn at random from bag B. Given that the drawn ball from B is white, the probability that head appeared on the coin is`,options:{A:`23/30`,B:`12/23`,C:`11/23`,D:`19/30`},answer:"B"},
+{num:22,subject:"Mathematics",text:`Let X and Y be the set of all positive divisors of 400 and 1000 respectively (including 1 and the number). Then n(X ∩ Y) is equal to`,options:{A:`12`,B:`10`,C:`8`,D:`6`},answer:"A"},
+{num:23,subject:"Mathematics",text:`In a 12 storey house, 10 people enter a lift cabin. It is known that they will leave the lift in pre-decided groups of 2, 3 & 5 people at different storeys. The number of ways they can do so if the lift does not stop up to the second storey is`,options:{A:`120`,B:`78`,C:`132`,D:`720`},answer:"D"},
+{num:24,subject:"Mathematics",text:`If three numbers a, b, c constitute both an A.P and G.P, then`,options:{A:`a = b = c`,B:`a = b + c`,C:`ab = c`,D:`a = b − c`},answer:"A"},
+{num:25,subject:"Mathematics",text:`cos⁶A − sin⁶A is equal to`,options:{A:`cos 2A (1 − (1/4)sin²2A)`,B:`cos 2A (1 − (3/4)sin²2A)`,C:`cos 2A (1 − (1/2)sin²2A)`,D:`cos 2A (1 + (1/4)sin²2A)`},answer:"A"},
+{num:26,subject:"Mathematics",text:`The distance between the foci of a hyperbola is 16 and its eccentricity is √2. Then its equation is`,options:{A:`x² − y² = 32`,B:`3x² − 2y² = 7`,C:`2x² − 3y² = 7`,D:`x²/4 − y²/9 = 1`},answer:"A"},
+{num:27,subject:"Mathematics",text:`The ratio in which the line 3x + 4y + 2 = 0 divides the distance between the lines 3x + 4y + 5 = 0 and 3x + 4y − 5 = 0 is`,options:{A:`3 : 7`,B:`2 : 3`,C:`1 : 2`,D:`2 : 5`},answer:"A"},
+{num:28,subject:"Mathematics",text:`If 2A + 3B = [[2, −1, 4],[5, 0, 3],[3, 2, 5]] and A + 2B = [[1, 6, 2],[3, 0, 2],[1, 1, 1]], then B =`,options:{A:`[[−8, −1, −2],[1, −10, 1]]`,B:`[[8, 1, −2],[−1, 10, −1]]`,C:`[[8, 1, 2],[−1, 10, −1]]`,D:`[[8, −1, 2],[−1, 10, −1]]`},answer:"C"},
+{num:29,subject:"Mathematics",text:`If cosec(90° + A) + x cos A · cot(90° + A) = sin(90° + A), then x is equal to`,options:{A:`cot A`,B:`cosec A`,C:`tan A`,D:`sin A`},answer:"C"},
+{num:30,subject:"Mathematics",text:`P is a point on the line segment joining the points (3, 2, −1) and (6, 2, −2). If x-coordinate of P is 5, then its z-coordinate is`,options:{A:`−1`,B:`1`,C:`−5/3`,D:`−2`},answer:"C"},
+{num:31,subject:"Mathematics",text:`The area of the upper half of the circle whose equation is (x − 1)² + y² = 1 is given by`,options:{A:`π/4 sq units`,B:`∫₀² √(2 − x²) dx sq units`,C:`∫₀² √(2x − x²) dx sq units`,D:`∫₀¹ √(2x − x²) dx sq units`},answer:"C"},
+{num:32,subject:"Mathematics",text:`In the set W of whole numbers, an equivalence relation R is defined as follows: aRb iff both a & b leave the same remainder when divided by 5. The equivalence class of 1 is given by`,options:{A:`{2, 7, 12, 17, ...}`,B:`{1, 6, 11, 16, ...}`,C:`{4, 9, 14, 19, ...}`,D:`{0, 5, 10, 15, ...}`},answer:"B"},
+{num:33,subject:"Mathematics",text:`If P(B) = 3/5, P(A|B) = 1/2 and P(A ∪ B) = 4/5, then P(A ∪ B)' + P(A' ∪ B) is`,options:{A:`4/5`,B:`1/2`,C:`1`,D:`1/5`},answer:"C"},
+{num:34,subject:"Mathematics",text:`The function f(x) = (sin x)/x + cos x for x > 0; −5k for x = 0; 4(1−√(1−x))/x for x < 0, is continuous at x = 0 when k =`,options:{A:`−2/5`,B:`−2`,C:`2`,D:`−5/2`},answer:"A"},
+{num:35,subject:"Mathematics",text:`f(x) = 2x − tan⁻¹x − log(x + √(x²+1)) is monotonically increasing when`,options:{A:`x < 0`,B:`x ∈ R − {0}`,C:`x ∈ R`,D:`x > 0`},answer:"C"},
+{num:36,subject:"Mathematics",text:`Consider the first 10 natural numbers. If we multiply each number by −1 and add 1 to each number, the variance of the numbers so obtained is`,options:{A:`6.5`,B:`8.25`,C:`2.87`,D:`3.87`},answer:"B"},
+{num:37,subject:"Mathematics",text:`A triangular park is enclosed on two sides by a fence and on the third side by a straight river bank. The two sides having fence are of same length x. The maximum area enclosed by the park is`,options:{A:`(√3/8) x²`,B:`πx²`,C:`(3/2) x²`,D:`(1/2) x²`},answer:"D"},
+{num:38,subject:"Mathematics",text:`Let f(x) = cos⁻¹(3x − 1), then domain of f(x) is equal to`,options:{A:`[0, 2/3]`,B:`(0, 2/3)`,C:`(−2/3, 2/3)`,D:`[−2/3, 2/3]`},answer:"A"},
+{num:39,subject:"Mathematics",text:`The solution of the differential equation dy/dx + y cos x = (1/2) sin 2x is`,options:{A:`ye^(sin x) = e^(sin x)(sin x + 1) + c`,B:`ye^(sin x) = e^(sin x)(sin x − 1) + c`,C:`ye^(sin 2x) = e^(sin 2x)(sin x − 1) + c`,D:`ye^(cos x) = e^(sin x)(cos x − 1) + c`},answer:"B"},
+{num:40,subject:"Mathematics",text:`The area bounded by the curve y² = 4a²(x − 1) and the lines x = 1, y = 4a is`,options:{A:`16a³/3 sq units`,B:`16a²/3 sq units`,C:`16a² sq units`,D:`4a² sq units`},answer:"A"},
+{num:41,subject:"Mathematics",text:`If f(x) = sin⁻¹(2^(x+1)/(1 + 4^x)), then f'(0) is equal to`,options:{A:`2 log 2`,B:`(2/3) log 2`,C:`0`,D:`log 2`},answer:"D"},
+{num:42,subject:"Mathematics",text:`If [[2+x, 3, 4],[1, −1, 2],[x, 1, −5]] is a singular matrix, then x is`,options:{A:`13/5`,B:`−25/13`,C:`13/25`,D:`25/13`},answer:"B"},
+{num:43,subject:"Mathematics",text:`The sum of the degree and order of the differential equation [1 − (dy/dx)²]^(3/2) = k(d²y/dx²) is`,options:{A:`5/2`,B:`4`,C:`3/2`,D:`3`},answer:"B"},
+{num:44,subject:"Mathematics",text:`If f(x) = [(x+1)^7 · ⁶√(1+x²)] / (x²−x+1), then the value of f'(0) is equal to`,options:{A:`15`,B:`2`,C:`13`,D:`11`},answer:"C"},
+{num:45,subject:"Mathematics",text:`Solution of x − y + z = 4; x − 2y + 2z = 9 and 2x + y + 3z = 1 is`,options:{A:`x = 3; y = 6; z = 9`,B:`x = −4; y = −3; z = 2`,C:`x = −1; y = −3; z = 2`,D:`x = 2; y = 4; z = 6`},answer:"C"},
+{num:46,subject:"Mathematics",text:`If cos α = k cos β, then cot((α+β)/2) is equal to`,options:{A:`(k+1)/(k−1) · tan((α−β)/2)`,B:`(k+1)/(k−1) · tan((β−α)/2)`,C:`(k−1)/(k+1) · tan((β−α)/2)`,D:`(k−1)/(k+1) · tan((α−β)/2)`},answer:"B"},
+{num:47,subject:"Mathematics",text:`∫ eˣ(1 + tan x + tan²x) dx is equal to`,options:{A:`eˣ cos x + c`,B:`eˣ sin x + c`,C:`eˣ tan x + c`,D:`eˣ sec x + c`},answer:"C"},
+{num:48,subject:"Mathematics",text:`In △ABC, coordinates of point A are (1, 2) and equations of the medians through B and C are x + y = 5 and x = 4 respectively. The coordinates of B are`,options:{A:`(4, 1)`,B:`(7, −2)`,C:`(1, 4)`,D:`(−2, 7)`},answer:"B"},
+{num:49,subject:"Mathematics",text:`The distance of the point (2, 3, 4) from the line (1−x)/1 = y/2 = (1+z)/3 is`,options:{A:`27/√35`,B:`17/√35`,C:`47/√35`,D:`37/√35`},answer:"D"},
+{num:50,subject:"Mathematics",text:`The altitude of a cone is 20 cm and its semi-vertical angle is 30°. If the semi-vertical angle is increasing at the rate of 2° per second, then the radius of the base is increasing at the rate of`,options:{A:`160 cm/sec`,B:`10 cm/sec`,C:`160/3 cm/sec`,D:`30 cm/sec`},answer:"C"},
+{num:51,subject:"Mathematics",text:`If the position vector of a point A is a⃗ + 2b⃗ and a⃗ divides AB in the ratio 2:3, then the position vector of B is`,options:{A:`b⃗ − a⃗`,B:`2b⃗`,C:`a⃗ − 3b⃗`,D:`b⃗`},answer:"D"},
+{num:52,subject:"Mathematics",text:`The value of sin⁻¹[cos(39π/5)] is`,options:{A:`π/2`,B:`3π/10`,C:`3π/5`,D:`−3π/10`},answer:"B"},
+{num:53,subject:"Mathematics",text:`The probability distribution of a discrete random variable X is given with P(X=1)=1/2, P(X=2)=1/5, P(X=4)=3/25, P(X=2A)=K, P(X=3A)=1/25, P(X=5A)=1/25. Then the value of A if E(X) = 2.94 is`,options:{A:`3`,B:`12`,C:`1/3`,D:`2`},answer:"A"},
+{num:54,subject:"Mathematics",text:`18 points are indicated on the perimeter of a triangle ABC. If three points are chosen, then probability that it will form a triangle is`,options:{A:`1/2`,B:`355/408`,C:`331/816`,D:`711/816`},answer:"D"},
+{num:55,subject:"Mathematics",text:`If a⃗ and b⃗ are unit vectors, then the angle between a⃗ and b⃗ for which a⃗ − b⃗ is also a unit vector is`,options:{A:`π/3`,B:`π/2`,C:`π/6`,D:`π/4`},answer:"D"},
+{num:56,subject:"Mathematics",text:`If the volume of a sphere is increasing at a constant rate, then the rate at which its radius is increasing is`,options:{A:`inversely proportional to its surface area`,B:`proportional to the radius`,C:`a constant`,D:`inversely proportional to the radius`},answer:"A"},
+{num:57,subject:"Mathematics",text:`What can be said regarding a line if its slope is negative?`,options:{A:`θ is an obtuse angle`,B:`θ is equal to zero`,C:`Either the line is x-axis or it is parallel to the x-axis`,D:`θ is an acute angle`},answer:"A"},
+{num:58,subject:"Mathematics",text:`The range of x which satisfy the inequation: −5 ≤ (2−3x)/4 ≤ 9 is`,options:{A:`(−34/3, −22/3)`,B:`[−34/3, −22/3)`,C:`[−34/3, 8]`,D:`[−34/3, 22/3]`},answer:"D"},
+{num:59,subject:"Mathematics",text:`∫ (cos 4x + 1)/(cot x − tan x) dx =`,options:{A:`−(1/2) cos 2x + c`,B:`−(1/8) cos 4x + c`,C:`−(1/4) cos 4x + c`,D:`−(1/16) cos 8x + c`},answer:"B"},
+{num:60,subject:"Mathematics",text:`Let x be the arithmetic mean and y, z be the two geometric means between any two positive numbers, then (y³ + z³)/(xyz) =`,options:{A:`1/3`,B:`1`,C:`1/2`,D:`2`},answer:"D"},
+{num:61,subject:"Chemistry",text:`Identify the starting compound from the following data: C₆H₁₄O (X) on reaction with HI yields a haloalkane (A) and an alcohol (B). Compound (A) on reaction with aqueous NaOH gives an alcohol (C). Compounds (B) and (C) on reaction with CrO₃ in anhydrous medium yields Butanone and Ethanal respectively.`,options:{A:`2-Methoxypentane`,B:`2-Ethoxybutane`,C:`Hexan-1-ol`,D:`Hexan-2-ol`},answer:"B"},
+{num:62,subject:"Chemistry",text:`5.8 g of a gas maintained at 95°C occupies the same volume as 0.368 g of hydrogen gas maintained at 17°C at the same atmospheric pressure. What is the molecular mass of the unknown gas?`,options:{A:`44 g/mol`,B:`32 g/mol`,C:`71 g/mol`,D:`40 g/mol`},answer:"D"},
+{num:63,subject:"Chemistry",text:`A first order reaction proceeds to 90% completion. What will be the approximate time taken for 90% completion in relation to t₁/₂ of the reaction?`,options:{A:`5.02 times of t₁/₂`,B:`4.54 times of t₁/₂`,C:`5.66 times of t₁/₂`,D:`3.32 times of t₁/₂`},answer:"D"},
+{num:64,subject:"Chemistry",text:`What would be the volume of water required to dissolve 0.2 g of PbCl₂ (molar mass 278 g/mol) to prepare a saturated solution? (Ksp of PbCl₂ = 3.2 × 10⁻⁸)`,options:{A:`1000 ml`,B:`359.7 ml`,C:`278.8 ml`,D:`360.4 ml`},answer:"B"},
+{num:65,subject:"Chemistry",text:`Which one of the following compounds would not undergo Aldol condensation?`,options:{A:`Phenyl ethanal`,B:`1-Phenyl propanone`,C:`2,2-Dimethyl butanal`,D:`2-Methyl pentanal`},answer:"C"},
+{num:66,subject:"Chemistry",text:`Match: W = Chemically inert, non-stoichiometric compound; X = Higher oxidation states more stable; Y = Due to inert pair effect, lower oxidation state more stable; Z = Colourless compound of transition metal. With: A = WO₃, B = TiCl₄, C = Mn₄N, D = SnCl₂`,options:{A:`W=B, X=C, Y=D, Z=A`,B:`W=C, X=D, Y=A, Z=B`,C:`W=C, X=A, Y=D, Z=B`,D:`W=A, X=D, Y=C, Z=B`},answer:"C"},
+{num:67,subject:"Chemistry",text:`Gaseous Nitrous oxide decomposes at 298 K to form N₂ and O₂ gases. ΔH = −163.15 kJ at 1.0 atm and 298 K. Calculate internal energy change for decomposition of 100 g of N₂O under the same conditions.`,options:{A:`−166 kJ`,B:`−188.2 kJ`,C:`−230.3 kJ`,D:`−376.43 kJ`},answer:"B"},
+{num:68,subject:"Chemistry",text:`In neutral medium KMnO₄ oxidises MnSO₄ to`,options:{A:`Mn₂O₃`,B:`Mn₃O₄`,C:`MnO₂`,D:`K₂MnO₄`},answer:"C"},
+{num:69,subject:"Chemistry",text:`What would be the van't Hoff factor for a solution prepared by dissolving 3.42 g of CaCl₂ in 2500 ml of water having osmotic pressure equal to 0.75 atm at 27°C? (Molar mass CaCl₂ = 111 amu)`,options:{A:`2.7`,B:`3.15`,C:`2.47`,D:`3.0`},answer:"C"},
+{num:70,subject:"Chemistry",text:`The molar conductivity of 0.05M MgCl₂ solution is 194.5 Ω⁻¹cm²/mol at room temperature. A conductivity cell with electrodes (area 3.0 cm², 1.0 cm apart) is filled with this solution. What would be the resistance?`,options:{A:`114.25 Ω`,B:`0.00291 Ω`,C:`402.6 Ω`,D:`34.27 Ω`},answer:"D"},
+{num:71,subject:"Chemistry",text:`Given: a) N₂ + 3H₂ ⇌ 2NH₃ : K₁; b) N₂ + O₂ ⇌ 2NO : K₂; c) 2H₂ + O₂ ⇌ 2H₂O : K₃. The equilibrium constant Kx for 4NH₃ + 5O₂ ⇌ 4NO + 6H₂O is`,options:{A:`Kx = K₂²K₃³/K₁²`,B:`Kx = K₁/(K₂K₃)`,C:`Kx = 1/(K₁² + K₂² + K₃³)`,D:`Kx = K₁²/(K₂K₃³)`},answer:"A"},
+{num:72,subject:"Chemistry",text:`Identify the correct IUPAC name of [CoCl₂(NO₂)(NH₃)₃]`,options:{A:`Triamminedichloridonitrito-N-cobalt(III)`,B:`Dichloridotriamminenitrito-O-cobaltate(II)`,C:`Dichlorotriamminenitrito-N-cobalt(II)`,D:`Triamminedichloronitrito-O-cobaltate(III)`},answer:"A"},
+{num:73,subject:"Chemistry",text:`Which compound forms two moles of a ketone on ozonolysis? [A] 2,3-Dimethylbutane. [B] 3-Methyl-1-pentene. [C] 2,3-Dimethyl-2-butene. [D] 2-Methyl-2-pentene.`,options:{A:`[A]`,B:`[D]`,C:`[C]`,D:`[B]`},answer:"C"},
+{num:74,subject:"Chemistry",text:`If electrolysis of water is carried out for 2 hours, how much electric current in amperes would be required to liberate 100 ml of O₂ gas at STP?`,options:{A:`0.1723 A`,B:`4.178 A`,C:`0.8616 A`,D:`0.2393 A`},answer:"D"},
+{num:75,subject:"Chemistry",text:`For a reaction 2X + Y → A + B, the following data was collected. Expt 1: [X]=0.2, [Y]=0.2, rate=12.0×10⁻³; Expt 2: [X]=0.6, [Y]=0.4, rate=14.4×10⁻²; Expt 3: [X]=0.6, [Y]=0.8, rate=5.76×10⁻¹; Expt 4: [X]=0.8, [Y]=0.2, rate=4.8×10⁻². What is the overall order?`,options:{A:`2.5`,B:`3`,C:`2`,D:`1.5`},answer:"B"},
+{num:76,subject:"Chemistry",text:`Select the strongest base from: [A] p-NO₂-C₆H₄NH₂; [B] C₆H₅CH₂NH₂; [C] m-NO₂-C₆H₄NH₂; [D] C₆H₅NH₂`,options:{A:`[A]`,B:`[C]`,C:`[B]`,D:`[D]`},answer:"C"},
+{num:77,subject:"Chemistry",text:`The conversion of Propyne to Benzene in 4 steps, using reagents: alc.KOH, H₂/Pd, Na/dry ether, HBr, HBr/(C₆H₅CO)₂O₂, Soda-lime, Cr₂O₃(high T,P), Conc.H₂SO₄. The correct sequential order is`,options:{A:`Na/Ether, Cr₂O₃(high T,P), HBr, H₂/Pd`,B:`HBr, alc.KOH, HBr/(C₆H₅CO)₂O₂, Cr₂O₃(high T,P)`,C:`Cr₂O₃(high T,P), Na/dry ether, HBr, Conc.H₂SO₄`,D:`H₂/Pd, HBr/(C₆H₅CO)₂O₂, Na/dry ether, Cr₂O₃(high T,P)`},answer:"D"},
+{num:78,subject:"Chemistry",text:`Para and ortho hydrogen differ in:`,options:{A:`Atomic number`,B:`Number of neutrons`,C:`Size`,D:`Spins of protons`},answer:"D"},
+{num:79,subject:"Chemistry",text:`What is the mole fraction of solute in a 5 m aqueous solution?`,options:{A:`0.038`,B:`0.593`,C:`0.082`,D:`0.751`},answer:"C"},
+{num:80,subject:"Chemistry",text:`Identify the reagents X, Y and Z used in the following reactions. X oxidises a primary alcohol to aldehyde; Y converts aldehyde to acid (dilute); Z converts primary alcohol to aldehyde without further oxidation.`,options:{A:`X=Alkaline KMnO₄, Y=dil HCl, Z=CrO₃`,B:`X=Air, Y=dil. H₂SO₄, Z=Cr₂O₇²⁻/H⁺`,C:`X=H₂O₂, Y=Conc. HCl, Z=O₃`,D:`X=DIBAL-H, Y=Conc. HNO₃, Z=CrO₂Cl₂`},answer:"B"},
+{num:81,subject:"Chemistry",text:`A proton (mass 1.66 × 10⁻²⁷ kg) is accelerated to one tenth of the velocity of light. If its velocity can be measured to an accuracy of ±2%, what would be the uncertainty in its position?`,options:{A:`7.9 × 10⁻⁵ m`,B:`5.29 × 10⁻¹⁴ m`,C:`6.0 × 10⁻⁵ m`,D:`1.06 × 10⁻¹³ m`},answer:"B"},
+{num:82,subject:"Chemistry",text:`Match: A = For complex reactions, order determined by [R]; B = For Zero order reaction, unit of k same as [P]; C = Expression giving relationship between rate and concentrations is called [S]; D = For first order reaction, plot of log[R₀]/[R] vs time gives slope = [Q]. Where P=Rate of reaction, Q=Slope=k/2.303, R=Slowest step, S=Rate law`,options:{A:`A=S, B=R, C=P, D=Q`,B:`A=S, B=R, C=Q, D=P`,C:`A=R, B=P, C=S, D=Q`,D:`A=R, B=S, C=Q, D=P`},answer:"C"},
+{num:83,subject:"Chemistry",text:`Match: A=Kappa(κ) [R]; B=E°cell [P]; C=Molar conductivity [S]; D=ΔGcell [Q]. Where P=Intensive property, Q=Extensive property, R=Decreases with decrease in concentration for strong and weak electrolytes, S=Increases with dilution`,options:{A:`A=R, B=Q, C=S, D=P`,B:`A=R, B=P, C=S, D=Q`,C:`A=Q, B=S, C=P, D=R`,D:`A=S, B=R, C=Q, D=P`},answer:"B"},
+{num:84,subject:"Chemistry",text:`Choose the incorrect statement.`,options:{A:`m-Cresol is a weaker acid than Phenol.`,B:`Acidic nature of Phenol is due to −I effect of oxygen of the hydroxyl group.`,C:`Acetylation of Salicylic acid produces 2-Acetoxybenzoic acid.`,D:`Phenol on heating with Conc. H₂SO₄ yields sulphanilic acid.`},answer:"D"},
+{num:85,subject:"Chemistry",text:`When Lead Storage battery is being charged, which reaction takes place?`,options:{A:`PbO₂(s) is reduced.`,B:`PbSO₄(s) gets converted to Pb(s) and PbO₂(s)`,C:`SO₃ gas gets liberated and PbO₂(s) is formed.`,D:`Pb(s) gets consumed.`},answer:"B"},
+{num:86,subject:"Chemistry",text:`The group number of the element with electronic configuration (n−1)d²ns². For n=4 is:`,options:{A:`4`,B:`13`,C:`3`,D:`5`},answer:"A"},
+{num:87,subject:"Chemistry",text:`Identify the final product [X] formed when Pentan-2-one reacts with NaCN/HCl to give [X], then [X] on heating with 95% H₃PO₄ gives [Y].`,options:{A:`2-Methylpent-2-enenitrile`,B:`Pent-2-enenitrile`,C:`2-Hydroxy-2-methylpentanenitrile`,D:`2-Methylpent-2-en-1-ol`},answer:"D"},
+{num:88,subject:"Chemistry",text:`Which one of the following will give a positive result when warmed with Chloroform and alcoholic KOH? (Carbylamine test)`,options:{A:`N-Methyl-o-Methylaniline`,B:`N,N-Dimethylaniline`,C:`p-Methylbenzylamine`,D:`N-Methyl-p-Methylaniline`},answer:"C"},
+{num:89,subject:"Chemistry",text:`Choose the incorrect statement:`,options:{A:`Higher the KH value for a gas at a given pressure, higher is its solubility in that solvent.`,B:`KH value for a gas in a given solvent depends on the nature of solute and solvent.`,C:`KH value is temperature dependent.`,D:`KH value changes with change in partial pressure of the gas.`},answer:"A"},
+{num:90,subject:"Chemistry",text:`What would be the products obtained when a mixture of p-Methoxybenzaldehyde and Methanal are heated with 50% concentrated Caustic soda solution? (Cannizzaro reaction)`,options:{A:`p-Methoxy sodium benzoate and sodium acetate.`,B:`p-Methoxybenzyl alcohol and sodium formate.`,C:`p-Methoxybenzyl alcohol and methanol.`,D:`p-Methoxy sodium benzoate and sodium formate`},answer:"B"},
+{num:91,subject:"Chemistry",text:`Which of the following will show geometrical isomerism?`,options:{A:`2-methylbut-2-ene`,B:`2-methylpropene`,C:`Cyclohexene`,D:`1,2-dibromopropene`},answer:"D"},
+{num:92,subject:"Chemistry",text:`Identify the compounds A, B, C, D in the sequence: 1,2,2,2-tetrachloroethane → [A] with Zn/Δ → [B] at 675K Fe tube → [C] Conc.HNO₃/Conc.H₂SO₄ → [D] Cl₂/Anhydrous AlCl₃`,options:{A:`A=Acetylene, B=Benzene, C=Nitrobenzene, D=Chlorobenzene`,B:`A=Ethylene, B=Aniline, C=Acetanilide, D=p-Chloroacetanilide`,C:`A=Acetylene, B=Benzene, C=Nitrobenzene, D=Chloronitrobenzene`,D:`A=Ethylene, B=Benzene, C=Nitrobenzene, D=p-Chloronitrobenzene`},answer:"C"},
+{num:93,subject:"Chemistry",text:`Match coordination compounds: W=[Co(NH₃)₅Cl]Cl₃; X=K₄[Mn(CN)₆]; Y=[CrCl₃(py)₃]; Z=Cs[FeCl₄]. With P=OS+3,d⁵,μ=5.92B; Q=OS+3,d³,μ=3.87B; R=OS+3,d⁶,μ=0BM; S=OS+2,d⁵,μ=1.732B`,options:{A:`W=S, X=R, Y=Q, Z=P`,B:`W=S, X=P, Y=Q, Z=R`,C:`W=R, X=S, Y=P, Z=Q`,D:`W=R, X=S, Y=Q, Z=P`},answer:"D"},
+{num:94,subject:"Chemistry",text:`Choose the correct order of increasing acidic strength:`,options:{A:`CH₃CH₂OH < CCl₃CH₂OH < CF₃CH₂OH`,B:`CF₃CH₂OH < CCl₃CH₂OH < CH₃CH₂OH`,C:`CH₃CH₂OH < CF₃CH₂OH < CCl₃CH₂OH`,D:`CCl₃CH₂OH < CF₃CH₂OH < CH₃CH₂OH`},answer:"A"},
+{num:95,subject:"Chemistry",text:`Mg(OH)₂ is used as an antacid. A person produces 2.5 L of gastric juice per day. Approximately how many antacid tablets, each containing 600 mg of Mg(OH)₂, are required to completely neutralise all HCl? (Gastric juice contains 3.0 g HCl per L; Mg=24, O=16, H=1 g/mol)`,options:{A:`10 tablets`,B:`4 tablets`,C:`7 tablets`,D:`6 tablets`},answer:"A"},
+{num:96,subject:"Chemistry",text:`Given graphs showing variation in velocity constant k with temperature in Kelvin. Which graph represents the Arrhenius equation? (k = Ae^(−Ea/RT))`,options:{A:`D`,B:`C`,C:`A`,D:`B`},answer:"D"},
+{num:97,subject:"Chemistry",text:`Identify the correct statement describing characteristics of C₂ molecule.`,options:{A:`Bond order=2.0; Paramagnetic; One sigma and one pi bond.`,B:`Bond order=0; C₂ molecule is non-existent.`,C:`Bond order=2.0; Diamagnetic; Both bonds are pi bonds.`,D:`Bond order=1.5; Paramagnetic; Both bonds are sigma bonds.`},answer:"C"},
+{num:98,subject:"Chemistry",text:`One among the 4 Vitamins belonging to B Complex can be stored in our body. Identify the Vitamin.`,options:{A:`Pyridoxine`,B:`Thiamine`,C:`Cyanocobalamin`,D:`Riboflavin`},answer:"C"},
+{num:99,subject:"Chemistry",text:`Which one of the following statements is correct?`,options:{A:`The order of stability of Carbanions is C₆H₅CH₂⁻ < (C₆H₅)₂CH⁻ < (C₆H₅)₃C⁻`,B:`In CH₃⁺, carbon carrying positive charge is sp³ hybridised.`,C:`In CH₃⁻, carbon carrying negative charge is sp hybridised.`,D:`The order of stability of Carbocations is (C₆H₅)₃C⁺ < (C₆H₅)₂CH⁺ < C₆H₅CH₂⁺`},answer:"A"},
+{num:100,subject:"Chemistry",text:`In the redox equation: ClO₃⁻ + w Cl⁻ + x H⁺ → y H₂O + z Cl₂, identify the stoichiometric coefficients w, x, y and z.`,options:{A:`w=3, x=6, y=3, z=2`,B:`w=5, x=6, y=3, z=3`,C:`w=7, x=6, y=3, z=4`,D:`w=6, x=5, y=2.5, z=3`},answer:"B"},
+{num:101,subject:"Chemistry",text:`Assertion (A): π(2px), π(2py), π*(2px), π*(2py) molecular orbitals have one nodal plane each. Reason (R): All molecular orbitals formed by sideways overlapping have one nodal plane.`,options:{A:`Both A and R true, R is correct explanation of A.`,B:`Both A and R false`,C:`A is true but R is false`,D:`Both A and R true, R is not correct explanation of A.`},answer:"B"},
+{num:102,subject:"Chemistry",text:`Structures of 3 monosaccharides are given. Two of them are Anomers. Identify the two Anomers.`,options:{A:`II is the anomer of both I and III`,B:`I and II are Anomers.`,C:`II and III are Anomers.`,D:`I and III are Anomers`},answer:"D"},
+{num:103,subject:"Chemistry",text:`Which one of the following is an incorrect statement pertaining to Coordination compounds?`,options:{A:`A square planar complex Mabcd (unidentate ligands) exhibits geometrical isomerism and exists in one cis-form and two trans-forms.`,B:`[Co(NH₃)₅NO₂]Cl₂ exists in 2 forms (red and yellow) which are linkage isomers.`,C:`[Fe(CN)₆]³⁻ is called a Low spin complex.`,D:`Out of cis-[CrCl₂(ox)₂]³⁻ and trans-[CrCl₂(ox)₂]³⁻, the trans isomer is optically inactive.`},answer:"A"},
+{num:104,subject:"Chemistry",text:`X is an electrolyte with concentration 0.04M of type X₂A. Y is a non-electrolyte with concentration 0.2M and osmotic pressure P₂ at room temperature. The relationship between osmotic pressure π of X and P₂ is`,options:{A:`π = 0.6P₂`,B:`π = 0.12P₂`,C:`π = 0.04P₂`,D:`π = 0.8P₂`},answer:"A"},
+{num:105,subject:"Chemistry",text:`Identify the catalyst used in the reaction: 2I⁻ + S₂O₈²⁻ → I₂ + 2SO₄²⁻`,options:{A:`Cr³⁺`,B:`Fe³⁺`,C:`Ni²⁺`,D:`Fe²⁺`},answer:"B"},
+{num:106,subject:"Chemistry",text:`Match: W=Tl; X=CCl₄; Y=Tin; Z=C₆₀. With A=Decomposes steam to form dioxide and H₂; B=Has 20 six-membered and 12 five-membered rings; C=+3 oxidation state is highly oxidising; D=Electron precise, neither donor nor acceptor.`,options:{A:`W=C, X=D, Y=A, Z=B`,B:`W=B, X=D, Y=C, Z=A`,C:`W=D, X=C, Y=A, Z=B`,D:`W=D, X=C, Y=B, Z=A`},answer:"A"},
+{num:107,subject:"Chemistry",text:`A gas in a closed vessel is heated from 54°C to 1254°C. The pressure becomes _______ times its original pressure P₁.`,options:{A:`8.92 times P₁`,B:`23.2 times P₁`,C:`4.67 times P₁`,D:`9.6 times P₁`},answer:"C"},
+{num:108,subject:"Chemistry",text:`Correct order of decreasing acidic nature: [A] 2-Hydroxybenzoic acid; [B] Benzoic acid; [C] 3-Hydroxybenzoic acid; [D] 4-Hydroxybenzoic acid`,options:{A:`[D] > [C] > [B] > [A]`,B:`[A] > [C] > [B] > [D]`,C:`[D] > [B] > [C] > [A]`,D:`[B] > [A] > [C] > [D]`},answer:"B"},
+{num:109,subject:"Chemistry",text:`If the depression in freezing point of an aqueous solution is a K with Kf = b K·kg/mol, what would be the elevation in boiling point (X) for this solution if Kb = c K·kg/mol?`,options:{A:`X = 2c × a/b`,B:`X = c × 2b/a`,C:`X = c × a/b`,D:`X = c × a/b`},answer:"C"},
+{num:110,subject:"Chemistry",text:`The rate constant for a first order reaction at 560 K is 1.5 × 10⁻⁶ per second. If the reaction is allowed for 20 hours, what percentage of the initial concentration would have converted to products?`,options:{A:`11.14`,B:`10.23`,C:`12.46`,D:`21.2`},answer:"B"},
+{num:111,subject:"Chemistry",text:`What would be the final product [X] formed when p-Toluidine undergoes: acetylation → [P]; [P] + Br₂/CH₃COOH → [Q]; [Q] + dil. HCl → [R]; [R] + NaNO₂/HCl at 0°C → [S]; [S] + H₃PO₂ → [X]?`,options:{A:`2-Bromo-4-methylaniline`,B:`4-Bromotoluene`,C:`2-Bromotoluene`,D:`4-Methyl-2-bromoaniline`},answer:"A"},
+{num:112,subject:"Chemistry",text:`The energy of an electron in the ground state of H atom is −2.18 × 10⁻¹⁸ J. What would be the energy associated with the second excited state of Li²⁺?`,options:{A:`−2.18 × 10⁻¹⁸ J`,B:`−4.905 × 10⁻¹⁸ J`,C:`−0.242 × 10⁻¹⁸ J`,D:`−3.26 × 10⁻¹⁸ J`},answer:"A"},
+{num:113,subject:"Chemistry",text:`Identify the incorrect statement.`,options:{A:`Ability of Fluorine to stabilise higher oxidation states in transition metals is due to the low lattice enthalpy of fluorides.`,B:`The second and third ionisation enthalpies of Mn²⁺ and Fe³⁺ respectively have lower values than expected.`,C:`Transition metals readily form alloys because their metallic radii are within about 15% of each other.`,D:`Cr²⁺ acts as reducing agent while Mn³⁺ acts as oxidising agent though both have d⁴ configuration.`},answer:"A"},
+{num:114,subject:"Chemistry",text:`Choose the incorrect statement regarding Cellulose.`,options:{A:`It does not reduce Fehling's solution nor Tollen's reagent.`,B:`On heating with dil. H₂SO₄ under pressure, Cellulose gets hydrolysed to D-Glucose.`,C:`It is a straight chain polysaccharide made of β-D-glucose units.`,D:`The β-glycosidic linkages are between C₁ of one Glucose unit and C₅ of the next Glucose unit.`},answer:"D"},
+{num:115,subject:"Chemistry",text:`Which one of the following Coordination entities exhibits Facial and Meridional isomerism?`,options:{A:`[Co(H₂O)₃(NO₂)₃]`,B:`[Co(en)₂Cl₂]⁺`,C:`[Co(NH₃)₄Br₂]NO₃`,D:`[Co(en)₃]Cl₃`},answer:"A"},
+{num:116,subject:"Chemistry",text:`Arrange in decreasing order of Dipole moments: a. Chlorobenzene; b. 1,2-Dichlorobenzene; c. 1,3-Dichlorobenzene; d. 1,4-Dichlorobenzene`,options:{A:`d > c > b > a`,B:`c > d > b > a`,C:`a > b > d > c`,D:`c > b > a > d`},answer:"D"},
+{num:117,subject:"Chemistry",text:`Starting from 2-Phenyl-2-bromopropane: reaction with Alcoholic KOH/Δ gives [A]; [A] + HBr/(C₆H₅CO)₂O₂ gives [B]. Identify [A] and [B].`,options:{A:`[A] = 2-Phenylpropene; [B] = 2-Phenyl-1-bromopropane`,B:`[A] = 2-Phenylpropan-2-ol; [B] = 2-Phenyl-2-bromopropene`,C:`[A] = 2-Bromopropene; [B] = 1-Bromopropane`,D:`[A] = 4-Hydroxyphenyl-2-bromopropane; [B] = 4-Hydroxyphenylpropene`},answer:"A"},
+{num:118,subject:"Chemistry",text:`In a galvanic cell: A(s) + B²⁺(10⁻ˣ M) → B(s) + A²⁺(0.1M). The emf is +2.651 V. If standard emf is +2.71 V, what is the value of X?`,options:{A:`X = 6`,B:`X = 2`,C:`X = 3`,D:`X = 4`},answer:"C"},
+{num:119,subject:"Chemistry",text:`Which one of the following will undergo Nucleophilic substitution by SN1 mechanism fastest?`,options:{A:`Br−CH₂−CH=CH₂`,B:`C₆H₅Br`,C:`CH₃−CH=CHBr`,D:`C₆H₁₁Br`},answer:"A"},
+{num:120,subject:"Physics",text:`A man grows into a giant such that his height increases to 8 times his original height. Assuming that his density remains the same, the stress in the leg will change by a factor of`,options:{A:`2√2`,B:`4`,C:`16`,D:`8`},answer:"D"},
+{num:121,subject:"Physics",text:`The mass number of two nuclei P and Q are 27 and 125 respectively. The ratio of their radii Rₚ : R_Q is given by:`,options:{A:`9 : 25`,B:`3 : 5`,C:`27 : 25`,D:`5 : 3`},answer:"B"},
+{num:122,subject:"Physics",text:`The current sensitivity of a galvanometer having 20 divisions is 10 μA/div. If the resistance is 100 Ω, the resistance to be used to convert it into a voltmeter to read up to 1 V is:`,options:{A:`4 × 10⁻⁶ Ω in series`,B:`4900 Ω in parallel`,C:`4 × 10⁻³ Ω in series`,D:`4900 Ω in series`},answer:"D"},
+{num:123,subject:"Physics",text:`In a nuclear reaction, 2 deuteron nuclei combine to form a helium nucleus. Energy released in MeV will be: (mass of deuteron = 2.01355 amu, mass of helium = 4.0028 amu)`,options:{A:`24.3 MeV`,B:`2.262 MeV`,C:`22.62 MeV`,D:`0.0243 MeV`},answer:"C"},
+{num:124,subject:"Physics",text:`Two point charges 20 μC and −10 μC are separated by 1 m in air. At what point on the line joining the two charges is the electric potential zero?`,options:{A:`0.5 m from −10 μC`,B:`0.76 m from 20 μC`,C:`0.67 m from 20 μC`,D:`0.25 m from −10 μC`},answer:"C"},
+{num:125,subject:"Physics",text:`The critical angle of a medium having refractive index √2 is:`,options:{A:`30°`,B:`45°`,C:`60°`,D:`90°`},answer:"B"},
+{num:126,subject:"Physics",text:`A spherical metal ball of density ρ and radius r is immersed in a liquid of density σ. When an electric field is applied upward, the ball remains just suspended. The expression for charge on the ball is:`,options:{A:`q = σE`,B:`q = [4πr³(ρ−σ)g] / (3E)`,C:`q = [4πr²ρg] / (σE)`,D:`q = [4πr²(ρ−σ)g] / E`},answer:"B"},
+{num:127,subject:"Physics",text:`In an adiabatic expansion of air, the volume is increased by 6.2%. The percentage change in pressure is (γ = 1.4):`,options:{A:`8.68`,B:`4.84`,C:`6.48`,D:`2.24`},answer:"A"},
+{num:128,subject:"Physics",text:`Water from a tap of cross-sectional area 1 cm² falls vertically downwards at 2 m/s. The cross-sectional area of the stream 20 cm below the tap is (g = 10 ms⁻²):`,options:{A:`7.07 cm²`,B:`1 cm²`,C:`0.707 cm²`,D:`2 cm²`},answer:"C"},
+{num:129,subject:"Physics",text:`Capacitors C₁ and C₂ are fully charged by closing key K. After opening K, a dielectric material (K=2) is filled between the plates of both capacitors. The ratio of charge on C₁ to C₂ is:`,options:{A:`1 : 1`,B:`3 : 2`,C:`2 : 1`,D:`1 : 2`},answer:"C"},
+{num:130,subject:"Physics",text:`The energy gap between valence band and conduction band for a given material is 6 eV. The material is:`,options:{A:`A semiconductor`,B:`A metal`,C:`An insulator`,D:`A superconductor`},answer:"C"},
+{num:131,subject:"Physics",text:`PQRS is a square of side 1 m. A charge of 100 μC is placed at the centre. The work done to take a 3 μC charge from corner P to corner R is:`,options:{A:`9√2 × 10⁵ J`,B:`4.5 × 10⁵ J`,C:`Zero`,D:`1.8 × 10⁵ J`},answer:"C"},
+{num:132,subject:"Physics",text:`When angle of incidence on one face of an equilateral glass prism is (3/4)th of the angle of prism, the ray undergoes minimum deviation. If velocity of light in vacuum is c, then velocity of light in glass is:`,options:{A:`c/√2`,B:`3c/4`,C:`√2c`,D:`c/√2`},answer:"D"},
+{num:133,subject:"Physics",text:`If the ratio of specific heats at constant pressure and volume is γ, the change in internal energy of a gas when volume changes from V to 3V at constant pressure is:`,options:{A:`(γ−1)R`,B:`2PV`,C:`2PγV`,D:`2PV/(γ−1)`},answer:"D"},
+{num:134,subject:"Physics",text:`A magnetic field does not interact with:`,options:{A:`An electric charge at rest.`,B:`A moving electric charge`,C:`A current carrying straight conductor`,D:`A moving permanent magnet`},answer:"A"},
+{num:135,subject:"Physics",text:`A person has a normal near point 25 cm. The magnifying power of a simple microscope with focal length 10 cm, with the final image at the least distance of distinct vision, is:`,options:{A:`7`,B:`3.5`,C:`25`,D:`2.5`},answer:"B"},
+{num:136,subject:"Physics",text:`If reaction force is R and coefficient of friction is μ, the work done against friction in moving a body by distance d is:`,options:{A:`μRd`,B:`(μRd)/2`,C:`2μRd`,D:`(μRd)/4`},answer:"A"},
+{num:137,subject:"Physics",text:`The electric flux from a cube of side 1 m is 'Φ'. When the side is made 3 m and the charge enclosed is made one-third of the original, the flux from the bigger cube will be:`,options:{A:`Φ/3`,B:`Φ`,C:`3Φ`,D:`9Φ`},answer:"A"},
+{num:138,subject:"Physics",text:`A uniform sphere of mass M and radius R exerts force F on a small mass m at distance 3R from the centre. A spherical portion of diameter R is cut from the sphere. The force of attraction between the remaining part and mass m is:`,options:{A:`7F/12`,B:`F/3`,C:`41F/50`,D:`7F/9`},answer:"C"},
+{num:139,subject:"Physics",text:`The magnetic permeability μ of a paramagnetic substance is:`,options:{A:`μ > 1`,B:`μ = 1`,C:`μ = 0`,D:`μ is infinite`},answer:"A"},
+{num:140,subject:"Physics",text:`A lens of power +1D is placed in contact with another lens of power −2D. The combination acts as:`,options:{A:`diverging lens of focal length 100 cm`,B:`diverging lens of focal length 33.3 cm`,C:`converging lens of focal length 33.3 cm`,D:`converging lens of focal length 100 cm`},answer:"A"},
+{num:141,subject:"Physics",text:`A particle at rest decays into two particles of mass m₁ and m₂ moving with velocities v₁ and v₂. The ratio of their de Broglie wavelengths λ₁/λ₂ is:`,options:{A:`1 : 4`,B:`1 : 1`,C:`1 : 2`,D:`2 : 1`},answer:"B"},
+{num:142,subject:"Physics",text:`An electron (mass mₑ) and a proton (mass mₚ), initially at rest, move through the same distance s in a uniform electric field E. If time taken is tₑ and tₚ respectively, then tₑ/tₚ is:`,options:{A:`√(mₚ/mₑ)`,B:`√(mₑ/mₚ)`,C:`√mₑ/mₚ`,D:`mₑ/mₚ`},answer:"B"},
+{num:143,subject:"Physics",text:`220 V AC is more dangerous than 220 V DC. Why?`,options:{A:`The peak value of AC is greater than the given value of DC`,B:`Shock received from AC is always repulsive`,C:`The frequency of AC is more than that of DC`,D:`The speed of AC is more than that of DC`},answer:"A"},
+{num:144,subject:"Physics",text:`The ground state energy of hydrogen atom is −13.6 eV. If the electron jumps from the 3rd excited state to the ground state, the energy of radiation emitted will be:`,options:{A:`1.275 MeV`,B:`12.75 eV`,C:`12.75 J`,D:`12.75 MeV`},answer:"B"},
+{num:145,subject:"Physics",text:`In Young's double slit experiment, fringe width is 3.2 × 10⁻⁴ m when λ = 6400 Å. What will be the change in fringe width if light is replaced by λ = 4800 Å?`,options:{A:`2.4 × 10⁻⁴ m`,B:`1.6 × 10⁻⁴ m`,C:`0.8 × 10⁻⁴ m`,D:`5.6 × 10⁻⁴ m`},answer:"C"},
+{num:146,subject:"Physics",text:`If light of wavelength 600 nm travels from air into a medium of refractive index 1.5, what will be the wavelength in that medium?`,options:{A:`300 nm`,B:`200 nm`,C:`600 nm`,D:`400 nm`},answer:"D"},
+{num:147,subject:"Physics",text:`A resistor wire of 24 cm length and 8 Ω resistance is stretched uniformly to 48 cm. The new resistance will be:`,options:{A:`32 Ω`,B:`8 Ω`,C:`16 Ω`,D:`4 Ω`},answer:"A"},
+{num:148,subject:"Physics",text:`A metallic rod of 10 cm is rotated at 100 rev/sec about an axis perpendicular to its length through one end, in a uniform magnetic field of 1 T. The emf developed across its ends is:`,options:{A:`628 V`,B:`3.14 V`,C:`31.4 V`,D:`6.28 V`},answer:"B"},
+{num:149,subject:"Physics",text:`Two open organ pipes A and B of length 22 cm and 22.5 cm respectively produce 2 beats per second when sounded together. The frequency of the shorter pipe is:`,options:{A:`92 Hz`,B:`90 Hz`,C:`88 Hz`,D:`86 Hz`},answer:"C"},
+{num:150,subject:"Physics",text:`The time dependence of a physical quantity P is given by P = P₀ exp(−αt²) where α is constant. The constant α will:`,options:{A:`Have dimensions as that of P`,B:`Have dimensions equal to that of Pt²`,C:`Have no dimensions`,D:`Have dimensions of t⁻²`},answer:"D"},
+{num:151,subject:"Physics",text:`Molecules of a gas have rms speed 120 m/s at 88°C and 1 atm. The rms speed at 127°C and 2 atm is:`,options:{A:`105.2 m/s`,B:`1.443 m/s`,C:`126.3 m/s`,D:`88/127 m/s`},answer:"C"},
+{num:152,subject:"Physics",text:`The acceleration due to gravity at a height of 7 km above the earth is the same as at a depth d below the surface. Then d is:`,options:{A:`7 km`,B:`2 km`,C:`3.5 km`,D:`14 km`},answer:"D"},
+{num:153,subject:"Physics",text:`A tentative explanation of observations without assuming that it is true is called:`,options:{A:`hypothesis`,B:`physical laws`,C:`theory`,D:`model`},answer:"A"},
+{num:154,subject:"Physics",text:`Find the pole strength of a magnet of length 2 cm if the magnetic field B at distance 10 cm from the centre on the axial line is 10⁻⁴ T.`,options:{A:`25 Am`,B:`100 Am`,C:`5 × 10⁻² Am`,D:`1 × 10⁻⁴ Am`},answer:"A"},
+{num:155,subject:"Physics",text:`In head-on collision of two alpha particles α₁ and α₂ with a gold nucleus, the closest approaches are 31.4 fermi and 94.2 fermi respectively. The ratio of energies α₂/α₁ is:`,options:{A:`1 : 3`,B:`9 : 1`,C:`3 : 1`,D:`1 : 9`},answer:"A"},
+{num:156,subject:"Physics",text:`Two black bodies P and Q have equal surface areas and are at 127°C and 27°C respectively. The ratio of thermal power radiated by P to Q is:`,options:{A:`81 : 256`,B:`177 : 127`,C:`127 : 177`,D:`256 : 81`},answer:"D"},
+{num:157,subject:"Physics",text:`The SI unit of electrical conductivity is:`,options:{A:`S m`,B:`Ω m`,C:`S m⁻¹`,D:`Ω m⁻¹`},answer:"C"},
+{num:158,subject:"Physics",text:`What should be the inductance of an inductor connected to 200 V, 50 Hz source so that maximum current of √2 A flows through it?`,options:{A:`√(π/2) H`,B:`2π H`,C:`π/2 H`,D:`2/π H`},answer:"C"},
+{num:159,subject:"Physics",text:`The nucleus of a helium atom travels inside a straight hollow tube 4 m long (part of a particle accelerator). Assuming uniform acceleration, how long is the particle in the tube if it enters at 2000 m/s and leaves at 8000 m/s?`,options:{A:`0.6 × 10⁻⁴ s`,B:`4 × 10⁻⁴ s`,C:`8 × 10⁻⁴ s`,D:`3.3 × 10⁻⁴ s`},answer:"C"},
+{num:160,subject:"Physics",text:`In a circuit, diodes D₁ and D₂ have forward resistance 25 Ω and infinite backward resistance. When connected to the source as shown, the current passing through the 175 Ω resistor is:`,options:{A:`0.095 A`,B:`0.044 A`,C:`0.028 A`,D:`0.04 A`},answer:"D"},
+{num:161,subject:"Physics",text:`The radius of a current-carrying circular coil is doubled keeping the same current. The ratio of magnetic field at the centre before to after doubling is:`,options:{A:`1 : 2`,B:`2 : 1`,C:`2 : 3`,D:`3 : 2`},answer:"B"},
+{num:162,subject:"Physics",text:`If the resultant of all external forces acting on a system of particles is zero, one can surely say that:`,options:{A:`Linear momentum of the system does not change in time`,B:`Kinetic energy of the system does not change in time`,C:`Potential energy of the system does not change in time`,D:`Angular momentum of the system does not change in time`},answer:"A"},
+{num:163,subject:"Physics",text:`The reverse current in a semiconductor diode changes from 20 μA to 40 μA when reverse potential changes from 10 V to 15 V. The reverse resistance is:`,options:{A:`250 kΩ`,B:`400 Ω`,C:`400 kΩ`,D:`250 Ω`},answer:"A"},
+{num:164,subject:"Physics",text:`A drone flying due west at 10 m/s. A 270 m long train moving due east at 20 m/s. The time taken by the drone to cross the train is:`,options:{A:`27 s`,B:`13.5 s`,C:`20 s`,D:`9 s`},answer:"D"},
+{num:165,subject:"Physics",text:`F_A, F_B and F_C are three forces acting at point P. The system is in equilibrium. If F_B = 100 N at 90° and F_C = 100 N at 150°, the magnitude of F_A is:`,options:{A:`100 N`,B:`83.3 N`,C:`73.3 N`,D:`89.6 N`},answer:"C"},
+{num:166,subject:"Physics",text:`A wheel is free to rotate about a horizontal axis through O. Force of 200 N is applied at point P, 2 cm from O. OP makes 55° with x-axis and force makes 25° with horizontal. The torque is:`,options:{A:`4 N m`,B:`3.2 N m`,C:`2 N m`,D:`3.4 N m`},answer:"C"},
+{num:167,subject:"Physics",text:`A hockey player hits the ball at 37° from horizontal with initial speed 40 m/s (sin 37° = 0.6, cos 37° = 0.8). The time at which the ball reaches the highest point is:`,options:{A:`2.4 s`,B:`0.32 s`,C:`3.2 s`,D:`0.24 s`},answer:"A"},
+{num:168,subject:"Physics",text:`What feature of infrared waves makes them useful for haze photography?`,options:{A:`Since it is invisible`,B:`Since it has large wavelength`,C:`Since it is absorbed by the medium`,D:`Since it has high frequency`},answer:"B"},
+{num:169,subject:"Physics",text:`A spring of force constant k is cut into lengths of ratio 1:3:4. They are connected in series (k') and in parallel (k''). Then k' : k'' is:`,options:{A:`38.3`,B:`3.38`,C:`1.38`,D:`38.1`},answer:"B"},
+{num:170,subject:"Physics",text:`Light of wavelength 6400 Å is incident normally on a slit of width 2 mm. The linear width of the central maximum on a screen 2 m from the slit is:`,options:{A:`2.4 cm`,B:`1.28 mm`,C:`1.28 cm`,D:`2.4 mm`},answer:"B"},
+{num:171,subject:"Physics",text:`Which statement is true when gamma decay occurs from the nucleus of an atom?`,options:{A:`Mass number is reduced by 4 and atomic number remains the same`,B:`Mass number remains the same and atomic number increases by 1`,C:`Mass number and atomic number are not changed`,D:`Mass number is reduced by 4 and atomic number is reduced by 2`},answer:"C"},
+{num:172,subject:"Physics",text:`The current passing through the 100 Ω resistor in the given electrical circuit is:`,options:{A:`0.08 A`,B:`0.01 A`,C:`0.1 A`,D:`0.12 A`},answer:"A"},
+{num:173,subject:"Physics",text:`The force between two electric point charges at rest in air is F₁. When the same arrangement is kept inside water, the force is F₂. Which statement is correct?`,options:{A:`F₂ = 0`,B:`F₂ > F₁`,C:`F₂ = F₁`,D:`F₂ < F₁`},answer:"D"},
+{num:174,subject:"Physics",text:`A neutron makes a head-on elastic collision with a lead nucleus. The ratio of nuclear mass to neutron mass is 206. The fractional change in kinetic energy of the neutron is:`,options:{A:`3% increase`,B:`2% decrease`,C:`2% increase`,D:`3% decrease`},answer:"B"},
+{num:175,subject:"Physics",text:`A battery is made of 12 cells each with emf 5V. If three cells are unknowingly connected wrong, the resultant emf of the battery will be:`,options:{A:`90V`,B:`30V`,C:`60V`,D:`45V`},answer:"B"},
+{num:176,subject:"Physics",text:`A circular loop of area 0.04 m² carrying a current of 10 A is held with its plane perpendicular to a magnetic field induction of 0.4 T. The torque acting on the circular loop is:`,options:{A:`0.004 Nm`,B:`zero`,C:`0.04 Nm`,D:`0.02 Nm`},answer:"B"},
+{num:177,subject:"Physics",text:`In the photoelectric experiment, the frequency of incident radiation is doubled. What effect will this have on the photoelectric current?`,options:{A:`Photoelectric current will be halved`,B:`Photoelectric current will be doubled`,C:`Photoelectric current will not change`,D:`Photoelectric current will become zero`},answer:"C"},
+{num:178,subject:"Physics",text:`1 volt induced emf is produced in the secondary coil when current through the primary changes from 3 A to 1 A in 100 ms. The mutual inductance of the two coils is:`,options:{A:`0.5 H`,B:`0.25 H`,C:`0.005 H`,D:`0.05 H`},answer:"D"},
+{num:179,subject:"Physics",text:`The current drawn by the primary coil of an ideal transformer that steps up 22 V to 220 V to operate a device with load resistance 110 Ω is:`,options:{A:`20 A`,B:`1 A`,C:`2 A`,D:`10 A`},answer:"A"}
+];
+
+const TOTAL = QUESTIONS.length;
+const TEST_NAME = "COMEDK 2023 2nd";
+const SUBJECTS = ["Physics","Chemistry","Mathematics"];
+const SUBJECT_RANGE = {
+  Physics: QUESTIONS.filter(q=>q.subject==="Physics").map(q=>QUESTIONS.indexOf(q)),
+  Chemistry: QUESTIONS.filter(q=>q.subject==="Chemistry").map(q=>QUESTIONS.indexOf(q)),
+  Mathematics: QUESTIONS.filter(q=>q.subject==="Mathematics").map(q=>QUESTIONS.indexOf(q))
+};
+
+// State
+let currentIdx = 0;
+let answers = new Array(TOTAL).fill(null);      // selected option letter or null
+let visited = new Array(TOTAL).fill(false);     // visited (opened) but not answered
+let timerSecs = 3 * 60 * 60;
+let timerInterval = null;
+let testSubmitted = false;
+
+// Init
+window.onload = function() {
+  let name = localStorage.getItem('comedk_username');
+  if (!name) {
+    document.getElementById('name-prompt').classList.add('show');
+    document.getElementById('name-input').focus();
+  } else {
+    initTest(name);
+  }
+};
+
+document.getElementById('name-submit').onclick = function() {
+  let name = document.getElementById('name-input').value.trim() || 'Anonymous';
+  localStorage.setItem('comedk_username', name);
+  document.getElementById('name-prompt').classList.remove('show');
+  initTest(name);
+};
+document.getElementById('name-input').onkeydown = function(e) {
+  if (e.key === 'Enter') document.getElementById('name-submit').click();
+};
+
+function initTest(name) {
+  document.getElementById('candidate-name-display').textContent = name;
+  document.getElementById('palette-candidate').textContent = '👤 ' + name;
+  buildPalette();
+  buildDrawerGrid();
+  updateTabCounts();
+  loadQuestion(0);
+  startTimer();
+  updateSubjectTabs();
+}
+
+// ===== TIMER =====
+function startTimer() {
+  timerInterval = setInterval(() => {
+    timerSecs--;
+    if (timerSecs <= 0) { timerSecs = 0; clearInterval(timerInterval); submitTest(); }
+    updateTimerDisplay();
+  }, 1000);
+}
+function updateTimerDisplay() {
+  let h = Math.floor(timerSecs / 3600);
+  let m = Math.floor((timerSecs % 3600) / 60);
+  let s = timerSecs % 60;
+  let str = `${pad(h)}:${pad(m)}:${pad(s)}`;
+  let box = document.getElementById('timer-box');
+  box.textContent = str;
+  box.classList.toggle('urgent', timerSecs < 300);
+}
+function pad(n) { return String(n).padStart(2,'0'); }
+
+// ===== QUESTION LOADING =====
+function loadQuestion(idx) {
+  if (idx < 0 || idx >= TOTAL) return;
+  currentIdx = idx;
+  visited[idx] = true;
+  const q = QUESTIONS[idx];
+  document.getElementById('q-label').textContent = `Question ${idx+1} of ${TOTAL}`;
+  document.getElementById('q-subject-badge').textContent = q.subject;
+  document.getElementById('q-text').textContent = q.text;
+
+  const optsList = document.getElementById('options-list');
+  optsList.innerHTML = '';
+  ['A','B','C','D'].forEach(k => {
+    const btn = document.createElement('button');
+    btn.className = 'opt' + (answers[idx] === k ? ' selected' : '');
+    btn.innerHTML = `<span class="opt-key">${k}</span><span>${q.options[k]}</span>`;
+    btn.onclick = () => selectOption(idx, k);
+    optsList.appendChild(btn);
+  });
+
+  updatePaletteHighlight();
+  updateTabCounts();
+  updateSubjectTabs();
+}
+
+function selectOption(idx, key) {
+  answers[idx] = key;
+  loadQuestion(idx);
+}
+
+function saveAndNext() {
+  if (currentIdx < TOTAL - 1) loadQuestion(currentIdx + 1);
+}
+
+function navigate(dir) {
+  let next = currentIdx + dir;
+  if (next >= 0 && next < TOTAL) loadQuestion(next);
+}
+
+function clearResponse() {
+  answers[currentIdx] = null;
+  loadQuestion(currentIdx);
+}
+
+// ===== SUBJECT TABS =====
+function updateSubjectTabs() {
+  const q = QUESTIONS[currentIdx];
+  document.querySelectorAll('.tab').forEach(t => {
+    t.classList.toggle('active', t.dataset.subject === q.subject);
+  });
+}
+
+function jumpToSubject(subj) {
+  const idx = QUESTIONS.findIndex(q => q.subject === subj);
+  if (idx >= 0) loadQuestion(idx);
+}
+
+function updateTabCounts() {
+  SUBJECTS.forEach(s => {
+    const qs = QUESTIONS.filter((q,i) => q.subject === s);
+    const answered = qs.filter((q,i) => {
+      let gi = QUESTIONS.indexOf(q);
+      return answers[gi] !== null;
+    }).length;
+    const el = document.getElementById('tab-count-' + s);
+    if (el) el.textContent = `(${answered}/${qs.length})`;
+  });
+}
+
+// ===== PALETTE =====
+function buildPalette() {
+  const grid = document.getElementById('palette-grid');
+  grid.innerHTML = '';
+  for (let i = 0; i < TOTAL; i++) {
+    const btn = document.createElement('button');
+    btn.className = 'pal-btn';
+    btn.textContent = i + 1;
+    btn.id = 'pb-' + i;
+    btn.onclick = () => { closeDrawer(); loadQuestion(i); };
+    grid.appendChild(btn);
+  }
+}
+
+function buildDrawerGrid() {
+  const grid = document.getElementById('drawer-grid');
+  grid.innerHTML = '';
+  for (let i = 0; i < TOTAL; i++) {
+    const btn = document.createElement('button');
+    btn.className = 'pal-btn-d';
+    btn.textContent = i + 1;
+    btn.id = 'dpb-' + i;
+    btn.onclick = () => { closeDrawer(); loadQuestion(i); };
+    grid.appendChild(btn);
+  }
+}
+
+function updatePaletteHighlight() {
+  for (let i = 0; i < TOTAL; i++) {
+    let cls = '';
+    if (answers[i] !== null) cls = 'answered';
+    else if (visited[i]) cls = 'visited';
+    const pb = document.getElementById('pb-' + i);
+    const dpb = document.getElementById('dpb-' + i);
+    if (pb) {
+      pb.className = 'pal-btn' + (cls ? ' ' + cls : '') + (i === currentIdx ? ' current' : '');
+    }
+    if (dpb) {
+      dpb.className = 'pal-btn-d' + (cls ? ' ' + cls : '') + (i === currentIdx ? ' current' : '');
+    }
+  }
+}
+
+// ===== MOBILE DRAWER =====
+function openDrawer() {
+  document.getElementById('palette-overlay').style.display = 'block';
+  document.getElementById('palette-drawer').style.display = 'block';
+  updatePaletteHighlight();
+}
+function closeDrawer() {
+  document.getElementById('palette-overlay').style.display = 'none';
+  document.getElementById('palette-drawer').style.display = 'none';
+}
+
+// ===== SUBMIT =====
+document.getElementById('submit-btn').onclick = function() {
+  if (confirm('Are you sure you want to submit the test? This action cannot be undone.')) {
+    submitTest();
+  }
+};
+
+function submitTest() {
+  if (testSubmitted) return;
+  testSubmitted = true;
+  clearInterval(timerInterval);
+
+  let correct = 0, wrong = 0, unattempted = 0;
+  let subjectData = {};
+  SUBJECTS.forEach(s => subjectData[s] = {correct:0,wrong:0,unattempted:0,score:0});
+
+  QUESTIONS.forEach((q, i) => {
+    const s = q.subject;
+    if (answers[i] === null) {
+      unattempted++;
+      subjectData[s].unattempted++;
+    } else if (answers[i] === q.answer) {
+      correct++;
+      subjectData[s].correct++;
+    } else {
+      wrong++;
+      subjectData[s].wrong++;
+    }
+  });
+
+  // COMEDK: +1 for correct, 0 for wrong/unattempted (no negative marking)
+  let score = correct;
+  SUBJECTS.forEach(s => {
+    subjectData[s].score = subjectData[s].correct;
+  });
+
+  let accuracy = TOTAL > 0 ? Math.round((correct / TOTAL) * 100) : 0;
+
+  // LocalStorage
+  localStorage.setItem('comedk_2023_2nd_score', score);
+  localStorage.setItem('comedk_2023_2nd_attempted', correct + wrong);
+
+  // Show results
+  document.getElementById('main').style.display = 'none';
+  document.getElementById('subject-tabs').style.display = 'none';
+  document.getElementById('palette-trigger').style.display = 'none';
+  const rs = document.getElementById('results-screen');
+  rs.style.display = 'block';
+
+  document.getElementById('res-score').textContent = score;
+  document.getElementById('res-score-sub').textContent = `out of ${TOTAL} — Accuracy: ${accuracy}%`;
+  document.getElementById('res-correct').textContent = correct;
+  document.getElementById('res-wrong').textContent = wrong;
+  document.getElementById('res-unattempted').textContent = unattempted;
+
+  const tbody = document.getElementById('res-subject-rows');
+  tbody.innerHTML = '';
+  SUBJECTS.forEach(s => {
+    const d = subjectData[s];
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${s}</td><td>${d.score}</td><td>${d.correct}</td><td>${d.wrong}</td><td>${d.unattempted}</td>`;
+    tbody.appendChild(tr);
+  });
+
+  // Firebase
+  const name = localStorage.getItem('comedk_username') || 'Anonymous';
+  if (window.saveScoreToFirebase) {
+    window.saveScoreToFirebase(name, TEST_NAME, score, TOTAL, accuracy)
+      .then(() => {
+        document.getElementById('firebase-status').textContent = '✅ Score saved to leaderboard!';
+      }).catch(() => {
+        document.getElementById('firebase-status').textContent = '⚠ Could not save to leaderboard.';
+      });
+  }
+}
+
+function retakeTest() {
+  answers = new Array(TOTAL).fill(null);
+  visited = new Array(TOTAL).fill(false);
+  timerSecs = 3 * 60 * 60;
+  currentIdx = 0;
+  testSubmitted = false;
+  document.getElementById('results-screen').style.display = 'none';
+  document.getElementById('main').style.display = 'flex';
+  document.getElementById('subject-tabs').style.display = 'flex';
+  document.getElementById('palette-trigger').style.display = window.innerWidth <= 768 ? 'block' : 'none';
+  updatePaletteHighlight();
+  loadQuestion(0);
+  startTimer();
+}
+</script>
+
+<!-- Firebase -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBz6qXqOpTqQot1GZtJCIwCXnRYg9Hghn4",
+    authDomain: "comedk-20399.firebaseapp.com",
+    projectId: "comedk-20399",
+    storageBucket: "comedk-20399.firebasestorage.app",
+    messagingSenderId: "111466152803",
+    appId: "1:111466152803:web:4e6ca3c7f131ca0dbcc956"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  window.saveScoreToFirebase = async function(name, testName, score, total, accuracy) {
+    try {
+      await addDoc(collection(db, "leaderboard"), {
+        name, testName, score, total, accuracy,
+        timestamp: serverTimestamp()
+      });
+      console.log("Score saved to Firebase!");
+    } catch(e) {
+      console.error("Firebase error:", e);
+    }
+  };
+</script>
+</body>
+</html>
