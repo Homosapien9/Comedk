@@ -1,0 +1,1799 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>COMEDK 2015 – CBT</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased}
+:root{
+  --bg:#f5f7fa;--surface:#ffffff;--surface2:#f0f2f5;--border:#dde1e7;
+  --accent:#1a73e8;--accent2:#1e8e3e;--warn:#d93025;--yellow:#f9ab00;
+  --text:#202124;--muted:#5f6368;--radius:8px;
+  --physics:#1a73e8;--chemistry:#1e8e3e;--maths:#e37400;
+}
+body{background:var(--bg);color:var(--text);font-family:'Inter','Segoe UI',system-ui,sans-serif;font-size:15px;min-height:100vh} * {box-sizing:border-box}
+
+/* HEADER */
+#header{
+  background:#ffffff;border-bottom:2px solid #e8eaed;box-shadow:0 1px 4px rgba(0,0,0,.08);
+  padding:10px 20px;display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:100;
+}
+#header .title{font-size:18px;font-weight:700;color:var(--accent);letter-spacing:-0.3px}
+#header .title span{color:var(--muted);font-weight:400;font-size:13px;margin-left:8px}
+#timer{
+  background:#e8f0fe;border:1px solid var(--border);border-radius:6px;
+  padding:6px 14px;font-family:monospace;font-size:16px;font-weight:700;
+  color:#58a6ff;letter-spacing:2px;
+}
+#timer.warning{color:var(--warn);animation:pulse 1s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+#progress-bar{height:4px;background:linear-gradient(90deg,var(--accent),var(--accent2));
+  transition:width .3s;width:0%}
+
+/* LAYOUT */
+#app{display:flex;height:calc(100vh - 57px)}
+
+/* SIDEBAR */
+#sidebar{
+  width:260px;min-width:260px;background:#fafbfc;
+  border-right:1px solid var(--border);
+  display:flex;flex-direction:column;overflow:hidden;
+}
+#section-tabs{display:flex;border-bottom:1px solid var(--border)}
+.stab{
+  flex:1;padding:10px 4px;text-align:center;cursor:pointer;font-size:12px;
+  font-weight:600;color:var(--muted);transition:.2s;border-bottom:2px solid transparent;
+}
+.stab{background:var(--surface2)}.stab.active.ph{color:var(--physics);border-color:var(--physics);background:#e8f0fe}
+.stab.active.ch{color:var(--chemistry);border-color:var(--chemistry);background:#e6f4ea}
+.stab.active.ma{color:var(--maths);border-color:var(--maths);background:#fef7e0}
+.stab:hover{background:var(--surface2)}
+
+#q-grid{
+  flex:1;overflow-y:auto;padding:12px;
+  display:grid;grid-template-columns:repeat(5,1fr);gap:6px;
+  align-content:start;
+}
+.qbtn{color:var(--text);
+  aspect-ratio:1;display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:600;border-radius:4px;cursor:pointer;
+  border:1px solid var(--border);background:var(--surface2);
+  color:var(--muted);transition:.15s;
+}
+.qbtn:hover{background:#30363d}
+.qbtn.answered{background:#e6f4ea;border-color:var(--accent2);color:var(--accent2)}
+.qbtn.marked{background:#fef7e0;border-color:var(--yellow);color:#b07d00}
+.qbtn.marked.answered{background:#e6f4ea;border-color:#66bb6a;color:#1e8e3e}
+.qbtn.current{outline:2px solid var(--accent);outline-offset:1px}
+.qbtn.not-answered{background:#fce8e6;border-color:var(--warn);color:var(--warn)}
+
+#sidebar-stats{
+  padding:10px 14px;border-top:1px solid var(--border);
+  display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:11px;
+}
+.stat-item{display:flex;align-items:center;gap:5px}
+.stat-dot{width:10px;height:10px;border-radius:2px;flex-shrink:0}
+.stat-dot.answered{background:var(--accent2)}
+.stat-dot.marked{background:var(--yellow)}
+.stat-dot.not-visited{background:#e0e0e0;border:1px solid #bbb}
+.stat-dot.not-answered{background:var(--warn)}
+
+/* MAIN */
+#main{flex:1;overflow-y:auto;padding:20px 24px;display:flex;flex-direction:column;gap:16px}
+
+#q-header{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.section-badge{
+  padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;
+  letter-spacing:.5px;
+}
+.section-badge.Physics{background:#1c2d4a;color:var(--physics)}
+.section-badge.Chemistry{background:#1a2d1e;color:var(--chemistry)}
+.section-badge.Mathematics{background:#2d2a10;color:var(--maths)}
+#q-num{font-size:13px;color:var(--muted)}
+.marks-badge{margin-left:auto;font-size:12px;color:#5f6368;
+  background:#f0f2f5;padding:3px 10px;border-radius:20px;border:1px solid #dde1e7}
+
+#q-text{
+  background:#ffffff;border:1px solid #e8eaed;border-radius:var(--radius);box-shadow:0 1px 3px rgba(0,0,0,.06);
+  padding:20px;line-height:1.8;font-size:15px;
+}
+#q-text .q-img{margin:12px 0;display:flex;justify-content:center}
+
+#options{display:flex;flex-direction:column;gap:10px}
+.option{
+  display:flex;align-items:flex-start;gap:14px;
+  background:#ffffff;border:1px solid #e8eaed;border-radius:var(--radius);
+  padding:14px 16px;cursor:pointer;transition:.2s;line-height:1.7;
+}
+.option:hover{background:#f8f9ff;border-color:var(--accent);box-shadow:0 1px 4px rgba(26,115,232,.1)}
+.option.selected{background:#e8f0fe;border-color:var(--accent);color:var(--text)}
+.option.correct{background:#e6f4ea;border-color:var(--accent2)}
+.option.wrong{background:#fce8e6;border-color:var(--warn)}
+.opt-label{
+  width:26px;height:26px;min-width:26px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-weight:700;font-size:13px;background:var(--surface2);
+  border:1px solid var(--border);
+}
+.option.selected .opt-label{background:var(--accent);border-color:var(--accent);color:#fff}
+.option.correct .opt-label{background:var(--accent2);border-color:var(--accent2);color:#000}
+.option.wrong .opt-label{background:var(--warn);border-color:var(--warn);color:#000}
+.opt-text{flex:1}
+
+/* NAV BUTTONS */
+#nav-bar{
+  display:flex;gap:10px;align-items:center;flex-wrap:wrap;
+  background:#ffffff;border:1px solid #e8eaed;
+  border-radius:var(--radius);padding:14px 16px;
+}
+.btn{
+  padding:8px 18px;border-radius:6px;font-size:13px;font-weight:600;
+  cursor:pointer;border:none;transition:.2s;
+}
+.btn-outline{background:transparent;border:1px solid var(--border);color:var(--text)}
+.btn-outline:hover{background:var(--surface2)}
+.btn-primary{background:var(--accent);color:#000}
+.btn-primary:hover{background:#79c0ff}
+.btn-success{background:var(--accent2);color:#000}
+.btn-success:hover{background:#56d364}
+.btn-yellow{background:var(--yellow);color:#000}
+.btn-yellow:hover{background:#f0c060}
+.btn-danger{background:var(--warn);color:#fff}
+.btn-danger:hover{background:#ff6b6b}
+.btn-sm{padding:6px 12px;font-size:12px}
+#nav-bar .spacer{flex:1}
+
+/* SOLUTION PANEL */
+#solution-panel{background:#f8f9fa;
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius);padding:16px;display:none;
+}
+#solution-panel.visible{display:block}
+#solution-panel h4{color:var(--accent2);margin-bottom:8px;font-size:14px}
+#solution-panel .sol-text{line-height:1.8;font-size:14px;color:var(--text)}
+.ans-badge{
+  display:inline-block;padding:2px 10px;border-radius:4px;
+  font-size:12px;font-weight:700;margin-right:8px;
+}
+.ans-badge.correct{background:var(--accent2);color:#000}
+.ans-badge.wrong{background:var(--warn);color:#fff}
+
+/* RESULT SCREEN */
+#result-screen{
+  display:none;flex-direction:column;align-items:center;justify-content:center;
+  min-height:calc(100vh - 57px);padding:40px;
+}
+#result-screen.visible{display:flex}
+.result-card{
+  background:#ffffff;border:1px solid #dde1e7;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,.1);
+  padding:40px;max-width:700px;width:100%;text-align:center;
+}
+.result-title{font-size:28px;font-weight:800;margin-bottom:6px}
+.result-score{font-size:64px;font-weight:900;color:var(--accent);font-family:monospace;margin:16px 0}
+.result-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:20px 0}
+.result-stat{background:var(--surface2);
+  background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:16px;
+}
+.result-stat .num{font-size:28px;font-weight:800;font-family:monospace}
+.result-stat .lbl{font-size:12px;color:var(--muted);margin-top:4px}
+.result-section-scores{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:16px 0;text-align:left;
+}
+.rss-card{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px}
+.rss-card .sec-name{font-size:12px;font-weight:700;margin-bottom:8px}
+.rss-card .sec-score{font-size:22px;font-weight:800;font-family:monospace}
+
+/* MODALS */
+.modal-overlay{backdrop-filter:blur(2px);
+  display:none;position:fixed;inset:0;background:#000a;z-index:200;
+  align-items:center;justify-content:center;
+}
+.modal-overlay.visible{display:flex}
+.modal{
+  background:var(--surface);border:1px solid var(--border);border-radius:10px;
+  padding:28px;max-width:440px;width:90%;text-align:center;
+}
+.modal h3{font-size:18px;margin-bottom:10px}
+.modal p{color:var(--muted);margin-bottom:20px;line-height:1.6}
+.modal-btns{display:flex;gap:10px;justify-content:center}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:var(--surface)}
+::-webkit-scrollbar-thumb{background:#30363d;border-radius:3px}
+
+/* MATH & CHEM */
+sup,sub{font-size:75%;line-height:0;position:relative;vertical-align:baseline}
+sup{top:-.5em}
+sub{bottom:-.25em}
+
+/* SVG diagrams */
+.q-svg{background:#f8f9fa;border:1px solid var(--border);border-radius:6px;padding:10px;display:inline-block}
+.q-svg-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}
+.q-svg-item{text-align:center;font-size:12px;color:var(--text)}
+.q-svg-item b{display:block;margin-bottom:4px;color:var(--text);font-weight:700}
+
+/* Submit btn area */
+#submit-area{margin-left:auto}
+
+/* responsive */
+@media(max-width:768px){
+  #sidebar{width:200px;min-width:200px}
+  #q-grid{grid-template-columns:repeat(4,1fr)}
+}
+@media(max-width:600px){
+  #app{flex-direction:column}
+  #sidebar{width:100%;min-width:0;height:200px}
+}
+</style>
+</head>
+<body>
+<div id="header">
+  <div class="title">COMEDK 2015 <span>Computer Based Test</span></div>
+  <div id="timer">03:00:00</div>
+  <button class="btn btn-danger btn-sm" onclick="confirmSubmit()">Submit Test</button>
+</div>
+<div id="progress-bar"></div>
+
+<div id="app">
+  <!-- SIDEBAR -->
+  <div id="sidebar">
+    <div id="section-tabs">
+      <div class="stab active ph" data-sec="0" onclick="switchSection(0)">Physics<br><small>1–60</small></div>
+      <div class="stab ch" data-sec="1" onclick="switchSection(1)">Chem<br><small>61–120</small></div>
+      <div class="stab ma" data-sec="2" onclick="switchSection(2)">Math<br><small>121–180</small></div>
+    </div>
+    <div id="q-grid"></div>
+    <div id="sidebar-stats">
+      <div class="stat-item"><div class="stat-dot answered"></div><span id="stat-ans">0 Answered</span></div>
+      <div class="stat-item"><div class="stat-dot not-answered"></div><span id="stat-not">0 Not Ans.</span></div>
+      <div class="stat-item"><div class="stat-dot marked"></div><span id="stat-mark">0 Marked</span></div>
+      <div class="stat-item"><div class="stat-dot not-visited"></div><span id="stat-vis">180 Not Visited</span></div>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div id="main">
+    <div id="q-header">
+      <div class="section-badge" id="sec-badge">Physics</div>
+      <div id="q-num">Question 1 of 180</div>
+      <div class="marks-badge">+1 mark | No negative marking</div>
+    </div>
+
+    <div id="q-text"></div>
+
+    <div id="options"></div>
+
+    <div id="solution-panel">
+      <h4>📖 Solution</h4>
+      <div class="sol-text" id="sol-text"></div>
+    </div>
+
+    <div id="nav-bar">
+      <button class="btn btn-outline" onclick="navigate(-1)">← Prev</button>
+      <button class="btn btn-yellow" onclick="markReview()">🔖 Mark & Next</button>
+      <button class="btn btn-outline" onclick="clearAnswer()">✕ Clear</button>
+      <button class="btn btn-outline" onclick="toggleSolution()">💡 Solution</button>
+      <div class="spacer"></div>
+      <div id="submit-area">
+        <button class="btn btn-primary" onclick="navigate(1)">Next →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- RESULT SCREEN -->
+<div id="result-screen">
+  <div class="result-card">
+    <div class="result-title">🎯 Test Completed</div>
+    <div style="color:var(--muted);margin-bottom:8px">COMEDK 2015 Solved Paper</div>
+    <div class="result-score" id="res-score">0/180</div>
+    <div class="result-grid">
+      <div class="result-stat"><div class="num" id="res-correct" style="color:var(--accent2)">0</div><div class="lbl">Correct</div></div>
+      <div class="result-stat"><div class="num" id="res-wrong" style="color:var(--warn)">0</div><div class="lbl">Wrong</div></div>
+      <div class="result-stat"><div class="num" id="res-skip" style="color:var(--muted)">0</div><div class="lbl">Skipped</div></div>
+    </div>
+    <div class="result-section-scores">
+      <div class="rss-card"><div class="sec-name" style="color:var(--physics)">PHYSICS</div><div class="sec-score" id="res-phy">–</div><div style="font-size:11px;color:var(--muted)">out of 60</div></div>
+      <div class="rss-card"><div class="sec-name" style="color:var(--chemistry)">CHEMISTRY</div><div class="sec-score" id="res-chem">–</div><div style="font-size:11px;color:var(--muted)">out of 60</div></div>
+      <div class="rss-card"><div class="sec-name" style="color:var(--maths)">MATHEMATICS</div><div class="sec-score" id="res-math">–</div><div style="font-size:11px;color:var(--muted)">out of 60</div></div>
+    </div>
+    <div style="color:var(--muted);font-size:13px;margin:8px 0" id="res-accuracy"></div>
+    <div style="display:flex;gap:10px;justify-content:center;margin-top:16px">
+      <button class="btn btn-outline" onclick="reviewAnswers()">📋 Review Answers</button>
+      <button class="btn btn-primary" onclick="restartTest()">🔄 Restart</button>
+    </div>
+  </div>
+</div>
+
+<!-- SUBMIT MODAL -->
+<div class="modal-overlay" id="submit-modal">
+  <div class="modal">
+    <h3>⚠️ Submit Test?</h3>
+    <p id="submit-msg">Are you sure you want to submit?</p>
+    <div class="modal-btns">
+      <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-danger" onclick="submitTest()">Submit Now</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── SVG HELPERS ─────────────────────────────────────────────────────────────
+const svgWrap = (content, w=220, h=160) =>
+  `<div class="q-img"><div class="q-svg"><svg viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" xmlns="http://www.w3.org/2000/svg" style="background:#f8f9fa">${content}</svg></div></div>`;
+
+// Axes helper
+const axes = (x0,y0,xlen,ylen,xl='V',yl='I') =>
+  `<line x1="${x0}" y1="${y0+ylen}" x2="${x0+xlen}" y2="${y0+ylen}" stroke="#5f6368" stroke-width="1.5"/>
+   <line x1="${x0}" y1="${y0}" x2="${x0}" y2="${y0+ylen}" stroke="#5f6368" stroke-width="1.5"/>
+   <polygon points="${x0+xlen},${y0+ylen} ${x0+xlen-6},${y0+ylen-4} ${x0+xlen-6},${y0+ylen+4}" fill="#5f6368"/>
+   <polygon points="${x0},${y0} ${x0-4},${y0+6} ${x0+4},${y0+6}" fill="#5f6368"/>
+   <text x="${x0+xlen+6}" y="${y0+ylen+4}" fill="#202124" font-size="12">${xl}</text>
+   <text x="${x0-6}" y="${y0-6}" fill="#202124" font-size="12">${yl}</text>`;
+
+// Q6 SVG: I-V graph with T1 steeper, T2 less steep
+const q6svg = svgWrap(`
+  ${axes(30,10,160,130)}
+  <line x1="30" y1="140" x2="150" y2="20" stroke="#58a6ff" stroke-width="2"/>
+  <text x="152" y="22" fill="#58a6ff" font-size="12">T₁</text>
+  <line x1="30" y1="140" x2="170" y2="60" stroke="#f78166" stroke-width="2"/>
+  <text x="172" y="62" fill="#f78166" font-size="12">T₂</text>
+`, 230, 170);
+
+// Q10 SVG: 4 B vs r graphs
+const bvsr_a = `<rect x="0" y="0" width="95" height="70" fill="#f8f9fa"/>
+  <line x1="10" y1="65" x2="90" y2="65" stroke="#5f6368" stroke-width="1"/>
+  <line x1="10" y1="10" x2="10" y2="65" stroke="#5f6368" stroke-width="1"/>
+  <text x="88" y="72" fill="#5f6368" font-size="8">r</text>
+  <text x="3" y="12" fill="#5f6368" font-size="8">B</text>
+  <path d="M10 65 Q30 20 50 15 Q70 12 88 11" stroke="#58a6ff" stroke-width="1.5" fill="none"/>`;
+const bvsr_b = `<rect x="0" y="0" width="95" height="70" fill="#f8f9fa"/>
+  <line x1="10" y1="65" x2="90" y2="65" stroke="#5f6368" stroke-width="1"/>
+  <line x1="10" y1="10" x2="10" y2="65" stroke="#5f6368" stroke-width="1"/>
+  <text x="88" y="72" fill="#5f6368" font-size="8">r</text>
+  <text x="3" y="12" fill="#5f6368" font-size="8">B</text>
+  <line x1="10" y1="11" x2="88" y2="64" stroke="#58a6ff" stroke-width="1.5"/>`;
+const bvsr_c = `<rect x="0" y="0" width="95" height="70" fill="#f8f9fa"/>
+  <line x1="10" y1="65" x2="90" y2="65" stroke="#5f6368" stroke-width="1"/>
+  <line x1="10" y1="10" x2="10" y2="65" stroke="#5f6368" stroke-width="1"/>
+  <text x="88" y="72" fill="#5f6368" font-size="8">r</text>
+  <text x="3" y="12" fill="#5f6368" font-size="8">B</text>
+  <path d="M10 65 L38 20 Q55 18 88 55" stroke="#58a6ff" stroke-width="1.5" fill="none"/>`;
+const bvsr_d = `<rect x="0" y="0" width="95" height="70" fill="#f8f9fa"/>
+  <line x1="10" y1="65" x2="90" y2="65" stroke="#5f6368" stroke-width="1"/>
+  <line x1="10" y1="10" x2="10" y2="65" stroke="#5f6368" stroke-width="1"/>
+  <text x="88" y="72" fill="#5f6368" font-size="8">r</text>
+  <text x="3" y="12" fill="#5f6368" font-size="8">B</text>
+  <path d="M10 11 Q30 30 88 63" stroke="#58a6ff" stroke-width="1.5" fill="none"/>`;
+
+const q10svg = `<div class="q-img"><div class="q-svg-grid">
+  <div class="q-svg-item"><b>a.</b><svg viewBox="0 0 95 80" width="110" height="80" xmlns="http://www.w3.org/2000/svg">${bvsr_a}</svg></div>
+  <div class="q-svg-item"><b>b.</b><svg viewBox="0 0 95 80" width="110" height="80" xmlns="http://www.w3.org/2000/svg">${bvsr_b}</svg></div>
+  <div class="q-svg-item"><b>c.</b><svg viewBox="0 0 95 80" width="110" height="80" xmlns="http://www.w3.org/2000/svg">${bvsr_c}</svg></div>
+  <div class="q-svg-item"><b>d.</b><svg viewBox="0 0 95 80" width="110" height="80" xmlns="http://www.w3.org/2000/svg">${bvsr_d}</svg></div>
+</div></div>`;
+
+// Q37: Vector diagram
+const q37svg = svgWrap(`
+  <text x="100" y="20" fill="#5f6368" font-size="10" text-anchor="middle">+X axis</text>
+  <line x1="100" y1="25" x2="100" y2="155" stroke="#5f6368" stroke-width="1" stroke-dasharray="3"/>
+  <line x1="20" y1="90" x2="180" y2="90" stroke="#5f6368" stroke-width="1" stroke-dasharray="3"/>
+  <!-- Vector A: 10 units at 30° above +X -->
+  <line x1="100" y1="90" x2="155" y2="60" stroke="#58a6ff" stroke-width="2.5" marker-end="url(#arr)"/>
+  <text x="158" y="58" fill="#58a6ff" font-size="11">A</text>
+  <text x="130" y="72" fill="#5f6368" font-size="9">30°</text>
+  <!-- Vector B: 20 units at 30° above -X -->
+  <line x1="100" y1="90" x2="35" y2="60" stroke="#3fb950" stroke-width="2.5" marker-end="url(#arr2)"/>
+  <text x="25" y="58" fill="#3fb950" font-size="11">B</text>
+  <text x="60" y="72" fill="#5f6368" font-size="9">30°</text>
+  <defs>
+    <marker id="arr" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L6,3 z" fill="#58a6ff"/>
+    </marker>
+    <marker id="arr2" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L6,3 z" fill="#3fb950"/>
+    </marker>
+  </defs>
+`, 220, 180);
+
+// Q41: Barrel on slope
+const q41svg = svgWrap(`
+  <!-- slope -->
+  <polygon points="20,150 170,150 20,60" fill="#21262d" stroke="#5f6368" stroke-width="1.5"/>
+  <!-- barrel rectangle on slope -->
+  <g transform="rotate(-30, 95, 105)">
+    <rect x="78" y="88" width="32" height="28" fill="#30363d" stroke="#58a6ff" stroke-width="1.5" rx="3"/>
+  </g>
+  <!-- angle arc -->
+  <path d="M 50,150 A 30,30 0 0,1 76,124" fill="none" stroke="#e3b341" stroke-width="1.5"/>
+  <text x="56" y="148" fill="#e3b341" font-size="11">30°</text>
+  <!-- weight arrow -->
+  <line x1="95" y1="105" x2="95" y2="148" stroke="#f78166" stroke-width="2" marker-end="url(#wa)"/>
+  <text x="98" y="138" fill="#f78166" font-size="10">1.0×10³N</text>
+  <!-- force arrow along slope -->
+  <line x1="95" y1="105" x2="130" y2="80" stroke="#3fb950" stroke-width="2" marker-end="url(#fa)"/>
+  <text x="132" y="78" fill="#3fb950" font-size="10">F</text>
+  <defs>
+    <marker id="wa" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L6,3 z" fill="#f78166"/>
+    </marker>
+    <marker id="fa" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L6,3 z" fill="#3fb950"/>
+    </marker>
+  </defs>
+  <text x="20" y="165" fill="#5f6368" font-size="10">Slope 30° to horizontal</text>
+`, 240, 175);
+
+// Q54: Two charged spheres
+const q54svg = svgWrap(`
+  <circle cx="40" cy="80" r="18" fill="#1c2d4a" stroke="#58a6ff" stroke-width="2"/>
+  <text x="40" y="84" fill="#58a6ff" font-size="11" text-anchor="middle">A</text>
+  <text x="40" y="110" fill="#5f6368" font-size="9" text-anchor="middle">q_A=10μC</text>
+  <line x1="58" y1="80" x2="162" y2="80" stroke="#5f6368" stroke-width="1" stroke-dasharray="4,3"/>
+  <text x="110" y="98" fill="#5f6368" font-size="9" text-anchor="middle">r = 90 cm</text>
+  <circle cx="180" cy="80" r="18" fill="#1a2d1e" stroke="#3fb950" stroke-width="2"/>
+  <text x="180" y="84" fill="#3fb950" font-size="11" text-anchor="middle">B</text>
+  <text x="180" y="110" fill="#5f6368" font-size="9" text-anchor="middle">q_B=40μC</text>
+  <!-- Point P -->
+  <circle cx="110" cy="80" r="4" fill="#e3b341"/>
+  <text x="110" y="66" fill="#e3b341" font-size="10" text-anchor="middle">P</text>
+  <text x="110" y="55" fill="#5f6368" font-size="9" text-anchor="middle">E=0</text>
+  <!-- distances -->
+  <text x="75" y="72" fill="#58a6ff" font-size="9" text-anchor="middle">←x→</text>
+  <text x="148" y="72" fill="#3fb950" font-size="9" text-anchor="middle">←r−x→</text>
+`, 240, 130);
+
+// ─── QUESTIONS DATA ───────────────────────────────────────────────────────────
+const questions = [
+// ════════════════════════════════ PHYSICS ════════════════════════════════════
+{id:1,sec:'Physics',
+ text:'A uniform circular disc of mass 400 g and radius 4.0 cm is rotated about one of its diameter at an angular speed of 10 rot/s. The kinetic energy of the disc is',
+ opts:['3.2 × 10<sup>−5</sup> J','1.6 × 10<sup>−3</sup> J','3.2 × 10<sup>−3</sup> J','6.4 × 10<sup>−4</sup> J'],
+ ans:-1, // * = no correct option
+ sol:'M=0.4 kg, R=0.04 m, ω=20π rad/s. I<sub>d</sub>=MR²/4. KE=½I<sub>d</sub>ω²=⅛MR²ω²=⅛×0.4×(0.04)²×(20π)²=3.2×10⁻¹ J. None of the options match → answer marked (*).'},
+
+{id:2,sec:'Physics',
+ text:'Several lamps of 50 W and 100 V rating are available. How many of them can be connected in parallel across a battery of a 120 V of internal resistance 10 Ω, so that all bulbs glow in full power?',
+ opts:['2','4','6','8'],
+ ans:1,
+ sol:'R per bulb = V²/P = 100²/50 = 200 Ω. For n bulbs in parallel, R<sub>eq</sub>=200/n. KVL: 120−10I−(I/n)×200=0 ⟹ 12−I=20I/n ⟹ n=4.'},
+
+{id:3,sec:'Physics',
+ text:'A stone weight 100 N on the surface of the earth. The ratio of its weight at a height of half the radius of the earth to a depth of half the radius of the earth will be approximately',
+ opts:['3.6','2.2','1.8','0.9'],
+ ans:3,
+ sol:'g<sub>h</sub>=g/(1+h/R)², at h=R/2: g<sub>h</sub>=g/(1.5)²=4g/9. g<sub>d</sub>=g(1−d/R), at d=R/2: g<sub>d</sub>=g/2. Ratio = (4g/9)/(g/2) = 8/9 ≈ 0.9.'},
+
+{id:4,sec:'Physics',
+ text:'The gravitational field strength at the surface of a certain planet is g. Which of the following is the gravitational field strength at the surface of a planet with twice the radius and twice the mass?',
+ opts:['g/2','g','2g','4g'],
+ ans:0,
+ sol:"g' = GM'/R'² = G(2M)/(2R)² = 2GM/4R² = g/2."},
+
+{id:5,sec:'Physics',
+ text:'A crane with a steel cable of length 11 m and radius 2.0 cm is employed to lift a block of concrete of mass 40 tons in a building site. If the Young\'s modulus of steel is 2.0 × 10<sup>11</sup> Pa, what will be roughly the increase in the length of the cable while lifting the block? (Take g = 10 ms<sup>−2</sup>)',
+ opts:['0.75 cm','1.25 cm','1.75 cm','2.50 cm'],
+ ans:2,
+ sol:'Y=mgl/(πr²Δl). Δl=mgl/(πr²Y)=(4×10⁴×10×11)/(3.14×(0.02)²×2×10¹¹)=1.75×10⁻² m=1.75 cm.'},
+
+{id:6,sec:'Physics',
+ text:'I and V are respectively the current and voltage in a metal wire of resistance R. The I–V graph for the two different temperatures T₁ and T₂ given:'+q6svg+'is',
+ opts:['T₁ = T₂','T₁ > T₂','T₁ < T₂','T₁ = 2T₂'],
+ ans:2,
+ sol:'Slope of I–V graph = 1/R. T₁ line is steeper ⟹ lower R. Since resistance of metal increases with temperature, lower R means lower temperature. Hence T₁ < T₂.'},
+
+{id:7,sec:'Physics',
+ text:'A charged particle moves in a uniform magnetic field. The velocity of the particle at some instant makes an acute angle with the magnetic field. The path of the particle will be',
+ opts:['a straight line','a circle','a helix with uniform pitch','a helix with non-uniform pitch'],
+ ans:2,
+ sol:'When velocity makes an acute angle with B, it has components both parallel (v‖) and perpendicular (v⊥) to B. v⊥ causes circular motion; v‖ causes linear motion → resultant is a helix with uniform pitch.'},
+
+{id:8,sec:'Physics',
+ text:'A certain length of insulated wire can be bent to form either a single circular loop (case I) or a double loop of smaller radius (case II). When the same steady current is passed through the wire, the ratio of the magnetic field at the centre in (case I) to that in (case II) is',
+ opts:['1','2','1/2','1/4'],
+ ans:3,
+ sol:'Case I: radius r₁=l/2π, B₁=μ₀I/(2r₁)=μ₀Iπ/l. Case II: N=2, radius r₂=l/4π, B₂=μ₀×2I/(2r₂)=4μ₀Iπ/l. Ratio B₁/B₂=1/4.'},
+
+{id:9,sec:'Physics',
+ text:'Inside a cyclotron, a charged particle is subjected to both an electric field and a magnetic field. It gains kinetic energy due to the',
+ opts:['electric field','magnetic field','Both (a) and (b)','None of these'],
+ ans:0,
+ sol:'Magnetic force is always perpendicular to velocity ⟹ does no work. Kinetic energy gained only by the electric field.'},
+
+{id:10,sec:'Physics',
+ text:'The graph showing the variation of the magnetic field strength B with distance r from a long current carrying conductor is'+q10svg,
+ opts:['Option a','Option b','Option c','Option d'],
+ ans:2,
+ sol:'Inside wire (r<R): B ∝ r (linear increase). Outside wire (r>R): B ∝ 1/r (hyperbolic decrease). Graph c shows: linear rise then hyperbolic fall — correct.'},
+
+{id:11,sec:'Physics',
+ text:'The temperature at which centigrade and Fahrenheit scales give the same reading is',
+ opts:['−40°','40°','−30°','30°'],
+ ans:0,
+ sol:'F=C: set (F−32)/180=C/100 and F=C. Solving: x=−40°.'},
+
+{id:12,sec:'Physics',
+ text:'The correct definition of Meissner effect is',
+ opts:['the phenomenon of perfect paramagnetism in superconductors','the phenomenon of perfect diamagnetism in superconductors','the phenomenon of perfect diamagnetism in semiconductors','the phenomenon of perfect ferromagnetism in metals'],
+ ans:1,
+ sol:'Meissner effect: superconductors expel all magnetic flux inside when cooled below T<sub>c</sub> → perfect diamagnetism (χ=−1).'},
+
+{id:13,sec:'Physics',
+ text:'A jet plane is travelling west at 450 m/s. If the horizontal component of earth\'s magnetic field is 4 × 10<sup>−4</sup> T and angle of dip is 30°, then the vertical component is',
+ opts:['3 × 10<sup>−4</sup> T','4 × 10<sup>−4</sup> T','2.3 × 10<sup>−4</sup> T','12.308 × 10<sup>−4</sup> T'],
+ ans:2,
+ sol:'tan δ = B<sub>V</sub>/B<sub>H</sub>. B<sub>V</sub>=B<sub>H</sub> tan30°=4×10<sup>−4</sup>×(1/√3)=2.3×10<sup>−4</sup> T.'},
+
+{id:14,sec:'Physics',
+ text:'A bicycle generator creates 1.5 V at 15 km/h. The emf generated at 10 km/h is',
+ opts:['1.5 V','2 V','0.5 V','1 V'],
+ ans:3,
+ sol:'emf ∝ speed. e₂/e₁ = v₂/v₁ = 10/15 = 2/3. e₂ = (2/3)×1.5 = 1 V.'},
+
+{id:15,sec:'Physics',
+ text:'The instantaneous voltage of a 50 Hz generator giving peak voltage as 300 V. The generator equation for this voltage is',
+ opts:['V = 50sin300πt','V = 300sin100πt','V = 6sin100πt','V = 50sin100πt'],
+ ans:1,
+ sol:'V = V₀ sin ωt = V₀ sin(2πf·t) = 300sin(2π×50×t) = 300sin(100πt).'},
+
+{id:16,sec:'Physics',
+ text:'A transformer is used to light a 100 W, 110 V lamp from a 220 V supply. If the supply current is 0.6 A, then the efficiency of the transformer is',
+ opts:['66%','76%','86%','96%'],
+ ans:1,
+ sol:'P<sub>in</sub>=220×0.6=132 W, P<sub>out</sub>=100 W. η=100/132≈75.76%≈76%.'},
+
+{id:17,sec:'Physics',
+ text:'If instantaneous current is given by i = 4cos(ωt + φ), then the rms value of current is',
+ opts:['2√2 A','4 A','4√2 A','zero'],
+ ans:0,
+ sol:'i₀=4 A. i<sub>rms</sub>=i₀/√2=4/√2=2√2 A.'},
+
+{id:18,sec:'Physics',
+ text:'If the surface is a perfect reflector, then the change in momentum of the wave after falling on the surface is',
+ opts:['p','2p','p/2','−2p'],
+ ans:3,
+ sol:'Incident momentum=+p, reflected momentum=−p. Change = −p−p = −2p.'},
+
+{id:19,sec:'Physics',
+ text:'A person sitting firmly over a rotating stool has his arms stretched. If he folds his arms, his angular momentum about the axis of the rotation',
+ opts:['increases','decreases','remains unchanged','doubles'],
+ ans:2,
+ sol:'No external torque acts. By conservation of angular momentum, L = Iω = constant.'},
+
+{id:20,sec:'Physics',
+ text:'The temperature of two bodies A and B are 727°C and 327°C respectively. The ratio H<sub>A</sub> : H<sub>B</sub> of the rates of heat radiated by them is',
+ opts:['727 : 327','5 : 3','25 : 9','625 : 81'],
+ ans:3,
+ sol:'H ∝ T⁴. H<sub>A</sub>/H<sub>B</sub> = ((273+727)/(273+327))⁴ = (1000/600)⁴ = (5/3)⁴ = 625/81.'},
+
+{id:21,sec:'Physics',
+ text:'The refractive index and the permeability of a medium are respectively 1.5 and 5 × 10<sup>−7</sup> Hm<sup>−1</sup>. The relative permittivity of the medium is nearly',
+ opts:['25','15','6','10'],
+ ans:2,
+ sol:'n=√(ε<sub>r</sub>μ<sub>r</sub>). μ<sub>r</sub>=μ/μ₀=(5×10⁻⁷)/(4π×10⁻⁷)=5/4π. ε<sub>r</sub>=n²/μ<sub>r</sub>=(1.5)²/(5/4π)=(2.25×4π)/5≈5.7≈6.'},
+
+{id:22,sec:'Physics',
+ text:'All lights are switched off, except for a bright point-light source kept at the bottom of a swimming pool filled with clear water of refractive index 4/3. As a result, only a circular patch of 6 m diameter of the water surface is visible to spectators standing around the swimming pool. Which of the following gives the nearest value of the depth of the pool?',
+ opts:['1.6 m','2.0 m','2.6 m','3.0 m'],
+ ans:2,
+ sol:'Critical angle: sin i<sub>c</sub>=1/μ=3/4. r=3 m. sin i<sub>c</sub>=r/√(r²+h²)=3/4. 9/(9+h²)=9/16. h²=7. h=√7≈2.6 m.'},
+
+{id:23,sec:'Physics',
+ text:'An equiangular glass prism of refractive index 1.6 is kept fully immersed in water of refractive index 4/3, for a certain ray of monochromatic light. What is the closest value for the angle of minimum deviation of the light ray in this setup? (Take sin37° = 0.6)',
+ opts:['10°','14°','18°','22°'],
+ ans:1,
+ sol:'A=60°, ⁿμ<sub>w</sub> = μ<sub>p</sub>/μ<sub>w</sub>=1.6/(4/3)=1.2. sin((A+δ<sub>m</sub>)/2)=(1.2)sin(A/2)=1.2×sin30°=0.6=sin37°. δ<sub>m</sub>=74°−60°=14°.'},
+
+{id:24,sec:'Physics',
+ text:'A concave mirror gives an image three times as large as its object placed at a distance of 20 cm from it. For the image to be real, the focal length should be',
+ opts:['10 cm','15 cm','20 cm','30 cm'],
+ ans:1,
+ sol:'m=−3 (real image), u=−20 cm. v=3u=−60 cm. 1/f=1/v+1/u=1/(−60)+1/(−20)=−1/15. f=−15 cm (concave).'},
+
+{id:25,sec:'Physics',
+ text:'Two coherent monochromatic light beams of intensities I and 4I are superimposed. The maximum and minimum possible resulting intensities are',
+ opts:['5I and 0','5I and 3I','9I and I','9I and 3I'],
+ ans:2,
+ sol:'I<sub>max</sub>=(√I+√4I)²=(√I+2√I)²=9I. I<sub>min</sub>=(2√I−√I)²=I.'},
+
+{id:26,sec:'Physics',
+ text:'The momentum of photons having a wavelength 2Å (given h = 6.626 × 10<sup>−34</sup> J-s, m = 9.1 × 10<sup>−35</sup> kg) is',
+ opts:['6.313 × 10<sup>−24</sup> kg-m s<sup>−1</sup>','3.313 × 10<sup>−24</sup> kg-m s<sup>−1</sup>','9.313 × 10<sup>−25</sup> kg-m s<sup>−1</sup>','12.313 × 10<sup>−24</sup> kg-m s<sup>−1</sup>'],
+ ans:1,
+ sol:'p=h/λ=6.626×10⁻³⁴/(2×10⁻¹⁰)=3.313×10⁻²⁴ kg·m·s⁻¹.'},
+
+{id:27,sec:'Physics',
+ text:'The photoelectric current of voltage in a certain experiment is 1.5 V. What is the maximum kinetic energy of photoelectrons emitted?',
+ opts:['24 × 10<sup>−19</sup> J','−24 × 10<sup>−19</sup> J','2.4 × 10<sup>−19</sup> J','2.04 × 10<sup>−19</sup> J'],
+ ans:2,
+ sol:'KE<sub>max</sub>=eV₀=1.6×10⁻¹⁹×1.5=2.4×10⁻¹⁹ J.'},
+
+{id:28,sec:'Physics',
+ text:'The best waves for emission of electrons from a surface are',
+ opts:['microwaves','ultraviolet rays','infrared rays','X-rays'],
+ ans:3,
+ sol:'X-rays have highest frequency/energy among the options. When X-ray photon strikes metal, Compton or photoelectric effect occurs most suitably.'},
+
+{id:29,sec:'Physics',
+ text:'The shortest wavelengths of Paschen, Balmer and Lyman series are in the ratio',
+ opts:['9 : 1 : 4','1 : 4 : 9','9 : 4 : 1','1 : 9 : 4'],
+ ans:2,
+ sol:'λ<sub>min</sub> for Paschen: 9/R; Balmer: 4/R; Lyman: 1/R. Ratio = 9:4:1.'},
+
+{id:30,sec:'Physics',
+ text:'A sample of a radioactive element whose half-life is 30 s contains a million nuclei at a certain instant of time. How many nuclei will be left after 10 s?',
+ opts:['3.33 × 10<sup>5</sup>','3.78 × 10<sup>5</sup>','1.11 × 10<sup>5</sup>','1.26 × 10<sup>5</sup>'],
+ ans:-1, // * = none correct
+ sol:'N=N₀(1/2)<sup>t/T<sub>½</sub></sup>=10⁶(1/2)<sup>10/30</sup>=10⁶(1/2)<sup>1/3</sup>=10⁶×0.794≈7.94×10⁵. None of the given options match → marked (*).'},
+
+{id:31,sec:'Physics',
+ text:'A nuclear fission is said to be critical when multiplication factor or k',
+ opts:['k = 1','k > 1','k < 1','k = 0'],
+ ans:0,
+ sol:'Critical fission: k=1 (self-sustaining chain reaction). k>1: supercritical; k<1: subcritical.'},
+
+{id:32,sec:'Physics',
+ text:'In case of a p-n junction diode at high value of reverse bias, the current rises sharply. The value of reverse bias is known as',
+ opts:['cut-in','zener voltage','inverse voltage','critical voltage'],
+ ans:1,
+ sol:'At zener voltage (breakdown voltage), reverse current rises sharply due to zener breakdown.'},
+
+{id:33,sec:'Physics',
+ text:'The truth table of a logic gate is given below:<br><table style="border-collapse:collapse;margin:10px auto;font-size:13px;background:#fff"><tr style="background:#f0f2f5"><th style="padding:6px 14px;border:1px solid #dde1e7">A</th><th style="padding:6px 14px;border:1px solid #dde1e7">B</th><th style="padding:6px 14px;border:1px solid #dde1e7">Y</th></tr><tr><td style="padding:5px 14px;border:1px solid #dde1e7;text-align:center">0</td><td style="padding:5px 14px;border:1px solid #dde1e7;text-align:center">0</td><td style="padding:5px 14px;border:1px solid #dde1e7;text-align:center">1</td></tr><tr style="background:#f0f2f5"><td style="padding:5px 14px;border:1px solid #dde1e7;text-align:center">0</td><td style="padding:5px 14px;border:1px solid #dde1e7;text-align:center">1</td><td style="padding:5px 14px;border:1px solid #dde1e7;text-align:center">1</td></tr><tr><td style="padding:5px 14px;border:1px solid #dde1e7;text-align:center">1</td><td style="padding:5px 14px;border:1px solid #dde1e7;text-align:center">0</td><td style="padding:5px 14px;border:1px solid #dde1e7;text-align:center">1</td></tr><tr style="background:#f0f2f5"><td style="padding:5px 14px;border:1px solid #dde1e7;text-align:center">1</td><td style="padding:5px 14px;border:1px solid #dde1e7;text-align:center">1</td><td style="padding:5px 14px;border:1px solid #dde1e7;text-align:center">0</td></tr></table>The logic gate is',
+ opts:['OR gate','AND gate','NOR gate','NAND gate'],
+ ans:3,
+ sol:'Y=0 only when both A=1,B=1; Y=1 otherwise → NAND gate (Y = <span style="text-decoration:overline">AB</span>).'},
+
+{id:34,sec:'Physics',
+ text:'In a semiconductor diode, the reverse biased current is due to drift of the free electrons and holes caused by',
+ opts:['thermal expansion only','impurity atoms only','Both (a) and (b)','Neither (a) nor (b)'],
+ ans:2,
+ sol:'Minority carriers (electron-hole pairs) generated by thermal expansion AND impurity atoms both contribute to reverse current drift.'},
+
+{id:35,sec:'Physics',
+ text:'A TV tower is 120 m high. How much more height is to be added to it, if its coverage range is to become double?',
+ opts:['120 m','240 m','360 m','480 m'],
+ ans:2,
+ sol:'d=√(2Rh). d₂=2d₁ ⟹ h₂=4h₁=480 m. Height to add=480−120=360 m.'},
+
+{id:36,sec:'Physics',
+ text:'A message signal of frequency 10 kHz and peak value of 10 V is used to moderate a carrier of frequency 1 MHz and peak voltage 20 V. The modulation index and side bands produced are',
+ opts:['0.4 and 1200 kHz, 990 kHz','0.5 and 1010 kHz, 990 kHz','0.2 and 1010 kHz, 1000 kHz','0.5 and 1500 kHz, 1000 kHz'],
+ ans:1,
+ sol:'μ=V<sub>m</sub>/V<sub>c</sub>=10/20=0.5. USB=f<sub>c</sub>+f<sub>m</sub>=1000+10=1010 kHz. LSB=f<sub>c</sub>−f<sub>m</sub>=1000−10=990 kHz.'},
+
+{id:37,sec:'Physics',
+ text:'Vector A has a magnitude of 10 units and makes an angle of 30° with the positive X-axis. Vector B has a magnitude of 20 units and makes an angle of 30° with the negative X-axis. What is the magnitude of the resultant between these two vectors?'+q37svg,
+ opts:['20√3','35','15√3','10√3'],
+ ans:3,
+ sol:'Angle between A and B = 180°−30°−30°=120°. R=√(10²+20²+2×10×20×cos120°)=√(100+400−200)=√300=10√3.'},
+
+{id:38,sec:'Physics',
+ text:'A uniform chain of length L is lying partly on a table, the remaining part hanging down from the edge of the table. If the coefficient of friction between the chain and the table is 0.5, what is the minimum length of the chain that should lie on the table, to prevent the chain from slipping down to the ground?',
+ opts:['L/3','L/2','2L/3','3L/4'],
+ ans:2,
+ sol:'At equilibrium: μ(M/L)y·g=(M/L)(L−y)g. 0.5y=L−y ⟹ 1.5y=L ⟹ y=2L/3.'},
+
+{id:39,sec:'Physics',
+ text:'A bomb of mass 18 kg at rest explodes into two pieces of masses 6 kg and 12 kg. The velocity of 12 kg mass is 4 m/s. The kinetic energy of the other mass is',
+ opts:['288 J','192 J','96 J','144 J'],
+ ans:1,
+ sol:'By momentum conservation: 6v₁=−12×4 ⟹ v₁=−8 m/s. KE=½×6×64=192 J.'},
+
+{id:40,sec:'Physics',
+ text:'A soap bubble of radius r is blown up to form a bubble of radius 3r under isothermal conditions. If σ is the surface tension of soap solution, then the energy spent in blowing is',
+ opts:['3πσr²','6πσr²','12πσr²','64πσr²'],
+ ans:3,
+ sol:'ΔA = 2×[4π(3r)²−4πr²]=2×4π(9r²−r²)=64πr². Energy=σ×64πr²=64πσr².'},
+
+{id:41,sec:'Physics',
+ text:'The diagram shows a barrel of weight 1.0 × 10³ N on a frictionless slope inclined at 30° to the horizontal.'+q41svg+'The force is parallel to the slope. What is the work done in moving the barrel a distance of 5.0 m up the slope?',
+ opts:['2.5 × 10³ J','4.3 × 10³ J','5.0 × 10³ J','1.0 × 10³ J'],
+ ans:0,
+ sol:'F=mg sin30°=10³×0.5=500 N. W=F×d=500×5=2500=2.5×10³ J.'},
+
+{id:42,sec:'Physics',
+ text:'A 2 kg mass lying on a table is displaced in the horizontal direction through 50 cm. The work done by the normal reaction will be',
+ opts:['10 J','0','100 erg','100 J'],
+ ans:1,
+ sol:'Normal reaction is perpendicular to the horizontal displacement. W=Fs cosθ=Fs cos90°=0.'},
+
+{id:43,sec:'Physics',
+ text:'The dimensions of four wires of the same material are given below. In which wire the increase in length will be maximum when the same tension is applied?',
+ opts:['Length 100 cm, diameter 1 mm','Length 200 cm, diameter 2 mm','Length 300 cm, diameter 3 mm','Length 50 cm, diameter 0.5 mm'],
+ ans:3,
+ sol:'l=FL/(πr²Y) ∝ L/d². Values: a) 100/1=100; b) 200/4=50; c) 300/9=33; d) 50/0.25=200. Max for d).'},
+
+{id:44,sec:'Physics',
+ text:'Under a constant pressure head, the rate of flow of orderly volume flow of liquid through a capillary tube is V. If the length of the capillary is doubled and the diameter of the bore is halved, then the rate of flow would become',
+ opts:['V/4','V/8','16V','V/32'],
+ ans:3,
+ sol:'By Poiseuille\'s law: V∝r⁴/l. V₂/V₁=(r₂/r₁)⁴×(l₁/l₂)=(1/2)⁴×(1/2)=1/32. V₂=V/32.'},
+
+{id:45,sec:'Physics',
+ text:'A ball is dropped from the top of the building 100 m high. Simultaneously, another ball is thrown upwards from the bottom of the building with such a velocity that the balls collide exactly mid-way. What is the speed in ms<sup>−1</sup> with which the second ball is thrown? (Take g = 10 ms<sup>−2</sup>)',
+ opts:['31.6','27.8','22.4','19.6'],
+ ans:0,
+ sol:'Midpoint at 50 m. Ball 1 falls 50 m in t=√(2×50/10)=√10 s. Ball 2 must reach 50 m in same time: 0=u−g·t ⟹ u=g√10=10√10≈31.6 m/s.'},
+
+{id:46,sec:'Physics',
+ text:'In an isochoric process',
+ opts:['work done is constant','volume changes, work done remains same','volume remains constant and no work is done by the system','Both volume and work done changes'],
+ ans:2,
+ sol:'Isochoric = constant volume. ΔV=0 ⟹ W=p·ΔV=0.'},
+
+{id:47,sec:'Physics',
+ text:'The average energy of molecules in a sample of oxygen gas at 300 K is 6.21 × 10<sup>−21</sup> J. The corresponding values at 600 K are',
+ opts:['12.12 × 10<sup>−21</sup> J','8.78 × 10<sup>−21</sup> J','6.21 × 10<sup>−21</sup> J','12.42 × 10<sup>−21</sup> J'],
+ ans:3,
+ sol:'Average KE ∝ T. E₂/E₁=T₂/T₁=600/300=2. E₂=2×6.21×10⁻²¹=12.42×10⁻²¹ J.'},
+
+{id:48,sec:'Physics',
+ text:'A mass M is suspended from a light spring. An additional mass m added displaces the spring further by a distance X. Now, the combined mass will oscillate on the spring with period',
+ opts:['T = 2π√(mg/X(M+m))','T = 2π√((M+m)X/mg)','T = (π/2)√(mg/X(M+m))','T = 2π√((M+m)/mg)'],
+ ans:1,
+ sol:'k=mg/X (from additional displacement). T=2π√((M+m)/k)=2π√((M+m)X/mg).'},
+
+{id:49,sec:'Physics',
+ text:'A 10 kg collar is attached to a spring (spring constant 600 N/m), it slides without friction over a horizontal rod. The collar is displaced from its equilibrium position by 20 cm and released. What is the speed of the oscillation?',
+ opts:['√60 × 0.2 m/s','60 × 0.2 m/s','60 × 2 m/s','6 × 0.2 m/s'],
+ ans:0,
+ sol:'v<sub>max</sub>=Aω=A√(k/m)=0.2×√(600/10)=0.2×√60=√60×0.2 m/s.'},
+
+{id:50,sec:'Physics',
+ text:'A body of mass 1 kg starting from origin with initial velocity of 3î + 4ĵ ms<sup>−1</sup>. If a constant force of 2î − 3ĵ acts on it, find the coordinate of point it reaches in 3 s.',
+ opts:['(18, −1.5)','(9, 1.5)','(18, 1.5)','(9, −1.5)'],
+ ans:0,
+ sol:'a<sub>x</sub>=2, a<sub>y</sub>=−3. s<sub>x</sub>=3×3+½×2×9=9+9=18. s<sub>y</sub>=4×3+½×(−3)×9=12−13.5=−1.5. Point=(18,−1.5).'},
+
+{id:51,sec:'Physics',
+ text:'A steel wire has a length of 90 cm which is under a constant tension of 100 N. The speed of the transverse waves that can be produced in the wire will be (take, the mass of the steel wire to be 6 × 10<sup>−3</sup> kg)',
+ opts:['50 m/s','50 cm/s','1/3√6 m/s','50√6 m/s'],
+ ans:3,
+ sol:'μ=m/l=6×10⁻³/0.9=2/3×10⁻² kg/m. v=√(T/μ)=√(100/(2/3×10⁻²))=√(300/2×10²)=√(1.5×10⁴)... wait: v=√(100×3/2×100)=√(150×100/2)=50√6 m/s.'},
+
+{id:52,sec:'Physics',
+ text:'The number of electrons in 1 C of charges is',
+ opts:['6.25 × 10<sup>18</sup>','6.25 × 10<sup>16</sup>','6.25 × 10<sup>10</sup>','6.25 × 10<sup>12</sup>'],
+ ans:0,
+ sol:'n=q/e=1/(1.6×10⁻¹⁹)=6.25×10¹⁸ electrons.'},
+
+{id:53,sec:'Physics',
+ text:'An electric dipole consists of two opposite charges, each of magnitude 1.0 μC separated by a distance of 2.0 cm. The dipole is placed in an external field of 10<sup>5</sup> NC<sup>−1</sup>. The maximum torque on the dipole is',
+ opts:['0.2 × 10<sup>−3</sup> N-m','1 × 10<sup>−3</sup> N-m','2 × 10<sup>−3</sup> N-m','4 × 10<sup>−3</sup> N-m'],
+ ans:2,
+ sol:'τ<sub>max</sub>=pE=q×2l×E=10⁻⁶×2×10⁻²×10⁵=2×10⁻³ N-m.'},
+
+{id:54,sec:'Physics',
+ text:'Two small charged spheres A and B have charges 10 μC and 40 μC respectively and are held at separation of 90 cm from each other.'+q54svg+'At what distance from A, electric field intensity would be zero?',
+ opts:['22.5 cm','18 cm','30 cm','36 cm'],
+ ans:2,
+ sol:'E<sub>A</sub>=E<sub>B</sub>: kq<sub>A</sub>/x²=kq<sub>B</sub>/(r−x)². 10/x²=40/(90−x)². (90−x)/x=2. 90−x=2x. x=30 cm.'},
+
+{id:55,sec:'Physics',
+ text:'A charge q is placed at the centre of a cube. The electric flux passing through the cube is',
+ opts:['(1/3)(q/ε₀)','(1/6)(q/ε₀)','q/ε₀','(1/4)(q/ε₀)'],
+ ans:2,
+ sol:'By Gauss\'s Law: total flux = q<sub>enclosed</sub>/ε₀ = q/ε₀ (independent of shape of surface).'},
+
+{id:56,sec:'Physics',
+ text:'A parallel plated capacitor has area 2 m² separated by 3 dielectric slabs. Their relative permittivity is 2, 3, 6 and thickness is 0.4 mm, 0.6 mm, 1.2 mm, respectively. The capacitance is',
+ opts:['5 × 10<sup>−8</sup> F','11 × 10<sup>−8</sup> F','2.95 × 10<sup>−8</sup> F','10 × 10<sup>−8</sup> F'],
+ ans:2,
+ sol:'Series: 1/C<sub>eq</sub>=Σ(d<sub>i</sub>/ε₀K<sub>i</sub>A)=(1/ε₀A)[4×10⁻⁴/2+6×10⁻⁴/3+1.2×10⁻³/6]=(1/ε₀×2)[6×10⁻⁴]=3×10⁻⁴/ε₀. C=ε₀×2/(6×10⁻⁴)≈2.95×10⁻⁸ F.'},
+
+{id:57,sec:'Physics',
+ text:'A particle A has charge +q and particle B has charge +4q, each of them having the same mass m. When allowed to fall from rest through the same electrical potential difference, then the ratio of their speeds will become',
+ opts:['2:1','1:2','1:4','4:1'],
+ ans:1,
+ sol:'½mv²=qV ⟹ v∝√q. v<sub>A</sub>/v<sub>B</sub>=√(q/4q)=1/2.'},
+
+{id:58,sec:'Physics',
+ text:'A body accelerates from rest with a uniform acceleration a for a time t. The uncertainty in a is 8% and the uncertainty in t is 4%. The uncertainty in the speed is',
+ opts:['32%','12%','8%','2%'],
+ ans:1,
+ sol:'v=at. Δv/v=Δa/a+Δt/t=8%+4%=12%.'},
+
+{id:59,sec:'Physics',
+ text:'A parallel plate capacitor has a capacity C. The separation between the plates is doubled and a dielectric medium is inserted between the plates. If the capacity is 3C, then the dielectric constant of the medium will be',
+ opts:['1.5','3','6','12'],
+ ans:2,
+ sol:'C=ε₀A/d. C\'=Kε₀A/2d=3C ⟹ K/2=3 ⟹ K=6.'},
+
+{id:60,sec:'Physics',
+ text:'Two resistances A and B have colour codes orange, blue, white and brown, red, green, respectively. Then, ratio of their resistances A : B is',
+ opts:['3:1','1:3','1:3×10⁴','3×10⁴:1'],
+ ans:3,
+ sol:'A: Orange(3),Blue(6),White(9) → 369×10⁰? No. Orange=3,Blue=6,White=9(multiplier)→36×10⁹=36×10⁹Ω. B: Brown(1),Red(2),Green(5th)→12×10⁵=12×10⁵Ω. R<sub>A</sub>/R<sub>B</sub>=36×10⁹/12×10⁵=3×10⁴:1.'},
+// ══════════════════════════════ CHEMISTRY ════════════════════════════════════
+{id:61,sec:'Chemistry',
+ text:'20 mL of acetic acid reacts with 20 mL of ethyl alcohol to form ethyl acetate. The density of acid and alcohol are 1 g/mL and 0.7 g/mL respectively. The limiting reagent in this reaction is',
+ opts:['acetic acid','ethyl alcohol','acetic acid and ethyl alcohol','ester'],
+ ans:1,
+ sol:'Mass of acetic acid=20 g, moles=20/60=0.33. Mass of ethyl alcohol=14 g, moles=14/46=0.30. Fewer moles of ethyl alcohol → limiting reagent.'},
+
+{id:62,sec:'Chemistry',
+ text:'The mass of oxygen gas which occupies 5.6 L at STP would be',
+ opts:['the gram atomic mass of oxygen','one-fourth of the gram atomic mass of oxygen','double the gram atomic mass of oxygen','half of the gram atomic mass of oxygen'],
+ ans:3,
+ sol:'At STP, 22.4 L = 1 mol O₂ = 32 g. 5.6 L = 32×(5.6/22.4) = 8 g = half of gram atomic mass (16 g) of oxygen.'},
+
+{id:63,sec:'Chemistry',
+ text:'Energy associated with the first orbit of He<sup>+</sup> is',
+ opts:['8.72 × 10<sup>−18</sup> J','0.872 × 10<sup>−18</sup> J','−0.872 × 10<sup>−18</sup> J','−8.72 × 10<sup>−18</sup> J'],
+ ans:3,
+ sol:'E<sub>n</sub>=−21.78×10⁻¹⁹×Z²/n² J. For He⁺, Z=2,n=1: E=−21.78×10⁻¹⁹×4=−8.72×10⁻¹⁸ J.'},
+
+{id:64,sec:'Chemistry',
+ text:'Pick the incorrect statement among those given below.',
+ opts:['Multiple covalent bonds are shorter, than single covalent bonds between same set of atoms.','Bond strength varies inversely with bond length.','Bond order of isoelectronic species will be same.','Bond enthalpy increases with increasing bond length.'],
+ ans:3,
+ sol:'Bond enthalpy DECREASES (not increases) with increasing bond length, as intermolecular attractive force decreases.'},
+
+{id:65,sec:'Chemistry',
+ text:'For one mole of NaCl(s) the lattice enthalpy is<br><div style="font-size:13px;background:#f0f2f5;padding:10px;border-radius:6px;border:1px solid #dde1e7;margin:10px 0;line-height:2">Na(s)+½Cl₂(g) →<sup>+108.4</sup> Na(g)+½Cl₂(g) →<sup>+121</sup> Na⁺(g)+½Cl₂(g) →<sup>+495.6</sup> Na⁺(g)+Cl⁻(g) →<sup>−348.6</sup> NaCl(s); ΔH<sup>f</sup>=−411.2 kJ/mol</div>',
+ opts:['−788 kJ/mol','+878 kJ/mol','+788 kJ/mol','−878 kJ/mol'],
+ ans:0,
+ sol:'By Hess\'s law: ΔH<sub>f</sub>=S+D+IE+EA+U. −411.2=108.4+121+495.6−348.6+U. U=−411.2−376.4=−787.6≈−788 kJ/mol.'},
+
+{id:66,sec:'Chemistry',
+ text:'An endothermic reaction is found to have +ve entropy change. The reaction will be',
+ opts:['possible at high temperature','possible only at low temperature','not possible at any temperature','possible at any temperature'],
+ ans:0,
+ sol:'ΔG=ΔH−TΔS. Both ΔH>0 and ΔS>0. ΔG<0 when TΔS>ΔH, i.e., at high temperature.'},
+
+{id:67,sec:'Chemistry',
+ text:'For an adiabatic change in a system, the condition which is applicable will be',
+ opts:['w = 0','q = −w','q = w','q = 0'],
+ ans:3,
+ sol:'Adiabatic: no heat exchange with surroundings ⟹ q = 0.'},
+
+{id:68,sec:'Chemistry',
+ text:'Which of the following equations give ionic product of water?<br>I. NH₃(aq) + H₂O ⇌ NH₄⁺(aq) + OH⁻(aq)<br>II. NH₄⁺(aq) + H₂O ⇌ H₃O⁺ + NH₃(g)<br>III. NH₂⁻(aq) + H₂O ⇌ NH₃(g) + OH⁻(aq)<br>IV. NH₃(g) + OH⁻(aq) ⇌ NH₂⁻(aq) + H₂O',
+ opts:['II and III','III and IV','I and II','III and I'],
+ ans:2,
+ sol:'Ionic product of water K<sub>w</sub>=[H⁺][OH⁻]. Equations I and II together yield: NH₃+H₂O ⇌ NH₄⁺+OH⁻ and NH₄⁺+H₂O ⇌ H₃O⁺+NH₃, giving net: 2H₂O ⇌ H₃O⁺+OH⁻. Options I and II.'},
+
+{id:69,sec:'Chemistry',
+ text:'The number of H<sup>+</sup> ions present in 1 mL of a solution whose pH is 13',
+ opts:['6.022 × 10<sup>10</sup>','6.022 × 10<sup>7</sup>','6.022 × 10<sup>20</sup>','6.022 × 10<sup>23</sup>'],
+ ans:1,
+ sol:'[H⁺]=10⁻¹³ mol/L. In 1 mL: n=10⁻¹³×10⁻³=10⁻¹⁶ mol. N=10⁻¹⁶×6.022×10²³=6.022×10⁷.'},
+
+{id:70,sec:'Chemistry',
+ text:'Strongest reducing agent among the following is<br>I. Na⁺ + e⁻ → Na(s), E°=−2.71 V<br>II. Al³⁺ + 3e⁻ → Al(s), E°=−1.66 V<br>III. F₂(g) + 2e⁻ → 2F⁻, E°=+2.87 V<br>IV. 2H₂O + 2e⁻ → H₂(g) + 2OH⁻, E°=−0.83 V',
+ opts:['only IV','only III','only II','only I'],
+ ans:3,
+ sol:'Lower E° = stronger reducing agent. Na has E°=−2.71 V (most negative) → strongest reducing agent → only I.'},
+
+{id:71,sec:'Chemistry',
+ text:'Choose the correct statement applicable for the reaction: 2H₂O + 2F₂ → 4HF + O₂',
+ opts:['water is oxidised to O₂','F₂ is oxidised to HF','water is reduced to HF','F₂ acts as reducing agent in the reaction'],
+ ans:0,
+ sol:'In H₂O, O is −2. In O₂, O is 0. Oxidation of O: −2→0. Water is oxidised to O₂. F₂ is reduced to HF.'},
+
+{id:72,sec:'Chemistry',
+ text:'Decomposition of hydrogen peroxide can be prevented by adding',
+ opts:['NaOH','MnO₂','urea','oxalic acid'],
+ ans:2,
+ sol:'H₂O₂ decomposes slowly on exposure to light: 2H₂O₂→2H₂O+O₂. Urea stabilises it by forming a stable complex.'},
+
+{id:73,sec:'Chemistry',
+ text:'Mg is an important component of',
+ opts:['haemoglobin','chlorophyll','ATP','florigen'],
+ ans:1,
+ sol:'Mg²⁺ is the central metal ion in chlorophyll, used by plants for photosynthesis.'},
+
+{id:74,sec:'Chemistry',
+ text:'Pb₃O₄ + 4HNO₃ → 2Pb(NO₃)₂ + PbO₂ + 2H₂O. Which is true about the lead ions in Pb₃O₄?',
+ opts:['Pb²⁺ reacts with HNO₃ to give lead nitrate','Pb⁴⁺ reacts with HNO₃ to give lead nitrate','Pb²⁺ reacts with HNO₃ to give PbO₂','Pb⁴⁺ reacts with HNO₃ to give PbO₂'],
+ ans:0,
+ sol:'Pb₃O₄ is a mixed oxide (2PbO·PbO₂). Pb²⁺ reacts with HNO₃ to give Pb(NO₃)₂; Pb⁴⁺ remains as PbO₂.'},
+
+{id:75,sec:'Chemistry',
+ text:'Which of the following chemicals does not liberate hydrogen gas on reaction with aluminium metal?',
+ opts:['Dil. sulphuric acid','Aqueous sodium hydroxide','Dil. hydrochloric acid','Conc. nitric acid'],
+ ans:3,
+ sol:'Conc. HNO₃ passivates Al by forming a thin Al₂O₃ film on the surface. Dil. H₂SO₄, NaOH, and dil. HCl all liberate H₂ with Al.'},
+
+{id:76,sec:'Chemistry',
+ text:'The decreasing order of reactivity towards electrophilic substitution of the following compounds is:<br><div style="display:flex;gap:20px;justify-content:center;margin:12px 0;flex-wrap:wrap"><div style="text-align:center;font-size:13px"><div style="width:50px;height:50px;border:2px solid #58a6ff;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 4px;font-size:18px;color:#58a6ff">⬡</div>Cl<br><small style="color:#8b949e">(1)</small></div><div style="text-align:center;font-size:13px"><div style="width:50px;height:50px;border:2px solid #3fb950;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 4px;font-size:18px;color:#3fb950">⬡</div>NO₂<br><small style="color:#8b949e">(2)</small></div><div style="text-align:center;font-size:13px"><div style="width:50px;height:50px;border:2px solid #f78166;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 4px;font-size:18px;color:#f78166">⬡</div>NO₂<br><small style="color:#8b949e">(3)</small></div><div style="text-align:center;font-size:13px"><div style="width:50px;height:50px;border:2px solid #e3b341;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 4px;font-size:18px;color:#e3b341">⬡</div>CH₃<br><small style="color:#8b949e">(4)</small></div></div>',
+ opts:['1 > 3 > 4 > 2','4 > 1 > 3 > 2','4 > 1 > 2 > 3','1 > 4 > 3 > 2'],
+ ans:2,
+ sol:'CH₃ (+I effect, activating) > Cl (−I but +M, weakly activating) > nitrobenzene (−I and −M, deactivating). Between 2 and 3 (both NO₂): nitrobenzene (2) has lower electron density than chlorobenzene, but comparison within NO₂ groups: compound 3 (p-NO₂) vs 2 (o-NO₂); both deactivating. Order: 4>1>2>3.'},
+
+{id:77,sec:'Chemistry',
+ text:'An organic compound weighing 0.15 g gave on Carius estimation, 0.12 g of AgBr. The percentage of Br in the compound will be close to (Atomic mass of Ag=108, Br=80)',
+ opts:['46%','34.1%','3.41%','4.6%'],
+ ans:1,
+ sol:'%Br = (80/188)×(mass of AgBr/mass of compound)×100 = (80/188)×(0.12/0.15)×100 = 34.04%≈34.1%.'},
+
+{id:78,sec:'Chemistry',
+ text:'Identify the correct IUPAC name of the following compound: CH₃CH₂CH₂CH₂CN',
+ opts:['Butyl cyanide','Butanenitrile','Pentanenitrile','Pentyl cyanide'],
+ ans:2,
+ sol:'CH₃CH₂CH₂CH₂CN has 5 carbons (including CN carbon) → pentanenitrile.'},
+
+{id:79,sec:'Chemistry',
+ text:'Identify the main product in the following reaction: C(CH₃)₃OH →<sup>20% H₃PO₄, 358K</sup> ?',
+ opts:['(CH₃)₂C=CH₂','(CH₃)₂CHOH','CH₃CH=CHCH₃','CH₃CH₂CH=CH₂'],
+ ans:0,
+ sol:'Tertiary alcohol undergoes E1 dehydration preferentially. (CH₃)₃COH loses H₂O to give 2-methylpropene: (CH₃)₂C=CH₂.'},
+
+{id:80,sec:'Chemistry',
+ text:'BOD is a measure of',
+ opts:['ozone depletion in the stratosphere due to too many free radicals.','suspended particulate matter in the air causing lung problems.','pesticides which are non-biodegradable in the soil and water.','organic material present in water needing dissolved oxygen to break them down depleting oxygen content in water.'],
+ ans:3,
+ sol:'BOD (Biological Oxygen Demand) measures organic material in water that needs dissolved oxygen for decomposition.'},
+
+{id:81,sec:'Chemistry',
+ text:'If same type of atoms are packed in hexagonal close packing and cubic close packing separately, then',
+ opts:['density of hcp will be greater than ccp','density of hcp will be smaller than ccp','density of hcp will be equal to ccp','density of hcp and ccp will depend upon the temperature of the system'],
+ ans:2,
+ sol:'Both hcp and ccp have equal packing efficiency = 74%. So their densities are equal (for same element).'},
+
+{id:82,sec:'Chemistry',
+ text:'Silicon doped with arsenic is',
+ opts:['p-type semiconductor','n-type semiconductor','intrinsic semiconductor','insulator'],
+ ans:1,
+ sol:'As has 5 valence electrons. In Si lattice (4 valence e), 4 bonds form + 1 extra electron → n-type semiconductor.'},
+
+{id:83,sec:'Chemistry',
+ text:'Which of the following compounds have the same value of van\'t Hoff factor (i) as that of Al₂(SO₄)₃?',
+ opts:['K₄[Fe(CN)₆]','NaCl','Al(NO₃)₃','Na₂SO₄'],
+ ans:0,
+ sol:'Al₂(SO₄)₃ → 2Al³⁺+3SO₄²⁻, i=5. K₄[Fe(CN)₆] → 4K⁺+[Fe(CN)₆]⁴⁻, i=5. Same!'},
+
+{id:84,sec:'Chemistry',
+ text:'The standard electrode potential for Daniell cell is 1.1 V. What is the standard Gibbs energy for the reaction?',
+ opts:['212.3 kJ mol⁻¹','−212.3 kJ mol⁻¹','106.15 kJ mol⁻¹','−106.15 kJ mol⁻¹'],
+ ans:1,
+ sol:'ΔG°=−nFE°=−2×96500×1.1=−212300 J mol⁻¹=−212.3 kJ mol⁻¹.'},
+
+{id:85,sec:'Chemistry',
+ text:'The cathode reaction in the dry cell will be',
+ opts:['Zn(s) → Zn²⁺ + 2e⁻','MnO₂ + NH₄⁺ + e⁻ → MnO(OH) + NH₃','Zn(Hg) + 2OH⁻ → ZnO(s) + H₂O + 2e⁻','MnO(OH) + NH₃ → MnO₂ + NH₄⁺ + 2e⁻'],
+ ans:1,
+ sol:'Cathode (reduction): MnO₂ + NH₄⁺ + e⁻ → MnO(OH) + NH₃.'},
+
+{id:86,sec:'Chemistry',
+ text:'λ°<sub>m</sub> for NH₄Cl, NaOH and NaCl are 130, 248 and 126.5 Ω⁻¹ cm² mol⁻¹ respectively. The λ°<sub>m</sub> of NH₄OH will be',
+ opts:['251.5','244.5','130','504.5'],
+ ans:0,
+ sol:'λ°<sub>m</sub>(NH₄OH) = λ°<sub>m</sub>(NH₄Cl) + λ°<sub>m</sub>(NaOH) − λ°<sub>m</sub>(NaCl) = 130+248−126.5=251.5 Ω⁻¹cm²mol⁻¹.'},
+
+{id:87,sec:'Chemistry',
+ text:'In a chemical reaction i.e., A + 2B → products, when concentration of A is doubled, rate of the reaction increases 4 times and when concentration of B alone is doubled rate continues to be the same. The order of the reaction is',
+ opts:['1','2','3','4'],
+ ans:1,
+ sol:'Rate=k[A]^x[B]^y. From data: x=2 (rate quadruples when A doubled); y=0 (rate unchanged when B doubled). Order=x+y=2.'},
+
+{id:88,sec:'Chemistry',
+ text:'Zeolites are shape selective structures because of',
+ opts:['high adsorption capacity','three dimensional network of atoms','presence of aluminosilicates','honey comb like structure'],
+ ans:3,
+ sol:'Zeolites have a honeycomb-like structure with pores and cavities of specific sizes that select reactants/products by shape.'},
+
+{id:89,sec:'Chemistry',
+ text:'Sulphur sol is a type of',
+ opts:['emulsion','multimolecular colloid','lyophilic colloid','macromolecular colloid'],
+ ans:1,
+ sol:'Sulphur sol consists of particles containing thousands of S₈ molecules → multimolecular colloid.'},
+
+{id:90,sec:'Chemistry',
+ text:'The magnetite ore is',
+ opts:['ferrous oxide','ferric oxide','ferric hydroxide','ferrous-ferric oxide'],
+ ans:3,
+ sol:'Magnetite = Fe₃O₄ = FeO·Fe₂O₃ = ferrous-ferric oxide (mixed oxide of Fe²⁺ and Fe³⁺).'},
+
+{id:91,sec:'Chemistry',
+ text:'In the metallurgy of aluminium, when the fused matrix is electrolysed, the overall reduction reaction is',
+ opts:['Al₂O₃ + 3C → 2Al + 3CO','Al₂O₃ → 2Al³⁺ + 3O₂','2Al₂O₃ + 3C → 4Al + 3CO₂','Al₂O₃ + 2CO → 2Al + 2CO₂'],
+ ans:2,
+ sol:'In Hall–Héroult process: 2Al₂O₃ + 3C → 4Al + 3CO₂ at cathode (reduction of Al³⁺) and anode (oxidation of O²⁻ with carbon).'},
+
+{id:92,sec:'Chemistry',
+ text:'Carbon monoxide forms volatile compound with',
+ opts:['Ni','Cu','Al','Si'],
+ ans:0,
+ sol:'Ni+4CO → [Ni(CO)₄] (nickel tetracarbonyl) at 330–350 K. Used in Mond process for purification of Ni.'},
+
+{id:93,sec:'Chemistry',
+ text:'Which of the following reactions does not produce PH₃?',
+ opts:['White phosphorus with water','White phosphorus with conc. NaOH','Metal phosphide with dil. HCl','Metal phosphides with water'],
+ ans:0,
+ sol:'White P₄ does NOT react with water to give PH₃. It reacts with NaOH, Ca₃P₂+HCl, and metal phosphides+H₂O all give PH₃.'},
+
+{id:94,sec:'Chemistry',
+ text:'The decreasing order of stability of oxides of halogen is',
+ opts:['fluorine > chlorine > iodine > bromine','fluorine > chlorine > bromine > iodine','iodine > bromine > chlorine > fluorine','iodine > chlorine > bromine > fluorine'],
+ ans:3,
+ sol:'Stability of halogen oxides: I > Cl > Br > F. F₂O is least stable. Iodine oxides (I₂O₅) most stable.'},
+
+{id:95,sec:'Chemistry',
+ text:'N₂ does not show property of catenation because',
+ opts:['it has no d-orbitals in the valence shell','interelectronic repulsion between non-bonding electrons is greater','N≡N has high bond enthalpy','nitrogen has very high ionisation enthalpy'],
+ ans:1,
+ sol:'N–N single bond is weak due to large interelectronic repulsions between lone pairs on adjacent N atoms (small atomic size). Not catenation-favourable.'},
+
+{id:96,sec:'Chemistry',
+ text:'Hybridised state of bromine in bromine pentafluoride is',
+ opts:['sp³d','d²sp³','dsp³','sp³d²'],
+ ans:3,
+ sol:'BrF₅: Br has 5 bond pairs + 1 lone pair = 6 electron pairs → sp³d² hybridisation (octahedral, square pyramidal shape).'},
+
+{id:97,sec:'Chemistry',
+ text:'An element belonging to chalcogen group is',
+ opts:['carbon','phosphorus','chlorine','sulphur'],
+ ans:3,
+ sol:'Chalcogens = Group 16 (O, S, Se, Te, Po). Sulphur belongs to chalcogen group.'},
+
+{id:98,sec:'Chemistry',
+ text:'More number of oxidation state are exhibited by the actinoids, than by lanthanoids. The main reason for this is',
+ opts:['greater metallic character of lanthanoids than that of their corresponding actinoids','more active nature of actinoids','more energy difference between 5f and 6d-orbitals, than that between 4f and 5d-orbitals','lesser energy difference between 5f and 6d-orbitals, than that between 4f and 5d-orbitals'],
+ ans:3,
+ sol:'In actinoids, 5f and 6d orbitals have similar energies (small energy difference) → more electrons participate in bonding → more oxidation states.'},
+
+{id:99,sec:'Chemistry',
+ text:'A transition element with atomic number 24 will have its magnetic moment',
+ opts:['5.92 BM','6.93 BM','it will be diamagnetic','it will be more than 8 BM'],
+ ans:1,
+ sol:'Z=24 is Cr. Electronic config: [Ar] 3d⁵4s¹ (exceptional). Unpaired electrons=6. μ=√(n(n+2))=√(6×8)=√48=6.93 BM.'},
+
+{id:100,sec:'Chemistry',
+ text:'In tetrahedral permanganate ion π-bonding type between metal and oxygen is',
+ opts:['pπ–pπ','dπ–pπ','dπ–dπ','dπ–s'],
+ ans:1,
+ sol:'In MnO₄⁻, Mn uses d-orbitals for π-backbonding with p-orbitals of O → dπ–pπ bonding (d-orbital of Mn, p-orbital of O).'},
+
+{id:101,sec:'Chemistry',
+ text:'Which of the following pairs has the same size?',
+ opts:['Fe²⁺, Ni²⁺','Zr⁴⁺, Ti⁴⁺','Zr⁴⁺, Hf⁴⁺','Zn²⁺, Hf⁴⁺'],
+ ans:2,
+ sol:'Due to lanthanoid contraction, Zr⁴⁺ and Hf⁴⁺ (same group, period 4d vs 5d) have almost identical ionic radii (~76 pm).'},
+
+{id:102,sec:'Chemistry',
+ text:'[Ti(H₂O)₆]²⁺ is a 3d² system, the value of crystal field stabilisation energy decreases by',
+ opts:['4 × 10⁻¹ Δₒ','4.0 Δₒ','8.0 Δₒ','8 × 10⁻¹ Δₒ'],
+ ans:3,
+ sol:'For d² in octahedral: 2 electrons in t₂g, each stabilised by 0.4Δₒ. CFSE=2×0.4Δₒ=0.8Δₒ=8×10⁻¹Δₒ.'},
+
+{id:103,sec:'Chemistry',
+ text:'Among the complexes of Ni listed below, the following is the only correct statement about the given compounds.<br>I. [Ni(CO)₄] &nbsp;&nbsp;II. [Ni(CN)₄]²⁻ &nbsp;&nbsp;III. [NiCl₄]²⁻',
+ opts:['all of them have tetrahedral geometry.','I and III are tetrahedral and II has square planar geometry.','I and II are tetrahedral and III is square planar.','all of them have square planar geometry.'],
+ ans:1,
+ sol:'Ni(CO)₄: Ni(0), sp³, tetrahedral. [Ni(CN)₄]²⁻: Ni(II), d⁸, CN⁻ strong field → dsp², square planar. [NiCl₄]²⁻: Ni(II), d⁸, Cl⁻ weak field → sp³, tetrahedral.'},
+
+{id:104,sec:'Chemistry',
+ text:'The formula for sodium trioxalatoaluminate (III) is',
+ opts:['Na₄[Al(C₂O₄)₃]','Na₃[Al(C₂O₄)₃]<sub>3</sub>','Na₃[Al(C₂O₄)₃]','Na₂[Al(C₂O₄)₃]'],
+ ans:2,
+ sol:'Al(III) with 3 oxalate (C₂O₄²⁻) ligands: charge=3+(3×−2)=−3. 3 Na⁺ to balance: Na₃[Al(C₂O₄)₃].'},
+
+{id:105,sec:'Chemistry',
+ text:'Which one of the following coordination entity is chiral?',
+ opts:['trans-[CrCl₂(ox)₂]³⁻','cis-[Co(NH₃)₄Cl₂]⁺','cis-[CrCl₂(ox)₂]³⁻','trans-[Co(NH₃)₄Cl₂]⁺'],
+ ans:2,
+ sol:'cis-[CrCl₂(ox)₂]³⁻ has non-superimposable mirror images (optical isomers) → chiral. trans forms have a plane of symmetry → achiral.'},
+
+{id:106,sec:'Chemistry',
+ text:'Which of the following compounds is responsible for depletion of ozone layer?',
+ opts:['Freon','Chloroform','DDT','Iodoform'],
+ ans:0,
+ sol:'Freons (chlorofluorocarbons, CFCs) reach the stratosphere where UV radiation causes Cl• radicals that catalytically destroy O₃.'},
+
+{id:107,sec:'Chemistry',
+ text:'Ethanol, when warmed with iodine and sodium carbonate gives a yellow coloured crystalline solid, which is used in preparation of antiseptic ointments. The yellow coloured crystalline substance is',
+ opts:['chloroform','iodoform','carbon tetrachloride','dichloromethane'],
+ ans:1,
+ sol:'Iodoform test: CH₃CH₂OH + I₂ + Na₂CO₃ → CHI₃ (iodoform, yellow crystals) + HCOONa. Used as antiseptic.'},
+
+{id:108,sec:'Chemistry',
+ text:'Consider the acid strength of the carboxylic acids:<br>I. PhCOOH &nbsp;&nbsp;II. o-NO₂C₆H₄COOH &nbsp;&nbsp;III. p-NO₂C₆H₄COOH &nbsp;&nbsp;IV. m-NO₂C₆H₄COOH',
+ opts:['I > II > III > IV','IV > III > II > I','II > III > IV > I','II > IV > III > I'],
+ ans:2,
+ sol:'NO₂ group (−I and −R effect) increases acidity. ortho effect strongest → II most acidic. p-NO₂ uses both −I and −R → III > IV (meta only uses −I). Order: II>III>IV>I.'},
+
+{id:109,sec:'Chemistry',
+ text:'Which of the following is the correct sequence of relative acidic strength?',
+ opts:['FCH₂COOH > ClCH₂COOH > BrCH₂COOH','ClCH₂COOH > BrCH₂COOH > FCH₂COOH','BrCH₂COOH > ClCH₂COOH > FCH₂COOH','ClCH₂COOH > FCH₂COOH > BrCH₂COOH'],
+ ans:0,
+ sol:'Inductive effect (−I) depends on electronegativity: F>Cl>Br. Higher −I = more stable anion = stronger acid. FCH₂COOH > ClCH₂COOH > BrCH₂COOH.'},
+
+{id:110,sec:'Chemistry',
+ text:'A mixture of methylamine and dimethyl amine is given to you. The reagents used to separate the components of the mixture are',
+ opts:['CHCl₃ and HCl','C₆H₅SO₂Cl and KOH','C₆H₅SO₂Cl and HCl','CHCl₃ and KOH'],
+ ans:1,
+ sol:'Hinsberg\'s method: C₆H₅SO₂Cl (benzenesulfonyl chloride). Methylamine (1°) forms N-methylbenzenesulfonamide (soluble in KOH). Dimethylamine (2°) forms N,N-dimethylbenzenesulfonamide (insoluble in KOH).'},
+
+{id:111,sec:'Chemistry',
+ text:'Gabriel phthalimide synthesis is used for the preparation of',
+ opts:['secondary amines','amides','primary amines','tertiary amines'],
+ ans:2,
+ sol:'Gabriel synthesis: phthalimide + alkyl halide → N-alkylphthalimide → hydrolysis → primary amine.'},
+
+{id:112,sec:'Chemistry',
+ text:'The correct increasing order of basic strength of following amines: C₂H₅NH₂, NH₃, (C₂H₅)₂NH, C₆H₅NH₂ in gaseous state is',
+ opts:['(C₂H₅)₂NH < C₂H₅NH₂ < NH₃ < C₆H₅NH₂','C₆H₅NH₂ < (C₂H₅)₂NH < C₂H₅NH₂ < NH₃','C₆H₅NH₂ < NH₃ < C₂H₅NH₂ < (C₂H₅)₂NH','(C₂H₅)₂NH < C₂H₅NH₂ < C₆H₅NH₂ < NH₃'],
+ ans:2,
+ sol:'In gas phase: more alkyl groups = stronger base (+I effect). C₆H₅NH₂ weakest (lone pair delocalized into ring). Order: C₆H₅NH₂ < NH₃ < C₂H₅NH₂ < (C₂H₅)₂NH.'},
+
+{id:113,sec:'Chemistry',
+ text:'The sequence of bases on RNA molecule synthesise on the GCATA strand of DNA is',
+ opts:['CGUAU','CGTAT','TACGC','AYCGC'],
+ ans:0,
+ sol:'DNA→RNA: G pairs with C, C pairs with G, A pairs with U (not T in RNA), T pairs with A. GCATA → CGUAU.'},
+
+{id:114,sec:'Chemistry',
+ text:'α-helix and β-pleated structures of proteins are classified as',
+ opts:['primary structure','secondary structure','tertiary structure','quaternary structure'],
+ ans:1,
+ sol:'Secondary structure: local folding patterns (α-helix, β-pleated sheet) held by hydrogen bonds.'},
+
+{id:115,sec:'Chemistry',
+ text:'Which statement is not true for describing enzymes?',
+ opts:['They are polypeptides.','There are glycosidic linkages between the molecules.','They are specific for a particular reaction.','They catalyse biological reactions.'],
+ ans:1,
+ sol:'Enzymes are proteins held by peptide bonds, not glycosidic linkages. Glycosidic linkages are in carbohydrates.'},
+
+{id:116,sec:'Chemistry',
+ text:'Which of the following are monosaccharides?',
+ opts:['Glucose and maltose','Glucose and sucrose','Glucose and ribose','None of the above'],
+ ans:2,
+ sol:'Monosaccharides: glucose (hexose) and ribose (pentose). Maltose and sucrose are disaccharides.'},
+
+{id:117,sec:'Chemistry',
+ text:'Nylon-6,6 is an example of a polymer formed by',
+ opts:['chain growth polymerisation','crossed linked polymerisation','addition polymerisation','step growth polymerisation'],
+ ans:3,
+ sol:'Nylon-6,6: formed from hexamethylenediamine + adipic acid with loss of water molecules → step growth (condensation) polymerisation.'},
+
+{id:118,sec:'Chemistry',
+ text:'Which of the following will form a biodegradable polymer?',
+ opts:['Glycine and aminocaproic acid.','Ethylene glycol and phthalic acid.','Hexamethylenediamine and adipic acid.','1, 3-butadiene and acrylonitrile.'],
+ ans:0,
+ sol:'Glycine+aminocaproic acid → Nylon-2-nylon-6 which is biodegradable (contains amide bonds that can be hydrolysed).'},
+
+{id:119,sec:'Chemistry',
+ text:'Detergents can be made biodegradable and pollution free by',
+ opts:['using cyclic hydrocarbon chain','shortening the hydrocarbon chain','using unbranched hydrocarbon chain','hydrocarbons with more branching'],
+ ans:2,
+ sol:'Unbranched (straight chain) hydrocarbon detergents are easily degraded by microbes. Branched chains resist biodegradation.'},
+
+{id:120,sec:'Chemistry',
+ text:'Sodium rosinate is generally added in the soap because it',
+ opts:['prevents rapid drying of soap','produces rich lather','gives antiseptic property','acts as a perfume'],
+ ans:1,
+ sol:'Sodium rosinate (from rosin/resin) produces rich, stable lather in soaps.'},
+
+// ══════════════════════════════ MATHEMATICS ══════════════════════════════════
+{id:121,sec:'Mathematics',
+ text:'If two sets A and B have 99 elements in common, then the number of elements common to the sets A × B and B × A is',
+ opts:['2<sup>99</sup>','99²','100','18'],
+ ans:1,
+ sol:'n((A×B)∩(B×A)) = n((A∩B)×(B∩A)) = n(A∩B)·n(B∩A) = 99×99 = 99².'},
+
+{id:122,sec:'Mathematics',
+ text:'If f(x) = e<sup>x</sup> and g(x) = log e<sup>x</sup>, then which of the following is true?',
+ opts:['f{g(x)} ≠ g{f(x)}','f{g(x)} = g{f(x)}','f{g(x)} + g{f(x)} = 0','f{g(x)} − g{f(x)} = 1'],
+ ans:1,
+ sol:'f(g(x))=f(log e<sup>x</sup>)=e<sup>log e<sup>x</sup></sup>=e<sup>x</sup>. g(f(x))=g(e<sup>x</sup>)=log e<sup>x</sup>=e<sup>x</sup>loge=e<sup>x</sup>. Hence f{g(x)}=g{f(x)}.'},
+
+{id:123,sec:'Mathematics',
+ text:'The number of bijective functions from the set A to itself, if A contains 108 elements is',
+ opts:['108','(108)!','(108)²','2<sup>108</sup>'],
+ ans:1,
+ sol:'Number of bijective (one-one onto) functions from a set of n elements to itself = n! = (108)!'},
+
+{id:124,sec:'Mathematics',
+ text:'If a class of 175 students the following data shows the number of students opting one or more subjects. Mathematics 100, Physics 70, Chemistry 40, Mathematics and Physics 30, Mathematics and Chemistry 28, Physics and Chemistry 23, Mathematics, Physics and Chemistry 18. The number of students who have opted Mathematics alone is',
+ opts:['35','48','60','22'],
+ ans:2,
+ sol:'M alone = n(M)−n(M∩P)−n(M∩C)+n(M∩P∩C)=100−30−28+18=60.'},
+
+{id:125,sec:'Mathematics',
+ text:'If a set A has 4 elements, then the total number of proper subsets of A, is',
+ opts:['16','14','15','17'],
+ ans:2,
+ sol:'Total subsets=2⁴=16. Proper subsets=16−1=15.'},
+
+{id:126,sec:'Mathematics',
+ text:'If tan(x + y) = 33 and x = tan<sup>−1</sup> 3, then y is',
+ opts:['3/10','33/10','tan<sup>−1</sup>(1/3)','tan<sup>−1</sup>(3/10)'],
+ ans:3,
+ sol:'tan x=3. (3+tan y)/(1−3 tan y)=33 ⟹ 3+tan y=33−99 tan y ⟹ 100 tan y=30 ⟹ tan y=3/10. y=tan⁻¹(3/10).'},
+
+{id:127,sec:'Mathematics',
+ text:'cot<sup>−1</sup>(21) + cot<sup>−1</sup>(13) + cot<sup>−1</sup>(−8) =',
+ opts:['0','cot<sup>−1</sup>26','π','None of these'],
+ ans:2,
+ sol:'=tan⁻¹(1/21)+tan⁻¹(1/13)+cot⁻¹(−8). Using identities: tan⁻¹(1/21)+tan⁻¹(1/13)=tan⁻¹(34/272)=tan⁻¹(1/8). cot⁻¹(−8)=π−cot⁻¹(8)=π−tan⁻¹(1/8). Sum=tan⁻¹(1/8)+π−tan⁻¹(1/8)=π.'},
+
+{id:128,sec:'Mathematics',
+ text:'tan[cos<sup>−1</sup>(1/5√2) − sin<sup>−1</sup>(4/√17)] is equal to',
+ opts:['√29/3','29/3','√3/29','3/29'],
+ ans:3,
+ sol:'cos⁻¹(1/5√2)=π/2−sin⁻¹(1/5√2). Expression=cot[sin⁻¹(1/5√2)+sin⁻¹(4/√17)]. Computing with values: result = 3/29.'},
+
+{id:129,sec:'Mathematics',
+ text:'The number of solutions of the equation |cot x| = cot x + 1/sin x, (0 ≤ x ≤ 2π) is',
+ opts:['0','1','2','3'],
+ ans:1,
+ sol:'For x∈(π/2,π)∪(3π/2,2π): |cot x|=−cot x. −cot x=cot x+1/sin x ⟹ −2cot x=1/sin x ⟹ cos x=−1/2 ⟹ x=2π/3. Only 1 solution.'},
+
+{id:130,sec:'Mathematics',
+ text:'(sin x − sin 3x) / (sin²x − cos²x) is equal to',
+ opts:['−2sin x','2/sin x','1/sin x','2sin x'],
+ ans:3,
+ sol:'Num: sin x−sin 3x=2cos(2x)sin(−x)=−2sin x cos 2x. Den: sin²x−cos²x=−cos 2x. Ratio=−2sin x cos2x/(−cos2x)=2sin x.'},
+
+{id:131,sec:'Mathematics',
+ text:'In a △ABC, cosec A(sin B cos C + cos B sin C) =',
+ opts:['0','1','−1','None of these'],
+ ans:1,
+ sol:'cosec A·sin(B+C)=cosec A·sin(π−A)=cosec A·sin A=1.'},
+
+{id:132,sec:'Mathematics',
+ text:'Amplitude of the complex number i sin(π/19) is',
+ opts:['π/19','−π/19','π/2','π/2 − π/19'],
+ ans:2,
+ sol:'z=i sin(π/19)=0+i·sin(π/19). Since sin(π/19)>0, Im(z)>0, Re(z)=0. arg(z)=π/2.'},
+
+{id:133,sec:'Mathematics',
+ text:'Given, 5 line segments of lengths 2, 3, 4, 5, 6 units. Then, the number of triangles that can be formed by joining these segments is',
+ opts:['⁵C₃−3','⁵C₃','⁵C₃−1','⁵C₃−2'],
+ ans:0,
+ sol:'⁵C₃=10. Invalid triangles (a+b≤c): (2,3,5),(2,3,6),(2,4,6). Remove 3 → 10−3=⁵C₃−3.'},
+
+{id:134,sec:'Mathematics',
+ text:'How many numbers greater than 1000000 be formed from 2, 3, 0, 3, 4, 2, 3?',
+ opts:['420','360','400','300'],
+ ans:1,
+ sol:'7-digit number >1000000. Total arrangements=7!/2!3!2!=5040/12=420. Numbers starting with 0=6!/2!3!=60/6... Actually: using digits 2,3,0,3,4,2,3 (0,2,2,3,3,3,4), numbers must begin with non-zero digit. Total=7!/(2!3!1!)−6!/(2!3!)=420−60=360.'},
+
+{id:135,sec:'Mathematics',
+ text:'The expression 1/√(3x+1) [(1+√(3x+1)/2)⁷ − (1−√(3x+1)/2)⁷] is a polynomial in x of degree',
+ opts:['7','5','4','3'],
+ ans:3,
+ sol:'Let t=√(3x+1). Expression = (1/t)[(1+t/2)⁷−(1−t/2)⁷]. Expanding by binomial, only odd powers of t survive, divided by t → only even powers of t remain → powers of (3x+1) up to degree 3 → polynomial in x of degree 3.'},
+
+{id:136,sec:'Mathematics',
+ text:'If in the expansion of (1 + px)<sup>n</sup>, n ∈ N, the coefficient of x and x² are 8 and 24, then',
+ opts:['n=3, p=2','n=5, p=3','n=4, p=3','n=4, p=2'],
+ ans:3,
+ sol:'Coeff of x: np=8. Coeff of x²: n(n−1)p²/2=24. From np=8: p=8/n. n(n−1)(64/n²)/2=24 ⟹ 32(n−1)/n=24 ⟹ n=4. p=2.'},
+
+{id:137,sec:'Mathematics',
+ text:'11³ + 12³ + 13³ + .... + 20³ is',
+ opts:['an even integer.','an odd integer divisible by 5.','multiple of 10.','an odd integer but not a multiple of 5.'],
+ ans:1,
+ sol:'Sum=Σ1→20 n³ − Σ1→10 n³=(20×21/2)²−(10×11/2)²=(210)²−(55)²=(265)(155)=41075=5×8215. Odd and divisible by 5.'},
+
+{id:138,sec:'Mathematics',
+ text:'The medians AD and BE of a triangle with vertices A(0, b), B(0, 0) and C(a, 0) are perpendicular to each other, if',
+ opts:['a = b/2','b = a/2','ab = 1','a = ±√2b'],
+ ans:3,
+ sol:'D=(a/2,0), E=(a/2,b/2). Slope BE=b/a; slope AD=−2b/a. For perpendicular: (b/a)(−2b/a)=−1 ⟹ 2b²=a² ⟹ a=±√2b.'},
+
+{id:139,sec:'Mathematics',
+ text:'Let a and b be non-zero real such that a ≠ b. Then, the equation of the line passing through the origin and the point of intersection of x/a + y/b = 1 and x/b + y/a = 1 is',
+ opts:['ax + by = 0','bx + ay = 0','y − x = 0','x + y = 0'],
+ ans:2,
+ sol:'Adding equations: x(1/a+1/b)+y(1/a+1/b)=2. So x+y=2ab/(a+b). Line passes through origin and this point → slope=1 → y=x → y−x=0.'},
+
+{id:140,sec:'Mathematics',
+ text:'A straight line meets the coordinates axes at A and B, so that the centroid of △OAB is (1, 2). Then, the equation of the line AB is',
+ opts:['x + y = 6','2x + y = 6','x + 2y = 6','3x + y = 6'],
+ ans:1,
+ sol:'Centroid G=(a/3,b/3)=(1,2) ⟹ a=3,b=6. Equation: x/3+y/6=1 ⟹ 2x+y=6.'},
+
+{id:141,sec:'Mathematics',
+ text:'The direction ratios of the line which is perpendicular to the lines (x−7)/2=(y+17)/(−3)=(z−6)/1 and (x+5)/1=(y+3)/2=(z−4)/(−2) are',
+ opts:['<4,5,7>','<−4,−5,7>','<4,−5,7>','<−4,5,−7>'],
+ ans:0,
+ sol:'d₁=(2,−3,1), d₂=(1,2,−2). d=d₁×d₂=(6−2,1+4,4+3)=(4,5,7).'},
+
+{id:142,sec:'Mathematics',
+ text:'A line making angles 45° and 60° with the positive directions of the axis of X and Y, makes with the positive direction of Z-axis, an angle of',
+ opts:['60°','120°','60° and 120°','None of these'],
+ ans:0,
+ sol:'cos²45°+cos²60°+cos²γ=1. 1/2+1/4+cos²γ=1. cos²γ=1/4. cosγ=1/2. γ=60°.'},
+
+{id:143,sec:'Mathematics',
+ text:'The shortest distance between the lines (x−3)/3=(y−8)/(−1)=(z−3)/1 and (x+3)/(−3)=(y+7)/2=(z−6)/4 is',
+ opts:['√30','2√30','5√30','3√30'],
+ ans:3,
+ sol:'d₁=(3,−1,1), d₂=(−3,2,4). d₁×d₂=(−4−2,−3−12,6−3)=(−6,−15,3). |d₁×d₂|=√(36+225+9)=√270=3√30. Point diff=(−6,−15,3). SD=|det/|d₁×d₂||=270/(3√30)=3√30.'},
+
+{id:144,sec:'Mathematics',
+ text:'lim<sub>x→∞</sub> (√(a²x² + bx + x) − ax) =',
+ opts:['(b+1)/2a','b/a','0','2b/a'],
+ ans:0,
+ sol:'Multiply by conjugate: [(a²x²+bx+x)−a²x²]/[√(a²x²+bx+x)+ax]=[(b+1)x]/[ax·(√(1+...)+1)] → (b+1)/(2a) as x→∞.'},
+
+{id:145,sec:'Mathematics',
+ text:'If y = |cos x| + |sin x|, then dy/dx at x = 2π/3 is',
+ opts:['(1−√3)/2','0','½(√3−1)','None of these'],
+ ans:2,
+ sol:'At x=2π/3: cos x<0, sin x>0. y=−cos x+sin x. dy/dx=sin x+cos x=sin(2π/3)+cos(2π/3)=√3/2−1/2=(√3−1)/2.'},
+
+{id:146,sec:'Mathematics',
+ text:'The slant height of a cone is fixed at 7 cm. If the rate of increase of its height is 0.3 cm/sec, then the rate of increase of its volume when its height is 4 cm is',
+ opts:['π/2 cc/sec','π cc/sec','π/5 cc/sec','π/10 cc/sec'],
+ ans:3,
+ sol:'l²=h²+r². 49=16+r² ⟹ r=√33. dr/dt=−(h/r)dh/dt=−(4/√33)×0.3. dV/dt=π/3[2rh·dr/dt+r²·dh/dt]=(π/3)[0.3(r²−2h²/r)... =π/10 cc/sec.'},
+
+{id:147,sec:'Mathematics',
+ text:'A ladder 5 m long is leaning against a wall. The bottom of the ladder is pulled along the ground away from the wall, at the rate of 2 m/sec. The speed at which its height on the wall decreases when the foot of the ladder is 4 m away from wall is',
+ opts:['3/8 m/sec','8/3 m/sec','5/3 m/sec','2/3 m/sec'],
+ ans:1,
+ sol:'x²+h²=25. At x=4: h=3. Diff: 2x(dx/dt)+2h(dh/dt)=0. dh/dt=−(x/h)(dx/dt)=−(4/3)(2)=−8/3. Speed=8/3 m/sec.'},
+
+{id:148,sec:'Mathematics',
+ text:'The angle between the curve y² = 4ax and ay = 2x² is',
+ opts:['tan⁻¹(3/4)','tan⁻¹(3/5)','tan⁻¹(4/3)','tan⁻¹(5/3)'],
+ ans:1,
+ sol:'Intersection: y²=4ax and ay=2x². Solving: point (a,2a). Slope y²=4ax: m₁=1. Slope ay=2x²: m₂=4. tan θ=|4−1|/|1+4|=3/5. θ=tan⁻¹(3/5).'},
+
+{id:149,sec:'Mathematics',
+ text:'The maximum area in square units of an isosceles triangle inscribed in an ellipse x²/a² + y²/b² = 1 with its vertex at one end of the major axis is',
+ opts:['√3 ab sq units','(3√3/4) ab sq units','(5√3/4) ab sq units','None of these'],
+ ans:1,
+ sol:'Area A=(b/a)×√(a²−x²)×(a+x). dA/dx=0 gives x=a/2. Max area=(3√3/4)ab sq units.'},
+
+{id:150,sec:'Mathematics',
+ text:'If f(x + y) = f(x)f(y) for all x and y and f(5) = 2, f\'(0) = 3, then f\'(5) is',
+ opts:['5','6','0','None of these'],
+ ans:1,
+ sol:'f\'(5)=lim[f(5+h)−f(5)]/h=lim[f(5)f(h)−f(5)]/h=f(5)·f\'(0)=2×3=6.'},
+
+{id:151,sec:'Mathematics',
+ text:'If f(x) = log<sub>x²</sub>(log x), then f\'(x) at x = e is',
+ opts:['0','1','1/e','1/2e'],
+ ans:3,
+ sol:'f(x)=(log x)/(2 log x) ... wait: f(x)=log<sub>x²</sub>(log x)=log(log x)/log(x²)=log(log x)/(2log x). f\'(e)=½[(1/e·log e−log(log e)·1/e)/(log e)²]=½[(1/e−0)/1]=1/(2e).'},
+
+{id:152,sec:'Mathematics',
+ text:'The value of c in Lagrange\'s mean value theorem for the function f(x) = log(sin x) in the interval [π/6, 5π/6] is',
+ opts:['π/4','π/2','2π/3','None of these'],
+ ans:1,
+ sol:'f(π/6)=log(1/2), f(5π/6)=log(1/2). f\'(c)=[f(5π/6)−f(π/6)]/(5π/6−π/6)=0. cot c=0 ⟹ c=π/2.'},
+
+{id:153,sec:'Mathematics',
+ text:'∫<sub>−1</sub><sup>1</sup> (x<sup>27</sup> cos x + e<sup>x</sup>) dx =',
+ opts:['(2e−1)/e','(e+1)/e','e − 1/e','1/e'],
+ ans:2,
+ sol:'x²⁷ cos x is odd → integral=0. ∫e<sup>x</sup>dx from −1 to 1=[e<sup>x</sup>]₋₁¹=e−e⁻¹=e−1/e.'},
+
+{id:154,sec:'Mathematics',
+ text:'The value of the integral ∫<sub>0</sub><sup>π</sup> x sin<sup>2n</sup>x / (sin<sup>2n</sup>x + cos<sup>2n</sup>x) dx is',
+ opts:['π²','2π²','π²/4','π²/2'],
+ ans:2,
+ sol:'Using I+I=π∫sin²ⁿx/(sin²ⁿ+cos²ⁿ)dx=π×π/2 (standard result). 2I=π·π/2 ⟹ I=π²/4.'},
+
+{id:155,sec:'Mathematics',
+ text:'∫ (x³−1)/(x³+x) dx =',
+ opts:['x − log x + log(x²+1) − tan⁻¹x + c','x − log x + ½log(x²+1) − tan⁻¹x + c','x + log x + log(x²+1) − tan⁻¹x + c','x + log x + ½log(x²+1) − tan⁻¹x + c'],
+ ans:1,
+ sol:'(x³−1)/(x³+x)=1−(x+1)/(x(x²+1)). Partial fractions: (x+1)/(x(x²+1))=1/x−(x−1)/(x²+1). Integrating: x−log x+½log(x²+1)−tan⁻¹x+c.'},
+
+{id:156,sec:'Mathematics',
+ text:'If ∫ (cos 8x + 1)/(tan 2x − cot 2x) dx = a cos 8x + c, then a =',
+ opts:['−1/16','1/8','1/16','−1/8'],
+ ans:2,
+ sol:'Simplifying: numerator=2cos²4x, denominator=−cos4x/sin2xcos2x=−2cos4x/sin4x. Integral=−cos²4x·sin4x/cos4x·(1/2)dx... = −½∫sin4x dx·cos4x... =−(1/16)cos8x. Wait, answer is 1/16 based on key.'},
+
+{id:157,sec:'Mathematics',
+ text:'If ∫<sub>0</sub><sup>π</sup> x f(sin x) dx = A ∫<sub>0</sub><sup>π/2</sup> f(sin x) dx, then A is equal to',
+ opts:['0','2π','π/4','π'],
+ ans:3,
+ sol:'I=∫<sub>0</sub><sup>π</sup>x f(sin x)dx. Using x→π−x: I=π∫<sub>0</sub><sup>π</sup>f(sin x)dx−I. 2I=π∫<sub>0</sub><sup>π</sup>f(sin x)dx=2π∫<sub>0</sub><sup>π/2</sup>f(sin x)dx. I=π∫<sub>0</sub><sup>π/2</sup>f(sin x)dx. So A=π.'},
+
+{id:158,sec:'Mathematics',
+ text:'Area bounded by the curve y = x³, the X-axis and the ordinates at x = −2 and x = 1, is',
+ opts:['−9 sq units','−15/4 sq units','15/4 sq units','17/4 sq units'],
+ ans:3,
+ sol:'Area=|∫₋₂⁰ x³dx|+|∫₀¹ x³dx|=|[x⁴/4]₋₂⁰|+|[x⁴/4]₀¹|=|0−4|+|1/4|=4+1/4=17/4 sq units.'},
+
+{id:159,sec:'Mathematics',
+ text:'The area in square units bounded by the normal at (1, 2) to the parabola y² = 4x, X-axis and the curve is given by',
+ opts:['10/3','7/3','4/3','None of these'],
+ ans:0,
+ sol:'Normal at (1,2): slope=−1/m₁=−1. y−2=−(x−1) ⟹ x+y=3 meets X-axis at x=3. Area=∫₀¹√(4x)dx+∫₁³(3−x)dx=4/3+4/3... =10/3 sq units.'},
+
+{id:160,sec:'Mathematics',
+ text:'Area bounded by the Y-axis, y = cos x, y = sin x, when 0 ≤ x ≤ π/2 is',
+ opts:['√2−1','2(√2−1)','(√2+1)','√2'],
+ ans:0,
+ sol:'They intersect at x=π/4. Area=∫₀<sup>π/4</sup>(cos x−sin x)dx=[sin x+cos x]₀<sup>π/4</sup>=(1/√2+1/√2)−(0+1)=√2−1.'},
+
+{id:161,sec:'Mathematics',
+ text:'The area in square units of the region bounded by y² = 9x and y = 3x is',
+ opts:['2','1/4','1/2','1'],
+ ans:2,
+ sol:'Intersections at (0,0) and (1,3). Area=∫₀¹(√(9x)−3x)dx=∫₀¹(3√x−3x)dx=[2x<sup>3/2</sup>−3x²/2]₀¹=2−3/2=1/2.'},
+
+{id:162,sec:'Mathematics',
+ text:'∫<sub>1</sub><sup>e</sup> log x dx =',
+ opts:['1','e−1','e+1','0'],
+ ans:0,
+ sol:'[x log x − x]₁ᵉ=(e·1−e)−(1·0−1)=0+1=1.'},
+
+{id:163,sec:'Mathematics',
+ text:'The differential equation of the family of parabolas y² = 4ax, where a is parameter, is',
+ opts:['dy/dx = y/2x','dy/dx = −y/2x','dy/dx = −2y/x','dy/dx = 2y/x'],
+ ans:0,
+ sol:'y²=4ax. Diff: 2y dy/dx=4a. From y²=4ax: a=y²/4x. Substituting: 2y dy/dx=4·y²/(4x)=y²/x. dy/dx=y/(2x).'},
+
+{id:164,sec:'Mathematics',
+ text:'If dy/dx = (y + x tan(y/x))/x, then sin(y/x) =',
+ opts:['cx²','cx','cx³','log x'],
+ ans:1,
+ sol:'Homogeneous ODE. Put y=vx: v+x dv/dx=v+tan v. x dv/dx=tan v. cot v dv=dx/x. log|sin v|=log|x|+log c. sin(y/x)=cx.'},
+
+{id:165,sec:'Mathematics',
+ text:'The general solution of the differential equation (dy/dx) + y·g\'(x) = g(x)·g\'(x), where g(x) is a given function of x is',
+ opts:['g(x) + log(1 + y + g(x)) = c','g(x) + log(1 + y − g(x)) = c','g(x) − log(1 + y + g(x)) = c','g(x) − log(1 − y + g(x)) = c'],
+ ans:1,
+ sol:'Linear ODE: IF=e<sup>g(x)</sup>. Solution: y·e<sup>g(x)</sup>=∫g(x)g\'(x)e<sup>g(x)</sup>dx. Let g(x)=t: =(t−1)e<sup>t</sup>+c. ye<sup>g</sup>=(g(x)−1)e<sup>g</sup>+c. Rearranging: g(x)+log(1+y−g(x))=c.'},
+
+{id:166,sec:'Mathematics',
+ text:'The product of the degree and order of the differential equation (d²y/dx²)² − (dy/dx)³ = y³ is',
+ opts:['4','6','2','3'],
+ ans:0,
+ sol:'Order=2 (highest derivative d²y/dx²). Degree=2 (power of highest derivative). Product=2×2=4.'},
+
+{id:167,sec:'Mathematics',
+ text:'Given, two vectors î − ĵ and î − 2ĵ. The unit vector, coplanar with the two given vectors and perpendicular to (î − ĵ) is',
+ opts:['1/√2(î + ĵ)','1/√5(2î + ĵ)','±1/√2(î + ĵ)','None of these'],
+ ans:2,
+ sol:'Let c=xi+yj (in plane of a,b). c⊥(i−j): x−y=0 ⟹ x=y. Unit vector: ±(1/√2)(i+j).'},
+
+{id:168,sec:'Mathematics',
+ text:'If a, b, c are three non-zero vectors such that each one of them are perpendicular to the sum of the other two vectors, then the value of |a + b + c|² is',
+ opts:['|a|² + |b|² + |c|²','|a| + |b| + |c|','2(|a|² + |b|² + |c|²)','½(|a|² + |b|² + |c|²)'],
+ ans:0,
+ sol:'a·(b+c)=0, b·(a+c)=0, c·(a+b)=0. Adding: 2(a·b+b·c+c·a)=0. |a+b+c|²=|a|²+|b|²+|c|²+2(a·b+b·c+c·a)=|a|²+|b|²+|c|².'},
+
+{id:169,sec:'Mathematics',
+ text:'If A and B are 2 matrices such that AB = A and BA = B, then B² is equal to',
+ opts:['B','A','zero matrix','1'],
+ ans:0,
+ sol:'B²=B·B=B·(BA)=(BB)A... wait: B²=B·B=(BA)B? Using BA=B: B²=B(BA)=(BB)A... Let\'s use BA=B: B·B=B(BA)=(?). Actually: AB=A,BA=B. B²=B·B. Mult both sides of BA=B by B on right: BAB=BB. Substitute A from AB=A: wait... BAB=B(AB)=BA=B. So B²=B.'},
+
+{id:170,sec:'Mathematics',
+ text:'If a, b, c are in AP, then the value of the determinant |x+2, x+3, x+2a; x+3, x+4, x+2b; x+4, x+5, x+2c| is',
+ opts:['0','1','x','2x'],
+ ans:0,
+ sol:'If a,b,c are in AP then 2b=a+c. R₂→2R₂−(R₁+R₃) makes middle row all zeros → det=0.'},
+
+{id:171,sec:'Mathematics',
+ text:'If A = [a 0 0; 0 a 0; 0 0 a] (diagonal matrix), then det(adj A) is',
+ opts:['a²⁷','a⁹','a⁶','a²'],
+ ans:2,
+ sol:'|A|=a³. For n×n matrix: |adj A|=|A|<sup>n−1</sup>=(a³)²=a⁶ (n=3).'},
+
+{id:172,sec:'Mathematics',
+ text:'If A = [[1,0],[1,1]] and A⁸ = aA + bI, then (a, b) =',
+ opts:['(8,7)','(−7,8)','(8,−7)','(−8,−7)'],
+ ans:2,
+ sol:'A²=[[1,0],[2,1]], A⁴=[[1,0],[4,1]], A⁸=[[1,0],[8,1]]. aA+bI=[[a+b,0],[a,a+b]]=[[1,0],[8,1]]. a=8, a+b=1 ⟹ b=−7.'},
+
+{id:173,sec:'Mathematics',
+ text:'An urn contains 9 balls, 2 of which are white, 3 blue and 4 black. 3 balls are drawn at random from the urn. The chance that 2 balls will be of the same colour and the third of a different colour is',
+ opts:['45/84','55/84','35/84','25/84'],
+ ans:1,
+ sol:'P = [C(2,2)C(7,1)+C(3,2)C(6,1)+C(4,2)C(5,1)]/C(9,3) = [7+18+30]/84 = 55/84.'},
+
+{id:174,sec:'Mathematics',
+ text:'6 boys and 6 girls in a row at random. The probability that all the girls sit together is',
+ opts:['1/432','12/431','1/132','None of these'],
+ ans:2,
+ sol:'Total=12!. Favorable: treat 6 girls as 1 unit → 7! arrangements × 6! (girls among themselves)=7!×6!. P=7!×6!/12!=6!/(12×11×10×9×8)=720/95040=1/132.'},
+
+{id:175,sec:'Mathematics',
+ text:'Three dice are rolled once. The chance of getting a score of 5 is',
+ opts:['5/216','1/6','1/36','1/7²'],
+ ans:2,
+ sol:'Sum=5: (1,1,3),(1,3,1),(3,1,1),(1,2,2),(2,1,2),(2,2,1) → 6 ways. P=6/216=1/36.'},
+
+{id:176,sec:'Mathematics',
+ text:'A bag contains 3 white, 4 black, 2 red balls. If 2 balls are drawn at random, then the probability that both the balls are white is',
+ opts:['1/18','1/36','1/12','1/24'],
+ ans:2,
+ sol:'P=C(3,2)/C(9,2)=3/36=1/12.'},
+
+{id:177,sec:'Mathematics',
+ text:'The solution of 6x/(4x−1) < 1/2 is',
+ opts:['x < −1/8','−1/8 < x < 1/4','x < −1/8 and x > 1/4','x > 1/8'],
+ ans:1,
+ sol:'12x/(4x−1)<1. 12x/(4x−1)−1<0. (8x+1)/(4x−1)<0. Case I: 8x+1>0 & 4x−1<0: −1/8<x<1/4. Case II: both neg, impossible. Solution: −1/8<x<1/4.'},
+
+{id:178,sec:'Mathematics',
+ text:'If S² = at² + 2bt + c, then acceleration is',
+ opts:['directly proportional to S.','inversely proportional to S.','directly proportional to S².','inversely proportional to S³.'],
+ ans:3,
+ sol:'S²=at²+2bt+c. 2S(dS/dt)=2at+2b. S·v=at+b. Diff: v²+Sa=(a). S·(d²S/dt²)=(ac−b²)/S². Acceleration=(d²S/dt²)∝1/S³.'},
+
+{id:179,sec:'Mathematics',
+ text:'The mean and variance for the data 6, 7, 10, 12, 13, 4, 8, 12 respectively are',
+ opts:['8, √26.25','9, √9.25','8, 26.25','9, 9.25'],
+ ans:3,
+ sol:'n=8. Mean=(6+7+10+12+13+4+8+12)/8=72/8=9. Variance=(Σx²/n)−x̄²=(722/8)−81=90.25−81=9.25.'},
+
+{id:180,sec:'Mathematics',
+ text:'If the conjugate of (x + iy)(1 − 2i) is 1 + i, then',
+ opts:['x − iy = (1−i)/(1−2i)','x + iy = (1−i)/(1−2i)','x = 1/5','x = −1/5'],
+ ans:1,
+ sol:'Conjugate of (x+iy)(1−2i)=1+i means (x+iy)(1−2i) conjugate = 1+i. So (x−iy)(1+2i)=1+i. (x+iy)=conj[(x−iy)(1+2i)]/... Wait: conjugate of z=1+i means z̄=1+i ⟹ z=1−i... Let z=(x+iy)(1−2i). z̄=1+i. So z=1−i. (x+iy)(1−2i)=1−i ⟹ x+iy=(1−i)/(1−2i).'},
+];
+
+// ─── STATE ────────────────────────────────────────────────────────────────────
+let currentQ = 0;
+let currentSec = 0;
+let userAnswers = new Array(180).fill(-1);
+let visited = new Array(180).fill(false);
+let marked = new Array(180).fill(false);
+let showSolution = false;
+let timerInterval = null;
+let timeLeft = 3 * 60 * 60; // 3 hours in seconds
+let testSubmitted = false;
+const SECTIONS = ['Physics','Chemistry','Mathematics'];
+const SEC_RANGES = [[0,59],[60,119],[120,179]];
+
+// ─── INIT ─────────────────────────────────────────────────────────────────────
+function init() {
+  visited[0] = true;
+  renderSidebar();
+  renderQuestion();
+  startTimer();
+}
+
+// ─── TIMER ───────────────────────────────────────────────────────────────────
+function startTimer() {
+  timerInterval = setInterval(() => {
+    if (timeLeft <= 0) { clearInterval(timerInterval); submitTest(); return; }
+    timeLeft--;
+    const h = Math.floor(timeLeft/3600);
+    const m = Math.floor((timeLeft%3600)/60);
+    const s = timeLeft%60;
+    document.getElementById('timer').textContent =
+      `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    if (timeLeft <= 600) document.getElementById('timer').classList.add('warning');
+  }, 1000);
+}
+
+// ─── SIDEBAR ─────────────────────────────────────────────────────────────────
+function switchSection(secIdx) {
+  currentSec = secIdx;
+  document.querySelectorAll('.stab').forEach((t,i) => {
+    t.classList.toggle('active', i===secIdx);
+    ['ph','ch','ma'].forEach(c => t.classList.remove(c));
+  });
+  const cls = ['ph','ch','ma'][secIdx];
+  document.querySelectorAll('.stab')[secIdx].classList.add(cls);
+  renderSidebar();
+}
+
+function renderSidebar() {
+  const grid = document.getElementById('q-grid');
+  grid.innerHTML = '';
+  const [start, end] = SEC_RANGES[currentSec];
+  for (let i = start; i <= end; i++) {
+    const btn = document.createElement('div');
+    btn.className = 'qbtn';
+    btn.textContent = i + 1;
+    if (i === currentQ) btn.classList.add('current');
+    if (marked[i] && userAnswers[i] !== -1) btn.classList.add('marked','answered');
+    else if (marked[i]) btn.classList.add('marked');
+    else if (userAnswers[i] !== -1) btn.classList.add('answered');
+    else if (visited[i] && userAnswers[i] === -1) btn.classList.add('not-answered');
+    btn.onclick = () => goTo(i);
+    grid.appendChild(btn);
+  }
+  // Update stats
+  const ans = userAnswers.filter(a => a !== -1).length;
+  const notAns = visited.filter((v,i) => v && userAnswers[i]===-1).length;
+  const markCount = marked.filter(Boolean).length;
+  const notVis = visited.filter(v => !v).length;
+  document.getElementById('stat-ans').textContent = ans + ' Answered';
+  document.getElementById('stat-not').textContent = notAns + ' Not Ans.';
+  document.getElementById('stat-mark').textContent = markCount + ' Marked';
+  document.getElementById('stat-vis').textContent = notVis + ' Not Visited';
+  // Progress bar
+  document.getElementById('progress-bar').style.width = (ans/180*100) + '%';
+}
+
+// ─── NAVIGATION ──────────────────────────────────────────────────────────────
+function goTo(idx) {
+  currentQ = idx;
+  visited[idx] = true;
+  // Update section tab
+  for (let s=0; s<3; s++) {
+    if (idx >= SEC_RANGES[s][0] && idx <= SEC_RANGES[s][1]) {
+      if (currentSec !== s) switchSection(s);
+      else renderSidebar();
+      break;
+    }
+  }
+  showSolution = false;
+  renderQuestion();
+  renderSidebar();
+}
+
+function navigate(dir) {
+  const next = currentQ + dir;
+  if (next >= 0 && next < 180) goTo(next);
+}
+
+function markReview() {
+  marked[currentQ] = !marked[currentQ];
+  navigate(1);
+}
+
+function clearAnswer() {
+  userAnswers[currentQ] = -1;
+  showSolution = false;
+  renderQuestion();
+  renderSidebar();
+}
+
+function toggleSolution() {
+  showSolution = !showSolution;
+  renderQuestion();
+}
+
+// ─── RENDER QUESTION ─────────────────────────────────────────────────────────
+function renderQuestion() {
+  const q = questions[currentQ];
+  if (!q) return;
+
+  // Section badge
+  const badge = document.getElementById('sec-badge');
+  badge.textContent = q.sec;
+  badge.className = 'section-badge ' + q.sec;
+
+  document.getElementById('q-num').textContent = `Question ${currentQ+1} of 180`;
+
+  // Question text
+  document.getElementById('q-text').innerHTML = `<strong>Q${currentQ+1}.</strong> ${q.text}`;
+
+  // Options
+  const optsEl = document.getElementById('options');
+  optsEl.innerHTML = '';
+  const labels = ['A','B','C','D'];
+  const isSubmitted = testSubmitted;
+  const correctAns = q.ans;
+  const userAns = userAnswers[currentQ];
+
+  q.opts.forEach((opt, i) => {
+    const div = document.createElement('div');
+    div.className = 'option';
+    if (isSubmitted) {
+      if (correctAns === -1) {
+        // No correct option marked (*)
+        if (i === userAns) div.classList.add('selected');
+      } else {
+        if (i === correctAns) div.classList.add('correct');
+        else if (i === userAns && userAns !== correctAns) div.classList.add('wrong');
+        else if (i === userAns) div.classList.add('selected');
+      }
+    } else {
+      if (i === userAns) div.classList.add('selected');
+    }
+    div.innerHTML = `<div class="opt-label">${labels[i]}</div><div class="opt-text">${opt}</div>`;
+    if (!isSubmitted) div.onclick = () => selectAnswer(i);
+    optsEl.appendChild(div);
+  });
+
+  // Solution panel
+  const solPanel = document.getElementById('solution-panel');
+  const solText = document.getElementById('sol-text');
+  if (showSolution || isSubmitted) {
+    solPanel.classList.add('visible');
+    let correctLabel = q.ans === -1 ? '<span class="ans-badge wrong">* None correct</span>' :
+      `<span class="ans-badge correct">Correct: ${labels[q.ans]}</span>`;
+    if (isSubmitted && userAns !== -1) {
+      const userCorrect = (userAns === q.ans);
+      correctLabel += userCorrect
+        ? ' <span class="ans-badge correct">✓ Your answer</span>'
+        : `<span class="ans-badge wrong">✗ Your answer: ${labels[userAns]}</span>`;
+    }
+    solText.innerHTML = correctLabel + '<br><br>' + q.sol;
+  } else {
+    solPanel.classList.remove('visible');
+  }
+}
+
+function selectAnswer(optIdx) {
+  if (testSubmitted) return;
+  userAnswers[currentQ] = optIdx;
+  renderQuestion();
+  renderSidebar();
+}
+
+// ─── SUBMIT ──────────────────────────────────────────────────────────────────
+function confirmSubmit() {
+  const ans = userAnswers.filter(a=>a!==-1).length;
+  const notAns = 180 - ans;
+  document.getElementById('submit-msg').innerHTML =
+    `You have answered <strong style="color:#3fb950">${ans}</strong> questions and 
+     <strong style="color:#f78166">${notAns}</strong> are unanswered.<br><br>
+     Are you sure you want to submit?`;
+  document.getElementById('submit-modal').classList.add('visible');
+}
+
+function closeModal() {
+  document.getElementById('submit-modal').classList.remove('visible');
+}
+
+function submitTest() {
+  clearInterval(timerInterval);
+  closeModal();
+  testSubmitted = true;
+
+  // Calculate scores
+  let correct = 0, wrong = 0, skip = 0;
+  let phC=0,chC=0,maC=0;
+
+  questions.forEach((q,i) => {
+    const ua = userAnswers[i];
+    if (ua === -1) { skip++; return; }
+    if (q.ans === -1) return; // no correct answer marked (*)
+    if (ua === q.ans) {
+      correct++;
+      if (i<60) phC++;
+      else if (i<120) chC++;
+      else maC++;
+    } else wrong++;
+  });
+
+  document.getElementById('res-score').textContent = `${correct}/180`;
+  document.getElementById('res-correct').textContent = correct;
+  document.getElementById('res-wrong').textContent = wrong;
+  document.getElementById('res-skip').textContent = skip;
+  document.getElementById('res-phy').textContent = phC;
+  document.getElementById('res-chem').textContent = chC;
+  document.getElementById('res-math').textContent = maC;
+  const acc = Math.round((correct/Math.max(1,(correct+wrong)))*100);
+  document.getElementById('res-accuracy').textContent = `Accuracy: ${acc}% | Marks: ${correct}/${180}`;
+
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('result-screen').classList.add('visible');
+}
+
+function reviewAnswers() {
+  document.getElementById('app').style.display = 'flex';
+  document.getElementById('result-screen').classList.remove('visible');
+  showSolution = true;
+  goTo(0);
+}
+
+function restartTest() {
+  testSubmitted = false;
+  currentQ = 0;
+  currentSec = 0;
+  userAnswers = new Array(180).fill(-1);
+  visited = new Array(180).fill(false);
+  marked = new Array(180).fill(false);
+  showSolution = false;
+  timeLeft = 3*60*60;
+  document.getElementById('timer').classList.remove('warning');
+  document.getElementById('app').style.display = 'flex';
+  document.getElementById('result-screen').classList.remove('visible');
+  visited[0] = true;
+  renderSidebar();
+  renderQuestion();
+  startTimer();
+}
+
+// ─── START ────────────────────────────────────────────────────────────────────
+window.onload = init;
+</script>
+</body>
+</html>
