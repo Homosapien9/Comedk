@@ -629,7 +629,7 @@
     <div class="step">
       <div class="step-num">1</div>
       <h4>Pick a Test</h4>
-      <p>Choose from 21 mock papers — full year papers or chapter-wise sample mocks.</p>
+      <p>Choose from 24 mock papers — full year papers or chapter-wise sample mocks.</p>
     </div>
     <div class="step">
       <div class="step-num">2</div>
@@ -681,18 +681,24 @@
 
 <script>
   /* ─── DATA ───────────────────────────────────────── */
-  const yearPapers = [
-    {year:'2012',file:'2012.html'},{year:'2013',file:'2013.html'},
-    {year:'2014',file:'2014.html'},{year:'2015',file:'2015.html'},
-    {year:'2016',file:'2016.html'},{year:'2017',file:'2017.html'},
-    {year:'2018',file:'2018.html'},{year:'2019',file:'2019.html'},
-    {year:'2020',file:'2020.html'},{year:'2021',file:'2021.html'},
-    {year:'2022',file:'2022.html'},{year:'2023-S1',file:'2023s1.html'},
-    {year:'2023-S2',file:'2023s2.html'},{year:'2024-S1',file:'2024s1.html'},
-    {year:'2024-S2',file:'2024s2.html'},{year:'2025-S1',file:'2025s1.html'},
-    {year:'2025-S2',file:'2025s2.html'},{year:'2025-S3',file:'2025s3.html'}
-  ];
-  /* FIX #1: was named 'SampleMocks' in original but called as 'chapterMocks' → now consistent */
+  const yearPapers = [{year:'2025-S3',file:'2025s3.html'},
+                      {year:'2025-S2',file:'2025s2.html'},
+                      {year:'2025-S1',file:'2025s1.html'},
+                      {year:'2024-S2',file:'2024s2.html'},
+                      {year:'2024-S1',file:'2024s1.html'},
+                      {year:'2023-S2',file:'2023s2.html'},
+                      {year:'2023-S1',file:'2023s1.html'},
+                      {year:'2022',file:'2022.html'},
+                      {year:'2021',file:'2021.html'},
+                      {year:'2020',file:'2020.html'},
+                      {year:'2019',file:'2019.html'},
+                      {year:'2018',file:'2018.html'},
+                      {year:'2017',file:'2017.html'},
+                      {year:'2016',file:'2016.html'},
+                      {year:'2015',file:'2015.html'},
+                      {year:'2014',file:'2014.html'},
+                      {year:'2013',file:'2013.html'},
+                      {year:'2012',file:'2012.html'}];
   const sampleMocks = [
     {name:'CM1',file:'CM1.html'},{name:'CM2',file:'CM2.html'},
     {name:'CM3',file:'CM3.html'},{name:'CM4',file:'CM4.html'},
