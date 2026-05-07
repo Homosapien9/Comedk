@@ -1,0 +1,2308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>COMEDK UGET Mock Test - 2025 | CBT</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #f5f5f5;
+            --card-bg: #ffffff;
+            --text: #1a1a2e;
+            --text-secondary: #555;
+            --accent: #1a56db;
+            --accent-hover: #1647b8;
+            --accent-light: #e8f0fe;
+            --correct: #059669;
+            --incorrect: #dc2626;
+            --border: #ddd;
+            --shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+            --radius: 6px;
+            --transition: 0.15s ease;
+            --font: 'Inter', 'Arial', sans-serif;
+            --palette-gray: #e2e8f0;
+            --palette-red: #fecaca;
+            --palette-green: #bbf7d0;
+            --palette-answered-border: #059669;
+            --header-bg: #1a56db;
+            --header-text: #ffffff;
+            --submit-red: #dc2626;
+            --submit-red-hover: #b91c1c;
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+            min-height: 100vh;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ===== HEADER ===== */
+        header {
+            background: var(--header-bg);
+            color: var(--header-text);
+            padding: 8px 16px;
+            position: sticky;
+            top: 0;
+            z-index: 200;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            flex-wrap: nowrap;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            min-height: 52px;
+        }
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+            min-width: 0;
+        }
+        .candidate-photo {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: #fff;
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+            border: 2px solid rgba(255, 255, 255, 0.6);
+        }
+        .candidate-name-header {
+            font-size: 0.85rem;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 120px;
+        }
+        .header-center {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+        .test-title-header {
+            font-size: 0.9rem;
+            font-weight: 700;
+            white-space: nowrap;
+            letter-spacing: 0.3px;
+        }
+        .timer-box {
+            background: #0d3b8c;
+            color: #fff;
+            padding: 7px 14px;
+            border-radius: 5px;
+            font-weight: 700;
+            font-size: 1rem;
+            letter-spacing: 1.5px;
+            min-width: 95px;
+            text-align: center;
+            font-variant-numeric: tabular-nums;
+            font-family: 'Courier New', monospace;
+            transition: background 0.3s;
+        }
+        .timer-box.warning {
+            background: #f59e0b;
+            color: #000;
+            animation: pulse-timer 1s infinite;
+        }
+        .timer-box.danger {
+            background: #dc2626;
+            color: #fff;
+            animation: pulse-timer 0.5s infinite;
+        }
+        @keyframes pulse-timer {
+            0%,
+            100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.65;
+            }
+        }
+        .header-right {
+            flex-shrink: 0;
+        }
+        .btn {
+            padding: 9px 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: var(--transition);
+            letter-spacing: 0.3px;
+            font-family: var(--font);
+            white-space: nowrap;
+            min-height: 38px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .btn-submit-header {
+            background: var(--submit-red);
+            color: #fff;
+            font-weight: 700;
+            padding: 9px 18px;
+            font-size: 0.9rem;
+        }
+        .btn-submit-header:hover {
+            background: var(--submit-red-hover);
+        }
+        .btn-submit-header:disabled {
+            background: #999;
+            cursor: not-allowed;
+        }
+
+        /* ===== SUBJECT TABS ===== */
+        .subject-tabs {
+            display: flex;
+            gap: 0;
+            background: #fff;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 52px;
+            z-index: 150;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        .subject-tab {
+            padding: 11px 16px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.82rem;
+            border: none;
+            background: transparent;
+            transition: var(--transition);
+            white-space: nowrap;
+            font-family: var(--font);
+            color: #555;
+            position: relative;
+            flex-shrink: 0;
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .subject-tab:hover {
+            color: var(--accent);
+            background: #f8fafc;
+        }
+        .subject-tab.active {
+            color: var(--accent);
+            font-weight: 700;
+        }
+        .subject-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 8px;
+            right: 8px;
+            height: 3px;
+            background: var(--accent);
+            border-radius: 3px 3px 0 0;
+        }
+        .subject-tab .tab-count {
+            font-size: 0.7rem;
+            color: #888;
+            font-weight: 500;
+        }
+        .subject-tab.active .tab-count {
+            color: var(--accent);
+        }
+
+        /* ===== MAIN CONTENT ===== */
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 280px;
+            gap: 12px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 12px;
+            min-height: calc(100vh - 160px);
+        }
+        .question-panel {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            padding: 20px 24px;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+        }
+        .question-meta {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 14px;
+            flex-wrap: wrap;
+        }
+        .question-num-label {
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: var(--text);
+            background: #f0f4ff;
+            padding: 5px 12px;
+            border-radius: 4px;
+            border: 1px solid #d0d8f0;
+        }
+        .subject-badge {
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 12px;
+            background: #e8f0fe;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+        .question-text-display {
+            font-size: 1rem;
+            font-weight: 500;
+            line-height: 1.65;
+            margin-bottom: 10px;
+            color: #1a1a2e;
+            word-wrap: break-word;
+        }
+        .question-text-display svg {
+            max-width: 100%;
+            height: auto;
+            margin: 8px 0;
+            border-radius: 4px;
+            background: #fafafa;
+            display: block;
+        }
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        .option-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 13px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            border: 2px solid var(--border);
+            transition: var(--transition);
+            font-size: 0.95rem;
+            min-height: 52px;
+            background: #fff;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .option-row:hover {
+            border-color: #93c5fd;
+            background: #fafcff;
+        }
+        .option-row input[type="radio"] {
+            accent-color: var(--accent);
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            flex-shrink: 0;
+            margin: 0;
+        }
+        .option-row.selected {
+            border-color: var(--accent);
+            background: var(--accent-light);
+            font-weight: 500;
+        }
+        .option-letter {
+            font-weight: 700;
+            color: var(--accent);
+            flex-shrink: 0;
+            font-size: 0.9rem;
+            min-width: 20px;
+        }
+        .option-text {
+            flex: 1;
+            word-wrap: break-word;
+        }
+        .nav-buttons-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 18px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .btn-save-next {
+            background: #059669;
+            color: #fff;
+            font-weight: 600;
+        }
+        .btn-save-next:hover {
+            background: #047857;
+        }
+        .btn-clear {
+            background: #fef2f2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+            font-weight: 600;
+        }
+        .btn-clear:hover {
+            background: #fee2e2;
+        }
+        .btn-prev {
+            background: #f1f5f9;
+            color: #1a1a2e;
+            border: 1px solid #ddd;
+            font-weight: 600;
+        }
+        .btn-prev:hover {
+            background: #e2e8f0;
+        }
+
+        /* ===== PALETTE SIDEBAR ===== */
+        .palette-sidebar {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            padding: 14px;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 110px;
+            align-self: start;
+            max-height: calc(100vh - 130px);
+            overflow-y: auto;
+        }
+        .palette-title {
+            font-weight: 700;
+            font-size: 0.85rem;
+            margin-bottom: 6px;
+            color: #333;
+            text-align: center;
+        }
+        .palette-name {
+            font-size: 0.75rem;
+            color: #666;
+            text-align: center;
+            margin-bottom: 10px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .palette-grid {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 4px;
+            margin-bottom: 10px;
+        }
+        .palette-btn {
+            width: 100%;
+            aspect-ratio: 1;
+            border: 1.5px solid #d1d5db;
+            border-radius: 3px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.7rem;
+            transition: var(--transition);
+            background: #e2e8f0;
+            color: #555;
+            min-width: 22px;
+            font-family: var(--font);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+        }
+        .palette-btn:hover {
+            border-color: var(--accent);
+            background: #dbeafe;
+        }
+        .palette-btn.visited-unanswered {
+            background: #fecaca;
+            border-color: #f87171;
+            color: #991b1b;
+        }
+        .palette-btn.answered {
+            background: #bbf7d0;
+            border-color: #4ade80;
+            color: #065f46;
+        }
+        .palette-btn.current {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px rgba(26, 86, 219, 0.35);
+            border-width: 2.5px;
+            z-index: 2;
+        }
+        .palette-legend {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            font-size: 0.68rem;
+            color: #666;
+        }
+        .palette-legend span {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .legend-dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 2px;
+            flex-shrink: 0;
+            border: 1px solid #ccc;
+        }
+        .legend-dot.gray {
+            background: #e2e8f0;
+        }
+        .legend-dot.red {
+            background: #fecaca;
+            border-color: #f87171;
+        }
+        .legend-dot.green {
+            background: #bbf7d0;
+            border-color: #4ade80;
+        }
+
+        /* ===== MOBILE BOTTOM BAR ===== */
+        .mobile-bottom-bar {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #fff;
+            border-top: 1px solid var(--border);
+            padding: 8px 10px;
+            z-index: 180;
+            gap: 8px;
+            justify-content: space-around;
+            align-items: center;
+            box-shadow: 0 -1px 6px rgba(0, 0, 0, 0.08);
+        }
+        .mobile-bottom-bar .btn {
+            font-size: 0.78rem;
+            padding: 8px 10px;
+            min-height: 40px;
+            flex: 1;
+            justify-content: center;
+        }
+        .btn-palette-toggle {
+            background: #1a56db;
+            color: #fff;
+            font-weight: 700;
+            font-size: 0.8rem;
+        }
+
+        /* ===== MOBILE PALETTE DRAWER ===== */
+        .palette-drawer-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 250;
+        }
+        .palette-drawer-overlay.show {
+            display: block;
+        }
+        .palette-drawer {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #fff;
+            z-index: 260;
+            border-radius: 16px 16px 0 0;
+            padding: 16px;
+            max-height: 70vh;
+            overflow-y: auto;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.2);
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+        .palette-drawer.show {
+            display: block;
+            transform: translateY(0);
+        }
+        .palette-drawer-close {
+            display: block;
+            margin: 0 auto 10px;
+            width: 40px;
+            height: 5px;
+            background: #ccc;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+        }
+        .palette-drawer .palette-grid {
+            grid-template-columns: repeat(10, 1fr);
+            gap: 5px;
+        }
+        .palette-drawer .palette-btn {
+            font-size: 0.75rem;
+            min-height: 34px;
+            aspect-ratio: auto;
+            height: 34px;
+        }
+
+        /* ===== RESULTS OVERLAY ===== */
+        .overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.55);
+            z-index: 300;
+            display: none;
+        }
+        .overlay.show {
+            display: block;
+        }
+        .results-panel {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #fff;
+            border-radius: 12px;
+            padding: 28px 24px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+            z-index: 310;
+            text-align: center;
+            display: none;
+            max-width: 520px;
+            width: 94%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .results-panel.show {
+            display: block;
+        }
+        .results-panel h2 {
+            font-size: 1.5rem;
+            margin-bottom: 6px;
+            color: #1a1a2e;
+        }
+        .results-panel .big-score {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: var(--accent);
+        }
+        .results-panel .score-sub {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 12px 0;
+            font-size: 0.82rem;
+        }
+        .results-table th,
+        .results-table td {
+            padding: 8px 6px;
+            border: 1px solid #e5e7eb;
+            text-align: center;
+        }
+        .results-table th {
+            background: #f9fafb;
+            font-weight: 700;
+            color: #333;
+        }
+        .results-table td {
+            color: #444;
+        }
+        .results-name-input {
+            margin: 10px 0;
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .results-name-input input {
+            padding: 9px 12px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            font-family: var(--font);
+            flex: 1;
+            min-width: 150px;
+            max-width: 250px;
+        }
+        .results-name-input button {
+            padding: 9px 16px;
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            font-family: var(--font);
+            font-size: 0.85rem;
+        }
+        .results-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 12px;
+        }
+        .btn-retake {
+            background: #f1f5f9;
+            color: #1a1a2e;
+            border: 1px solid #ddd;
+        }
+        .btn-home {
+            background: var(--accent);
+            color: #fff;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                padding: 8px;
+                gap: 8px;
+            }
+            .palette-sidebar {
+                display: none;
+            }
+            .mobile-bottom-bar {
+                display: flex;
+            }
+            .question-panel {
+                padding: 14px 10px;
+                margin-bottom: 70px;
+            }
+            .question-text-display {
+                font-size: 0.9rem;
+            }
+            .option-row {
+                min-height: 52px;
+                padding: 12px 10px;
+                font-size: 0.85rem;
+                gap: 8px;
+            }
+            .option-row input[type="radio"] {
+                width: 20px;
+                height: 20px;
+            }
+            header {
+                padding: 6px 10px;
+                gap: 6px;
+                min-height: 46px;
+            }
+            .candidate-photo {
+                width: 28px;
+                height: 28px;
+                font-size: 0.7rem;
+            }
+            .candidate-name-header {
+                font-size: 0.7rem;
+                max-width: 70px;
+            }
+            .test-title-header {
+                font-size: 0.72rem;
+            }
+            .timer-box {
+                font-size: 0.8rem;
+                padding: 5px 8px;
+                min-width: 70px;
+                letter-spacing: 1px;
+            }
+            .btn-submit-header {
+                font-size: 0.7rem;
+                padding: 7px 10px;
+                min-height: 32px;
+            }
+            .subject-tabs {
+                top: 46px;
+            }
+            .subject-tab {
+                font-size: 0.7rem;
+                padding: 9px 10px;
+                min-height: 38px;
+            }
+            .nav-buttons-row {
+                gap: 6px;
+            }
+            .nav-buttons-row .btn {
+                font-size: 0.75rem;
+                padding: 8px 10px;
+                min-height: 40px;
+                flex: 1;
+                justify-content: center;
+            }
+            .question-meta {
+                gap: 8px;
+                margin-bottom: 10px;
+            }
+            .question-num-label {
+                font-size: 0.78rem;
+                padding: 4px 10px;
+            }
+            .subject-badge {
+                font-size: 0.68rem;
+            }
+            .results-panel {
+                padding: 20px 14px;
+            }
+            .results-panel .big-score {
+                font-size: 2.8rem;
+            }
+        }
+        @media (max-width: 480px) {
+            header {
+                padding: 5px 8px;
+                gap: 4px;
+                min-height: 42px;
+            }
+            .candidate-photo {
+                width: 24px;
+                height: 24px;
+                font-size: 0.6rem;
+            }
+            .candidate-name-header {
+                font-size: 0.65rem;
+                max-width: 55px;
+            }
+            .test-title-header {
+                font-size: 0.65rem;
+            }
+            .timer-box {
+                font-size: 0.7rem;
+                padding: 4px 6px;
+                min-width: 60px;
+                letter-spacing: 0.8px;
+            }
+            .btn-submit-header {
+                font-size: 0.65rem;
+                padding: 5px 8px;
+                min-height: 28px;
+            }
+            .subject-tabs {
+                top: 42px;
+            }
+            .subject-tab {
+                font-size: 0.65rem;
+                padding: 7px 8px;
+                min-height: 34px;
+            }
+            .question-panel {
+                padding: 10px 6px;
+                margin-bottom: 65px;
+            }
+            .question-text-display {
+                font-size: 0.82rem;
+            }
+            .option-row {
+                min-height: 52px;
+                padding: 11px 8px;
+                font-size: 0.8rem;
+                gap: 6px;
+            }
+            .option-row input[type="radio"] {
+                width: 20px;
+                height: 20px;
+            }
+            .nav-buttons-row .btn {
+                font-size: 0.7rem;
+                padding: 7px 6px;
+                min-height: 38px;
+            }
+            .palette-drawer .palette-grid {
+                grid-template-columns: repeat(8, 1fr);
+                gap: 3px;
+            }
+            .palette-drawer .palette-btn {
+                font-size: 0.65rem;
+                height: 28px;
+                min-height: 28px;
+            }
+            .results-panel {
+                padding: 16px 10px;
+                width: 98%;
+            }
+            .results-panel .big-score {
+                font-size: 2.2rem;
+            }
+            .results-table {
+                font-size: 0.68rem;
+            }
+            .results-table th,
+            .results-table td {
+                padding: 5px 3px;
+            }
+        }
+
+        /* Review mode classes */
+        .question-card-reviewed .option-row.correct-answer-highlight {
+            border-color: #059669 !important;
+            background: #d1fae5 !important;
+        }
+        .question-card-reviewed .option-row.user-wrong-highlight {
+            border-color: #dc2626 !important;
+            background: #fee2e2 !important;
+        }
+
+        /* Utility */
+        .hidden {
+            display: none !important;
+        }
+        @media (min-width: 769px) {
+            .mobile-bottom-bar {
+                display: none !important;
+            }
+            .palette-drawer,
+            .palette-drawer-overlay {
+                display: none !important;
+            }
+        }
+    
+        .analysis-card {
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            padding: 12px;
+            margin: 10px 0;
+            background: #f9fafb;
+            text-align: left;
+        }
+        .analysis-card.correct {
+            border-left: 6px solid #059669;
+        }
+        .analysis-card.wrong {
+            border-left: 6px solid #dc2626;
+        }
+        .analysis-card.unanswered {
+            border-left: 6px solid #d97706;
+        }
+        .analysis-question {
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+        .analysis-answer {
+            margin: 3px 0;
+            font-size: 0.9rem;
+        }
+
+    </style>
+</head>
+<body>
+    <!-- ===== HEADER ===== -->
+    <header>
+        <div class="header-left">
+            <div class="candidate-photo" id="candidatePhoto">👤</div>
+            <span class="candidate-name-header" id="candidateNameHeader">Candidate</span>
+        </div>
+        <div class="header-center">
+            <span class="test-title-header">COMEDK CM6</span>
+            <div class="timer-box" id="timer">03:00:00</div>
+        </div>
+        <div class="header-right">
+            <button class="btn btn-submit-header" onclick="submitTest()" id="submitBtn">📤 Submit Test</button>
+        </div>
+    </header>
+
+    <!-- ===== SUBJECT TABS ===== -->
+    <nav class="subject-tabs" id="subjectTabs">
+        <button class="subject-tab active" onclick="jumpToSubject('physics')" data-subject="physics">
+            ⚛️ Physics <span class="tab-count" id="tabCountPhysics">(0/60)</span>
+        </button>
+        <button class="subject-tab" onclick="jumpToSubject('chemistry')" data-subject="chemistry">
+            🧪 Chemistry <span class="tab-count" id="tabCountChemistry">(0/60)</span>
+        </button>
+        <button class="subject-tab" onclick="jumpToSubject('maths')" data-subject="maths">
+            📐 Mathematics <span class="tab-count" id="tabCountMaths">(0/60)</span>
+        </button>
+    </nav>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <div class="main-content" id="mainContent">
+        <!-- Question Panel -->
+        <div class="question-panel" id="questionPanel">
+            <div class="question-meta">
+                <span class="question-num-label" id="questionNumLabel">Question 1 of 180</span>
+                <span class="subject-badge" id="subjectBadge">PHYSICS</span>
+            </div>
+            <div class="question-text-display" id="questionTextDisplay"></div>
+            <div class="options-list" id="optionsList"></div>
+            <div class="nav-buttons-row">
+                <button class="btn btn-prev" onclick="previousQuestion()" id="btnPrev">⬅ Previous</button>
+                <button class="btn btn-clear" onclick="clearResponse()" id="btnClear">🔴 Clear Response</button>
+                <button class="btn btn-save-next" onclick="saveAndNext()" id="btnSaveNext">🟢 Save & Next</button>
+            </div>
+        </div>
+
+        <!-- Palette Sidebar (desktop) -->
+        <aside class="palette-sidebar" id="paletteSidebar">
+            <div class="palette-title">Question Palette</div>
+            <div class="palette-name" id="paletteName">Candidate</div>
+            <div class="palette-grid" id="paletteGrid"></div>
+            <div class="palette-legend">
+                <span><span class="legend-dot gray"></span> Not Visited</span>
+                <span><span class="legend-dot red"></span> Visited, Not Answered</span>
+                <span><span class="legend-dot green"></span> Answered</span>
+            </div>
+        </aside>
+    </div>
+
+    <!-- ===== MOBILE BOTTOM BAR ===== -->
+    <div class="mobile-bottom-bar" id="mobileBottomBar">
+        <button class="btn btn-prev" onclick="previousQuestion()">⬅ Prev</button>
+        <button class="btn btn-palette-toggle" onclick="openPaletteDrawer()">📋 Questions</button>
+        <button class="btn btn-save-next" onclick="saveAndNext()">Save & Next ➡</button>
+    </div>
+
+    <!-- ===== MOBILE PALETTE DRAWER ===== -->
+    <div class="palette-drawer-overlay" id="paletteDrawerOverlay" onclick="closePaletteDrawer()"></div>
+    <div class="palette-drawer" id="paletteDrawer">
+        <button class="palette-drawer-close" onclick="closePaletteDrawer()" aria-label="Close palette"></button>
+        <div class="palette-title">Question Palette</div>
+        <div class="palette-name" id="paletteDrawerName">Candidate</div>
+        <div class="palette-grid" id="paletteDrawerGrid"></div>
+        <div class="palette-legend">
+            <span><span class="legend-dot gray"></span> Not Visited</span>
+            <span><span class="legend-dot red"></span> Visited, Not Answered</span>
+            <span><span class="legend-dot green"></span> Answered</span>
+        </div>
+    </div>
+
+    <!-- ===== RESULTS OVERLAY ===== -->
+    <div class="overlay" id="overlay"></div>
+    <div class="results-panel" id="resultsPanel">
+        <h2>📊 Your Result</h2>
+        <div class="big-score" id="bigScore">0</div>
+        <div class="score-sub">out of <strong>180</strong></div>
+        <div id="scoreDetail"></div>
+        <div id="nameInputArea" class="results-name-input hidden">
+            <input type="text" id="nameInputField" placeholder="Enter your name" maxlength="40">
+            <button onclick="saveNameAndProceed()">Save & View Results</button>
+        </div>
+        <div id="resultsContentArea" class="hidden">
+            <table class="results-table" id="resultsTable"></table>
+            <p style="font-size:0.8rem;color:#888;margin-top:6px;" id="firebaseStatus"></p>
+            
+        <div id="detailedAnalysisSection" style="margin-top:18px;text-align:left;"></div>
+
+            <div class="results-buttons">
+                <button class="btn btn-retake" onclick="retakeTest()">🔄 Retake Test</button>
+                <button class="btn btn-home" onclick="goHome()">🏠 Back to Home</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== FIREBASE MODULE ===== -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBz6qXqOpTqQot1GZtJCIwCXnRYg9Hghn4",
+            authDomain: "comedk-20399.firebaseapp.com",
+            projectId: "comedk-20399",
+            storageBucket: "comedk-20399.firebasestorage.app",
+            messagingSenderId: "111466152803",
+            appId: "1:111466152803:web:4e6ca3c7f131ca0dbcc956"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        window.saveScoreToFirebase = async function(name, testName, score, total, accuracy) {
+            try {
+                await addDoc(collection(db, "leaderboard"), {
+                    name,
+                    testName,
+                    score,
+                    total,
+                    accuracy,
+                    timestamp: serverTimestamp()
+                });
+                console.log("✅ Score saved to Firebase!");
+                return true;
+            } catch (e) {
+                console.error("Firebase error:", e);
+                return false;
+            }
+        };
+    </script>
+
+    <!-- ===== MAIN SCRIPT ===== -->
+    <script>
+        (function() {
+            // ============ ANSWER KEY ============
+            const answerKey = {
+                1: 'D',
+                2: 'D',
+                3: 'D',
+                4: 'D',
+                5: 'C',
+                6: 'A',
+                7: 'C',
+                8: 'A',
+                9: 'C',
+                10: 'B',
+                11: 'B',
+                12: 'A',
+                13: 'C',
+                14: 'A',
+                15: 'D',
+                16: 'C',
+                17: 'B',
+                18: 'C',
+                19: 'B',
+                20: 'C',
+                21: 'B',
+                22: 'C',
+                23: 'D',
+                24: 'B',
+                25: 'C',
+                26: 'D',
+                27: 'A',
+                28: 'D',
+                29: 'D',
+                30: 'C',
+                31: 'B',
+                32: 'A',
+                33: 'A',
+                34: 'C',
+                35: 'D',
+                36: 'B',
+                37: 'C',
+                38: 'A',
+                39: 'A',
+                40: 'B',
+                41: 'C',
+                42: 'A',
+                43: 'D',
+                44: 'A',
+                45: 'C',
+                46: 'C',
+                47: 'D',
+                48: 'D',
+                49: 'A',
+                50: 'B',
+                51: 'D',
+                52: 'C',
+                53: 'B',
+                54: 'D',
+                55: 'A',
+                56: 'D',
+                57: 'B',
+                58: 'C',
+                59: 'B',
+                60: 'D',
+                61: 'B',
+                62: 'D',
+                63: 'B',
+                64: 'D',
+                65: 'C',
+                66: 'B',
+                67: 'C',
+                68: 'A',
+                69: 'A',
+                70: 'B',
+                71: 'A',
+                72: 'B',
+                73: 'A',
+                74: 'B',
+                75: 'B',
+                76: 'A',
+                77: 'C',
+                78: 'A',
+                79: 'B',
+                80: 'B',
+                81: 'B',
+                82: 'D',
+                83: 'C',
+                84: 'B',
+                85: 'D',
+                86: 'A',
+                87: 'C',
+                88: 'D',
+                89: 'D',
+                90: 'B',
+                91: 'A',
+                92: 'C',
+                93: 'C',
+                94: 'C',
+                95: 'A',
+                96: 'D',
+                97: 'C',
+                98: 'C',
+                99: 'A',
+                100: 'C',
+                101: 'C',
+                102: 'A',
+                103: 'B',
+                104: 'B',
+                105: 'C',
+                106: 'D',
+                107: 'B',
+                108: 'C',
+                109: 'B',
+                110: 'C',
+                111: 'C',
+                112: 'C',
+                113: 'A',
+                114: 'B',
+                115: 'D',
+                116: 'D',
+                117: 'D',
+                118: 'A',
+                119: 'A',
+                120: 'C',
+                121: 'C',
+                122: 'C',
+                123: 'D',
+                124: 'B',
+                125: 'D',
+                126: 'A',
+                127: 'A',
+                128: 'C',
+                129: 'B',
+                130: 'B',
+                131: 'B',
+                132: 'B',
+                133: 'D',
+                134: 'A',
+                135: 'D',
+                136: 'D',
+                137: 'A',
+                138: 'B',
+                139: 'D',
+                140: 'B',
+                141: 'A',
+                142: 'D',
+                143: 'D',
+                144: 'D',
+                145: 'C',
+                146: 'D',
+                147: 'B',
+                148: 'D',
+                149: 'A',
+                150: 'B',
+                151: 'A',
+                152: 'B',
+                153: 'C',
+                154: 'C',
+                155: 'D',
+                156: 'A',
+                157: 'C',
+                158: 'D',
+                159: 'D',
+                160: 'B',
+                161: 'C',
+                162: 'D',
+                163: 'C',
+                164: 'A',
+                165: 'C',
+                166: 'A',
+                167: 'A',
+                168: 'A',
+                169: 'B',
+                170: 'C',
+                171: 'C',
+                172: 'B',
+                173: 'D',
+                174: 'A',
+                175: 'C',
+                176: 'C',
+                177: 'A',
+                178: 'D',
+                179: 'B',
+                180: 'D'
+            };
+
+            // ============ QUESTION DATA ============
+            const questionsData = [
+                { id: 1, subject: 'physics',
+                    text: 'Which of the following combinations should be selected for better tuning of an L-C-R circuit used for communication?',
+                    options: ['R = 20Ω, L = 1.5 H, C = 35 μF', 'R = 25Ω, L = 2.5 H, C = 45 μF',
+                        'R = 25Ω, L = 1.5 H, C = 45 μF', 'R = 15Ω, L = 3.5 H, C = 30 μF'
+                    ], image: null }, { id: 2, subject: 'physics',
+                    text: 'A nuclear reactor delivers a power of 10⁹ W. The amount of fuel consumed by the reactor in one hour is',
+                    options: ['0.08 g', '0.72 g', '0.96 g', '0.04 g'], image: null }, { id: 3, subject: 'physics',
+                    text: 'The ratio of volume of Al₂₇ nucleus to its surface area is (Given R₀ = 1.2 × 10⁻¹⁵ m)',
+                    options: ['2.1 × 10⁻¹⁵ m', '1.3 × 10⁻¹⁵ m', '0.22 × 10⁻¹⁵ m', '1.2 × 10⁻¹⁵ m'],
+                    image: null }, { id: 4, subject: 'physics',
+                    text: 'In alpha particle scattering experiment, if v is the initial velocity of the particle, then the distance of closest approach is d. If the velocity is doubled, then the distance of closest approach becomes',
+                    options: ['4d', '2d', 'd/2', 'd/4'], image: null }, { id: 5, subject: 'physics',
+                    text: 'The natural logarithm of the activity R of a radioactive sample varies with time t as shown. At t=0, there are N₀ undecayed nuclei. Then N₀ is equal to [Take e² = 7.5]',
+                    options: ['7500', '3500', '75000', '15000'],
+                    image: `<svg viewBox="0 0 300 180" width="280" height="160"><rect width="300" height="180" fill="#fafafa" rx="6"/><line x1="40" y1="140" x2="260" y2="140" stroke="#333" stroke-width="2"/><line x1="40" y1="140" x2="40" y2="20" stroke="#333" stroke-width="2"/><text x="130" y="170" font-size="11" fill="#555">t (×10³ s)</text><text x="8" y="80" font-size="10" fill="#555" transform="rotate(-90,8,80)">logₑR</text><line x1="40" y1="40" x2="220" y2="120" stroke="#2563eb" stroke-width="2.5"/><circle cx="40" cy="40" r="4" fill="#2563eb"/><text x="48" y="35" font-size="10" fill="#2563eb">(0,2)</text><text x="210" y="130" font-size="10" fill="#2563eb">(10,1)</text><line x1="40" y1="60" x2="250" y2="60" stroke="#ddd" stroke-width="0.5" stroke-dasharray="4"/><line x1="40" y1="100" x2="250" y2="100" stroke="#ddd" stroke-width="0.5" stroke-dasharray="4"/></svg>`
+                }, { id: 6, subject: 'physics',
+                    text: 'A capacitor of capacitance 5 μF is charged by a battery of emf 10 V. At an instant of time, the potential difference across the capacitors is 4 V and the time rate of change of potential difference is 0.6 V/s. Then, the time rate at which energy is stored in the capacitor at that instant is',
+                    options: ['12 μW', '3 μW', 'zero', '30 μW'], image: null }, { id: 7, subject: 'physics',
+                    text: 'The centre of mass of an extended body on the surface of the earth and its centre of gravity',
+                    options: ['are always at the same point only for spherical bodies.',
+                        'can never be at the same point.',
+                        'centre of mass coincides with the centre of gravity if the size of the body is negligible compared to the size of the earth.',
+                        'are always at the same point for any size of the body.'
+                    ], image: null }, { id: 8, subject: 'physics',
+                    text: 'A car is moving in a circular horizontal track of radius 10 m with a constant speed of 10 m/s. A bob is suspended from the roof of the car by a light wire of length 1.0 m. The angle made by the wire with the vertical is (in rad)',
+                    options: ['π/4', 'zero', 'π/3', 'π/6'], image: null }, { id: 9, subject: 'physics',
+                    text: 'In an experiment to determine the temperature coefficient of resistance, a coil of wire X is immersed in a liquid. A meter bridge set up is used. The balancing points measured at t₁=0°C and t₂=100°C are 50 cm and 60 cm respectively. If standard resistance S=4Ω, the temperature coefficient of the coil is',
+                    options: ['0.05 °C⁻¹', '0.02 °C⁻¹', '0.005 °C⁻¹', '2.0 °C⁻¹'], image: null }, { id: 10,
+                    subject: 'physics',
+                    text: 'Electrons are accelerated through a potential difference of 16 kV. If the potential difference is increased to 64 kV, then de-Broglie wavelength associated with electron will',
+                    options: ['remain same', 'become half', 'become four times', 'become quarter'],
+                    image: null }, { id: 11, subject: 'physics',
+                    text: 'A metallic rod breaks when strain produced is 0.2%. The Young\'s modulus of the material of the rod is 7×10⁹ N/m². The area of cross-section to support a load of 10⁴ N is',
+                    options: ['7.1 × 10⁻⁶ m²', '7.1 × 10⁻⁴ m²', '7.1 × 10⁻² m²', '7.1 × 10⁻⁸ m²'],
+                    image: null }, { id: 12, subject: 'physics',
+                    text: 'Two solenoids of equal number of turns have their lengths as well as radii in the same ratio 1:3. The ratio of their self-inductances is',
+                    options: ['1:3', '1:9', '9:1', '3:2'], image: null }, { id: 13, subject: 'physics',
+                    text: 'Which of the following radiations of electromagnetic waves has the highest wavelength?',
+                    options: ['UV-rays', 'IR-rays', 'Microwaves', 'X-rays'], image: null }, { id: 14,
+                    subject: 'physics',
+                    text: 'Electromagnetic waves are incident normally on a perfectly reflecting surface having surface area A. If I is the intensity of the incident EM radiation and c is the speed of light in vacuum, the force exerted by the EM wave on the reflecting surface is',
+                    options: ['2IA/c', 'IA/c', 'IA/2c', 'I/2Ac'], image: null }, { id: 15, subject: 'physics',
+                    text: 'An electric dipole with dipole moment 4×10⁻⁹ C-m is aligned at 30° with the direction of a uniform electric field of magnitude 5×10⁴ N/C. The magnitude of the torque acting on the dipole is',
+                    options: ['√3 × 10⁻⁴ N-m', '10⁻⁵ N-m', '10×10⁻³ N-m', '10⁻⁴ N-m'], image: null }, {
+                    id: 16,
+                    subject: 'physics',
+                    text: 'A charged particle of mass m and charge q is released from rest in a uniform electric field E. Neglecting gravity, the kinetic energy of the charged particle after t seconds is',
+                    options: ['Eq²m/2t²', 'Eqm/t', 'E²q²t²/2m', '2E²t²/mq'], image: null }, { id: 17,
+                    subject: 'physics',
+                    text: 'Two point charges +8q and −2q are located at X=0 (origin) and X=L respectively. The net electric field due to these two charges is zero at point P on X-axis. The location of point P from the origin is',
+                    options: ['L/4', '2L', '4L', '8L'], image: null }, { id: 18, subject: 'physics',
+                    text: 'A body has a charge of −3.2 μC. The number of excess electrons will be',
+                    options: ['5.12 × 10²⁵', '5 × 10¹²', '2 × 10¹³', '5.12 × 10¹³'], image: null }, { id: 19,
+                    subject: 'physics',
+                    text: 'A point charge A of +10 μC and another point charge B of +20 μC are kept 1 m apart in free space. The electrostatic force on A due to B is F₁ and on B due to A is F₂. Then',
+                    options: ['F₁ = −2F₂', 'F₁ = −F₂', '2F₁ = −F₂', 'F₁ = F₂'], image: null }, { id: 20,
+                    subject: 'physics',
+                    text: 'Under electrostatic condition of a charged conductor, which among the following statements is true?',
+                    options: ['The electric field on the surface is σ/2ε₀',
+                        'The electric potential inside is always zero.',
+                        'Any excess charge resides on the surface of the conductor.',
+                        'The net electric field is tangential to the surface.'
+                    ], image: null }, { id: 21, subject: 'physics',
+                    text: 'Two capillary tubes A and B of the same internal diameter are kept vertically in two different liquids whose densities are in the ratio 4:3. Surface tensions are in ratio 6:5. The ratio of rise of liquid in capillary A to that in B is (angles of contact nearly equal)',
+                    options: ['10:9', '9:10', '7:10', '10:7'], image: null }, { id: 22, subject: 'physics',
+                    text: 'The angle of contact between glass and water is 0° and water rises in a glass capillary up to 6 cm (Surface tension = T). Another liquid of surface tension 2T, angle of contact 60° and relative density 2 will rise in the same capillary up to',
+                    options: ['1.5 cm', '2 cm', '3 cm', '4.0 cm'], image: null }, { id: 23, subject: 'physics',
+                    text: 'When a mercury drop of radius R splits up into 1000 droplets of radius r, the change in surface energy is (T = surface tension of mercury)',
+                    options: ['8πR²T', '16πR²T', '34πR²T', '36πR²T'], image: null }, { id: 24,
+                    subject: 'physics',
+                    text: 'Electrical as well as gravitational effects can be thought to be caused by fields. Which of the following is true for an electrical or gravitational field?',
+                    options: ['The field does not exist in the space around an object.',
+                        'Fields are useful for understanding forces acting through a distance.',
+                        'There is no way to verify the existence of a force field.',
+                        'The field concept is often used to describe contact forces.'
+                    ], image: null }, { id: 25, subject: 'physics',
+                    text: 'A satellite of mass m is revolving around the earth of mass M in an orbit of radius r with constant angular velocity ω. The angular momentum of satellite is (G = Universal gravitational constant)',
+                    options: ['m(GMr)^{3/2}', 'm(GMr)', 'm(GMr)^{1/2}', 'm(GMr)^{-1/2}'], image: null }, { id: 26,
+                    subject: 'physics',
+                    text: 'The weights of an object are measured in a coal mine of depth h₁, then at sea level of height h₂ and lastly at the top of a mountain of height h₃ as W₁, W₂ and W₃. Which relation is correct? [h₁≪R, h₃≫h₂=R]',
+                    options: ['W₁ = W₂ = W₃', 'W₁ < W₂ < W₃', 'W₁ > W₂ < W₃', 'W₁ < W₂ > W₃'],
+                    image: null }, { id: 27, subject: 'physics',
+                    text: 'Acceleration due to gravity at a height h = R/2 from the surface of the earth is approximately',
+                    options: ['4.4 m/s²', '6.5 m/s²', 'Zero', '9.8 m/s²'], image: null }, { id: 28,
+                    subject: 'physics',
+                    text: '"Heat cannot flow itself from a body at lower temperature to a body at higher temperature." This statement corresponds to',
+                    options: ['conservation of momentum', 'conservation of mass',
+                        'first law of thermodynamics', 'second law of thermodynamics'
+                    ], image: null }, { id: 29, subject: 'physics',
+                    text: 'Four moles of hydrogen (Cv=5R/2), two moles of helium (Cv=3R/2) and one mole of water vapour (Cv=3R) form an ideal gas mixture. What is the molar specific heat at constant pressure of the mixture?',
+                    options: ['11R/3', '23R/3', '16R/7', '23R/7'], image: null }, { id: 30, subject: 'physics',
+                    text: 'A quantity of heat Q is supplied to a monoatomic ideal gas which expands at constant pressure. The fraction of heat converted into work is [γ = 5/3]',
+                    options: ['3:5', '5:3', '2:5', '3:2'], image: null }, { id: 31, subject: 'physics',
+                    text: 'The ratio of work done by an ideal rigid diatomic gas to the heat supplied in an isobaric process is',
+                    options: ['3/7', '2/7', '4/7', '5/7'], image: null }, { id: 32, subject: 'physics',
+                    text: 'The internal energy of an ideal diatomic gas is 2.5PV. The gas expands from 1 L to 2 L at constant pressure of 10⁵ N/m². The heat supplied to the gas is',
+                    options: ['350 J', '300 J', '250 J', '200 J'], image: null }, { id: 33, subject: 'physics',
+                    text: 'When a system is taken from state a to state c along path abc, Q=80 cal and W=35 cal. Along path adc, Q=65 cal. The work done W along path adc is',
+                    options: ['20 cal', '35 cal', '45 cal', '65 cal'],
+                    image: `<svg viewBox="0 0 280 150" width="260" height="140"><rect width="280" height="150" fill="#fafafa" rx="6"/><line x1="40" y1="120" x2="240" y2="120" stroke="#333" stroke-width="2"/><line x1="40" y1="120" x2="40" y2="20" stroke="#333" stroke-width="2"/><text x="250" y="125" font-size="10">V</text><text x="10" y="15" font-size="10">P</text><circle cx="40" cy="100" r="4" fill="#2563eb"/><text x="10" y="95" font-size="10">a</text><circle cx="140" cy="40" r="4" fill="#2563eb"/><text x="148" y="35" font-size="10">b</text><circle cx="200" cy="90" r="4" fill="#2563eb"/><text x="208" y="85" font-size="10">c</text><circle cx="120" cy="110" r="4" fill="#2563eb"/><text x="100" y="130" font-size="10">d</text><path d="M40,100 L140,40 L200,90" fill="none" stroke="#2563eb" stroke-width="2"/><path d="M40,100 L120,110 L200,90" fill="none" stroke="#dc2626" stroke-width="2" stroke-dasharray="5"/></svg>`
+                }, { id: 34, subject: 'physics',
+                    text: 'A solid cube of mass m at temperature θ₀ is heated at a constant rate. It becomes liquid at θ₁ and vapour at θ₂. Minimum heat energy supplied until vaporisation is',
+                    options: ['ms₁(θ₁−θ₀) + ms₂(θ₂−θ₁)', 'mL_f + ms₂(θ₂−θ₁) + mL_v',
+                        'ms₁(θ₁−θ₀) + mL_f + ms₂(θ₂−θ₁) + mL_v',
+                        'ms₁(θ₁−θ₀) + mL_f + ms₂(θ₂−θ₀) + mL_v'
+                    ], image: null }, { id: 35, subject: 'physics',
+                    text: 'Two masses of 5 kg and 3 kg are suspended with massless inextensible strings. When the whole system goes upwards with acceleration 2 m/s², the value of T₁ is (use g=9.8 m/s²)',
+                    options: ['35.4 N', '23.6 N', '59 N', '94.4 N'],
+                    image: `<svg viewBox="0 0 200 250" width="160" height="200"><rect width="200" height="250" fill="#fafafa" rx="6"/><rect x="85" y="10" width="30" height="20" fill="#666" rx="4"/><line x1="100" y1="30" x2="100" y2="70" stroke="#333" stroke-width="2"/><text x="108" y="50" font-size="11" fill="#333">T₁</text><rect x="70" y="70" width="60" height="40" fill="#e2e8f0" rx="6" stroke="#333"/><text x="80" y="95" font-size="12">5 kg</text><line x1="100" y1="110" x2="100" y2="150" stroke="#333" stroke-width="2"/><text x="108" y="135" font-size="11" fill="#333">T₂</text><rect x="70" y="150" width="60" height="40" fill="#e2e8f0" rx="6" stroke="#333"/><text x="80" y="175" font-size="12">3 kg</text><text x="70" y="220" font-size="11" fill="#555">a = 2 m/s² ↑</text></svg>`
+                }, { id: 36, subject: 'physics',
+                    text: 'A block is placed on a rough inclined plane at 30°. Coefficients of static and kinetic friction are 0.6 and 0.5. Magnitude of acceleration is [g=10 m/s²]',
+                    options: ['2 m/s²', 'zero', '0.196 m/s²', '0.67 m/s²'],
+                    image: `<svg viewBox="0 0 240 150" width="220" height="140"><rect width="240" height="150" fill="#fafafa" rx="6"/><polygon points="20,130 200,130 200,60" fill="#e2e8f0" stroke="#333" stroke-width="2"/><rect x="80" y="70" width="40" height="25" fill="#2563eb" rx="4" transform="rotate(-20,100,82)"/><text x="60" y="145" font-size="11">30°</text></svg>`
+                }, { id: 37, subject: 'physics',
+                    text: 'Magnetic hysteresis is exhibited by magnetic materials',
+                    options: ['Only para', 'Only dia', 'Only ferro', 'Both para and ferro'], image: null }, {
+                    id: 38,
+                    subject: 'physics',
+                    text: 'Two objects are projected at angles θ° and (90−θ)° to the horizontal with the same speed. The ratio of their maximum vertical heights is',
+                    options: ['tan²θ : 1', '1 : tan²θ', 'sin²θ : cos²θ', 'cos²θ : sin²θ'], image: null }, {
+                    id: 39,
+                    subject: 'physics',
+                    text: 'The displacement x (in m) of a particle is related to time t by t = √x + 3. The displacement when its velocity is zero will be',
+                    options: ['zero', '6 m', '2 m', '4 m'], image: null }, { id: 40, subject: 'physics',
+                    text: 'A circular coil of wire of radius r has n turns and carries current I. The magnetic induction B at a point on the axis at distance √3r from centre is',
+                    options: ['μ₀nI/8r', 'μ₀nI/16r', 'μ₀nI/4r', 'μ₀nI/32r'], image: null }, { id: 41,
+                    subject: 'physics', text: 'Focal length of a convex lens will be maximum for',
+                    options: ['yellow light', 'green light', 'red light', 'blue light'], image: null }, { id: 42,
+                    subject: 'physics', text: 'For a ray of light, the critical angle is minimum when it travels from',
+                    options: ['glass to air', 'air to glass', 'glass to water', 'water to glass'], image: null }, {
+                    id: 43,
+                    subject: 'physics', text: 'The final image formed by an astronomical telescope is',
+                    options: ['real, erect and diminished', 'virtual, inverted and diminished',
+                        'real, inverted and magnified', 'virtual, inverted and magnified'
+                    ], image: null }, { id: 44, subject: 'physics',
+                    text: 'The angular speed of a motor wheel is increased from 1200 rpm to 3120 rpm in 16 s. The angular acceleration is',
+                    options: ['4π rad/s²', '6π rad/s²', '8π rad/s²', '2π rad/s²'], image: null }, { id: 45,
+                    subject: 'physics',
+                    text: 'A thin uniform metal rod of mass M and length L is swinging about a horizontal axis passing through its end. Its maximum angular velocity is ω. Its centre of mass rises to a maximum height of',
+                    options: ['L²ω²/3g', 'L²ω²/2g', 'L²ω²/6g', 'L²ω²/4g'], image: null }, { id: 46,
+                    subject: 'physics',
+                    text: 'Moment of inertia of a system of three rods each of mass M and length L about an axis as shown is',
+                    options: ['3M²', '2M²', '2ML²/3', '3ML²'],
+                    image: `<svg viewBox="0 0 200 160" width="180" height="140"><rect width="200" height="160" fill="#fafafa" rx="6"/><line x1="40" y1="80" x2="160" y2="80" stroke="#333" stroke-width="3"/><line x1="100" y1="20" x2="100" y2="140" stroke="#333" stroke-width="3"/><line x1="70" y1="50" x2="130" y2="110" stroke="#333" stroke-width="2" stroke-dasharray="4"/><circle cx="100" cy="80" r="5" fill="#2563eb"/><text x="108" y="75" font-size="10" fill="#2563eb">axis</text></svg>`
+                }, { id: 47, subject: 'physics',
+                    text: 'A ceiling fan is rotating around a fixed axle as shown. The direction of angular velocity is along',
+                    options: ['+ĵ', '−ĵ', '+k̂', '−k̂'],
+                    image: `<svg viewBox="0 0 180 150" width="160" height="130"><rect width="180" height="150" fill="#fafafa" rx="6"/><circle cx="90" cy="70" r="40" fill="none" stroke="#333" stroke-width="2"/><line x1="90" y1="30" x2="90" y2="110" stroke="#333" stroke-width="1.5"/><line x1="50" y1="70" x2="130" y2="70" stroke="#333" stroke-width="1.5"/><path d="M70,40 Q90,20 110,40" fill="none" stroke="#2563eb" stroke-width="2"/><path d="M110,100 Q90,120 70,100" fill="none" stroke="#2563eb" stroke-width="2"/><text x="80" y="140" font-size="10">↻ rotation</text></svg>`
+                }, { id: 48, subject: 'physics',
+                    text: 'A body of mass 1 kg is suspended by a weightless string which passes over a frictionless pulley of mass 2 kg. The mass is released from a height of 1.6 m. With what velocity does it strike the ground?',
+                    options: ['16 m/s', '8 m/s', '4√2 m/s', '4 m/s'], image: null }, { id: 49, subject: 'physics',
+                    text: 'In the diagram shown, the Zener diode has reverse breakdown voltage V_Z. The current through the Zener diode is',
+                    options: ['(V₀−V_Z)/R_S − I_L', '(V₀−V_Z)/R_L', 'V_Z/R_L', 'V_Z/R_S'],
+                    image: `<svg viewBox="0 0 280 120" width="250" height="100"><rect width="280" height="120" fill="#fafafa" rx="6"/><line x1="20" y1="50" x2="80" y2="50" stroke="#333" stroke-width="2"/><rect x="80" y="35" width="30" height="30" fill="#e2e8f0" stroke="#333" rx="4"/><text x="88" y="55" font-size="9">R_S</text><line x1="110" y1="50" x2="150" y2="50" stroke="#333" stroke-width="2"/><line x1="150" y1="20" x2="150" y2="80" stroke="#333" stroke-width="2"/><polygon points="145,50 155,45 155,55" fill="#2563eb"/><line x1="155" y1="50" x2="190" y2="50" stroke="#333" stroke-width="2"/><rect x="190" y="35" width="35" height="30" fill="#e2e8f0" stroke="#333" rx="4"/><text x="198" y="55" font-size="9">R_L</text><line x1="225" y1="50" x2="260" y2="50" stroke="#333" stroke-width="2"/><text x="30" y="30" font-size="11">V₀</text><text x="140" y="15" font-size="10">Zener</text></svg>`
+                }, { id: 50, subject: 'physics',
+                    text: 'The displacement of a particle executing SHM is given by x = 3sin[2πt + π/4] where x is in metre and t in seconds. The amplitude and maximum speed are',
+                    options: ['3 m, 4π m/s', '3 m, 6π m/s', '3 m, 8π m/s', '3 m, 2π m/s'], image: null }, {
+                    id: 51,
+                    subject: 'physics',
+                    text: 'The maximum velocity of a particle executing SHM with amplitude 7 mm is 4.4 m/s. The period of oscillation is [π=22/7]',
+                    options: ['100 s', '10 s', '0.1 s', '0.01 s'], image: null }, { id: 52, subject: 'physics',
+                    text: 'A horizontal platform with a small object executes linear SHM in vertical direction. Amplitude is 40 cm. The least period so that the object is not detached from the platform is [g=10 m/s²]',
+                    options: ['0.2π s', '0.3π s', '0.4π s', '0.5π s'], image: null }, { id: 53,
+                    subject: 'physics',
+                    text: 'The Vernier scale of a travelling microscope has 50 divisions which coincides with 49 main scale divisions. If each main scale division is 0.5 mm, the least count is',
+                    options: ['0.5 mm', '0.01 mm', '0.5 cm', '0.01 cm'], image: null }, { id: 54,
+                    subject: 'physics',
+                    text: 'Among the given pair of vectors, the resultant of two vectors can never be 3 units. The vectors are',
+                    options: ['1 unit and 2 units', '3 units and 6 units', '2 units and 5 units',
+                        '4 units and 8 units'
+                    ], image: null }, { id: 55, subject: 'physics',
+                    text: 'The fringe width for red colour as compared to that for violet colour is approximately',
+                    options: ['2 times', '4 times', '8 times', '3 times'], image: null }, { id: 56,
+                    subject: 'physics',
+                    text: 'In double slit experiment, instead of taking slits of equal widths, one slit is made twice as wide as the other. Then in interference pattern',
+                    options: ['intensity of maxima decreases and minima has zero intensity.',
+                        'intensity of maxima decreases and minima increases.',
+                        'intensity of maxima increases and minima has zero intensity.',
+                        'intensities of both maxima and minima increase.'
+                    ], image: null }, { id: 57, subject: 'physics',
+                    text: 'An open organ pipe of length l is sounded together with another open organ pipe of length (l+l₁) in their fundamental modes. Speed of sound is V. The beat frequency is (l₁≪l)',
+                    options: ['Vl₁²/2l', 'Vl₁/2l²', 'Vl₁/l²', 'V/2l₁'], image: null }, { id: 58,
+                    subject: 'physics',
+                    text: 'When a sonometer wire vibrates in third overtone there are',
+                    options: ['4 nodes and 3 antinodes', '6 nodes and 5 antinodes', '5 nodes and 4 antinodes',
+                        '4 nodes and 5 antinodes'
+                    ], image: null }, { id: 59, subject: 'physics',
+                    text: 'A body of mass 1 kg starts from rest and moves with uniform acceleration. In 2 seconds its velocity is 10 m/s. The power exerted on the body in one second is',
+                    options: ['20 W', '25 W', '50 W', '100 W'], image: null }, { id: 60, subject: 'physics',
+                    text: 'The velocity-time graph for a body of mass 10 kg is shown. Work done on the body in the first two seconds is',
+                    options: ['−9300 J', '12000 J', '−4500 J', '−12000 J'],
+                    image: `<svg viewBox="0 0 260 150" width="240" height="130"><rect width="260" height="150" fill="#fafafa" rx="6"/><line x1="30" y1="120" x2="230" y2="120" stroke="#333" stroke-width="2"/><line x1="30" y1="120" x2="30" y2="20" stroke="#333" stroke-width="2"/><text x="235" y="125" font-size="10">t(s)</text><text x="5" y="15" font-size="10">v(m/s)</text><polyline points="30,100 70,100 70,40 130,40 130,100 170,100" fill="none" stroke="#2563eb" stroke-width="2.5"/></svg>`
+                },
+                // CHEMISTRY Q61-Q120
+                { id: 61, subject: 'chemistry',
+                    text: 'Which one among the following compounds will most readily be dehydrated under acidic condition?',
+                    options: ['Primary alcohol', 'Secondary alcohol', 'Tertiary alcohol', 'Phenol'],
+                image: null }, { id: 62, subject: 'chemistry',
+                    text: 'In Kolbe\'s reaction the reacting substances are',
+                    options: ['phenol and CCl₄', 'sodium phenolate and CCl₄', 'phenol and CHCl₃',
+                        'sodium phenolate and CO₂'
+                    ], image: null }, { id: 63, subject: 'chemistry',
+                    text: 'Identify the reagent R used in: Ketone → Semicarbazone',
+                    options: ['NH₂OH', 'NH₂−NH−CONH₂', 'NH₂−NH−C₆H₅', 'NH₂−NH₂'], image: null }, { id: 64,
+                    subject: 'chemistry', text: 'Aldol condensation reaction is',
+                    options: ['Electrophilic substitution', 'Nucleophilic substitution',
+                        'Electrophilic addition-elimination', 'Nucleophilic addition-elimination'
+                    ], image: null }, { id: 65, subject: 'chemistry',
+                    text: 'The major product in the following reaction sequence is',
+                    options: ['o-Anisidine', 'm-Anisidine', 'p-Anisidine', 'p-Chloro aniline'], image: null }, {
+                    id: 66,
+                    subject: 'chemistry', text: 'The energy associated with first orbit of He⁺ is',
+                    options: ['0 J', '−8.72 × 10⁻¹⁸ J', '−4.58 × 10⁻¹⁸ J', '−0.545 × 10⁻¹⁸ J'], image: null }, {
+                    id: 67,
+                    subject: 'chemistry', text: 'Nucleotides contain',
+                    options: ['purine base, pentose sugar and phosphoric acid',
+                        'purine or pyrimidine base and phosphoric acid',
+                        'purine or pyrimidine base, pentose sugar and phosphoric acid',
+                        'purine or pyrimidine base and pentose sugar'
+                    ], image: null }, { id: 68, subject: 'chemistry',
+                    text: 'Identify the major product (G) in the reaction sequence',
+                    options: ['Nitrobenzene', 'Aniline', 'Phenol', 'Benzene diazonium chloride'], image: null }, {
+                    id: 69,
+                    subject: 'chemistry',
+                    text: 'Which compound will produce effervescence with aqueous sodium bicarbonate?',
+                    options: ['Carboxylic acid', 'Alcohol', 'Ether', 'Ketone'], image: null }, { id: 70,
+                    subject: 'chemistry',
+                    text: 'CH₃CH₂MgBr + dry ice/dry ether → product after dil. HCl is',
+                    options: ['Ethanoic acid', 'Propanoic acid', '2-Methylpropanoic acid', 'Butanoic acid'],
+                    image: null }, { id: 71, subject: 'chemistry',
+                    text: 'Which hydrogen bond is likely to be the weakest?',
+                    options: ['C−H···O', 'N−H···O', 'O−H···O', 'F−H···O'], image: null }, { id: 72,
+                    subject: 'chemistry', text: 'Which oxide is paramagnetic?',
+                    options: ['SO₂', 'NO₂', 'SiO₂', 'CO₂'], image: null }, { id: 73, subject: 'chemistry',
+                    text: 'The bond order of HeH⁺ is', options: ['1', '2', '3', '4'], image: null }, { id: 74,
+                    subject: 'chemistry', text: 'In O₂ and C₂ molecules the bonding is',
+                    options: ['O₂:2σ,0π; C₂:0σ,2π', 'O₂:1σ,1π; C₂:0σ,2π', 'O₂:0σ,2π; C₂:2σ,0π',
+                        'O₂:1σ,1π; C₂:1σ,1π'
+                    ], image: null }, { id: 75, subject: 'chemistry',
+                    text: 'Which molecule is an example of sp hybridization?',
+                    options: ['Methane', 'Acetylene', 'Ethylene', 'Ammonia'], image: null }, { id: 76,
+                    subject: 'chemistry', text: 'What is the O−O bond length in ozone molecule?',
+                    options: ['128 pm', '117 pm', '107 pm', '134 pm'], image: null }, { id: 77,
+                    subject: 'chemistry',
+                    text: 'A pair of isoelectronic species having bond order of one is',
+                    options: ['N₂, CO', 'N₂, NO⁺', 'O₂²⁻, F₂', 'CO, NO⁺'], image: null }, { id: 78,
+                    subject: 'chemistry',
+                    text: 'A first order reaction is half completed in 45 min. Time for 99.9% completion is',
+                    options: ['7.5 Hours', '10 Hours', '20 Hours', '5 Hours'], image: null }, { id: 79,
+                    subject: 'chemistry', text: 'Rate = k[CH₃COOC₂H₅][NaOH]. The unit of k is',
+                    options: ['mol L⁻¹ s⁻¹', 'L mol⁻¹ s⁻¹', 's⁻¹', 'mol⁻² L² s⁻¹'], image: null }, { id: 80,
+                    subject: 'chemistry', text: 'For rate = k[NO]²[H₂], order wrt H₂ and overall order are',
+                    options: ['0,2', '1,3', '2,1', '3,1'], image: null }, { id: 81, subject: 'chemistry',
+                    text: 'For PCl₅ → PCl₃ + Cl₂, rate=1.02×10⁻⁴ mol L⁻¹ s⁻¹ and k=3.4×10⁻⁵ s⁻¹. [PCl₅] is',
+                    options: ['8.0 mol L⁻¹', '3.0 mol L⁻¹', '0.2 mol L⁻¹', '2.0 mol L⁻¹'], image: null }, { id: 82,
+                    subject: 'chemistry',
+                    text: 'Egg boils in 4 min at sea level (T₁K) and 8 min on mountain (T₂K). Activation energy is',
+                    options: ['0.693(T₁−T₂)/T₁T₂', '0.693(T₂−T₁)/T₁T₂', '0.693R T₁T₂/(T₂−T₁)',
+                        '0.693R T₁T₂/(T₁−T₂)'
+                    ], image: null }, { id: 83, subject: 'chemistry',
+                    text: 'Which institute approved emergency use of 2-deoxy-D-glucose for COVID-19?',
+                    options: ['WHO', 'Ministry of Health', 'Drug Controller General of India', 'ICMR'],
+                image: null }, { id: 84, subject: 'chemistry', text: 'Which is a primary amine?',
+                    options: ['N-methyl methanamine', 'Phenyl methanamine', 'N-phenyl benzenamine',
+                        'N-methyl benzenamine'
+                    ], image: null }, { id: 85, subject: 'chemistry',
+                    text: 'The correct IUPAC name of cis-platin is',
+                    options: ['diamminedichlorodiplatinum(IV)', 'diamminedichlorodiplatinum(0)',
+                        'dichloridodiammineplatinum(IV)', 'diamminedichloridoplatinum(II)'
+                    ], image: null }, { id: 86, subject: 'chemistry',
+                    text: 'The common stable oxidation states of Eu and Gd are respectively',
+                    options: ['+3 and +3', '+3 and +2', '+2 and +3', '+2 and +2'], image: null }, { id: 87,
+                    subject: 'chemistry', text: 'The molar conductivity is maximum for the solution of concentration',
+                    options: ['0.002 M', '0.005 M', '0.001 M', '0.004 M'], image: null }, { id: 88,
+                    subject: 'chemistry', text: 'The first chlorinated organic insecticide prepared is',
+                    options: ['gammaxene', 'chloroform', 'COCl₂', 'DDT'], image: null }, { id: 89,
+                    subject: 'chemistry',
+                    text: 'An LPG cylinder weighs 15 kg empty, 30 kg full at 3 atm. After usage mass is 24.2 kg at 27°C. Volume of used gas at normal conditions is (assume n-butane, ideal)',
+                    options: ['24.6 m³', '246 m³', '0.246 m³', '2.46 m³'], image: null }, { id: 90,
+                    subject: 'chemistry', text: 'CH₃CH₂Br + CH₃COOAg →Δ→ X + AgBr. X is',
+                    options: ['CH₃CH₂COOCH₃', 'CH₃COOCH₂CH₃', 'CH₃COOCH₃', 'CH₃CH₂COOCH₂CH₃'],
+                image: null }, { id: 91, subject: 'chemistry',
+                    text: '2-methylpropane via Wurtz reaction uses which haloalkanes with Na/dry ether?',
+                    options: ['chloromethane & 2-chloropropane', 'chloroethane & chloromethane',
+                        'chloroethane & 1-chloropropane', 'chloromethane & 1-chloropropane'
+                    ], image: null }, { id: 92, subject: 'chemistry',
+                    text: 'The correct decreasing order of boiling point of hydrogen halides is',
+                    options: ['HF>HCl>HBr>HI', 'HI>HBr>HCl>HF', 'HF>HI>HBr>HCl', 'HI>HF>HBr>HCl'],
+                image: null }, { id: 93, subject: 'chemistry',
+                    text: 'Equal volumes of strong acid solutions of pH=6 and pH=4 are mixed. The pH of the new solution is',
+                    options: ['between 5 and 6', 'between 6 and 7', 'between 4 and 5', 'between 3 and 4'],
+                image: null }, { id: 94, subject: 'chemistry', text: 'IUPAC name of the given compound is',
+                    options: ['1,4-dioxopentanol', '1-carboxybutan-3-one', '4-oxopentanoic acid',
+                        '1-hydroxy pentane-1,4-dione'
+                    ],
+                    image: `<svg viewBox="0 0 200 80" width="180" height="70"><rect width="200" height="80" fill="#fafafa" rx="6"/><text x="30" y="40" font-size="13">CH₃−CO−CH₂−CH₂−COOH</text></svg>`
+                }, { id: 95, subject: 'chemistry',
+                    text: 'Henry\'s law constant: solubility=5.14×10⁻⁴ mol/dm³ at P=0.75 bar. k_H is',
+                    options: ['6.85×10⁻⁴ mol dm⁻³ bar⁻¹', '5.14×10⁻⁴', '1.028×10⁻⁴', '1.371×10⁻⁴'],
+                image: null }, { id: 96, subject: 'chemistry',
+                    text: 'ΔT_f for 1.25 m CaCl₂ if 1.25 m sucrose has ΔT_f = x K is',
+                    options: ['x K', 'x/2 K', '2x K', '3x K'], image: null }, { id: 97, subject: 'chemistry',
+                    text: '0.8 g nonvolatile solute in 0.3 dm³ water has osmotic pressure 0.2 atm at 300 K. Molar mass is [R=0.082]',
+                    options: ['300 g/mol', '340 g/mol', '328 g/mol', '352 g/mol'], image: null }, { id: 98,
+                    subject: 'chemistry',
+                    text: 'Phenol and aniline show negative deviation from Raoult\'s law due to',
+                    options: ['polar covalent bond', 'non-polar covalent bond', 'intermolecular H-bond',
+                        'intramolecular H-bond'
+                    ], image: null }, { id: 99, subject: 'chemistry', text: 'Which is a mineral of copper?',
+                    options: ['Chalcopyrite', 'Zincite', 'Limonite', 'Siderite'], image: null }, { id: 100,
+                    subject: 'chemistry',
+                    text: 'Synthetically produced radioactive noble gas from ²⁴⁹Cf + ⁴⁸Ca is',
+                    options: ['radon', 'radium', 'oganesson', 'xenon'], image: null }, { id: 101,
+                    subject: 'chemistry', text: 'Which hydride is electron deficient?',
+                    options: ['CaH₂', 'CH₄', 'B₂H₆', 'NaH'], image: null }, { id: 102, subject: 'chemistry',
+                    text: '(NH₄)₂Cr₂O₇ on heating liberates a gas also obtained by',
+                    options: ['heating NH₄NO₂', 'H₂O₂ + NaNO₂', 'Mg₃N₂ + H₂O', 'heating NH₄NO₃'],
+                image: null }, { id: 103, subject: 'chemistry',
+                    text: 'The strong reducing property of hypophosphorous acid is due to',
+                    options: ['positive valency of P', 'two P−H bonds', 'P in highest oxidation state',
+                        'its concentration'
+                    ], image: null }, { id: 104, subject: 'chemistry', text: 'A metalloid is',
+                    options: ['Bi', 'Sb', 'P', 'Se'], image: null }, { id: 105, subject: 'chemistry',
+                    text: 'NO₂ gas is',
+                    options: ['colourless, neutral', 'colourless, acidic', 'brown, acidic', 'brown, neutral'],
+                    image: null }, { id: 106, subject: 'chemistry',
+                    text: 'Which noble gas has least tendency to form compounds?',
+                    options: ['Ne', 'Ar', 'Kr', 'He'], image: null }, { id: 107, subject: 'chemistry',
+                    text: 'Which is correctly matched?',
+                    options: ['Teflon - Caprolactum', 'Bakelite - Novolac', 'Polyester - Tetrafluoroethene',
+                        'Nylon - Acrylonitrile'
+                    ], image: null }, { id: 108, subject: 'chemistry',
+                    text: 'Kjeldahl\'s method cannot estimate nitrogen in which compound?',
+                    options: ['Aniline', 'Nitrobenzene', 'Azobenzene (C₆H₅−N=N−C₆H₅)', 'Urea'], image: null }, {
+                    id: 109,
+                    subject: 'chemistry', text: '⁵B¹⁰ + ²He⁴ → X + ₀n¹. X is',
+                    options: ['₇N¹⁴', '₇N¹³', '₆C¹²', '₇N¹²'], image: null }, { id: 110, subject: 'chemistry',
+                    text: 'Oxidation number of Cr in CrO₄²⁻ and K₂Cr₂O₇ respectively',
+                    options: ['+4 and +6', '+3 and +2', '+6 and +6', '+8 and +2'], image: null }, { id: 111,
+                    subject: 'chemistry', text: 'By-product in Solvay process for sodium carbonate is',
+                    options: ['Ammonium carbonate', 'Sodium bicarbonate', 'Calcium Chloride', 'Ammonia'],
+                image: null }, { id: 112, subject: 'chemistry',
+                    text: 'In III group analysis, NH₄Cl(s) is added to NH₄OH to',
+                    options: ['increase OH⁻ concentration', 'precipitate group IV/V',
+                        'suppress NH₄OH dissociation', 'introduce Cl⁻ ions'
+                    ], image: null }, { id: 113, subject: 'chemistry',
+                    text: 'Element B forms ccp; A occupies 1/3 of tetrahedral voids. Formula is',
+                    options: ['A₂B₃', 'AB', 'AB₂', 'AB₃'], image: null }, { id: 114, subject: 'chemistry',
+                    text: 'Oxygen atoms in 0.36 g of water at STP',
+                    options: ['6.023×10²²', '1.205×10²²', '6.023×10²³', '1.205×10²³'], image: null }, { id: 115,
+                    subject: 'chemistry', text: 'Lone pairs and hybridization of Xe in XeOF₂',
+                    options: ['1, sp³', '1, dsp²', '3, dsp³', '2, sp³d'], image: null }, { id: 116,
+                    subject: 'chemistry',
+                    text: 'Work done when 2 mol ideal gas expands isothermally from 1L to 10L at 300K [R=0.0083 kJ/K/mol]',
+                    options: ['5.8 kJ', '0.115 kJ', '58.5 kJ', '11.5 kJ'], image: null }, { id: 117,
+                    subject: 'chemistry',
+                    text: 'ΔG for N₂O₄(g)→2NO₂(g) if ΔH=57.44 kJ, ΔS=176 J/K at 300K',
+                    options: ['120.20 kJ', '−110.24 kJ', '−46.4 kJ', '4.64 kJ'], image: null }, { id: 118,
+                    subject: 'chemistry', text: 'Enthalpy of freezing is exactly opposite to',
+                    options: ['enthalpy of fusion', 'enthalpy of vaporization', 'enthalpy of solution',
+                        'enthalpy of atomization'
+                    ], image: null }, { id: 119, subject: 'chemistry',
+                    text: '100 mL H₂(g) + 100 mL Cl₂(g) → 2HCl(g) at 1 bar. PV work is',
+                    options: ['Zero J', '10 J', '−10 J', '−100 J'], image: null }, { id: 120,
+                    subject: 'chemistry', text: 'From the diagram Z=V_real/V_ideal, Δ_rH for C→A is',
+                    options: ['+35 J', '−15 J', '−35 J', '+15 J'],
+                    image: `<svg viewBox="0 0 240 130" width="220" height="120"><rect width="240" height="130" fill="#fafafa" rx="6"/><line x1="30" y1="100" x2="200" y2="100" stroke="#333" stroke-width="2"/><line x1="30" y1="100" x2="30" y2="20" stroke="#333" stroke-width="2"/><text x="40" y="30" font-size="10">A</text><circle cx="60" cy="50" r="3" fill="#2563eb"/><text x="40" y="70" font-size="10">B</text><circle cx="60" cy="80" r="3" fill="#2563eb"/><text x="120" y="40" font-size="10">C</text><circle cx="130" cy="55" r="3" fill="#2563eb"/><path d="M60,50 L130,55" fill="none" stroke="#dc2626" stroke-width="1.5"/><path d="M60,80 L130,55" fill="none" stroke="#dc2626" stroke-width="1.5"/></svg>`
+                },
+                // MATHEMATICS Q121-Q180
+                { id: 121, subject: 'maths',
+                    text: 'The function f(x) = log(1+x) − 2x/(2+x) is increasing on',
+                    options: ['(−∞,∞)', '(∞,−1)', '(−1,∞)', '(−∞,0)'], image: null }, { id: 122, subject: 'maths',
+                    text: 'Twenty meters of wire for fencing a flower-bed as a circular sector. Maximum area (sq.m) is',
+                    options: ['30', '12.5', '25', '10'], image: null }, { id: 123, subject: 'maths',
+                    text: 'A ladder 5 m long leans against a wall. Bottom pulled at 2 m/s. How fast is height decreasing when foot is 4 m from wall?',
+                    options: ['4/3 m/s', '2/3 m/s', '5/3 m/s', '8/3 m/s'], image: null }, { id: 124,
+                    subject: 'maths',
+                    text: 'Polynomial p(x) has local max at x=1, local min at x=3, p(1)=6, p(3)=2. p\'(0) is',
+                    options: ['8', '9', '3', '6'], image: null }, { id: 125, subject: 'maths',
+                    text: 'Area bounded by y=x and y=x³ is',
+                    options: ['0.2 sq unit', '0.3 sq unit', '0.4 sq unit', '0.5 sq unit'], image: null }, {
+                    id: 126,
+                    subject: 'maths', text: '⁴⁹C₃ + ⁴⁸C₃ + ⁴⁷C₃ + ⁴⁶C₃ + ⁴⁵C₃ + ⁴⁵C₄ =',
+                    options: ['⁵⁰C₄', '⁵⁰C₃', '⁵⁰C₂', '⁵⁰C₁'], image: null }, { id: 127, subject: 'maths',
+                    text: 'In (1+x)ⁿ, C₁/C₀ + 2·C₂/C₁ + 3·C₃/C₂ + ... + n·C_n/C_{n−1} =',
+                    options: ['n(n+1)/2', 'n/2', '(n+1)/2', '3n(n+1)'], image: null }, { id: 128,
+                    subject: 'maths',
+                    text: 'Number of common tangents to x²+y²−x=0 and x²+y²+x=0 is',
+                    options: ['1', '2', '3', '4'], image: null }, { id: 129, subject: 'maths',
+                    text: 'Arcs of same length subtend 30° and 78° at centres. Ratio of radii is',
+                    options: ['5/13', '13/5', '13/4', '4/13'], image: null }, { id: 130, subject: 'maths',
+                    text: 'If |z|+z=2+i, then |z| is', options: ['5/4', '3/4', '1', '√5/2'], image: null }, {
+                    id: 131,
+                    subject: 'maths', text: '∫₂³ x² dx expressed as limit of sum equals',
+                    options: ['6', '19/3', '20/3', '7'], image: null }, { id: 132, subject: 'maths',
+                    text: '∫₀^{π/2} (cos x sin x)/(1+sin x) dx =',
+                    options: ['1−log2', 'log2', '1+log2', '2−log2'], image: null }, { id: 133, subject: 'maths',
+                    text: 'The degree of the differential equation is', options: ['1', '2', '3', '4'],
+                image: null }, { id: 134, subject: 'maths', text: 'Solution of dy/dx = (x+y)² is',
+                    options: ['tan⁻¹(x+y)=x+C', 'tan⁻¹(x+y)=0', 'cot⁻¹(x+y)=C', 'cot⁻¹(x+y)=x+C'],
+                image: null }, { id: 135, subject: 'maths',
+                    text: 'If x=2cosθ−cos2θ, y=2sinθ−sin2θ, then d²y/dx² =',
+                    options: ['3/2 tan(3θ/2)', '3/2 sec(3θ/2)tan(3θ/2)', '3/2 sec²(3θ/2)', 'sec²(3θ/2)'],
+                    image: null }, { id: 136, subject: 'maths',
+                    text: 'd/dx[cos²(cot⁻¹√((2+x)/(2−x)))] =',
+                    options: ['−3/4', '−1/2', '1/2', '1/4'], image: null }, { id: 137, subject: 'maths',
+                    text: 'If ∫dx/((x+2)(x²+1)) = a log(1+x²)+b tan⁻¹x + (1/5)log|x+2|+c, then',
+                    options: ['a=−1/10,b=2/5', 'a=1/10,b=2/5', 'a=−1/10,b=−2/5', 'a=1/10,b=−2/5'],
+                    image: null }, { id: 138, subject: 'maths', text: '∫ dx/(5+4sin x) =',
+                    options: ['2/5 tan⁻¹((5tan(x/2)+4)/3)+c', '2/3 tan⁻¹((5tan(x/2)+4)/3)+c',
+                        '2/5 log((5tan(x/2)+7)/(5tan(x/2)+1))+c', '2/3 log(...)+c'
+                    ], image: null }, { id: 139, subject: 'maths', text: '∫ dx/(7+6x−x²) =',
+                    options: ['1/4 log((1+x)/(1−x))+c', '1/8 log((7−x)/(1+x))+c', '1/4 log((7−x)/(1+x))+c',
+                        '1/8 log((1+x)/(7−x))+c'
+                    ], image: null }, { id: 140, subject: 'maths',
+                    text: 'If 2sin⁻¹x−3cos⁻¹x=4, x∈[−1,1], then 2sin⁻¹x+3cos⁻¹x =',
+                    options: ['(4−6π)/5', '(6π−4)/5', '3π/2', '0'], image: null }, { id: 141, subject: 'maths',
+                    text: 'Let f:R→R, f(x)=tan x. Then f⁻¹(1) is',
+                    options: ['π/4', '{nπ+π/4: n∈Z}', 'π/3', '{nπ+π/3: n∈Z}'], image: null }, { id: 142,
+                    subject: 'maths',
+                    text: 'For f(x)={x²−1,0<x<2; 2x+3,2≤x<3}, quadratic with roots lim_{x→2⁻}f(x) and lim_{x→2⁺}f(x) is',
+                    options: ['x²−10x+21=0', 'x²+10x+21=0', 'x²−10x−21=0', 'x²+10x−21=0'], image: null }, {
+                    id: 143,
+                    subject: 'maths', text: 'Region: 2x+3y≤18, x+y≥10, x≥0, y≥0 is',
+                    options: ['unbounded', 'bounded but not singleton', 'singleton set', 'null set'],
+                image: null }, { id: 144, subject: 'maths',
+                    text: 'Approximate value of 3^{2.001} if log3=1.0986 is',
+                    options: ['9.00898', '9.0989', '9.0988', '9.00989'], image: null }, { id: 145,
+                    subject: 'maths', text: 'If p→(q∨r) is false, truth values of p,q,r are',
+                    options: ['F,F,F', 'T,T,F', 'T,F,F', 'F,T,T'], image: null }, { id: 146, subject: 'maths',
+                    text: 'If A is a skew symmetric matrix, then A²⁰²¹ is',
+                    options: ['Row matrix', 'Column matrix', 'Symmetric matrix', 'Skew symmetric matrix'],
+                    image: null }, { id: 147, subject: 'maths',
+                    text: 'If A_n = [[1−n,n],[n,1−n]], then |A₁|+|A₂|+...+|A₂₀₂₁| =',
+                    options: ['−2021', '−(2021)²', '(2021)²', '4042'], image: null }, { id: 148,
+                    subject: 'maths',
+                    text: 'A symmetric, B skew-symmetric (3×3). (A²B²−B²A²)X=O has',
+                    options: ['unique solution', 'exactly two solutions', 'no solution',
+                        'infinitely many solutions'
+                    ], image: null }, { id: 149, subject: 'maths',
+                    text: 'Parabola with focus (6,0) and directrix x=−6 is',
+                    options: ['y²=24x', 'y²=−24x', 'x²=24y', 'x²=−24y'], image: null }, { id: 150,
+                    subject: 'maths',
+                    text: 'Permutations of MASK in dictionary order. 19th word is',
+                    options: ['KAMS', 'SAKM', 'AKMS', 'AMSK'], image: null }, { id: 151, subject: 'maths',
+                    text: 'P(lockdown)=0.7, P(controlled|lockdown)=0.8, P(controlled|no lockdown)=0.3. P(controlled in 1 month)=',
+                    options: ['0.65', '1.65', '1.46', '0.46'], image: null }, { id: 152, subject: 'maths',
+                    text: 'A,B independent, P(Ā)=0.75, P(A∪B)=0.65, P(B)=x. Find x.',
+                    options: ['5/14', '8/15', '9/14', '7/15'], image: null }, { id: 153, subject: 'maths',
+                    text: 'A die thrown 10 times. Probability odd number appears at least once is',
+                    options: ['11/1024', '1013/1024', '1023/1024', '1/1024'], image: null }, { id: 154,
+                    subject: 'maths', text: 'If ΔABC is right angled at C, then tan A + tan B =',
+                    options: ['a+b', 'a²/bc', 'c²/ab', 'b²/ac'], image: null }, { id: 155, subject: 'maths',
+                    text: 'e^{sin x} − e^{−sin x} = 4 has',
+                    options: ['2 solutions', '4 solutions', '3 solutions', 'no solution'], image: null }, {
+                    id: 156,
+                    subject: 'maths', text: 'A={1,2,...,10}. Number of subsets containing only odd numbers is',
+                    options: ['31', '27', '32', '30'], image: null }, { id: 157, subject: 'maths',
+                    text: 'A={2,3,...,18}. R: (a,b)R(c,d) iff ad=bc. Equivalence class of (3,2) has how many ordered pairs?',
+                    options: ['4', '5', '6', '7'], image: null }, { id: 158, subject: 'maths',
+                    text: 'SD of −1,0,1,k is √5 where k>0. k =',
+                    options: ['4√(5/3)', '√6', '2√(10/3)', '2√6'], image: null }, { id: 159, subject: 'maths',
+                    text: 'SD of a,b,c,d,e is S. SD of a+k,b+k,c+k,d+k,e+k is',
+                    options: ['kS', 'S+k', 'S/k', 'S'], image: null }, { id: 160, subject: 'maths',
+                    text: 'Area of triangle with vertices (−2,6),(3,−6),(1,5) is',
+                    options: ['40 sq units', '15.5 sq units', '30 sq units', '35 sq units'], image: null }, {
+                    id: 161,
+                    subject: 'maths',
+                    text: 'Slope of one line of 4x²+kxy+y²=0 is four times the other. k =',
+                    options: ['4', '2.5', '5', '1'], image: null }, { id: 162, subject: 'maths',
+                    text: 'Two sides of square: 4x+3y−20=0 and 4x+3y+15=0. Area is',
+                    options: ['36 sq units', '16 sq units', '4 sq units', '49 sq units'], image: null }, {
+                    id: 163,
+                    subject: 'maths', text: 'Angle between x+y=3 and line joining (1,1) and (−3,4) is',
+                    options: ['tan⁻¹(7)', 'tan⁻¹(−1/7)', 'tan⁻¹(1/7)', 'tan⁻¹(2/7)'], image: null }, { id: 164,
+                    subject: 'maths', text: 'The octant in which (2,−4,−7) lies is',
+                    options: ['Eighth', 'Third', 'Fourth', 'Fifth'], image: null }, { id: 165, subject: 'maths',
+                    text: 'Foot of perpendicular from origin to plane 2x−3y+4z=29 is',
+                    options: ['(2,3,4)', '(2,−3,−4)', '(2,−3,4)', '(−2,−3,4)'], image: null }, { id: 166,
+                    subject: 'maths',
+                    text: 'Angle between lines (x+3)/3=(y−1)/5=(z+3)/4 and (x+1)/1=(y−4)/4=(z−5)/2 is',
+                    options: ['cos⁻¹(31/(5√42))', 'cos⁻¹(8√3/15)', 'cos⁻¹(19/21)', 'cos⁻¹(5√3/16)'],
+                    image: null }, { id: 167, subject: 'maths',
+                    text: 'Perpendicular distance from origin to plane containing lines (x+2)/3=(y−2)/5=(z+5)/7 and (x−1)/1=(y−4)/4=(z+4)/7 is',
+                    options: ['11/√6', '11√6', '11', '6√11'], image: null }, { id: 168, subject: 'maths',
+                    text: 'Lines (x−1)/−3=(y−2)/(2k)=(z−3)/2 and (x−1)/(3k)=(y−5)/1=(z−6)/−5 are perpendicular. k =',
+                    options: ['−10/7', '−7/10', '−10', '−7'], image: null }, { id: 169, subject: 'maths',
+                    text: '√3a cos x + 2b sin x = c has roots α,β with α+β=π/3. b/a =',
+                    options: ['0.1', '0.5', '−0.5', '1'], image: null }, { id: 170, subject: 'maths',
+                    text: 'Degree measure of π/32 is',
+                    options: ['5°30\'20"', '5°37\'20"', '5°37\'30"', '4°30\'30"'], image: null }, { id: 171,
+                    subject: 'maths',
+                    text: 'cos(18°−A)cos(18°+A)−cos(72°−A)cos(72°+A) =',
+                    options: ['cos 54°', 'cos 36°', 'sin 54°', 'sin 36°'], image: null }, { id: 172,
+                    subject: 'maths', text: '|a|=2, |b|=3, angle=120°. |a/2 − b/3| =',
+                    options: ['2', '3', '1/6', '1'], image: null }, { id: 173, subject: 'maths',
+                    text: '|a×b|²+|a·b|²=36, |a|=3. |b| =', options: ['9', '36', '4', '2'], image: null }, {
+                    id: 174,
+                    subject: 'maths', text: 'α=î−3ĵ, β=î+2ĵ−k̂. β=β₁+β₂, β₁∥α, β₂⊥α. β₁ =',
+                    options: ['−½î+³⁄₂ĵ', '5/8(î+3ĵ)', 'î−3ĵ', 'î+3ĵ'], image: null }, { id: 175,
+                    subject: 'maths',
+                    text: 'ā=î+ĵ+k̂, b̄=î−ĵ+k̂, c̄=î−ĵ−k̂. v̄ in plane of ā,b̄ with projection on c̄ = 1/√3 is',
+                    options: ['î−3ĵ+3k̂', '−3î−3ĵ−k̂', '3î−ĵ+3k̂', 'î+3ĵ−3k̂'], image: null }, { id: 176,
+                    subject: 'maths',
+                    text: 'ā=î−ĵ+2k̂, b̄=2î+4ĵ+k̂, c̄=pî+ĵ+qk̂ are mutually orthogonal. (p,q)=',
+                    options: ['(3,−2)', '(−2,3)', '(−3,2)', '(2,−3)'], image: null }, { id: 177, subject: 'maths',
+                    text: '(ū+v̄−w̄)·[(ū−v̄)×(v̄−w̄)] =',
+                    options: ['ū·(v̄×w̄)', 'ū·(w̄×v̄)', '3ū·(v̄×w̄)', '0'], image: null }, { id: 178,
+                    subject: 'maths',
+                    text: 'ū=î+ĵ, v̄=î−ĵ, w̄=î+2ĵ+3k̂. n̂ unit vector with ū·n̂=0, v̄·n̂=0. |w̄·n̂|=',
+                    options: ['0', '1', '2', '3'], image: null }, { id: 179, subject: 'maths',
+                    text: 'Volume of parallelopiped with edges ĵ+k̂, î+k̂, î+ĵ is',
+                    options: ['6 cu units', '2 cu units', '4 cu units', '3 cu units'], image: null }, {
+                    id: 180,
+                    subject: 'maths',
+                    text: 'If p=(b×c)/[abc], q=(c×a)/[abc], r=(a×b)/[abc], then (a+b)·p+(b+c)·q+(c+a)·r =',
+                    options: ['0', '1', '2', '3'], image: null }
+            ];
+
+            // ============ STATE ============
+            let currentQuestionIndex = 0;
+            let userAnswers = {};
+            let visitedQuestions = new Set();
+            let testSubmitted = false;
+            let totalSeconds = 180 * 60;
+            let timerInterval = null;
+            let nameSubmittedForResults = false;
+            let finalScore = 0;
+            let finalAccuracy = 0;
+            let finalCorrect = 0;
+            let finalIncorrect = 0;
+            let finalUnanswered = 0;
+
+            // ============ DOM REFS ============
+            const questionTextDisplay = document.getElementById('questionTextDisplay');
+            const optionsList = document.getElementById('optionsList');
+            const questionNumLabel = document.getElementById('questionNumLabel');
+            const subjectBadge = document.getElementById('subjectBadge');
+            const timerEl = document.getElementById('timer');
+            const submitBtn = document.getElementById('submitBtn');
+            const paletteGrid = document.getElementById('paletteGrid');
+            const paletteDrawerGrid = document.getElementById('paletteDrawerGrid');
+            const paletteName = document.getElementById('paletteName');
+            const paletteDrawerName = document.getElementById('paletteDrawerName');
+            const candidateNameHeader = document.getElementById('candidateNameHeader');
+            const candidatePhoto = document.getElementById('candidatePhoto');
+            const overlay = document.getElementById('overlay');
+            const resultsPanel = document.getElementById('resultsPanel');
+            const bigScoreEl = document.getElementById('bigScore');
+            const scoreDetail = document.getElementById('scoreDetail');
+            const nameInputArea = document.getElementById('nameInputArea');
+            const resultsContentArea = document.getElementById('resultsContentArea');
+            const resultsTable = document.getElementById('resultsTable');
+            const firebaseStatus = document.getElementById('firebaseStatus');
+            const mobileBottomBar = document.getElementById('mobileBottomBar');
+            const paletteDrawer = document.getElementById('paletteDrawer');
+            const paletteDrawerOverlay = document.getElementById('paletteDrawerOverlay');
+
+            // ============ INIT ============
+            function getCandidateName() {
+                return localStorage.getItem('comedk_username') || 'Candidate';
+            }
+
+            function updateCandidateDisplay() {
+                const name = getCandidateName();
+                candidateNameHeader.textContent = name;
+                paletteName.textContent = name;
+                paletteDrawerName.textContent = name;
+                const initials = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2) || '👤';
+                candidatePhoto.textContent = initials;
+            }
+
+            function getSubjectName(subject) {
+                if (subject === 'physics') return 'PHYSICS';
+                if (subject === 'chemistry') return 'CHEMISTRY';
+                if (subject === 'maths') return 'MATHEMATICS';
+                return '';
+            }
+
+            function getSubjectFromId(qId) {
+                if (qId <= 60) return 'physics';
+                if (qId <= 120) return 'chemistry';
+                return 'maths';
+            }
+
+            function getSubjectRange(subject) {
+                if (subject === 'physics') return { start: 1, end: 60 };
+                if (subject === 'chemistry') return { start: 61, end: 120 };
+                if (subject === 'maths') return { start: 121, end: 180 };
+                return { start: 1, end: 180 };
+            }
+
+            function getAnsweredCountForSubject(subject) {
+                const range = getSubjectRange(subject);
+                let count = 0;
+                for (let id = range.start; id <= range.end; id++) {
+                    if (userAnswers[id] !== undefined && userAnswers[id] !== null) count++;
+                }
+                return count;
+            }
+
+            function updateSubjectTabCounts() {
+                const physCount = getAnsweredCountForSubject('physics');
+                const chemCount = getAnsweredCountForSubject('chemistry');
+                const mathCount = getAnsweredCountForSubject('maths');
+                document.getElementById('tabCountPhysics').textContent = `(${physCount}/60)`;
+                document.getElementById('tabCountChemistry').textContent = `(${chemCount}/60)`;
+                document.getElementById('tabCountMaths').textContent = `(${mathCount}/60)`;
+            }
+
+            function updateActiveSubjectTab() {
+                const currentSubject = questionsData[currentQuestionIndex].subject;
+                document.querySelectorAll('.subject-tab').forEach(t => t.classList.remove('active'));
+                const tab = document.querySelector(`.subject-tab[data-subject="${currentSubject}"]`);
+                if (tab) tab.classList.add('active');
+            }
+
+            // ============ RENDER QUESTION ============
+            function renderCurrentQuestion() {
+                const q = questionsData[currentQuestionIndex];
+                questionNumLabel.textContent = `Question ${q.id} of 180`;
+                subjectBadge.textContent = getSubjectName(q.subject);
+
+                let html = q.text;
+                if (q.image) {
+                    html += '<br>' + q.image;
+                }
+                questionTextDisplay.innerHTML = html;
+
+                const labels = ['A', 'B', 'C', 'D'];
+                let optionsHTML = '';
+                q.options.forEach((opt, i) => {
+                    const letter = labels[i];
+                    const isSelected = userAnswers[q.id] === letter;
+                    optionsHTML += `
+                    <label class="option-row${isSelected ? ' selected' : ''}" id="optRow_${q.id}_${letter}">
+                        <input type="radio" name="q${q.id}" value="${letter}" id="opt_${q.id}_${letter}" ${isSelected ? 'checked' : ''}>
+                        <span class="option-letter">(${letter})</span>
+                        <span class="option-text">${opt}</span>
+                    </label>`;
+                });
+                optionsList.innerHTML = optionsHTML;
+
+                // Add event listeners
+                optionsList.querySelectorAll('input[type="radio"]').forEach(radio => {
+                    radio.addEventListener('change', function() {
+                        const val = this.value;
+                        userAnswers[q.id] = val;
+                        updateAllOptionRowStyles(q.id);
+                        updatePaletteButton(q.id);
+                        updatePaletteDrawerButton(q.id);
+                        updateSubjectTabCounts();
+                    });
+                });
+
+                // Mark as visited
+                visitedQuestions.add(q.id);
+                updatePaletteButton(q.id);
+                updatePaletteDrawerButton(q.id);
+                updateActiveSubjectTab();
+                updateSubjectTabCounts();
+
+                // Update nav button states
+                document.getElementById('btnPrev').style.visibility = currentQuestionIndex === 0 ? 'hidden' :
+                    'visible';
+            }
+
+            function updateAllOptionRowStyles(qId) {
+                const labels = ['A', 'B', 'C', 'D'];
+                const selectedVal = userAnswers[qId] || null;
+                labels.forEach(letter => {
+                    const row = document.getElementById(`optRow_${qId}_${letter}`);
+                    if (row) {
+                        if (selectedVal === letter) {
+                            row.classList.add('selected');
+                        } else {
+                            row.classList.remove('selected');
+                        }
+                    }
+                });
+            }
+
+            // ============ NAVIGATION ============
+            function goToQuestion(index) {
+                if (index < 0 || index >= questionsData.length) return;
+                currentQuestionIndex = index;
+                renderCurrentQuestion();
+                // Scroll question panel to top
+                const panel = document.getElementById('questionPanel');
+                if (panel) panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                updateActiveSubjectTab();
+            }
+
+            function saveAndNext() {
+                if (currentQuestionIndex < questionsData.length - 1) {
+                    goToQuestion(currentQuestionIndex + 1);
+                }
+            }
+
+            function previousQuestion() {
+                if (currentQuestionIndex > 0) {
+                    goToQuestion(currentQuestionIndex - 1);
+                }
+            }
+
+            function clearResponse() {
+                const q = questionsData[currentQuestionIndex];
+                delete userAnswers[q.id];
+                const radios = optionsList.querySelectorAll('input[type="radio"]');
+                radios.forEach(r => r.checked = false);
+                updateAllOptionRowStyles(q.id);
+                updatePaletteButton(q.id);
+                updatePaletteDrawerButton(q.id);
+                updateSubjectTabCounts();
+            }
+
+            function jumpToSubject(subject) {
+                const range = getSubjectRange(subject);
+                const idx = questionsData.findIndex(q => q.id === range.start);
+                if (idx >= 0) goToQuestion(idx);
+            }
+
+            function jumpToQuestionById(qId) {
+                const idx = questionsData.findIndex(q => q.id === qId);
+                if (idx >= 0) {
+                    goToQuestion(idx);
+                    closePaletteDrawer();
+                }
+            }
+
+            // ============ PALETTE ============
+            function getPaletteButtonClass(qId) {
+                const isAnswered = userAnswers[qId] !== undefined && userAnswers[qId] !== null;
+                const isVisited = visitedQuestions.has(qId);
+                const isCurrent = questionsData[currentQuestionIndex].id === qId;
+                let cls = 'palette-btn';
+                if (isAnswered) cls += ' answered';
+                else if (isVisited) cls += ' visited-unanswered';
+                if (isCurrent) cls += ' current';
+                return cls;
+            }
+
+            function updatePaletteButton(qId) {
+                const btn = document.getElementById(`paletteBtn_${qId}`);
+                if (btn) {
+                    btn.className = getPaletteButtonClass(qId);
+                }
+            }
+
+            function updatePaletteDrawerButton(qId) {
+                const btn = document.getElementById(`paletteDrawerBtn_${qId}`);
+                if (btn) {
+                    btn.className = getPaletteButtonClass(qId);
+                }
+            }
+
+            function buildPaletteGrid(containerId, btnPrefix) {
+                const container = document.getElementById(containerId);
+                if (!container) return;
+                container.innerHTML = '';
+                for (let id = 1; id <= 180; id++) {
+                    const btn = document.createElement('button');
+                    btn.className = 'palette-btn';
+                    btn.id = `${btnPrefix}${id}`;
+                    btn.textContent = id;
+                    btn.title = `Question ${id}`;
+                    btn.addEventListener('click', () => jumpToQuestionById(id));
+                    container.appendChild(btn);
+                }
+            }
+
+            function refreshAllPaletteButtons() {
+                for (let id = 1; id <= 180; id++) {
+                    updatePaletteButton(id);
+                    updatePaletteDrawerButton(id);
+                }
+            }
+
+            function openPaletteDrawer() {
+                paletteDrawerOverlay.classList.add('show');
+                paletteDrawer.classList.add('show');
+                refreshAllPaletteButtons();
+            }
+
+            function closePaletteDrawer() {
+                paletteDrawerOverlay.classList.remove('show');
+                paletteDrawer.classList.remove('show');
+            }
+
+            // ============ TIMER ============
+            function updateTimer() {
+                const hrs = Math.floor(totalSeconds / 3600);
+                const mins = Math.floor((totalSeconds % 3600) / 60);
+                const secs = totalSeconds % 60;
+                timerEl.textContent =
+                    `${String(hrs).padStart(2, '0')}:${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+                timerEl.classList.remove('warning', 'danger');
+                if (totalSeconds <= 300) timerEl.classList.add('danger');
+                else if (totalSeconds <= 600) timerEl.classList.add('warning');
+                if (totalSeconds <= 0) {
+                    clearInterval(timerInterval);
+                    submitTest();
+                }
+                totalSeconds--;
+            }
+
+            function startTimer() {
+                if (timerInterval) clearInterval(timerInterval);
+                timerInterval = setInterval(updateTimer, 1000);
+                updateTimer();
+            }
+
+            // ============ SUBMIT ============
+            function submitTest() {
+                if (testSubmitted) return;
+                testSubmitted = true;
+                clearInterval(timerInterval);
+                submitBtn.textContent = '✅ Submitted';
+                submitBtn.disabled = true;
+
+                // Calculate scores
+                let score = 0;
+                let correct = 0;
+                let incorrect = 0;
+                let unanswered = 0;
+
+                questionsData.forEach(q => {
+                    const userAns = userAnswers[q.id] || null;
+                    if (userAns === null || userAns === undefined) {
+                        unanswered++;
+                    } else if (userAns === answerKey[q.id]) {
+                        score++;
+                        correct++;
+                    } else {
+                        incorrect++;
+                    }
+                });
+
+                finalScore = score;
+                finalCorrect = correct;
+                finalIncorrect = incorrect;
+                finalUnanswered = unanswered;
+                finalAccuracy = (correct + incorrect) > 0 ? Math.round((correct / (correct + incorrect)) *
+                    100) : 0;
+
+                // Show results
+                bigScoreEl.textContent = score;
+                scoreDetail.innerHTML = `
+                    <p>✅ Correct: <strong>${correct}</strong> | ❌ Incorrect: <strong>${incorrect}</strong> | ⬜ Unanswered: <strong>${unanswered}</strong></p>
+                    <p>📊 Accuracy: <strong>${finalAccuracy}%</strong></p>
+                `;
+
+                // Check if name exists
+                const savedName = localStorage.getItem('comedk_username');
+                if (!savedName) {
+                    nameInputArea.classList.remove('hidden');
+                    resultsContentArea.classList.add('hidden');
+                } else {
+                    nameInputArea.classList.add('hidden');
+                    resultsContentArea.classList.remove('hidden');
+                generateDetailedAnalysis();
+                    buildResultsTable();
+                    triggerFirebaseSave(savedName);
+                }
+
+                overlay.classList.add('show');
+                resultsPanel.classList.add('show');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+
+            function buildResultsTable() {
+                const subjects = [
+                    { name: 'Physics', subject: 'physics', range: [1, 60] },
+                    { name: 'Chemistry', subject: 'chemistry', range: [61, 120] },
+                    { name: 'Mathematics', subject: 'maths', range: [121, 180] },
+                ];
+                let html = `<thead><tr><th>Subject</th><th>Score</th><th>Correct</th><th>Wrong</th><th>Unattempted</th></tr></thead><tbody>`;
+                subjects.forEach(s => {
+                    let sc = 0,
+                        cor = 0,
+                        wr = 0,
+                        un = 0;
+                    for (let id = s.range[0]; id <= s.range[1]; id++) {
+                        const ua = userAnswers[id] || null;
+                        if (ua === null || ua === undefined) un++;
+                        else if (ua === answerKey[id]) { sc++;
+                            cor++; } else wr++;
+                    }
+                    html +=
+                        `<tr><td><strong>${s.name}</strong></td><td>${sc}</td><td>${cor}</td><td>${wr}</td><td>${un}</td></tr>`;
+                });
+                html +=
+                    `<tr style="font-weight:700;background:#f9fafb;"><td>Total</td><td>${finalScore}</td><td>${finalCorrect}</td><td>${finalIncorrect}</td><td>${finalUnanswered}</td></tr></tbody>`;
+                resultsTable.innerHTML = html;
+            }
+
+            function triggerFirebaseSave(name) {
+                firebaseStatus.textContent = '⏳ Saving to leaderboard...';
+                if (typeof window.saveScoreToFirebase === 'function') {
+                    window.saveScoreToFirebase(name, 'CM6', finalScore, 180, finalAccuracy)
+                        .then(() => {
+                            firebaseStatus.textContent = '✅ Score saved to leaderboard!';
+                        })
+                        .catch(() => {
+                            firebaseStatus.textContent = '⚠️ Could not save to leaderboard.';
+                        });
+                } else {
+                    firebaseStatus.textContent = '⚠️ Leaderboard unavailable.';
+                }
+                // Update localStorage best score
+                const bestKey = 'comedk_best_score_CM6';
+                const prevBest = parseInt(localStorage.getItem(bestKey) || '0');
+                if (finalScore > prevBest) {
+                    localStorage.setItem(bestKey, finalScore);
+                }
+                const attemptsKey = 'comedk_attempts_CM6';
+                const prevAttempts = parseInt(localStorage.getItem(attemptsKey) || '0');
+                localStorage.setItem(attemptsKey, prevAttempts + 1);
+            }
+
+            function saveNameAndProceed() {
+                const input = document.getElementById('nameInputField');
+                const name = input.value.trim();
+                if (!name) {
+                    alert('Please enter your name.');
+                    return;
+                }
+                localStorage.setItem('comedk_username', name);
+                updateCandidateDisplay();
+                nameInputArea.classList.add('hidden');
+                resultsContentArea.classList.remove('hidden');
+                generateDetailedAnalysis();
+                buildResultsTable();
+                triggerFirebaseSave(name);
+                nameSubmittedForResults = true;
+            }
+
+            
+            function generateDetailedAnalysis() {
+                const analysisContainer = document.getElementById('detailedAnalysisSection');
+                if (!analysisContainer) return;
+
+                let analysisHTML = '<h3 style="margin:14px 0 10px 0;">📘 Detailed Question Analysis</h3>';
+
+                questionsData.forEach((q, index) => {
+                    const qNo = index + 1;
+                    const userAns = userAnswers[qNo] || 'Not Answered';
+                    const correctAns = answerKey[qNo];
+                    let statusClass = 'wrong';
+                    let statusLabel = '❌ Wrong';
+
+                    if (userAns === 'Not Answered') {
+                        statusClass = 'unanswered';
+                        statusLabel = '⚠️ Not Answered';
+                    } else if (userAns === correctAns) {
+                        statusClass = 'correct';
+                        statusLabel = '✅ Correct';
+                    }
+
+                    analysisHTML += `
+                        <div class="analysis-card ${statusClass}">
+                            <div class="analysis-question">
+                                Q${qNo}. ${q.text}
+                            </div>
+                            <div class="analysis-answer"><strong>Status:</strong> ${statusLabel}</div>
+                            <div class="analysis-answer"><strong>Your Answer:</strong> ${userAns}</div>
+                            <div class="analysis-answer"><strong>Correct Answer:</strong> ${correctAns}</div>
+                            <div class="analysis-answer"><strong>Subject:</strong> ${q.subject.toUpperCase()}</div>
+                        </div>
+                    `;
+                });
+
+                analysisContainer.innerHTML = analysisHTML;
+            }
+
+
+            function retakeTest() {
+                testSubmitted = false;
+                userAnswers = {};
+                visitedQuestions = new Set();
+                totalSeconds = 180 * 60;
+                currentQuestionIndex = 0;
+                finalScore = 0;
+                finalCorrect = 0;
+                finalIncorrect = 0;
+                finalUnanswered = 0;
+                finalAccuracy = 0;
+                nameSubmittedForResults = false;
+                submitBtn.textContent = '📤 Submit Test';
+                submitBtn.disabled = false;
+                overlay.classList.remove('show');
+                resultsPanel.classList.remove('show');
+                nameInputArea.classList.add('hidden');
+                resultsContentArea.classList.add('hidden');
+                startTimer();
+                buildPaletteGrid('paletteGrid', 'paletteBtn_');
+                buildPaletteGrid('paletteDrawerGrid', 'paletteDrawerBtn_');
+                refreshAllPaletteButtons();
+                goToQuestion(0);
+                updateCandidateDisplay();
+                updateSubjectTabCounts();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+
+            function goHome() {
+                window.location.href = 'index.html';
+            }
+
+            // Close overlay on click
+            overlay.addEventListener('click', function() {
+                if (testSubmitted && nameSubmittedForResults) {
+                    // Don't close if results are being shown after name entry
+                }
+            });
+
+            // ============ KEYBOARD NAVIGATION ============
+            document.addEventListener('keydown', function(e) {
+                if (testSubmitted) return;
+                if (e.key === 'ArrowRight' && !e.ctrlKey && !e.metaKey && document.activeElement ===
+                    document.body) {
+                    e.preventDefault();
+                    saveAndNext();
+                } else if (e.key === 'ArrowLeft' && !e.ctrlKey && !e.metaKey && document.activeElement ===
+                    document.body) {
+                    e.preventDefault();
+                    previousQuestion();
+                } else if (e.key === 'c' && e.ctrlKey && !e.metaKey) {
+                    e.preventDefault();
+                    clearResponse();
+                }
+            });
+
+            // ============ INITIALIZATION ============
+            function init() {
+                updateCandidateDisplay();
+                buildPaletteGrid('paletteGrid', 'paletteBtn_');
+                buildPaletteGrid('paletteDrawerGrid', 'paletteDrawerBtn_');
+                goToQuestion(0);
+                refreshAllPaletteButtons();
+                updateSubjectTabCounts();
+                startTimer();
+                updateActiveSubjectTab();
+            }
+
+            
+            window.addEventListener('error', function(e) {
+                console.error('Runtime Error:', e.message);
+            });
+
+            document.addEventListener('DOMContentLoaded', () => {
+                const allButtons = document.querySelectorAll('button');
+                allButtons.forEach(btn => {
+                    btn.disabled = false;
+                });
+            });
+
+
+            
+            // Expose functions globally for inline button handlers
+            window.saveAndNext = saveAndNext;
+            window.previousQuestion = previousQuestion;
+            window.submitTest = submitTest;
+            window.clearResponse = clearResponse;
+            window.jumpToSubject = jumpToSubject;
+            window.openPaletteDrawer = openPaletteDrawer;
+            window.closePaletteDrawer = closePaletteDrawer;
+            window.retakeTest = retakeTest;
+            window.goHome = goHome;
+            window.saveNameAndProceed = saveNameAndProceed;
+
+            init();
+
+            console.log('✅ COMEDK UGET Mock Test 2025 CBT loaded successfully!');
+            console.log('📝 180 questions ready | ⏱ 180-minute timer | JEE CBT Interface');
+            console.log('💡 Use subject tabs, palette, or arrow keys to navigate.');
+        })();
+    </script>
+</body>
+</html>
